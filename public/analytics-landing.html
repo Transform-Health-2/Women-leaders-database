@@ -332,6 +332,29 @@
         </div>
 
         <div class="map-canvas">
+          <!-- Static SVG world map -->
+          <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="1000" height="500" fill="#dde8f0"/>
+            <path d="M 55,58 L 105,46 L 165,42 L 225,48 L 270,66 L 295,100 L 305,148 L 295,196 L 272,238 L 250,258 L 220,262 L 192,250 L 158,234 L 118,204 L 78,164 L 58,128 L 48,90 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 218,26 L 272,16 L 322,20 L 342,50 L 322,80 L 278,88 L 234,76 L 216,52 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 215,238 L 240,235 L 248,244 L 236,250 L 215,248 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 196,272 L 258,264 L 308,278 L 332,320 L 342,372 L 328,428 L 296,464 L 252,472 L 210,456 L 183,416 L 168,362 L 168,310 L 178,284 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 372,54 L 394,48 L 408,60 L 394,74 L 374,66 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 402,85 L 422,76 L 435,88 L 428,110 L 406,115 L 398,100 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 448,50 L 466,44 L 484,50 L 492,68 L 478,82 L 455,78 L 444,64 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 398,102 L 430,72 L 470,68 L 512,74 L 538,94 L 544,122 L 528,150 L 508,164 L 480,172 L 452,174 L 428,166 L 408,150 L 396,128 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 398,180 L 460,170 L 524,176 L 568,196 L 588,248 L 592,312 L 578,378 L 548,424 L 510,450 L 470,450 L 432,434 L 404,396 L 386,346 L 380,286 L 382,228 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 576,328 L 590,312 L 598,338 L 592,366 L 578,360 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 546,152 L 592,148 L 622,166 L 628,202 L 608,222 L 576,228 L 550,206 L 540,176 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 538,62 L 602,48 L 682,40 L 782,36 L 862,44 L 932,58 L 972,86 L 978,142 L 962,202 L 932,258 L 892,298 L 842,320 L 782,330 L 720,324 L 678,308 L 638,286 L 606,256 L 590,214 L 592,164 L 572,146 L 546,128 L 536,96 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 648,224 L 692,218 L 722,238 L 732,284 L 720,320 L 694,332 L 664,320 L 644,284 L 640,250 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 758,284 L 778,276 L 792,294 L 792,328 L 774,342 L 754,330 L 746,306 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 780,344 L 808,336 L 828,344 L 826,356 L 800,360 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 836,340 L 862,332 L 874,342 L 866,354 L 840,352 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 872,128 L 890,116 L 902,128 L 893,150 L 874,152 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+            <path d="M 744,348 L 818,326 L 878,330 L 924,356 L 938,402 L 922,448 L 880,464 L 834,462 L 788,448 L 752,416 L 738,376 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1.5"/>
+            <path d="M 952,418 L 964,404 L 974,418 L 968,434 L 952,430 Z" fill="#c4d4e0" stroke="#a8bccc" stroke-width="1"/>
+          </svg>
           <!-- Heat blobs -->
           <div class="heat-blob" style="width:220px;height:220px;background:#F85A8E;opacity:0.18;top:20%;left:14%;"></div>
           <div class="heat-blob" style="width:280px;height:280px;background:#02598E;opacity:0.14;top:30%;right:20%;"></div>
@@ -446,14 +469,14 @@
     </div>
 
     <script>
-      // Featured leaders - using same data structure as wireframe-directory
+      // Featured leaders - enhanced data
       const FEATURED_LEADERS = [
-        { id:52, name:"Neema K. Lugangira", role:"Member of Parliament", org:"Government of Tanzania", expertise:"Digital health policy", linkedin:"https://www.linkedin.com/in/neemalugangira/" },
-        { id:38, name:"Kirsten Mathieson", role:"Deputy Director and Policy Lead", org:"Transform Health", expertise:"Digital health policy", linkedin:"https://www.linkedin.com/in/kirstenmathieson/" },
-        { id:80, name:"Yacine Diop Djibo", role:"Founder & Executive Director", org:"Speak Up Africa", expertise:"Digital health advocacy", linkedin:"https://www.linkedin.com/in/yacine-djibo-5561a310/" },
-        { id:46, name:"Mathilde Forslund", role:"Chief Executive Officer", org:"Transform Health", expertise:"Digital health advocacy", linkedin:"https://www.linkedin.com/in/mathilde-forslund-5561a310/" }
+        { id:52, name:"Neema K. Lugangira", role:"Member of Parliament", org:"Government of Tanzania — championing digital health legislation at the highest level of national policy.", location:"Tanzania", expertise:"Digital Health Policy", linkedin:"https://www.linkedin.com/in/neemalugangira/" },
+        { id:38, name:"Kirsten Mathieson", role:"Deputy Director and Policy Lead", org:"Transform Health — leading digital health policy and equity initiatives globally.", location:"Global", expertise:"Digital Health Policy", linkedin:"https://www.linkedin.com/in/kirstenmathieson/" },
+        { id:80, name:"Yacine Diop Djibo", role:"Founder & Executive Director", org:"Speak Up Africa — driving health advocacy and equity across the continent.", location:"Senegal", expertise:"Digital Health Advocacy", linkedin:"https://www.linkedin.com/in/yacine-djibo-5561a310/" },
+        { id:46, name:"Mathilde Forslund", role:"Chief Executive Officer", org:"Transform Health — accelerating digital health equity worldwide.", location:"Global", expertise:"Digital Health Advocacy", linkedin:"https://www.linkedin.com/in/mathilde-forslund-5561a310/" }
       ];
-      const EXP_COLORS = { "Digital health policy":"#4f46e5", "Digital health advocacy":"#008C8F", "Digital health innovation":"#F85A8E", "Health systems strengthening":"#008C8F" };
+      const EXP_COLORS = { "Digital Health Policy":"#4f46e5", "Digital Health Advocacy":"#008C8F", "Digital Health Innovation":"#F85A8E", "Health Systems Strengthening":"#008C8F" };
       function renderFeatured() {
         const grid = document.getElementById('featuredGrid');
         grid.innerHTML = FEATURED_LEADERS.map(l => {
@@ -462,8 +485,8 @@
           return '<div class="vcard" onclick="openModal(' + l.id + ')" style="cursor:pointer">' +
             '<div class="vcard-avatar" style="background:' + color + ';">' + initials + '</div>' +
             '<div class="vcard-name">' + l.name + '</div>' +
-            '<div class="vcard-role">' + l.role + ' · ' + l.org.split(' — ')[0] + '</div>' +
-            '<div class="vcard-desc">' + (l.org.split(' — ')[1] || l.org) + '</div>' +
+            '<div class="vcard-role">' + l.role + '</div>' +
+            '<div class="vcard-desc">' + l.org + '</div>' +
             '<div class="vcard-tags"><span class="vcard-tag">' + l.expertise + '</span></div>' +
             '<span class="vcard-link" onclick="event.stopPropagation();window.open(\'' + l.linkedin + '\',\'_blank\')">↗ LinkedIn</span>' +
           '</div>';
@@ -480,9 +503,7 @@
           '<div class="modal-name">' + l.name + '</div>' +
           '<div class="modal-role">' + l.role + '</div>' +
           '<div class="modal-org">' + l.org + '</div>' +
-          '<div class="modal-desc">' + l.expertise + '</div>' +
-          '<div class="modal-tags"><span class="modal-tag">' + l.expertise + '</span></div>' +
-          '<div class="modal-meta">Transform Health Directory</div>' +
+          '<div class="modal-meta">📍 ' + l.location + ' · ' + l.expertise + '</div>' +
           '<a class="modal-link" href="' + l.linkedin + '" target="_blank">↗ View LinkedIn Profile</a>';
         document.getElementById('profileModal').classList.add('show');
       }
