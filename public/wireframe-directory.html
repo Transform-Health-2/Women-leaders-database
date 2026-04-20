@@ -15,7 +15,6 @@ body { font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 13px;
   --orange:  #F97A1A; --honey: #FFDE2C; --teal: #008C8F;
   --body: #1a1a1a; --muted: #6b7280; --border: #e0e4ea;
   --surface: #f8f9fb; --radius: 10px; --radius-sm: 6px; --radius-pill: 999px;
-  --approved: #059669; --rejected: #dc2626; --pending: #d97706;
 }
 
 /* ── Wireframe chrome ── */
@@ -534,7 +533,7 @@ body { font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: 13px;
       <li><strong>Featured:</strong> Controlled by a checkbox column in Sheet — toggle pink border with no code change</li>
       <li><strong>LinkedIn:</strong> Current Sheet has placeholder text — real URLs needed from TH team</li>
       <li><strong>Claim your profile:</strong> The 81 existing leaders were added by the TH team without direct input. The "✦ Claim your profile" button lets each leader verify their own entry, add a photo, edit their bio, and connect their LinkedIn — turning a TH-created stub into a self-managed profile</li>
-      <li><strong>Analytics:</strong> Full charts and geographic breakdown available on the <a href="../public/analytics-landing.html" style="color:var(--cobalt);">Analytics Dashboard →</a></li>
+      <li><strong>Analytics:</strong> Full charts and geographic breakdown available on the <a href="analytics-landing.html" style="color:var(--cobalt);">Analytics Dashboard →</a></li>
     </ul>
   </div>
 </div>
@@ -1237,7 +1236,7 @@ function renderAll() {
 const NAV_LINKS = [
   { key: 'directory',  label: 'Directory',      internal: 'p1' },
   { key: 'submit',     label: 'Submit Profile',  internal: 'p3' },
-  { key: 'analytics',  label: 'Analytics',      href: '../public/analytics-landing.html' },
+  { key: 'analytics',  label: 'Analytics',      href: 'analytics-landing.html' },
 ];
 const INTERNAL_PAGES = ['p1','p2','p3','p4'];
 

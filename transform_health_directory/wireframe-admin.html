@@ -70,6 +70,7 @@ body {
 }
 .wf-tab:hover { color: #374151; }
 .wf-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+.wf-tab .scope { font-size: 9px; font-weight: 500; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px; color: var(--muted); margin-left: 4px; }
 
 .wf-offset { height: 82px; }
 
@@ -232,6 +233,47 @@ tbody tr:hover td { background: #fafbfc; }
 .toggle.on  { background: var(--pink); justify-content: flex-end; }
 .toggle-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 
+/* ─── Modal ─── */
+.modal-backdrop {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center;
+}
+.modal-backdrop.show { display: flex; }
+.modal {
+  background: #fff; border-radius: var(--radius); width: 100%; max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
+}
+.modal-header {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-header h3 { font-size: 16px; font-weight: 800; color: var(--cobalt); }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--surface);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--muted); cursor: pointer;
+}
+.modal-body { padding: 24px; }
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block; font-size: 10px; font-weight: 800; color: var(--cobalt);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+}
+.form-input {
+  width: 100%; height: 44px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--surface); padding: 0 14px;
+  font-family: 'Montserrat', sans-serif; font-size: 12px;
+}
+.form-textarea {
+  width: 100%; height: 80px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--surface); padding: 12px 14px;
+  font-family: 'Montserrat', sans-serif; font-size: 12px; resize: none;
+}
+.modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--border);
+  display: flex; gap: 12px; justify-content: flex-end;
+}
+
 /* ─── Card type badge ─── */
 .card-type {
   font-size: 9px; font-weight: 800; border-radius: var(--radius-pill); padding: 3px 9px;
@@ -266,12 +308,10 @@ tbody tr:hover td { background: #fafbfc; }
   text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 .login-logo {
-  width: 80px; height: 80px; border-radius: 50%;
-  background: var(--surface); border: 2px dashed var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 800; color: var(--muted);
   margin: 0 auto 20px;
 }
+.login-logo img { width: 120px; height: auto; }
 .login-card h2 { font-size: 20px; font-weight: 800; color: var(--cobalt); margin-bottom: 4px; }
 .login-card p { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
 .login-field { text-align: left; margin-bottom: 16px; }
@@ -392,13 +432,15 @@ tbody tr:hover td { background: #fafbfc; }
   </div>
   <div class="wf-tabs">
     <button class="wf-tab active" onclick="show('p1',this)">1 — Login</button>
-    <button class="wf-tab" onclick="show('p2',this)">2 — Dashboard Overview</button>
-    <button class="wf-tab" onclick="show('p3',this)">3 — Pending Queue</button>
-    <button class="wf-tab" onclick="show('p4',this)">4 — Submission Detail</button>
+    <button class="wf-tab" onclick="show('p2',this)">2 — Dashboard</button>
+    <button class="wf-tab" onclick="show('p3',this)">3 — Pending</button>
+    <button class="wf-tab" onclick="show('p4',this)">4 — Submission</button>
     <button class="wf-tab" onclick="show('p5',this)">5 — Live Profiles</button>
-    <button class="wf-tab" onclick="show('p6',this)">6 — Nominations: Invited</button>
-    <button class="wf-tab" onclick="show('p7',this)">7 — Nominations: Declined</button>
-    <button class="wf-tab" onclick="show('p8',this)">8 — Admin Flow</button>
+    <button class="wf-tab" onclick="show('p6',this)">6 — Invited</button>
+    <button class="wf-tab" onclick="show('p7',this)">7 — Declined</button>
+    <button class="wf-tab" onclick="show('pX',this)">8 — Rejected</button>
+    <button class="wf-tab" onclick="show('pY',this)">9 — Featured</button>
+    <button class="wf-tab" onclick="show('p8',this)">10 — Admin Flow</button>
   </div>
 </div>
 <div class="wf-offset"></div>
@@ -410,7 +452,7 @@ tbody tr:hover td { background: #fafbfc; }
 <div id="p1" class="page active">
   <div class="login-page">
     <div class="login-card">
-      <div class="login-logo">TH<br>LOGO</div>
+      <div class="login-logo"><img src="./TH-Logo-Tag Top-FC.png" alt="Transform Health" style="width:120px;height:auto;"/></div>
       <h2>Leaders Directory</h2>
       <p>Admin access only · Transform Health team</p>
       <div class="login-field">
@@ -446,7 +488,7 @@ tbody tr:hover td { background: #fafbfc; }
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">TH</div>
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
         <div>
           <div class="sidebar-name">TH Admin</div>
           <div class="sidebar-role">Gatekeeper</div>
@@ -454,23 +496,23 @@ tbody tr:hover td { background: #fafbfc; }
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
-        <div class="nav-item active"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Submissions</div>
-        <div class="nav-item"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
-        <div class="nav-item"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
-        <div class="nav-item"><span class="icon">★</span> Featured</div>
+        <div class="nav-item" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Nominations</div>
-        <div class="nav-item"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
       </div>
       <div class="sidebar-footer">
-        <div class="nav-item"><span class="icon">↗</span> View Directory</div>
-        <div class="nav-item"><span class="icon">⬚</span> Sign Out</div>
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
       </div>
     </div>
 
@@ -570,28 +612,28 @@ tbody tr:hover td { background: #fafbfc; }
 
     <div class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">TH</div>
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
         <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
-        <div class="nav-item"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Submissions</div>
-        <div class="nav-item active"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
-        <div class="nav-item"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
-        <div class="nav-item"><span class="icon">★</span> Featured</div>
+        <div class="nav-item active" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Nominations</div>
-        <div class="nav-item"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
       </div>
       <div class="sidebar-footer">
-        <div class="nav-item"><span class="icon">↗</span> View Directory</div>
-        <div class="nav-item"><span class="icon">⬚</span> Sign Out</div>
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
       </div>
     </div>
 
@@ -702,34 +744,34 @@ tbody tr:hover td { background: #fafbfc; }
 
     <div class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">TH</div>
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
         <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
-        <div class="nav-item"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Submissions</div>
-        <div class="nav-item active"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
-        <div class="nav-item"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
-        <div class="nav-item"><span class="icon">★</span> Featured</div>
+        <div class="nav-item active" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Nominations</div>
-        <div class="nav-item"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
       </div>
       <div class="sidebar-footer">
-        <div class="nav-item"><span class="icon">↗</span> View Directory</div>
-        <div class="nav-item"><span class="icon">⬚</span> Sign Out</div>
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
       </div>
     </div>
 
     <div class="content">
       <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">
-        <span style="color:var(--cobalt);font-weight:800;cursor:pointer;">← Pending queue</span> &nbsp;/&nbsp; Priya Sharma
+        <span style="color:var(--cobalt);font-weight:800;cursor:pointer;" onclick="show('p3',this)">← Pending queue</span> &nbsp;/&nbsp; Priya Sharma
       </div>
 
       <div class="decision-bar">
@@ -800,28 +842,28 @@ tbody tr:hover td { background: #fafbfc; }
 
     <div class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">TH</div>
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
         <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
-        <div class="nav-item"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Submissions</div>
-        <div class="nav-item"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
-        <div class="nav-item active"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
-        <div class="nav-item"><span class="icon">★</span> Featured</div>
+        <div class="nav-item" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item active" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Nominations</div>
-        <div class="nav-item"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
       </div>
       <div class="sidebar-footer">
-        <div class="nav-item"><span class="icon">↗</span> View Directory</div>
-        <div class="nav-item"><span class="icon">⬚</span> Sign Out</div>
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
       </div>
     </div>
 
@@ -908,28 +950,28 @@ tbody tr:hover td { background: #fafbfc; }
 
     <div class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">TH</div>
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
         <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
-        <div class="nav-item"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Submissions</div>
-        <div class="nav-item"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
-        <div class="nav-item"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
-        <div class="nav-item"><span class="icon">★</span> Featured</div>
+        <div class="nav-item" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Nominations</div>
-        <div class="nav-item active"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+        <div class="nav-item active" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
       </div>
       <div class="sidebar-footer">
-        <div class="nav-item"><span class="icon">↗</span> View Directory</div>
-        <div class="nav-item"><span class="icon">⬚</span> Sign Out</div>
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
       </div>
     </div>
 
@@ -939,7 +981,7 @@ tbody tr:hover td { background: #fafbfc; }
           <div class="content-title">Invited Nominations</div>
           <div class="content-sub">4 nominees have been sent an invitation to self-submit · awaiting their response</div>
         </div>
-        <span class="btn btn-primary" style="height:40px;padding:0 20px;font-size:12px;">+ Send new invite</span>
+        <span class="btn btn-primary" style="height:40px;padding:0 20px;font-size:12px;" onclick="document.getElementById('inviteModal').classList.add('show')">+ Send new invite</span>
       </div>
 
       <div style="margin-bottom:16px;padding:12px 16px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:var(--radius-sm);font-size:11px;color:#3730a3;line-height:1.8;">
@@ -1026,28 +1068,28 @@ tbody tr:hover td { background: #fafbfc; }
 
     <div class="sidebar">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">TH</div>
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
         <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Overview</div>
-        <div class="nav-item"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Submissions</div>
-        <div class="nav-item"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
-        <div class="nav-item"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
-        <div class="nav-item"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
-        <div class="nav-item"><span class="icon">★</span> Featured</div>
+        <div class="nav-item" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
       </div>
       <div class="nav-group">
         <div class="nav-group-label">Nominations</div>
-        <div class="nav-item"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
-        <div class="nav-item active"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item active" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
       </div>
       <div class="sidebar-footer">
-        <div class="nav-item"><span class="icon">↗</span> View Directory</div>
-        <div class="nav-item"><span class="icon">⬚</span> Sign Out</div>
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
       </div>
     </div>
 
@@ -1101,13 +1143,218 @@ tbody tr:hover td { background: #fafbfc; }
       <li>Reason / Note column is admin-only · written at time of decline · stored in Sheet, never public</li>
       <li>No bulk actions needed at this scale — single reinstate button per row is sufficient</li>
     </ul>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE X — REJECTED
+═════════════════════════════════════════ -->
+<div id="pX" class="page">
+  <div class="admin-shell">
+
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
+        <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Overview</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Submissions</div>
+        <div class="nav-item" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item active" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Nominations</div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-header">
+        <div>
+          <div class="content-title">Rejected Submissions</div>
+          <div class="content-sub">3 submissions declined · audit trail only</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;padding:12px 16px;background:#fef2f2;border:1px solid #fca5a5;border-radius:var(--radius-sm);font-size:11px;color:#991b1b;line-height:1.8;">
+        Rejected submissions are kept for record-keeping only. They are never shown publicly. A rejected submission can be reinstated back to the Pending queue.
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Role</th><th>Country</th><th>Rejected on</th><th>Reason / Note</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Chen Wei</strong></td>
+              <td style="color:var(--muted);">Health Data Analyst</td>
+              <td>Philippines</td>
+              <td style="color:var(--muted);font-size:11px;">Apr 18, 2026</td>
+              <td style="font-size:11px;color:var(--muted);font-style:italic;">Incomplete submission</td>
+              <td><span class="btn btn-secondary btn-sm">Reinstate →</span></td>
+            </tr>
+            <tr>
+              <td><strong>Marcus Ochieng</strong></td>
+              <td style="color:var(--muted);">Program Coordinator</td>
+              <td>Kenya</td>
+              <td style="color:var(--muted);font-size:11px;">Apr 15, 2026</td>
+              <td style="font-size:11px;color:var(--muted);font-style:italic;">Does not meet criteria</td>
+              <td><span class="btn btn-secondary btn-sm">Reinstate →</span></td>
+            </tr>
+            <tr>
+              <td><strong>Anonymous #3</strong></td>
+              <td style="color:var(--muted);">—</td>
+              <td>—</td>
+              <td style="color:var(--muted);font-size:11px;">Apr 10, 2026</td>
+              <td style="font-size:11px;color:var(--muted);font-style:italic;">Spam / Invalid</td>
+              <td><span class="btn btn-secondary btn-sm">Reinstate →</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="anno-strip">
+    <h4>Screen X — Rejected · notes</h4>
+    <ul>
+      <li>Rejected submissions are kept for audit trail — not served to public directory</li>
+      <li><strong>Reinstate:</strong> Moves the row back to "Pending" queue — admin can re-review</li>
+      <li>Reason / Note is captured at time of rejection — stored in Sheets, never public</li>
+      <li>No bulk actions needed at this scale</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     PAGE Y — FEATURED
+═════════════════════════════════════════ -->
+<div id="pY" class="page">
+  <div class="admin-shell">
+
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo"><img src="th-logo.png" alt="TH" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:#fff;padding:2px;"/></div>
+        <div><div class="sidebar-name">TH Admin</div><div class="sidebar-role">Gatekeeper</div></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Overview</div>
+        <div class="nav-item" onclick="show('p2',this)"><span class="icon">⊞</span> Dashboard</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Submissions</div>
+        <div class="nav-item" onclick="show('p3',this)"><span class="icon">⏳</span> Pending <span class="nav-badge badge-orange">7</span></div>
+        <div class="nav-item" onclick="show('p5',this)"><span class="icon">✓</span> Live Profiles <span class="nav-badge badge-green">80</span></div>
+        <div class="nav-item" onclick="show('pX',this)"><span class="icon">✕</span> Rejected <span class="nav-badge badge-red">3</span></div>
+        <div class="nav-item active" onclick="show('pY',this)"><span class="icon">★</span> Featured</div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">Nominations</div>
+        <div class="nav-item" onclick="show('p6',this)"><span class="icon">📨</span> Invited <span class="nav-badge" style="background:#6366f1;">4</span></div>
+        <div class="nav-item" onclick="show('p7',this)"><span class="icon">✕</span> Declined <span class="nav-badge badge-red">1</span></div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="nav-item" onclick="window.open('wireframe-directory.html','_blank')"><span class="icon">↗</span> View Directory</div>
+        <div class="nav-item" onclick="alert('Signed out!')"><span class="icon">⬚</span> Sign Out</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="content-header">
+        <div>
+          <div class="content-title">Featured Profiles</div>
+          <div class="content-sub">5 leaders highlighted on the homepage · max 6 recommended</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Featured</th><th>Name</th><th>Role</th><th>Country</th><th>Card Type</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="toggle on"><div class="toggle-thumb"></div></div></td>
+              <td><strong>Fatima Khalil</strong></td>
+              <td style="color:var(--muted);">Director, Digital Health</td>
+              <td>Jordan</td>
+              <td><span class="card-type card-full">Full</span></td>
+              <td><span class="btn btn-secondary btn-sm">Unfeature</span></td>
+            </tr>
+            <tr>
+              <td><div class="toggle on"><div class="toggle-thumb"></div></div></td>
+              <td><strong>Luciana Barbosa</strong></td>
+              <td style="color:var(--muted);">Chief Medical Officer</td>
+              <td>Brazil</td>
+              <td><span class="card-type card-slim">Slim</span></td>
+              <td><span class="btn btn-secondary btn-sm">Unfeature</span></td>
+            </tr>
+            <tr>
+              <td><div class="toggle on"><div class="toggle-thumb"></div></div></td>
+              <td><strong>Dr. James Ochieng</strong></td>
+              <td style="color:var(--muted);">Regional Director</td>
+              <td>Kenya</td>
+              <td><span class="card-type card-full">Full</span></td>
+              <td><span class="btn btn-secondary btn-sm">Unfeature</span></td>
+            </tr>
+            <tr>
+              <td><div class="toggle on"><div class="toggle-thumb"></div></div></td>
+              <td><strong>Maya Rajan</strong></td>
+              <td style="color:var(--muted);">Programme Manager</td>
+              <td>India</td>
+              <td><span class="card-type card-slim">Slim</span></td>
+              <td><span class="btn btn-secondary btn-sm">Unfeature</span></td>
+            </tr>
+            <tr>
+              <td><div class="toggle on"><div class="toggle-thumb"></div></div></td>
+              <td><strong>Amara Nwosu</strong></td>
+              <td style="color:var(--muted);">Sr. Health Policy Advisor</td>
+              <td>Kenya</td>
+              <td><span class="card-type card-slim">Slim</span></td>
+              <td><span class="btn btn-secondary btn-sm">Unfeature</span></td>
+            </tr>
+            <tr style="background:#fafbfc;">
+              <td colspan="6" style="text-align:center;color:#9ca3af;font-size:11px;padding:14px;">75 more live profiles (unfeatured)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:14px;padding:12px 16px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:var(--radius-sm);font-size:11px;color:#0369a1;line-height:1.8;">
+        <strong>Featured toggle</strong> controls which profiles appear on the directory homepage. Max 6 recommended to maintain visual balance.
+      </div>
+    </div>
+  </div>
+
+  <div class="anno-strip">
+    <h4>Screen Y — Featured · notes</h4>
+    <ul>
+      <li>Featured profiles appear on the public directory homepage</li>
+      <li><strong>Toggle on:</strong> Sets "Featured" checkbox in Sheets — appears on next API fetch</li>
+      <li><strong>Unfeature:</strong> Removes from homepage — profile remains in live directory</li>
+      <li>Max 6 recommended for visual balance</li>
+    </ul>
   </div>
 </div>
 
 
 <!-- ═══════════════════════════════════════
      PAGE 8 — ADMIN FLOW
-═══════════════════════════════════════ -->
+═════════════════════════════════════════ -->
 <div id="p8" class="page">
   <div class="flow-page">
 
@@ -1123,7 +1370,7 @@ tbody tr:hover td { background: #fafbfc; }
         <div class="flow-arrow">→</div>
         <div class="flow-node" style="background:var(--teal);">Admin UI<small>TH reviews<br>approve / reject</small></div>
         <div class="flow-arrow">→</div>
-        <div class="flow-node" style="background:var(--approved);">Sheets DB<small>"Live" tab<small></small></div>
+        <div class="flow-node" style="background:var(--approved);">Sheets DB<small>"Live" tab</small></div>
         <div class="flow-arrow">→</div>
         <div class="flow-node" style="background:var(--pink);">Public Directory<small>React app<br>GitHub Pages</small></div>
       </div>
@@ -1209,12 +1456,67 @@ tbody tr:hover td { background: #fafbfc; }
 
 <script>
   function show(id, btn) {
+    if (!id) return;
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.wf-tab').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
+    var page = document.getElementById(id);
+    if (page) {
+      page.classList.add('active');
+    }
+    if (btn) {
+      if (btn.classList.contains('wf-tab')) {
+        document.querySelectorAll('.wf-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateSidebar(id);
+      } else if (btn.classList.contains('nav-item')) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    } else {
+      updateSidebar(id);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  function updateSidebar(pageId) {
+    var map = {p2:'Dashboard',p3:'Pending',p5:'Live',pX:'Rejected',pY:'Featured',p6:'Invited',p7:'Declined'};
+    var label = map[pageId];
+    if (!label) return;
+    document.querySelectorAll('.nav-item').forEach(function(n) {
+      n.classList.remove('active');
+      if (n.textContent.indexOf(label) !== -1) n.classList.add('active');
+    });
+  }
 </script>
+
+<!-- Invite Modal -->
+<div id="inviteModal" class="modal-backdrop" onclick="if(event.target === this) this.classList.remove('show')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Send Invitation</h3>
+      <div class="modal-close" onclick="document.getElementById('inviteModal').classList.remove('show')">×</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nominee Name</label>
+        <input type="text" class="form-input" placeholder="Dr. Jane Smith">
+      </div>
+      <div class="form-group">
+        <label>Profile Link</label>
+        <input type="text" class="form-input" placeholder="linkedin.com/in/janesmith">
+      </div>
+      <div class="form-group">
+        <label>Nominee Email (optional)</label>
+        <input type="email" class="form-input" placeholder="jane@organisation.org">
+      </div>
+      <div class="form-group">
+        <label>Personalized Message</label>
+        <textarea class="form-textarea" placeholder="Add a personal message..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="document.getElementById('inviteModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-primary" onclick="alert('Invitation sent!'); document.getElementById('inviteModal').classList.remove('show')">Send Invitation</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
