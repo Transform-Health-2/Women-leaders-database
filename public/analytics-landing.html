@@ -214,7 +214,7 @@
   <!-- ── Wireframe chrome ── -->
   <div class="wf-chrome">
     <div class="wf-topbar">
-      <h1>Transform Health — Women Leaders Directory</h1>
+      <h1>Women Leaders Directory</h1>
       <span class="wf-badge">WIREFRAME</span>
     </div>
     <div class="wf-tabs">
@@ -382,7 +382,7 @@
 
     </div>
 
-    <!-- Emerging Voices -->
+<!-- Emerging Voices -->
     <div class="voices-section">
       <div class="voices-blob"></div>
 
@@ -391,6 +391,40 @@
           <div class="voices-title">Emerging Voices in Practice</div>
           <div class="voices-sub">Dynamic leaders driving localised equity initiatives across our global network. Data drawn from verified directory profiles.</div>
         </div>
+        <a class="voices-cta" href="wireframe-directory.html">Explore Directory →</a>
+      </div>
+
+      <div class="voices-grid" id="featuredGrid">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+
+    <script>
+      // Featured leaders - using same data structure as wireframe-directory
+      const FEATURED_LEADERS = [
+        { id:52, name:"Neema K. Lugangira", role:"Member of Parliament", org:"Government of Tanzania", expertise:"Digital health policy", linkedin:"https://www.linkedin.com/in/neemalugangira/" },
+        { id:38, name:"Kirsten Mathieson", role:"Deputy Director and Policy Lead", org:"Transform Health", expertise:"Digital health policy", linkedin:"https://www.linkedin.com/in/kirstenmathieson/" },
+        { id:80, name:"Yacine Diop Djibo", role:"Founder & Executive Director", org:"Speak Up Africa", expertise:"Digital health advocacy", linkedin:"https://www.linkedin.com/in/yacine-djibo-5561a310/" },
+        { id:46, name:"Mathilde Forslund", role:"Chief Executive Officer", org:"Transform Health", expertise:"Digital health advocacy", linkedin:"https://www.linkedin.com/in/mathilde-forslund-5561a310/" }
+      ];
+      const EXP_COLORS = { "Digital health policy":"#4f46e5", "Digital health advocacy":"#008C8F", "Digital health innovation":"#F85A8E", "Health systems strengthening":"#008C8F" };
+      function renderFeatured() {
+        const grid = document.getElementById('featuredGrid');
+        grid.innerHTML = FEATURED_LEADERS.map(l => {
+          const initials = l.name.split(' ').map(n => n[0]).join('');
+          const color = EXP_COLORS[l.expertise] || 'var(--cobalt)';
+          return '<div class="vcard">' +
+            '<div class="vcard-avatar" style="background:' + color + ';">' + initials + '</div>' +
+            '<div class="vcard-name">' + l.name + '</div>' +
+            '<div class="vcard-role">' + l.role + ' · ' + l.org.split(' — ')[0] + '</div>' +
+            '<div class="vcard-desc">' + (l.org.split(' — ')[1] || l.org) + '</div>' +
+            '<div class="vcard-tags"><span class="vcard-tag">' + l.expertise + '</span></div>' +
+            '<a class="vcard-link" href="' + l.linkedin + '" target="_blank">↗ LinkedIn</a>' +
+          '</div>';
+        }).join('');
+      }
+      renderFeatured();
+    </script>
         <a class="voices-cta" href="wireframe-directory.html">Explore Directory →</a>
       </div>
 
