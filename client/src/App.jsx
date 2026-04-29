@@ -63,56 +63,48 @@ export default function App() {
     <div className="min-h-screen" style={{ background: 'rgb(255, 255, 244)' }}>
       <SiteHeader />
 
-      {showHero && route !== 'submit' && (
-        <div style={{ background: '#fffff4', fontFamily: "'Montserrat', sans-serif" }}>
-          <div className="max-w-6xl mx-auto px-6 py-12">
-            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#000' }}>
-              Transform Health · Women in Digital Health
-            </p>
-            <h1 className="text-4xl font-bold text-black leading-tight mb-4" style={{ maxWidth: 640 }}>
-              Women Leaders in Digital Health
-            </h1>
-            <p className="text-base mb-8" style={{ color: '#333', maxWidth: 560, lineHeight: 1.7 }}>
-              A curated global network of women driving digital transformation across health systems, policy, and innovation.
-            </p>
-            <div className="flex gap-8">
-              <div>
-                <div className="text-3xl font-bold text-black">81</div>
-                <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#333' }}>Leaders</div>
-              </div>
-              <div style={{ borderLeft: '1px solid #e8e7c4', paddingLeft: 32 }}>
-                <div className="text-3xl font-bold text-black">15</div>
-                <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#333' }}>Expertise Areas</div>
-              </div>
-              <div style={{ borderLeft: '1px solid #e8e7c4', paddingLeft: 32 }}>
-                <div className="text-3xl font-bold text-black">30+</div>
-                <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#333' }}>Organisations</div>
-              </div>
+      {route === 'database' && (
+        <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
+          <div style={{ position: 'relative', height: '100%', maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <img src="/illustrations/db1-hero.png" alt="" style={{ height: 260, width: 'auto', flexShrink: 0 }} />
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1.1, textTransform: 'uppercase', textAlign: 'left' }}>
+              <div style={{ color: '#00AAFF' }}>Explore the Leaders</div>
+              <div style={{ color: '#00AAFF' }}>Bridging the Gap</div>
+              <div style={{ color: '#00AAFF' }}>in Digital Health</div>
             </div>
+            <img src="/illustrations/db2-hero.png" alt="" style={{ height: 240, width: 'auto', flexShrink: 0 }} />
+          </div>
+        </div>
+      )}
+
+      {route === 'analytics' && (
+        <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
+          <div style={{ position: 'relative', height: '100%', maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <img src="/illustrations/network2-hero.png" alt="" style={{ height: 260, width: 'auto', flexShrink: 0 }} />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1.1, textTransform: 'uppercase' }}>
+                <div style={{ color: '#02598e' }}>Global</div>
+                <div style={{ color: '#F85A8E' }}>Network</div>
+              </div>
+              <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 18, fontWeight: 400, color: '#333', marginTop: 16, maxWidth: 480, lineHeight: 1.6 }}>
+                A curated community of health leaders driving digital transformation
+              </p>
+            </div>
+            <img src="/illustrations/network1-hero.png" alt="" style={{ height: 240, width: 'auto', flexShrink: 0 }} />
           </div>
         </div>
       )}
 
       {route === 'submit' && (
         <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
-          {/* Content */}
-          <div style={{
-            position: 'relative',
-            height: '100%',
-            maxWidth: 1268,
-            margin: '0 auto',
-            padding: '0 48px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 40,
-          }}>
-            <img src="/illustrations/hero-left.png" alt="" style={{ height: 320, width: 'auto', flexShrink: 0 }} />
-            <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 72, lineHeight: 1.05, textTransform: 'uppercase' }}>
+          <div style={{ position: 'relative', height: '100%', maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <img src="/illustrations/hero-left.png" alt="" style={{ height: 260, width: 'auto', flexShrink: 0 }} />
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1.1, textTransform: 'uppercase', textAlign: 'left' }}>
               <div style={{ color: '#02598e' }}>Join</div>
-              <div style={{ color: '#f97a1a' }}>The</div>
-              <div style={{ color: '#f97a1a' }}>Database</div>
+              <div style={{ color: '#F85A8E' }}>The</div>
+              <div style={{ color: '#F85A8E' }}>Database</div>
             </div>
-            <img src="/illustrations/hero-right.png" alt="" style={{ height: 280, width: 'auto', flexShrink: 0, marginLeft: 'auto' }} />
+            <img src="/illustrations/hero-right.png" alt="" style={{ height: 240, width: 'auto', flexShrink: 0 }} />
           </div>
         </div>
       )}
