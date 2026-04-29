@@ -3,6 +3,7 @@ import axios from 'axios'
 import { storage } from '../firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { compressImage } from '../utils/compressImage'
+import ManageProfile from './ManageProfile'
 
 const EXPERTISE_TAGS = [
   'AI & Automation',
@@ -30,7 +31,7 @@ const COUNTRIES = [
   'Germany', 'Australia', 'Japan', 'China',
 ]
 
-export default function Submit({ onManageProfile }) {
+export default function Submit({ onManageProfile, onGoToDirectory }) {
   const [step, setStep] = useState(0)
   const [branch, setBranch] = useState('self')
   const [nominateLink, setNominateLink] = useState('')
@@ -42,6 +43,7 @@ export default function Submit({ onManageProfile }) {
   const [expertise, setExpertise] = useState([])
   const [geoScope, setGeoScope] = useState('')
   const [country, setCountry] = useState('')
+  const [selectedCountries, setSelectedCountries] = useState([])
   const [bio, setBio] = useState('')
   const [linkedin, setLinkedin] = useState('')
   const [notableText, setNotableText] = useState('')
@@ -49,8 +51,10 @@ export default function Submit({ onManageProfile }) {
   const [photo, setPhoto] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(null)
   const [photoName, setPhotoName] = useState('')
+  const [yearsExp, setYearsExp] = useState('')
   const [status, setStatus] = useState('')
   const [showNoConsentModal, setShowNoConsentModal] = useState(false)
+  const [showManageModal, setShowManageModal] = useState(false)
 
   const charCount = bio.length
 
@@ -135,8 +139,8 @@ export default function Submit({ onManageProfile }) {
     setRole('')
     setOrg('')
     setExpertise([])
-    setGeoScope('')
-    setCountry('')
+    setYearsExp('')
+    setSelectedCountries([])
     setBio('')
     setLinkedin('')
     setPhoto(null)
@@ -171,8 +175,8 @@ export default function Submit({ onManageProfile }) {
         role,
         organisation: org,
         expertise: expertise.join(', '),
-        geoScope,
-        country: geoScope === 'national' ? country : '',
+        yearsExp,
+        countries: selectedCountries.join(', '),
         bio,
         linkedin,
         notableText,
@@ -194,32 +198,56 @@ export default function Submit({ onManageProfile }) {
 
   if (status === 'submitted') {
     return (
-      <div className="min-h-screen bg-[rgb(255,255,244)] flex items-center justify-center p-6">
-        <div className="bg-transparent border border-gray-200/70 rounded-lg p-8 text-center max-w-md">
-          <div className="text-4xl mb-4">🌍</div>
-          <h2 className="text-xl font-semibold text-[#02598E] mb-2">
-            Thank you for contributing to the Transform Health Women Leaders in Digital Health Database
-          </h2>
-          <p className="text-sm text-gray-500 mb-6">
-            Your submission helps advance gender equity and representation in digital health leadership.
-          </p>
-          <div className="text-sm text-gray-600 bg-[rgb(255,255,244)] p-4 rounded text-left space-y-1 mb-6">
-            <p className="font-medium text-gray-800">Confirmation email sent to your inbox</p>
-            <p>Your email includes:</p>
-            <ul className="list-disc ml-4 text-xs text-gray-500">
-              <li>"Update your profile anytime here" — a direct link to edit</li>
-              <li>A follow-up survey link to share additional feedback</li>
-            </ul>
-            <p className="text-xs text-gray-400 mt-2">The Transform Health team will review your profile before it goes live.</p>
+      <div style={{ background: 'rgb(255,255,244)', minHeight: '100vh', fontFamily: "'Montserrat', sans-serif" }}>
+        <div style={{ maxWidth: 600, margin: '0 auto', padding: '64px 24px 0' }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <p style={{ fontSize: 14, color: '#F85A8E', fontWeight: 600, letterSpacing: '0.04em', marginBottom: 12, margin: '0 0 12px' }}>
+              Submission received
+            </p>
+            <h2 style={{ fontSize: 36, fontWeight: 700, color: '#111', marginBottom: 20, margin: '0 0 20px' }}>
+              Thank you for contributing
+            </h2>
+            <p style={{ fontSize: 16, color: '#444', lineHeight: 1.7, maxWidth: 480, margin: '0 auto' }}>
+              Your submission helps advance gender equity and representation in digital health leadership worldwide.
+            </p>
           </div>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={resetForm}
-              className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800"
-            >
-              Submit another
-            </button>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 48 }}>
+            <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 14, padding: '24px 28px', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid #02598e', borderTopColor: 'transparent', flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: '#111', marginBottom: 8 }}>Profile under review</div>
+                <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: 0 }}>
+                  The Transform Health team reviews all submissions before they go live. This typically takes 3–5 business days.
+                </p>
+              </div>
+            </div>
+
+            <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 14, padding: '24px 28px', display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid #02598e', borderTopColor: 'transparent', flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: '#111', marginBottom: 8 }}>Once approved</div>
+                <p style={{ fontSize: 14, color: '#555', lineHeight: 1.7, margin: 0 }}>
+                  Your full profile card will appear in the public directory at transformhealthcoalition.org/leaders
+                </p>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 600, margin: '0 auto', padding: '20px 24px', borderTop: '1px solid #e5e7eb' }}>
+          <button
+            onClick={() => onGoToDirectory && onGoToDirectory()}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+          >
+            TO DATABASE →
+          </button>
+          <button
+            onClick={resetForm}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E8571D' }}
+          >
+            SUBMIT ANOTHER PROFILE →
+          </button>
         </div>
       </div>
     )
@@ -229,7 +257,7 @@ export default function Submit({ onManageProfile }) {
 
   const nextDisabled =
     (step === 2 && (!firstName || !lastName || !country)) ||
-    (step === 3 && (expertise.length === 0 || !bio || !geoScope || charCount < 100 || charCount > 150))
+    (step === 3 && (!yearsExp || expertise.length === 0 || selectedCountries.length === 0 || !bio || charCount < 100 || charCount > 150))
 
   return (
     <div style={{ background: 'rgb(255, 255, 244)' }}>
@@ -266,80 +294,89 @@ export default function Submit({ onManageProfile }) {
 
           <div className="bg-transparent rounded-lg p-6 md:p-8">
           {step === 0 && (
-            <div>
-              <h2 className="text-xl font-bold text-[#02598E] mb-3">
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              <h2 style={{ fontSize: 26, fontWeight: 700, color: '#02598e', marginBottom: 16 }}>
                 Women Leaders in Digital Health Database
               </h2>
-              <div className="bg-[rgb(255,255,244)] rounded-md p-4 text-sm text-gray-600 leading-relaxed mb-5">
-                <p className="mb-3">
-                  Transform Health is building a global database of women leaders in digital health to increase visibility, representation, and engagement in leadership, policy, and technical spaces. This takes forward recommendations from the Transform Health policy brief <em>"Establishing Gender Equitable Foundations for Digital Health Transformation to Advance Universal Health Coverage"</em> launched in 2024 to mainstream gender in digital health.
+              <p style={{ fontSize: 15, color: '#444', lineHeight: 1.8, marginBottom: 24 }}>
+                Transform Health is building a global database of women leaders in digital health to increase visibility, representation, and engagement in leadership, policy, and technical spaces.
+              </p>
+
+              {/* Info box */}
+              <div style={{ borderLeft: '4px solid #02598e', background: '#eef3fb', borderRadius: 8, padding: '20px 24px', marginBottom: 32, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <p style={{ fontSize: 14, color: '#333', lineHeight: 1.7, margin: 0 }}>
+                  Information submitted may be featured in a publicly accessible database.
                 </p>
-                <p>
-                  Information submitted through this form may be featured in a publicly accessible database. By consenting, you agree that your profile information including your name, role, organisation, biography, and relevant links may be publicly displayed. <strong>Your email address will not be publicly displayed.</strong>
+                <p style={{ fontSize: 14, color: '#333', lineHeight: 1.7, margin: 0 }}>
+                  By consenting, you agree that your name, role, organisation, biography, and relevant links may be publicly displayed.
+                </p>
+                <p style={{ fontSize: 14, color: '#333', lineHeight: 1.7, margin: 0 }}>
+                  <strong>Your email address will not be publicly displayed.</strong>
                 </p>
               </div>
 
-              <p className="text-xs text-gray-500 mb-4">
-                You can <strong className="text-[#F85A8E]">submit your profile</strong> or <strong>nominate another woman leader</strong>. ⏱️ This form takes 3–5 minutes.
-              </p>
+              {/* Selection cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                <button
+                  onClick={() => selectBranch('self')}
+                  style={{
+                    padding: '36px 24px 28px', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff',
+                    border: branch === 'self' ? '2px solid #02598e' : '2px solid #e5e7eb',
+                  }}
+                >
+                  <img src="./illustrations/self.png" alt="" style={{ width: 80, height: 80, objectFit: 'contain', margin: '0 auto 20px', display: 'block' }} />
+                  <div style={{ fontWeight: 700, fontSize: 16, color: '#111', marginBottom: 8 }}>I am nominating myself</div>
+                  <div style={{ fontSize: 14, color: '#666', lineHeight: 1.5 }}>Submit your own profile to the database</div>
+                </button>
 
-              <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-3">
-                Are you adding yourself or nominating someone else? *
-              </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
-                  <button
-                    onClick={() => selectBranch('self')}
-                    className={`p-4 border-2 rounded-lg text-center transition-colors ${
-                      branch === 'self'
-                        ? 'border-[#F85A8E] bg-pink-50'
-                        : 'border-gray-200 hover:border-gray-400'
-                    }`}
-                  >
-                    <div className="text-2xl mb-2">👤</div>
-                    <div className="font-medium text-sm">I am nominating myself</div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      Submit your own profile
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => selectBranch('nominate')}
-                    className={`p-4 border-2 rounded-lg text-center transition-colors ${
-                      branch === 'nominate'
-                        ? 'border-[#F85A8E] bg-pink-50'
-                        : 'border-gray-200 hover:border-gray-400'
-                    }`}
-                  >
-                    <div className="text-2xl mb-2">🌟</div>
-                    <div className="font-medium text-sm">I am nominating someone else</div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      Nominate another woman leader
-                    </div>
-                  </button>
+                <button
+                  onClick={() => selectBranch('nominate')}
+                  style={{
+                    padding: '36px 24px 28px', borderRadius: 12, textAlign: 'center', cursor: 'pointer', background: '#fff',
+                    border: branch === 'nominate' ? '2px solid #02598e' : '2px solid #e5e7eb',
+                  }}
+                >
+                  <img src="./illustrations/nominate.png" alt="" style={{ width: 80, height: 80, objectFit: 'contain', margin: '0 auto 20px', display: 'block' }} />
+                  <div style={{ fontWeight: 700, fontSize: 16, color: '#111', marginBottom: 8 }}>I am nominating someone else</div>
+                  <div style={{ fontSize: 14, color: '#666', lineHeight: 1.5 }}>Nominate another woman leader you know</div>
+                </button>
               </div>
 
               {branch === 'nominate' && (
-                <div className="mb-5">
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                    Public profile link of the person you are nominating *
-                  </label>
-                  <p className="text-xs text-gray-400 mb-2">e.g. LinkedIn URL or professional website</p>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>Public profile link of the person you are nominating *</label>
+                  <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 8 }}>e.g. LinkedIn URL or professional website</p>
                   <input
                     value={nominateLink}
                     onChange={(e) => setNominateLink(e.target.value)}
                     placeholder="https://linkedin.com/in/…"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
                   />
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                <p style={{ fontSize: 13, color: '#666', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span>⏱</span> This form takes 3–5 minutes.
+                </p>
                 <button
                   onClick={handleStep0Continue}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#E8571D', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
                 >
                   {branch === 'nominate' ? 'SUBMIT NOMINATION →' : 'CONTINUE →'}
                 </button>
+              </div>
+
+              <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid #e5e7eb', textAlign: 'center' }}>
+                <p style={{ fontSize: 13, color: '#666' }}>
+                  Already in the database?{' '}
+                  <button
+                    onClick={() => setShowManageModal(true)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#02598e', fontWeight: 600, fontSize: 13, textDecoration: 'underline', padding: 0, fontFamily: "'Montserrat', sans-serif" }}
+                  >
+                    Manage or remove your profile
+                  </button>
+                </p>
               </div>
             </div>
           )}
@@ -410,10 +447,11 @@ export default function Submit({ onManageProfile }) {
                   ← BACK
                 </button>
                 <button
-                  onClick={handleStep0Continue}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E8571D' }}
+                  onClick={handleConsent}
+                  disabled={consent === null}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: consent === null ? '#ccc' : '#E8571D' }}
                 >
-                  {branch === 'nominate' ? 'Submit nomination →' : 'Continue →'}
+                  CONTINUE →
                 </button>
               </div>
             </div>
@@ -434,7 +472,7 @@ export default function Submit({ onManageProfile }) {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="e.g Anet"
-                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
@@ -443,7 +481,7 @@ export default function Submit({ onManageProfile }) {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="e.g Clinton"
-                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -477,7 +515,7 @@ export default function Submit({ onManageProfile }) {
                 <select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box', color: country ? '#111' : '#9ca3af' }}
+                  style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box', color: country ? '#111' : '#9ca3af' }}
                 >
                   <option value="">Select a country...</option>
                   {COUNTRIES.map((c) => (
@@ -494,7 +532,7 @@ export default function Submit({ onManageProfile }) {
                     value={org}
                     onChange={(e) => setOrg(e.target.value)}
                     placeholder="e.g WHO"
-                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
@@ -503,7 +541,7 @@ export default function Submit({ onManageProfile }) {
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                     placeholder="e.g Director"
-                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
                   />
                 </div>
               </div>
@@ -516,9 +554,9 @@ export default function Submit({ onManageProfile }) {
                   ← BACK
                 </button>
                 <button
-                  onClick={handleConsent}
-                  disabled={consent === null}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: consent === null ? '#ccc' : '#E8571D' }}
+                  onClick={() => goStep(3)}
+                  disabled={!firstName || !lastName || !country}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: (!firstName || !lastName || !country) ? '#ccc' : '#E8571D' }}
                 >
                   CONTINUE →
                 </button>
@@ -527,95 +565,118 @@ export default function Submit({ onManageProfile }) {
           )}
 
           {step === 3 && (
-            <div>
-              <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
-                {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
-              </span>
-              <h2 className="text-lg font-medium text-[#02598E] mb-4">Profile Details</h2>
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              <h2 style={{ fontSize: 26, fontWeight: 700, color: '#02598e', marginBottom: 28 }}>Profile details</h2>
 
-              <div className="space-y-5">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                    Areas of expertise * <span className="normal-case tracking-normal text-gray-400 font-normal">(select up to 3)</span>
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {EXPERTISE_TAGS.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => toggleExpertise(tag)}
-                        disabled={
-                          !expertise.includes(tag) && expertise.length >= 3
-                        }
-                        className={`px-3 py-1.5 border rounded-full text-xs font-medium transition-colors ${
-                          expertise.includes(tag)
-                            ? 'border-gray-900 bg-gray-900 text-white'
-                            : 'border-gray-300 text-gray-600 hover:border-gray-400 disabled:opacity-40'
-                        }`}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1.5">
-                    {expertise.length} of 3 selected
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                    Geographic scope *
-                  </label>
-                  <div className="flex gap-2 mb-2">
+              {/* Years of experience */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 12 }}>Years of experience in digital health *</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+                  {['0-2 yrs', '3-7 yrs', '8-15 yrs', '15+ yrs'].map((opt) => (
                     <button
-                      onClick={() => setGeoScope(geoScope === 'global' ? '' : 'global')}
-                      className={`px-3 py-1.5 border rounded-full text-xs font-medium transition-colors ${
-                        geoScope === 'global'
-                          ? 'border-gray-900 bg-gray-900 text-white'
-                          : 'border-gray-300 text-gray-600 hover:border-gray-400'
-                      }`}
+                      key={opt}
+                      onClick={() => setYearsExp(opt)}
+                      style={{
+                        padding: '14px 8px', borderRadius: 10, fontSize: 15, fontWeight: 500, cursor: 'pointer',
+                        border: yearsExp === opt ? '1.5px solid #02598e' : '1.5px solid #d1d5db',
+                        background: yearsExp === opt ? '#02598e' : '#fff',
+                        color: yearsExp === opt ? '#fff' : '#111',
+                      }}
                     >
-                      {geoScope === 'global' ? '✓ ' : ''}Global / Multicountry
+                      {opt}
                     </button>
-                    <button
-                      onClick={() => setGeoScope(geoScope === 'national' ? '' : 'national')}
-                      className={`px-3 py-1.5 border rounded-full text-xs font-medium transition-colors ${
-                        geoScope === 'national'
-                          ? 'border-gray-900 bg-gray-900 text-white'
-                          : 'border-gray-300 text-gray-600 hover:border-gray-400'
-                      }`}
-                    >
-                      {geoScope === 'national' ? '✓ ' : ''}National
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                    Short bio * <span className="normal-case tracking-normal text-gray-400 font-normal">(100–150 characters)</span>
-                  </label>
-                  <textarea
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    placeholder="Brief description of your work in digital health…"
-                    rows={4}
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none text-sm resize-none ${
-                      bioCharWarning()
-                        ? 'border-red-300 focus:border-red-400'
-                        : 'border-gray-300 focus:border-gray-400'
-                    }`}
-                  />
-                  <div className="flex gap-3 mt-1.5">
-                    <span className="text-xs text-gray-400">{charCount} characters</span>
-                    {bioCharWarning() && (
-                      <span className="text-xs text-red-500">
-                        Please keep bio between 100–150 characters.
-                      </span>
-                    )}
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, borderTop: '1px solid #f0f0f0', marginTop: 24 }}>
+              {/* Areas of expertise */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 12 }}>
+                  Areas of expertise * <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 400 }}>(select up to 3)</span>
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {EXPERTISE_TAGS.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => toggleExpertise(tag)}
+                      disabled={!expertise.includes(tag) && expertise.length >= 3}
+                      style={{
+                        padding: '8px 14px', borderRadius: 20, fontSize: 13, fontWeight: 500, cursor: 'pointer',
+                        border: expertise.includes(tag) ? '1.5px solid #02598e' : '1.5px solid #d1d5db',
+                        background: expertise.includes(tag) ? '#02598e' : '#fff',
+                        color: expertise.includes(tag) ? '#fff' : '#555',
+                        opacity: (!expertise.includes(tag) && expertise.length >= 3) ? 0.4 : 1,
+                      }}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+                <p style={{ fontSize: 13, color: '#9ca3af', marginTop: 8 }}>{expertise.length} of 3 selected</p>
+              </div>
+
+              {/* Which country/countries */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 12 }}>Which country/countries? *</label>
+                <select
+                  value=""
+                  onChange={(e) => {
+                    const val = e.target.value
+                    if (val && !selectedCountries.includes(val)) {
+                      setSelectedCountries([...selectedCountries, val])
+                    }
+                  }}
+                  style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box', color: '#111' }}
+                >
+                  <option value="">Add a country...</option>
+                  {COUNTRIES.filter((c) => !selectedCountries.includes(c)).map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                {selectedCountries.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+                    {selectedCountries.map((c) => (
+                      <span
+                        key={c}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 20, background: '#02598e', color: '#fff', fontSize: 13, fontWeight: 500 }}
+                      >
+                        {c}
+                        <button
+                          onClick={() => setSelectedCountries(selectedCountries.filter((x) => x !== c))}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', fontSize: 14, lineHeight: 1, padding: 0 }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Short bio */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 12 }}>
+                  Short bio * <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 400 }}>(100–150 characters)</span>
+                </label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Brief description of your work in digital health…"
+                  rows={4}
+                  style={{
+                    width: '100%', padding: '14px 16px', fontSize: 15, borderRadius: 10, resize: 'none', outline: 'none', boxSizing: 'border-box', background: 'rgb(238, 243, 251)',
+                    border: bioCharWarning() ? '1.5px solid #ef4444' : '1.5px solid #d1d5db',
+                  }}
+                />
+                <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
+                  <span style={{ fontSize: 13, color: '#9ca3af' }}>{charCount} characters</span>
+                  {bioCharWarning() && (
+                    <span style={{ fontSize: 13, color: '#ef4444' }}>Please keep bio between 100–150 characters.</span>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, marginTop: 8 }}>
                 <button
                   onClick={() => goStep(2)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
@@ -634,111 +695,97 @@ export default function Submit({ onManageProfile }) {
           )}
 
           {step === 4 && (
-            <div>
-              <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
-                {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
-              </span>
-              <h2 className="text-lg font-medium text-[#02598E] mb-4">Visibility & Links</h2>
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              <h2 style={{ fontSize: 26, fontWeight: 700, color: '#02598e', marginBottom: 8 }}>Links & achievements</h2>
+              <p style={{ fontSize: 14, color: '#444', marginBottom: 28, lineHeight: 1.7 }}>
+                Add your LinkedIn and up to 3 notable publications, projects, or achievements.
+              </p>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                    LinkedIn profile or professional website
-                  </label>
-                  <input
-                    value={linkedin}
-                    onChange={(e) => setLinkedin(e.target.value)}
-                    placeholder="https://linkedin.com/in/…"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
-                  />
-                </div>
+              {/* LinkedIn */}
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>LinkedIn profile or professional website</label>
+                <input
+                  value={linkedin}
+                  onChange={(e) => setLinkedin(e.target.value)}
+                  placeholder="https://linkedin.com/in/…"
+                  style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
+                />
+              </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                    Any notable publications, projects, or achievements <span className="text-gray-400 normal-case text-xs">(optional)</span>
-                  </label>
-                  <textarea
-                    value={notableText}
-                    onChange={(e) => setNotableText(e.target.value)}
-                    placeholder="Briefly describe any notable publications, projects, or achievements…"
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm resize-none"
-                  />
-                  <p className="text-xs text-gray-400 mt-2">Type: Long text</p>
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-700">Add up to 3 achievements</p>
-                      <p className="text-xs text-gray-400">Each item can include a title, link, and type.</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={addNotableItem}
-                      disabled={notableItems.length >= 3}
-                      className="px-3 py-1.5 bg-gray-900 text-white rounded-full text-xs font-medium disabled:opacity-40"
-                    >
-                      Add item
-                    </button>
+              {/* Achievements */}
+              <div style={{ marginBottom: 28 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 15, color: '#111' }}>Notable achievements <span style={{ fontSize: 13, color: '#9ca3af', fontWeight: 400 }}>(optional, up to 3)</span></label>
+                    <p style={{ fontSize: 13, color: '#9ca3af', marginTop: 4 }}>Publications, projects, awards, or initiatives</p>
                   </div>
-                  <div className="space-y-4">
-                    {notableItems.length === 0 && (
-                      <div className="text-xs text-gray-500">No items added yet.</div>
-                    )}
-                    {notableItems.map((item, index) => (
-                      <div key={index} className="space-y-3 rounded-lg border border-gray-200 p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-sm font-semibold text-gray-900">Item {index + 1}</span>
-                          <button
-                            type="button"
-                            onClick={() => removeNotableItem(index)}
-                            className="text-xs text-red-600 hover:underline"
-                          >
-                            Remove
-                          </button>
+                  <button
+                    type="button"
+                    onClick={addNotableItem}
+                    disabled={notableItems.length >= 3}
+                    style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', border: '1.5px solid #02598e', background: '#fff', color: '#02598e', opacity: notableItems.length >= 3 ? 0.4 : 1, whiteSpace: 'nowrap' }}
+                  >
+                    + Add item
+                  </button>
+                </div>
+
+                {notableItems.length === 0 && (
+                  <p style={{ fontSize: 13, color: '#9ca3af' }}>No items added yet.</p>
+                )}
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {notableItems.map((item, index) => (
+                    <div key={index} style={{ border: '1.5px solid #d1d5db', borderRadius: 10, padding: '20px 20px 16px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                        <span style={{ fontSize: 14, fontWeight: 600, color: '#02598e' }}>Achievement {index + 1}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeNotableItem(index)}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#ef4444', fontWeight: 500 }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                        <div>
+                          <label style={{ display: 'block', fontSize: 13, color: '#111', marginBottom: 6 }}>Title</label>
+                          <input
+                            value={item.title}
+                            onChange={(e) => updateNotableItem(index, 'title', e.target.value)}
+                            placeholder="e.g. Global Health Report"
+                            style={{ width: '100%', padding: '12px 14px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 14, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
+                          />
                         </div>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                          <div className="sm:col-span-1">
-                            <label className="block text-xs text-gray-700 uppercase tracking-wider mb-1">Title</label>
-                            <input
-                              value={item.title}
-                              onChange={(e) => updateNotableItem(index, 'title', e.target.value)}
-                              placeholder="Title"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
-                            />
-                          </div>
-                          <div className="sm:col-span-1">
-                            <label className="block text-xs text-gray-700 uppercase tracking-wider mb-1">Link</label>
-                            <input
-                              value={item.link}
-                              onChange={(e) => updateNotableItem(index, 'link', e.target.value)}
-                              placeholder="https://…"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
-                            />
-                          </div>
-                          <div className="sm:col-span-1">
-                            <label className="block text-xs text-gray-700 uppercase tracking-wider mb-1">Type</label>
-                            <select
-                              value={item.type}
-                              onChange={(e) => updateNotableItem(index, 'type', e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
-                            >
-                              <option value="">Select type</option>
-                              <option value="Publication">Publication</option>
-                              <option value="Project">Project</option>
-                              <option value="Achievement">Achievement</option>
-                              <option value="Award">Award</option>
-                            </select>
-                          </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: 13, color: '#111', marginBottom: 6 }}>Link</label>
+                          <input
+                            value={item.link}
+                            onChange={(e) => updateNotableItem(index, 'link', e.target.value)}
+                            placeholder="https://…"
+                            style={{ width: '100%', padding: '12px 14px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 14, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', fontSize: 13, color: '#111', marginBottom: 6 }}>Type</label>
+                          <select
+                            value={item.type}
+                            onChange={(e) => updateNotableItem(index, 'type', e.target.value)}
+                            style={{ width: '100%', padding: '12px 14px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 14, outline: 'none', background: 'rgb(238, 243, 251)', boxSizing: 'border-box' }}
+                          >
+                            <option value="">Select type</option>
+                            <option value="Publication">Publication</option>
+                            <option value="Project">Project</option>
+                            <option value="Achievement">Achievement</option>
+                            <option value="Award">Award</option>
+                          </select>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, borderTop: '1px solid #f0f0f0', marginTop: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20 }}>
                 <button
                   onClick={() => goStep(3)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
@@ -758,24 +805,54 @@ export default function Submit({ onManageProfile }) {
         </div>
       </div>
 
+      {showManageModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', flexDirection: 'column' }}>
+          {/* Dimmed backdrop — clicking it closes */}
+          <div
+            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)' }}
+            onClick={() => setShowManageModal(false)}
+          />
+          {/* Modal panel slides up from bottom, takes most of the screen */}
+          <div style={{ position: 'relative', marginTop: 'auto', background: 'rgb(255,255,244)', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '90vh', display: 'flex', flexDirection: 'column', zIndex: 1 }}>
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 24px', borderBottom: '1px solid #e5e7eb', fontFamily: "'Montserrat', sans-serif", flexShrink: 0 }}>
+              <span style={{ fontSize: 16, fontWeight: 700, color: '#02598e' }}>Manage profile</span>
+              <button
+                onClick={() => setShowManageModal(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 22, color: '#9ca3af', lineHeight: 1, padding: 0 }}
+              >
+                ×
+              </button>
+            </div>
+            {/* Scrollable content */}
+            <div style={{ overflowY: 'auto', flex: 1 }}>
+              <ManageProfile prefill={null} onBack={() => setShowManageModal(false)} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {showNoConsentModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-6"
           style={{ background: 'rgba(0,0,0,0.45)' }}
         >
           <div className="bg-white rounded-2xl p-10 text-center max-w-md w-full shadow-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-            <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#fff0f6', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <span style={{ fontSize: 36 }}>🙏</span>
-            </div>
+            <img src="./illustrations/thank-you.png" alt="" style={{ width: 90, height: 90, objectFit: 'contain', margin: '0 auto 20px', display: 'block' }} />
             <h2 style={{ fontSize: 24, fontWeight: 700, color: '#02598e', marginBottom: 16 }}>Thank you for your time</h2>
-            <p style={{ fontSize: 15, color: '#444', lineHeight: 1.7, marginBottom: 32 }}>
-              We cannot proceed without your consent. You are welcome to return and submit your profile anytime.
-            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
+              <p style={{ fontSize: 15, color: '#444', lineHeight: 1.7, margin: 0 }}>
+                We cannot proceed without your consent.
+              </p>
+              <p style={{ fontSize: 15, color: '#444', lineHeight: 1.7, margin: 0 }}>
+                You are welcome to return and submit your profile anytime.
+              </p>
+            </div>
             <button
-              onClick={() => setShowNoConsentModal(false)}
+              onClick={() => { setShowNoConsentModal(false); onGoToDirectory && onGoToDirectory() }}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, color: '#333', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.05em', textTransform: 'uppercase' }}
             >
-              ← BACK
+              ← BACK TO DIRECTORY
             </button>
           </div>
         </div>

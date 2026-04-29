@@ -300,6 +300,18 @@ export default function Database({ onManageProfile }) {
         )}
       </div>
 
+      <div style={{ textAlign: 'center', padding: '24px 0 32px', fontFamily: "'Montserrat', sans-serif" }}>
+        <p style={{ fontSize: 13, color: '#666' }}>
+          Already in the database?{' '}
+          <button
+            onClick={() => onManageProfile(null)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#02598e', fontWeight: 600, fontSize: 13, textDecoration: 'underline', padding: 0 }}
+          >
+            Manage or remove your profile
+          </button>
+        </p>
+      </div>
+
       {selectedProfile && (
         <div
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"

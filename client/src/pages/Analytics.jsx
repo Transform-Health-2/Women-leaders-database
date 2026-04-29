@@ -22,7 +22,7 @@ function getInitials(first, last) {
   return ((first?.[0] || '') + (last?.[0] || '')).toUpperCase()
 }
 
-export default function Analytics() {
+export default function Analytics({ onManageProfile }) {
   const [modalLeader, setModalLeader] = useState(null)
 
   const stats = useMemo(() => {
@@ -262,6 +262,18 @@ export default function Analytics() {
 
         <p className="text-center text-[10px] text-gray-400 mt-6">
           Data sourced from the Transform Health Women Leaders Database · {stats.total} verified profiles
+        </p>
+      </div>
+
+      <div style={{ textAlign: 'center', padding: '24px 0 32px', fontFamily: "'Montserrat', sans-serif" }}>
+        <p style={{ fontSize: 13, color: '#666' }}>
+          Already in the database?{' '}
+          <button
+            onClick={() => onManageProfile(null)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#02598e', fontWeight: 600, fontSize: 13, textDecoration: 'underline', padding: 0 }}
+          >
+            Manage or remove your profile
+          </button>
         </p>
       </div>
 

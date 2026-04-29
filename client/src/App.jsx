@@ -114,24 +114,28 @@ export default function App() {
       )}
 
       <nav className="sticky top-0 z-50" style={{ background: '#FADF56' }}>
-        <div className="max-w-[1440px] mx-auto px-8 pt-8 flex justify-between items-end">
+        <div className="max-w-[1440px] mx-auto px-8 pt-6 pb-0 flex justify-between items-end">
 
           {/* Main tabs */}
-          <div className="flex gap-8 items-center">
+          <div className="flex gap-6 items-end">
             {NAV_ITEMS.filter(item => item.id !== 'admin').map((item) => {
               const active = route === item.id
               return (
                 <button
                   key={item.id}
                   onClick={() => setRoute(item.id)}
-                  className={`font-['Montserrat'] font-medium text-2xl tracking-[0.03em] px-7 h-12 whitespace-nowrap leading-7 cursor-pointer ${
-                    active ? 'text-white bg-[#E8571D]' : 'rounded-none text-black bg-transparent'
+                  className={`font-['Montserrat'] font-medium text-xl tracking-[0.03em] px-8 h-11 whitespace-nowrap cursor-pointer ${
+                    active ? 'text-white bg-[#E8571D]' : 'text-black bg-transparent'
                   }`}
-                  style={{
-                    clipPath: active ? 'polygon(16px 0%, 100% 0%, 86% 100%, 0% 100%)' : 'none',
-                  }}
+                  style={active ? {
+                    transform: 'skewX(-10deg)',
+                    borderTopLeftRadius: 8,
+                    borderTopRightRadius: 8,
+                  } : {}}
                 >
-                  {item.display}
+                  <span style={active ? { display: 'inline-block', transform: 'skewX(10deg)' } : {}}>
+                    {item.display}
+                  </span>
                 </button>
               )
             })}
@@ -176,8 +180,8 @@ export default function App() {
         ) : (
           <>
             {route === 'database' && <Database onManageProfile={(profile) => goToManage(profile)} />}
-            {route === 'submit' && <Submit onManageProfile={() => goToManage()} />}
-            {route === 'analytics' && <Analytics />}
+            {route === 'submit' && <Submit onManageProfile={() => goToManage()} onGoToDirectory={() => setRoute('database')} />}
+            {route === 'analytics' && <Analytics onManageProfile={() => goToManage()} />}
             {route === 'admin' && <Admin />}
             {route === 'manage' && (
               <ManageProfile
