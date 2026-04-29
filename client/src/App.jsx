@@ -5,6 +5,8 @@ import Submit from './pages/Submit'
 import Admin from './pages/Admin'
 import Analytics from './pages/Analytics'
 import ManageProfile from './pages/ManageProfile'
+import SiteHeader from './components/SiteHeader'
+import SiteFooter from './components/SiteFooter'
 
 const NAV_ITEMS = [
   { id: 'database', label: 'Database' },
@@ -55,30 +57,59 @@ export default function App() {
     setRoute('manage')
   }
 
+  const showHero = ['database', 'submit', 'analytics'].includes(route)
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <SiteHeader />
+
+      {showHero && (
+        <div style={{ background: '#002D48', fontFamily: "'Montserrat', sans-serif" }}>
+          <div className="max-w-6xl mx-auto px-6 py-12">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#1bb4ff' }}>
+              Transform Health · Women in Digital Health
+            </p>
+            <h1 className="text-4xl font-bold text-white leading-tight mb-4" style={{ maxWidth: 640 }}>
+              Women Leaders in Digital Health
+            </h1>
+            <p className="text-base mb-8" style={{ color: '#a8c4d4', maxWidth: 560, lineHeight: 1.7 }}>
+              A curated global network of women driving digital transformation across health systems, policy, and innovation.
+            </p>
+            <div className="flex gap-8">
+              <div>
+                <div className="text-3xl font-bold text-white">81</div>
+                <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#a8c4d4' }}>Leaders</div>
+              </div>
+              <div style={{ borderLeft: '1px solid #1e4a63', paddingLeft: 32 }}>
+                <div className="text-3xl font-bold text-white">15</div>
+                <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#a8c4d4' }}>Expertise Areas</div>
+              </div>
+              <div style={{ borderLeft: '1px solid #1e4a63', paddingLeft: 32 }}>
+                <div className="text-3xl font-bold text-white">30+</div>
+                <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#a8c4d4' }}>Organisations</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between h-14">
-            <div className="flex items-center gap-8">
-              <h1 className="text-lg font-semibold text-gray-900">
-                Transform Health
-              </h1>
-              <div className="flex gap-1">
-                {NAV_ITEMS.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setRoute(item.id)}
-                    className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                      route === item.id
-                        ? 'bg-gray-800 text-white'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
+          <div className="flex items-center h-12">
+            <div className="flex gap-1">
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setRoute(item.id)}
+                  className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                    route === item.id
+                      ? 'bg-gray-800 text-white'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -117,6 +148,7 @@ export default function App() {
           </>
         )}
       </main>
+      <SiteFooter />
     </div>
   )
 }

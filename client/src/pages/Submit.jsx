@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { storage } from '../firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { compressImage } from '../utils/compressImage'
 
 const EXPERTISE_TAGS = [
   'AI & Automation',
@@ -42,6 +45,7 @@ export default function Submit({ onManageProfile }) {
   const [bio, setBio] = useState('')
   const [linkedin, setLinkedin] = useState('')
   const [photo, setPhoto] = useState(null)
+  const [photoPreview, setPhotoPreview] = useState(null)
   const [photoName, setPhotoName] = useState('')
   const [status, setStatus] = useState('')
 
@@ -83,25 +87,65 @@ export default function Submit({ onManageProfile }) {
     return wordCount > 0 && (wordCount < 100 || wordCount > 150)
   }
 
-  function handlePhotoUpload(e) {
+  async function handlePhotoUpload(e) {
     const file = e.target.files && e.target.files[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        return
-      }
-      setPhoto(file)
-      setPhotoName(file.name + ' (' + Math.round(file.size / 1024) + 'KB)')
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) return
+
+    try {
+      const compressed = await compressImage(file)
+      setPhoto(compressed)
+      setPhotoName(compressed.name + ' (' + Math.round(compressed.size / 1024) + 'KB)')
+      const reader = new FileReader()
+      reader.onload = (ev) => setPhotoPreview(ev.target.result)
+      reader.readAsDataURL(compressed)
+    } catch (err) {
+      console.error('Compression failed:', err)
     }
+  }
+
+  async function uploadPhoto(file) {
+    const fileName = Date.now() + '-' + file.name.replace(/\s+/g, '-')
+    const storageRef = ref(storage, 'profile-photos/' + fileName)
+    const snapshot = await uploadBytes(storageRef, file)
+    return getDownloadURL(snapshot.ref)
+  }
+
+  function resetForm() {
+    setFirstName('')
+    setLastName('')
+    setRole('')
+    setOrg('')
+    setExpertise([])
+    setGeoScope('')
+    setCountry('')
+    setBio('')
+    setLinkedin('')
+    setPhoto(null)
+    setPhotoPreview(null)
+    setPhotoName('')
+    setConsent(null)
+    setStep(0)
+    setStatus('')
   }
 
   async function submit() {
     setStatus('submitting')
     try {
+      let photoUrl = ''
+      if (photo) {
+        const hasFirebase = import.meta.env.VITE_FIREBASE_API_KEY
+        if (hasFirebase) {
+          photoUrl = await uploadPhoto(photo)
+        }
+      }
+
       const url = import.meta.env.VITE_APPS_SCRIPT_URL || ''
       if (!url) {
         setTimeout(() => setStatus('submitted'), 1000)
         return
       }
+
       const payload = {
         branch,
         firstName,
@@ -113,8 +157,9 @@ export default function Submit({ onManageProfile }) {
         country: geoScope === 'national' ? country : '',
         bio,
         linkedin,
-        photo: photo ? photoName : '',
+        photoUrl,
       }
+
       const r = await axios.post(url, payload, {
         headers: { 'Content-Type': 'application/json' },
       })
@@ -170,7 +215,7 @@ export default function Submit({ onManageProfile }) {
           </div>
           <div className="flex gap-3 justify-center">
             <button
-              onClick={() => { setFirstName(''); setLastName(''); setRole(''); setOrg(''); setExpertise([]); setGeoScope(''); setCountry(''); setBio(''); setLinkedin(''); setPhoto(null); setPhotoName(''); setConsent(null); setStep(0); setStatus(''); }}
+              onClick={resetForm}
               className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800"
             >
               Submit another
@@ -182,7 +227,6 @@ export default function Submit({ onManageProfile }) {
   }
 
   const stepLabels = ['Start', 'Consent', 'Basic Info', 'Profile', 'Links']
-  const stepDisabled = [false, consent === null, false, false, false]
 
   const nextDisabled =
     (step === 2 && (!firstName || !lastName || !role || !org)) ||
@@ -424,8 +468,12 @@ export default function Submit({ onManageProfile }) {
                     Your photo
                   </label>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0">
-                      {photo ? '✓' : '👤'}
+                    <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden">
+                      {photoPreview ? (
+                        <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        '👤'
+                      )}
                     </div>
                     <div>
                       <label className="inline-block px-4 py-2 border border-gray-900 rounded-full text-xs font-semibold text-gray-900 cursor-pointer hover:bg-gray-50">
@@ -442,7 +490,7 @@ export default function Submit({ onManageProfile }) {
                       )}
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1.5">JPEG or PNG, max 5MB</p>
+                  <p className="text-xs text-gray-400 mt-1.5">JPEG or PNG, max 5MB — auto-compressed before upload</p>
                 </div>
               </div>
 
