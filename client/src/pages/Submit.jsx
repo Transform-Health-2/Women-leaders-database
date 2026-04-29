@@ -158,7 +158,7 @@ export default function Submit() {
                   <div className="text-2xl mb-2">★</div>
                   <div className="font-medium">Submit my own</div>
                   <div className="text-xs text-gray-500 mt-1">
-                    Add yourself to the directory
+                    Add yourself to the database
                   </div>
                 </button>
                 <button
@@ -325,7 +325,7 @@ export default function Submit() {
               <div className="mt-6 pt-4 border-t">
                 <h3 className="font-medium mb-3">Consent</h3>
                 <p className="text-sm text-gray-600 mb-3">
-                  Your profile will be visible in the public directory and shared for Transform Health communications.
+                  Your profile will be visible in the public database and shared for Transform Health communications.
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   <button

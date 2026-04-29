@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import Submit from './pages/Submit'
-import Directory from './pages/Directory'
-import Admin from './pages/Admin'
+import Database from './pages/Database'
 
 const NAV_ITEMS = [
-  { id: 'directory', label: 'Directory' },
+  { id: 'database', label: 'Database' },
   { id: 'submit', label: 'Submit' },
   { id: 'admin', label: 'Admin' },
 ]
 
 export default function App() {
-  const [route, setRoute] = useState('directory')
+  const [route, setRoute] = useState('database')
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -41,7 +40,7 @@ export default function App() {
       </nav>
       <main>
         {route === 'submit' && <Submit />}
-        {route === 'directory' && <Directory />}
+        {route === 'database' && <Database />}
         {route === 'admin' && <Admin />}
       </main>
     </div>
