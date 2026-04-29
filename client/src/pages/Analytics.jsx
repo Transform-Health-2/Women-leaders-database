@@ -113,10 +113,10 @@ export default function Analytics() {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-            Global Equity Landscape
+            Key Highlights from the Database
           </h2>
-          <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
-            Real-time visualisation of expertise distribution, demographic representation, and leadership density across the network.
+            <p className="text-sm text-gray-500 mt-2 max-w-xl leading-relaxed">
+            Overview of expertise distribution, demographic representation, and leadership density across the network.
           </p>
         </div>
 
