@@ -94,31 +94,26 @@ export default function App() {
       )}
 
       {route === 'submit' && (
-        <div style={{ background: '#fffff4', fontFamily: "'Montserrat', sans-serif" }}>
-          {/* Text + illustrations in cream area */}
-          <div style={{ maxWidth: 1268, margin: '0 auto', padding: '48px 48px 40px', display: 'flex', alignItems: 'center', gap: 40 }}>
-            <img
-              src="/illustrations/hero-left.png"
-              alt=""
-              style={{ width: 260, height: 260, flexShrink: 0 }}
-            />
-            <div style={{ lineHeight: 1.05 }}>
-              <div style={{ fontWeight: 700, fontSize: 96, color: '#02598e', textTransform: 'uppercase' }}>Join</div>
-              <div style={{ fontWeight: 700, fontSize: 96, color: '#f97a1a', textTransform: 'uppercase' }}>The</div>
-              <div style={{ fontWeight: 700, fontSize: 96, color: '#f97a1a', textTransform: 'uppercase' }}>Database</div>
-            </div>
-            <img
-              src="/illustrations/hero-right.png"
-              alt=""
-              style={{ width: 240, height: 240, flexShrink: 0, marginLeft: 'auto' }}
-            />
-          </div>
-          {/* Pink swoosh — decorative bottom band */}
+        <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
+          {/* Content */}
           <div style={{
-            height: 100,
-            background: '#ec4899',
-            clipPath: 'polygon(0% 100%, 100% 0%, 100% 100%, 0% 100%)',
-          }} />
+            position: 'relative',
+            height: '100%',
+            maxWidth: 1268,
+            margin: '0 auto',
+            padding: '0 48px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 40,
+          }}>
+            <img src="/illustrations/hero-left.png" alt="" style={{ height: 320, width: 'auto', flexShrink: 0 }} />
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 72, lineHeight: 1.05, textTransform: 'uppercase' }}>
+              <div style={{ color: '#02598e' }}>Join</div>
+              <div style={{ color: '#f97a1a' }}>The</div>
+              <div style={{ color: '#f97a1a' }}>Database</div>
+            </div>
+            <img src="/illustrations/hero-right.png" alt="" style={{ height: 280, width: 'auto', flexShrink: 0, marginLeft: 'auto' }} />
+          </div>
         </div>
       )}
 
