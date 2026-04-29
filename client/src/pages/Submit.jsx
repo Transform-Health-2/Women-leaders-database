@@ -234,7 +234,7 @@ export default function Submit({ onManageProfile }) {
     (step === 3 && geoScope === 'national' && !country)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'rgb(255, 255, 244)' }}>
       <div className="max-w-2xl mx-auto px-6 py-6">
         {step >= 1 && step <= 4 && (
           <div className="mb-6">
