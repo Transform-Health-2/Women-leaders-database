@@ -117,19 +117,18 @@ export default function App() {
         <div className="max-w-[1440px] mx-auto px-8 pt-8 flex justify-between items-end">
 
           {/* Main tabs */}
-          <div className="flex gap-8">
+          <div className="flex gap-8 items-center">
             {NAV_ITEMS.filter(item => item.id !== 'admin').map((item) => {
               const active = route === item.id
               return (
                 <button
                   key={item.id}
                   onClick={() => setRoute(item.id)}
-                  className={`font-['Montserrat'] font-medium text-2xl tracking-[0.03em] px-7 py-2.5 whitespace-nowrap leading-7 cursor-pointer rounded-none ${
-                    active ? 'text-white' : 'text-black bg-transparent'
+                  className={`font-['Montserrat'] font-medium text-2xl tracking-[0.03em] px-7 h-12 whitespace-nowrap leading-7 cursor-pointer ${
+                    active ? 'text-white bg-[#E8571D]' : 'rounded-none text-black bg-transparent'
                   }`}
                   style={{
-                    background: active ? '#E8571D' : 'transparent',
-                    clipPath: active ? 'polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)' : 'none',
+                    clipPath: active ? 'polygon(16px 0%, 100% 0%, 86% 100%, 0% 100%)' : 'none',
                   }}
                 >
                   {item.display}

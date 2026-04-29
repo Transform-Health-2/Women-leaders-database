@@ -195,7 +195,7 @@ export default function Submit({ onManageProfile }) {
       <div className="min-h-screen bg-[rgb(255,255,244)] flex items-center justify-center p-6">
         <div className="bg-transparent border border-gray-200/70 rounded-lg p-8 text-center max-w-md">
           <div className="text-4xl mb-4">🙏</div>
-          <h2 className="text-xl font-semibold text-gray-500 mb-2">
+          <h2 className="text-xl font-semibold text-[#02598E] mb-2">
             Thank you. We cannot proceed without consent.
           </h2>
           <p className="text-sm text-gray-400 mb-6">
@@ -217,7 +217,7 @@ export default function Submit({ onManageProfile }) {
       <div className="min-h-screen bg-[rgb(255,255,244)] flex items-center justify-center p-6">
         <div className="bg-transparent border border-gray-200/70 rounded-lg p-8 text-center max-w-md">
           <div className="text-4xl mb-4">🌍</div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-[#02598E] mb-2">
             Thank you for contributing to the Transform Health Women Leaders in Digital Health Database
           </h2>
           <p className="text-sm text-gray-500 mb-6">
@@ -288,7 +288,7 @@ export default function Submit({ onManageProfile }) {
           <div className="bg-transparent rounded-lg p-6 md:p-8">
           {step === 0 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-3">
+              <h2 className="text-xl font-bold text-[#02598E] mb-3">
                 Women Leaders in Digital Health Database
               </h2>
               <div className="bg-[rgb(255,255,244)] rounded-md p-4 text-sm text-gray-600 leading-relaxed mb-5">
@@ -366,41 +366,63 @@ export default function Submit({ onManageProfile }) {
           )}
 
           {step === 1 && (
-            <div>
-              <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
-                {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
-              </span>
-              <h2 className="text-lg font-medium mb-3">Consent & Permissions</h2>
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              {/* Step label */}
+              <p style={{ color: '#F85A8E', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Step 1 of 4</p>
+              <h2 style={{ fontSize: 28, fontWeight: 700, color: '#02598e', marginBottom: 16 }}>Consent &amp; permissions</h2>
+              <p style={{ fontSize: 15, color: '#333', marginBottom: 28, lineHeight: 1.7 }}>
+                Your profile may be publicly displayed. By consenting, you agree that the following will be visible in the directory.
+              </p>
 
-              <div className="bg-[rgb(255,255,244)] rounded-md p-4 mb-5">
-                <p className="text-sm font-medium text-gray-800 mb-2">
-                  Do you consent to your information being included in the Transform Health Women Leaders Database?
+              {/* Pink info box */}
+              <div style={{ borderLeft: '4px solid #F85A8E', background: '#fff0f6', borderRadius: 8, padding: '16px 20px', marginBottom: 32 }}>
+                <p style={{ fontSize: 14, color: '#333', marginBottom: 8 }}>
+                  <span style={{ color: '#F85A8E', fontWeight: 600 }}>Public: </span>
+                  Name, role, organisation, expertise areas, bio, and LinkedIn profile.
                 </p>
-                <p className="text-xs text-gray-600 leading-relaxed mb-4">
-                  Your name, role, organisation, areas of expertise, bio, and LinkedIn will be <strong>publicly visible</strong>. Your email address will <strong>never</strong> be published and is used only for follow-up and profile updates.
+                <p style={{ fontSize: 14, color: '#333', margin: 0 }}>
+                  <span style={{ color: '#F85A8E', fontWeight: 600 }}>Private: </span>
+                  Email address — used for follow-up only, never published.
                 </p>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                   <button
-                    onClick={() => setConsent('yes')}
-                    className={`p-3 border-2 rounded-md text-center text-sm font-medium transition-colors ${
-                      consent === 'yes'
-                        ? 'border-gray-900 bg-[rgb(255,255,244)] text-gray-900'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-400'
-                    }`}
-                  >
-                    ✓ Yes, I consent
-                  </button>
-                  <button
-                    onClick={() => setConsent('no')}
-                    className={`p-3 border-2 rounded-md text-center text-sm font-medium transition-colors ${
-                      consent === 'no'
-                        ? 'border-red-600 bg-red-50 text-red-600'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-400'
-                    }`}
-                  >
-                    ✕ No
-                  </button>
-                </div>
+              </div>
+
+              {/* Consent options */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 32 }}>
+                <button
+                  onClick={() => setConsent('yes')}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 16,
+                    padding: '16px 20px', borderRadius: 10, textAlign: 'left', cursor: 'pointer',
+                    border: consent === 'yes' ? '2px solid #02598e' : '2px solid #e5e7eb',
+                    background: consent === 'yes' ? '#f0f7ff' : '#fff',
+                  }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#02598e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <span style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>✓</span>
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: '#111', marginBottom: 2 }}>Yes, I consent</div>
+                    <div style={{ fontSize: 13, color: '#666' }}>Add my profile to the Transform Health directory</div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => setConsent('no')}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 16,
+                    padding: '16px 20px', borderRadius: 10, textAlign: 'left', cursor: 'pointer',
+                    border: consent === 'no' ? '2px solid #dc2626' : '2px solid #e5e7eb',
+                    background: consent === 'no' ? '#fff5f5' : '#f9fafb',
+                  }}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <span style={{ color: '#fff', fontSize: 18, fontWeight: 700 }}>✕</span>
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: '#111', marginBottom: 2 }}>No, I do not consent</div>
+                    <div style={{ fontSize: 13, color: '#666' }}>I prefer not to be included at this time</div>
+                  </div>
+                </button>
               </div>
 
               <div className="flex justify-between pt-4 border-t border-gray-100">
@@ -426,7 +448,7 @@ export default function Submit({ onManageProfile }) {
               <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
                 {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
               </span>
-              <h2 className="text-lg font-medium mb-4">Basic Information</h2>
+              <h2 className="text-lg font-medium text-[#02598E] mb-4">Basic Information</h2>
               <div className="space-y-4">
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                    <div>
@@ -528,7 +550,7 @@ export default function Submit({ onManageProfile }) {
               <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
                 {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
               </span>
-              <h2 className="text-lg font-medium mb-4">Profile Details</h2>
+              <h2 className="text-lg font-medium text-[#02598E] mb-4">Profile Details</h2>
 
               <div className="space-y-5">
                 <div>
@@ -647,7 +669,7 @@ export default function Submit({ onManageProfile }) {
               <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
                 {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
               </span>
-              <h2 className="text-lg font-medium mb-4">Visibility & Links</h2>
+              <h2 className="text-lg font-medium text-[#02598E] mb-4">Visibility & Links</h2>
 
               <div className="space-y-4">
                 <div>
