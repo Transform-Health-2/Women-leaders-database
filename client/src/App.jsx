@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import Submit from './pages/Submit'
 import Database from './pages/Database'
+import Submit from './pages/Submit'
+import Admin from './pages/Admin'
+import Analytics from './pages/Analytics'
 
 const NAV_ITEMS = [
   { id: 'database', label: 'Database' },
   { id: 'submit', label: 'Submit' },
+  { id: 'analytics', label: 'Analytics' },
   { id: 'admin', label: 'Admin' },
 ]
 
@@ -39,8 +42,9 @@ export default function App() {
         </div>
       </nav>
       <main>
-        {route === 'submit' && <Submit />}
         {route === 'database' && <Database />}
+        {route === 'submit' && <Submit />}
+        {route === 'analytics' && <Analytics />}
         {route === 'admin' && <Admin />}
       </main>
     </div>
