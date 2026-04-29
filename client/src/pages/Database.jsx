@@ -316,6 +316,105 @@ export default function Database({ onManageProfile }) {
           </>
         )}
       </div>
+
+      {selectedProfile && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedProfile(null)}
+        >
+          <div
+            className="bg-white rounded-xl max-w-md w-full p-6 relative max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedProfile(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg leading-none"
+            >
+              ✕
+            </button>
+
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-2xl font-semibold text-gray-600 mb-3">
+                {getInitials(selectedProfile.first_name, selectedProfile.last_name)}
+              </div>
+              {(selectedProfile.featured === true || selectedProfile.featured === 'true') && (
+                <span className="text-xs font-medium bg-gray-800 text-white px-2 py-0.5 rounded-full mb-2">
+                  ★ Featured
+                </span>
+              )}
+              <h2 className="text-xl font-semibold text-gray-900">
+                {selectedProfile.first_name} {selectedProfile.last_name}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">{selectedProfile.role || <TBC />}</p>
+              <p className="text-sm text-gray-500 mt-0.5">{selectedProfile.organisation || <TBC />}</p>
+            </div>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <div className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                  Bio
+                </div>
+                {selectedProfile.bio ? (
+                  <p className="text-gray-700 leading-relaxed">{selectedProfile.bio}</p>
+                ) : (
+                  <TBC />
+                )}
+              </div>
+
+              <div>
+                <div className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                  Expertise
+                </div>
+                {selectedProfile.expertise ? (
+                  <div className="flex flex-wrap gap-1">
+                    {selectedProfile.expertise.split(', ').map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <TBC />
+                )}
+              </div>
+
+              <div>
+                <div className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                  LinkedIn
+                </div>
+                {selectedProfile.linkedin ? (
+                  <a
+                    href={selectedProfile.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-700 hover:underline"
+                  >
+                    View profile →
+                  </a>
+                ) : (
+                  <TBC />
+                )}
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-gray-100 text-center">
+              <p className="text-xs text-gray-400 mb-2">Is this you?</p>
+              <button
+                onClick={() => {
+                  setSelectedProfile(null)
+                  onManageProfile(selectedProfile)
+                }}
+                className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-full hover:border-gray-400 hover:bg-gray-50 transition-colors"
+              >
+                Update or remove my profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

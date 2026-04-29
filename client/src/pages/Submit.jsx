@@ -19,7 +19,7 @@ const EXPERTISE_TAGS = [
   'Health workforce',
 ]
 
-export default function Submit() {
+export default function Submit({ onManageProfile }) {
   const [step, setStep] = useState(1)
   const [branch, setBranch] = useState('self')
   const [firstName, setFirstName] = useState('')
@@ -143,7 +143,7 @@ export default function Submit() {
           {step === 1 && (
             <div>
               <h2 className="text-lg font-medium mb-4">How would you like to add your profile?</h2>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   onClick={() => {
                     setBranch('self')
@@ -176,6 +176,16 @@ export default function Submit() {
                   <div className="font-medium">Nominate someone</div>
                   <div className="text-xs text-gray-500 mt-1">
                     Recommend a leader
+                  </div>
+                </button>
+                <button
+                  onClick={() => onManageProfile()}
+                  className="p-4 border-2 border-gray-200 rounded-lg text-center hover:border-gray-400 transition-colors"
+                >
+                  <div className="text-2xl mb-2">✎</div>
+                  <div className="font-medium">Update or remove</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Manage my existing profile
                   </div>
                 </button>
               </div>

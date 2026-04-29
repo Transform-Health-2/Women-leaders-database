@@ -3,6 +3,7 @@ import Database from './pages/Database'
 import Submit from './pages/Submit'
 import Admin from './pages/Admin'
 import Analytics from './pages/Analytics'
+import ManageProfile from './pages/ManageProfile'
 
 const NAV_ITEMS = [
   { id: 'database', label: 'Database' },
@@ -13,6 +14,13 @@ const NAV_ITEMS = [
 
 export default function App() {
   const [route, setRoute] = useState('database')
+  const [managePrefill, setManagePrefill] = useState(null)
+
+  function goToManage(profile = null) {
+    setManagePrefill(profile)
+    setRoute('manage')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -42,10 +50,16 @@ export default function App() {
         </div>
       </nav>
       <main>
-        {route === 'database' && <Database />}
-        {route === 'submit' && <Submit />}
+        {route === 'database' && <Database onManageProfile={(profile) => goToManage(profile)} />}
+        {route === 'submit' && <Submit onManageProfile={() => goToManage()} />}
         {route === 'analytics' && <Analytics />}
         {route === 'admin' && <Admin />}
+        {route === 'manage' && (
+          <ManageProfile
+            prefill={managePrefill}
+            onBack={() => setRoute(managePrefill ? 'database' : 'submit')}
+          />
+        )}
       </main>
     </div>
   )
