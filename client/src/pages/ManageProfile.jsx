@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import axios from 'axios'
 
 export default function ManageProfile({ prefill, onBack }) {
+  const isVerified = prefill?._verified === true
+
   const [step, setStep] = useState(1)
   const [requestType, setRequestType] = useState('')
   const [firstName, setFirstName] = useState(prefill?.first_name || '')
@@ -11,6 +13,39 @@ export default function ManageProfile({ prefill, onBack }) {
   const [changes, setChanges] = useState('')
   const [reason, setReason] = useState('')
   const [status, setStatus] = useState('')
+  const [linkSent, setLinkSent] = useState(false)
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [linkError, setLinkError] = useState('')
+
+  async function requestMagicLink() {
+    if (!firstName || !lastName || !email) return
+    setLinkLoading(true)
+    setLinkError('')
+    try {
+      const url = import.meta.env.VITE_APPS_SCRIPT_URL || ''
+      if (!url) {
+        setLinkSent(true)
+        return
+      }
+      const r = await axios.post(
+        url,
+        { action: 'sendProfileLink', firstName, lastName, email, linkedin },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      if (r.data?.ok) {
+        setLinkSent(true)
+      } else if (r.data?.error === 'not_found') {
+        setLinkError("We couldn't find a profile matching that name. Check the spelling or add your LinkedIn URL below.")
+      } else {
+        setLinkError('Something went wrong. Please try again.')
+      }
+    } catch (err) {
+      console.error(err)
+      setLinkError('Something went wrong. Please try again.')
+    } finally {
+      setLinkLoading(false)
+    }
+  }
 
   function next() {
     if (step < 4) setStep(step + 1)

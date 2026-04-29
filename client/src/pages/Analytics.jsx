@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { ComposableMap, Geographies, Geography, Marker, Graticule, Sphere } from 'react-simple-maps'
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
 import { MOCK_LEADERS } from '../data/mockData'
 
 const GEO_URL = 'https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m-lowres.json'
@@ -128,58 +128,63 @@ export default function Analytics() {
             </div>
 
             <div className="relative bg-gray-100 rounded-md overflow-hidden min-h-[380px]">
-              <ComposableMap
-                projection="geoEqualEarth"
-                projectionConfig={{ scale: 140 }}
-                style={{ width: '100%', height: '100%' }}
-              >
-                <Sphere stroke="#d1d5db" strokeWidth={0.5} fill="#e5e7eb" />
-                <Graticule stroke="#d1d5db" strokeWidth={0.3} opacity={0.5} />
-                <Geographies geography={GEO_URL}>
-                  {({ geographies }) =>
-                    geographies.map((geo) => (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        fill="#d1d5db"
-                        stroke="#9ca3af"
-                        strokeWidth={0.5}
-                        style={{
-                          default: { outline: 'none' },
-                          hover: { fill: '#a1a1aa', outline: 'none' },
-                          pressed: { outline: 'none' },
-                        }}
+              <div className="absolute inset-0">
+                <ComposableMap projectionConfig={{ scale: 140 }}>
+                <ZoomableGroup zoom={1} minZoom={1} maxZoom={4} center={[10, 20]}>
+                  <Geographies geography={GEO_URL}>
+                    {({ geographies }) =>
+                      geographies.map((geo) => (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          fill="#d1d5db"
+                          stroke="#9ca3af"
+                          strokeWidth={0.5}
+                          style={{
+                            default: { outline: 'none' },
+                            hover: { fill: '#a1a1aa', outline: 'none' },
+                            pressed: { outline: 'none' },
+                          }}
+                        />
+                      ))
+                    }
+                  </Geographies>
+                  {REGION_MARKERS.map((m) => (
+                    <g key={m.name}>
+                      <circle
+                        cx={0}
+                        cy={0}
+                        r={m.density === 'high' ? 14 : 10}
+                        fill={DENSITY_COLORS[m.density]}
+                        opacity={0.15}
+                        transform={`translate(${m.coordinates[0]}, ${m.coordinates[1]})`}
                       />
-                    ))
-                  }
-                </Geographies>
-                {REGION_MARKERS.map((m) => (
-                  <Marker key={m.name} coordinates={m.coordinates}>
-                    <circle
-                      r={m.density === 'high' ? 8 : m.density === 'mid' ? 6 : 5}
-                      fill={DENSITY_COLORS[m.density]}
-                      stroke="#fff"
-                      strokeWidth={2}
-                      style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.25))' }}
-                    />
-                    <circle
-                      r={m.density === 'high' ? 14 : 10}
-                      fill={DENSITY_COLORS[m.density]}
-                      opacity={0.15}
-                    />
-                    <text
-                      textAnchor="middle"
-                      y={-16}
-                      fill="#18181b"
-                      fontSize={7}
-                      fontWeight={700}
-                      fontFamily="system-ui"
-                    >
-                      {m.name} ({m.count})
-                    </text>
-                  </Marker>
-                ))}
+                      <circle
+                        cx={0}
+                        cy={0}
+                        r={m.density === 'high' ? 6 : 4}
+                        fill={DENSITY_COLORS[m.density]}
+                        stroke="#fff"
+                        strokeWidth={1.5}
+                        transform={`translate(${m.coordinates[0]}, ${m.coordinates[1]})`}
+                      />
+                      <text
+                        x={0}
+                        y={-12}
+                        textAnchor="middle"
+                        fill="#18181b"
+                        fontSize={6}
+                        fontWeight={700}
+                        fontFamily="system-ui"
+                        transform={`translate(${m.coordinates[0]}, ${m.coordinates[1]})`}
+                      >
+                        {m.name} ({m.count})
+                      </text>
+                    </g>
+                  ))}
+                </ZoomableGroup>
               </ComposableMap>
+              </div>
 
               <div className="absolute bottom-3 left-3 flex gap-3 bg-white/80 backdrop-blur-sm rounded-md px-3 py-1.5 z-10">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
