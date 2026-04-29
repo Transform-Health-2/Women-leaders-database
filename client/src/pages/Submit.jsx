@@ -235,7 +235,7 @@ export default function Submit({ onManageProfile }) {
 
   return (
     <div className="min-h-screen" style={{ background: 'rgb(255, 255, 244)' }}>
-      <div className="max-w-2xl mx-auto px-6 py-6">
+      <div className="max-w-4xl mx-auto px-6 py-6">
         {step >= 1 && step <= 4 && (
           <div className="mb-6">
             <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ export default function Submit({ onManageProfile }) {
           </div>
         )}
 
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="bg-white border border-gray-200 rounded-lg p-6 md:p-8">
           {step === 0 && (
             <div>
               <h2 className="text-xl font-bold text-gray-900 mb-3">
@@ -289,7 +289,7 @@ export default function Submit({ onManageProfile }) {
                 Are you adding yourself or nominating someone else? *
               </p>
 
-              <div className="grid grid-cols-2 gap-3 mb-5">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
                 <button
                   onClick={() => selectBranch('self')}
                   className={`p-4 border-2 rounded-lg text-center transition-colors ${
@@ -360,8 +360,8 @@ export default function Submit({ onManageProfile }) {
                 <p className="text-xs text-gray-600 leading-relaxed mb-4">
                   Your name, role, organisation, areas of expertise, bio, and LinkedIn will be <strong>publicly visible</strong>. Your email address will <strong>never</strong> be published and is used only for follow-up and profile updates.
                 </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                   <button
                     onClick={() => setConsent('yes')}
                     className={`p-3 border-2 rounded-md text-center text-sm font-medium transition-colors ${
                       consent === 'yes'
@@ -409,8 +409,8 @@ export default function Submit({ onManageProfile }) {
               </span>
               <h2 className="text-lg font-medium mb-4">Basic Information</h2>
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                   <div>
                     <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
                       First Name *
                     </label>

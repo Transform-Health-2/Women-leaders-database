@@ -127,9 +127,9 @@ export default function Database({ onManageProfile }) {
 
   return (
     <div>
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex flex-wrap gap-3 items-center">
-          <div className="flex-1 min-w-[200px] max-w-[320px]">
+      <div style={{ background: 'rgb(255, 255, 244)', position: 'sticky', top: 0, zIndex: 40 }}>
+        <div className="max-w-7xl mx-auto px-6 py-3 flex flex-wrap gap-3 items-center">
+          <div className="flex-1 min-w-[200px] max-w-[420px]">
             <input
               type="text"
               placeholder="Search name, organisation, role..."
@@ -185,7 +185,7 @@ export default function Database({ onManageProfile }) {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-6">
+      <div className="max-w-7xl mx-auto px-6 py-6">
         {filteredItems.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <div className="text-3xl mb-2">No leaders found</div>
@@ -193,7 +193,7 @@ export default function Database({ onManageProfile }) {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
               {pagedItems.map((it) => (
                 <div
                   key={it.id}

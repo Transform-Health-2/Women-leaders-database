@@ -97,7 +97,7 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen" style={{ background: 'rgb(255, 255, 244)' }}>
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
             Key Highlights from the Database
@@ -172,13 +172,13 @@ export default function Analytics() {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
-              Specialisation
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Based on {stats.total} verified profiles.
-            </div>
+           <div className="bg-white border border-gray-200 rounded-lg p-6">
+             <div className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-1">
+               Specialisation
+             </div>
+             <div className="text-xs text-gray-500 mt-1 mb-4">
+               Based on {stats.total} verified profiles.
+             </div>
 
             <div className="mt-5">
               {barData.map((d) => (
@@ -220,7 +220,7 @@ export default function Analytics() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
             {featured.map((l) => (
               <div
                 key={l.id}
