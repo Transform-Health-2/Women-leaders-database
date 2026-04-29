@@ -44,12 +44,14 @@ export default function Submit({ onManageProfile }) {
   const [country, setCountry] = useState('')
   const [bio, setBio] = useState('')
   const [linkedin, setLinkedin] = useState('')
+  const [notableText, setNotableText] = useState('')
+  const [notableItems, setNotableItems] = useState([])
   const [photo, setPhoto] = useState(null)
   const [photoPreview, setPhotoPreview] = useState(null)
   const [photoName, setPhotoName] = useState('')
   const [status, setStatus] = useState('')
 
-  const wordCount = bio.trim() ? bio.trim().split(/\s+/).length : 0
+  const charCount = bio.length
 
   function goStep(n) {
     if (n >= 0 && n <= 5) setStep(n)
@@ -83,8 +85,23 @@ export default function Submit({ onManageProfile }) {
     }
   }
 
-  function bioWordWarning() {
-    return wordCount > 0 && (wordCount < 100 || wordCount > 150)
+  function bioCharWarning() {
+    return charCount > 0 && (charCount < 100 || charCount > 150)
+  }
+
+  function updateNotableItem(index, field, value) {
+    setNotableItems((current) =>
+      current.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    )
+  }
+
+  function addNotableItem() {
+    if (notableItems.length >= 3) return
+    setNotableItems((current) => [...current, { title: '', link: '', type: '' }])
+  }
+
+  function removeNotableItem(index) {
+    setNotableItems((current) => current.filter((_, i) => i !== index))
   }
 
   async function handlePhotoUpload(e) {
@@ -157,6 +174,8 @@ export default function Submit({ onManageProfile }) {
         country: geoScope === 'national' ? country : '',
         bio,
         linkedin,
+        notableText,
+        notableItems: notableItems.filter((item) => item.title || item.link || item.type),
         photoUrl,
       }
 
@@ -173,8 +192,8 @@ export default function Submit({ onManageProfile }) {
 
   if (step === -1) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-8 text-center max-w-md">
+      <div className="min-h-screen bg-[rgb(255,255,244)] flex items-center justify-center p-6">
+        <div className="bg-transparent border border-gray-200/70 rounded-lg p-8 text-center max-w-md">
           <div className="text-4xl mb-4">🙏</div>
           <h2 className="text-xl font-semibold text-gray-500 mb-2">
             Thank you. We cannot proceed without consent.
@@ -195,8 +214,8 @@ export default function Submit({ onManageProfile }) {
 
   if (status === 'submitted') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-8 text-center max-w-md">
+      <div className="min-h-screen bg-[rgb(255,255,244)] flex items-center justify-center p-6">
+        <div className="bg-transparent border border-gray-200/70 rounded-lg p-8 text-center max-w-md">
           <div className="text-4xl mb-4">🌍</div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Thank you for contributing to the Transform Health Women Leaders in Digital Health Database
@@ -204,7 +223,7 @@ export default function Submit({ onManageProfile }) {
           <p className="text-sm text-gray-500 mb-6">
             Your submission helps advance gender equity and representation in digital health leadership.
           </p>
-          <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded text-left space-y-1 mb-6">
+          <div className="text-sm text-gray-600 bg-[rgb(255,255,244)] p-4 rounded text-left space-y-1 mb-6">
             <p className="font-medium text-gray-800">Confirmation email sent to your inbox</p>
             <p>Your email includes:</p>
             <ul className="list-disc ml-4 text-xs text-gray-500">
@@ -230,7 +249,7 @@ export default function Submit({ onManageProfile }) {
 
   const nextDisabled =
     (step === 2 && (!firstName || !lastName || !role || !org)) ||
-    (step === 3 && (expertise.length === 0 || !bio || !geoScope)) ||
+    (step === 3 && (expertise.length === 0 || !bio || !geoScope || charCount < 100 || charCount > 150)) ||
     (step === 3 && geoScope === 'national' && !country)
 
   return (
@@ -266,13 +285,13 @@ export default function Submit({ onManageProfile }) {
           </div>
         )}
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6 md:p-8">
+          <div className="bg-transparent rounded-lg p-6 md:p-8">
           {step === 0 && (
             <div>
               <h2 className="text-xl font-bold text-gray-900 mb-3">
                 Women Leaders in Digital Health Database
               </h2>
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-4 text-sm text-gray-600 leading-relaxed mb-5">
+              <div className="bg-[rgb(255,255,244)] rounded-md p-4 text-sm text-gray-600 leading-relaxed mb-5">
                 <p className="mb-3">
                   Transform Health is building a global database of women leaders in digital health to increase visibility, representation, and engagement in leadership, policy, and technical spaces. This takes forward recommendations from the Transform Health policy brief <em>"Establishing Gender Equitable Foundations for Digital Health Transformation to Advance Universal Health Coverage"</em> launched in 2024 to mainstream gender in digital health.
                 </p>
@@ -353,7 +372,7 @@ export default function Submit({ onManageProfile }) {
               </span>
               <h2 className="text-lg font-medium mb-3">Consent & Permissions</h2>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-md p-4 mb-5">
+              <div className="bg-[rgb(255,255,244)] rounded-md p-4 mb-5">
                 <p className="text-sm font-medium text-gray-800 mb-2">
                   Do you consent to your information being included in the Transform Health Women Leaders Database?
                 </p>
@@ -365,7 +384,7 @@ export default function Submit({ onManageProfile }) {
                     onClick={() => setConsent('yes')}
                     className={`p-3 border-2 rounded-md text-center text-sm font-medium transition-colors ${
                       consent === 'yes'
-                        ? 'border-gray-900 bg-gray-50 text-gray-900'
+                        ? 'border-gray-900 bg-[rgb(255,255,244)] text-gray-900'
                         : 'border-gray-200 text-gray-600 hover:border-gray-400'
                     }`}
                   >
@@ -468,7 +487,7 @@ export default function Submit({ onManageProfile }) {
                       )}
                     </div>
                     <div>
-                      <label className="inline-block px-4 py-2 border border-gray-900 rounded-full text-xs font-semibold text-gray-900 cursor-pointer hover:bg-gray-50">
+                      <label className="inline-block px-4 py-2 border border-gray-900 rounded-full text-xs font-semibold text-gray-900 cursor-pointer hover:bg-[rgb(255,255,244)]">
                         Upload photo
                         <input
                           type="file"
@@ -581,7 +600,7 @@ export default function Submit({ onManageProfile }) {
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                    Short bio * <span className="normal-case tracking-normal text-gray-400 font-normal">(100–150 words)</span>
+                    Short bio * <span className="normal-case tracking-normal text-gray-400 font-normal">(100–150 characters)</span>
                   </label>
                   <textarea
                     value={bio}
@@ -589,16 +608,16 @@ export default function Submit({ onManageProfile }) {
                     placeholder="Brief description of your work in digital health…"
                     rows={4}
                     className={`w-full px-3 py-2 border rounded-md focus:outline-none text-sm resize-none ${
-                      bioWordWarning()
+                      bioCharWarning()
                         ? 'border-red-300 focus:border-red-400'
                         : 'border-gray-300 focus:border-gray-400'
                     }`}
                   />
                   <div className="flex gap-3 mt-1.5">
-                    <span className="text-xs text-gray-400">{wordCount} words</span>
-                    {bioWordWarning() && (
+                    <span className="text-xs text-gray-400">{charCount} characters</span>
+                    {bioCharWarning() && (
                       <span className="text-xs text-red-500">
-                        Please keep bio between 100–150 words.
+                        Please keep bio between 100–150 characters.
                       </span>
                     )}
                   </div>
@@ -641,6 +660,90 @@ export default function Submit({ onManageProfile }) {
                     placeholder="https://linkedin.com/in/…"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
+                    Any notable publications, projects, or achievements <span className="text-gray-400 normal-case text-xs">(optional)</span>
+                  </label>
+                  <textarea
+                    value={notableText}
+                    onChange={(e) => setNotableText(e.target.value)}
+                    placeholder="Briefly describe any notable publications, projects, or achievements…"
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm resize-none"
+                  />
+                  <p className="text-xs text-gray-400 mt-2">Type: Long text</p>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-700">Add up to 3 achievements</p>
+                      <p className="text-xs text-gray-400">Each item can include a title, link, and type.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addNotableItem}
+                      disabled={notableItems.length >= 3}
+                      className="px-3 py-1.5 bg-gray-900 text-white rounded-full text-xs font-medium disabled:opacity-40"
+                    >
+                      Add item
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    {notableItems.length === 0 && (
+                      <div className="text-xs text-gray-500">No items added yet.</div>
+                    )}
+                    {notableItems.map((item, index) => (
+                      <div key={index} className="space-y-3 rounded-lg border border-gray-200 p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-semibold text-gray-900">Item {index + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => removeNotableItem(index)}
+                            className="text-xs text-red-600 hover:underline"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                          <div className="sm:col-span-1">
+                            <label className="block text-xs text-gray-700 uppercase tracking-wider mb-1">Title</label>
+                            <input
+                              value={item.title}
+                              onChange={(e) => updateNotableItem(index, 'title', e.target.value)}
+                              placeholder="Title"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
+                            />
+                          </div>
+                          <div className="sm:col-span-1">
+                            <label className="block text-xs text-gray-700 uppercase tracking-wider mb-1">Link</label>
+                            <input
+                              value={item.link}
+                              onChange={(e) => updateNotableItem(index, 'link', e.target.value)}
+                              placeholder="https://…"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
+                            />
+                          </div>
+                          <div className="sm:col-span-1">
+                            <label className="block text-xs text-gray-700 uppercase tracking-wider mb-1">Type</label>
+                            <select
+                              value={item.type}
+                              onChange={(e) => updateNotableItem(index, 'type', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
+                            >
+                              <option value="">Select type</option>
+                              <option value="Publication">Publication</option>
+                              <option value="Project">Project</option>
+                              <option value="Achievement">Achievement</option>
+                              <option value="Award">Award</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
