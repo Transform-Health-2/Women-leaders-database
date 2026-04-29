@@ -97,32 +97,6 @@ export default function Analytics() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gray-900 text-white">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-3 gap-4 py-8">
-          <div className="text-center">
-            <div className="text-5xl font-bold tracking-tight">{stats.total}</div>
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-2">
-              Verified Members
-            </div>
-            <div className="text-xs text-gray-500 mt-1">Women health leaders, global network</div>
-          </div>
-          <div className="text-center border-x border-gray-700">
-            <div className="text-5xl font-bold tracking-tight">{stats.expertise}</div>
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-2">
-              Specialisations
-            </div>
-            <div className="text-xs text-gray-500 mt-1">Across 8 core domains</div>
-          </div>
-          <div className="text-center">
-            <div className="text-5xl font-bold tracking-tight">{stats.orgs}+</div>
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-2">
-              Organisations
-            </div>
-            <div className="text-xs text-gray-500 mt-1">WHO, World Bank, Gates Foundation & more</div>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
