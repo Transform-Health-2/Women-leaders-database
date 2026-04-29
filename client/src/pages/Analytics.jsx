@@ -59,6 +59,35 @@ export default function Analytics() {
     return MOCK_LEADERS.filter((l) => FEATURED_IDS.includes(l.id)).filter(Boolean)
   }, [])
 
+  const countryCounts = useMemo(() => {
+    const counts = {}
+    MOCK_LEADERS.forEach((m) => {
+      if (m.country) counts[m.country] = (counts[m.country] || 0) + 1
+    })
+    return counts
+  }, [])
+
+  function countryFill(count) {
+    if (count >= 3) return '#374151'
+    if (count === 2) return '#6b7280'
+    return '#9ca3af'
+  }
+
+  const markerData = useMemo(() => {
+    const regionTotals = {}
+    MOCK_LEADERS.forEach((m) => {
+      const r = m.region
+      if (r) regionTotals[r] = (regionTotals[r] || 0) + 1
+    })
+    return [
+      { name: 'N. America',    coordinates: [-100, 42], r: 5, count: regionTotals['north_america']    || 0 },
+      { name: 'Europe',        coordinates: [15,  52],  r: 5, count: regionTotals['europe']           || 0 },
+      { name: 'Africa',        coordinates: [22,   5],  r: 7, count: regionTotals['africa']           || 0 },
+      { name: 'S. Asia',       coordinates: [80,  22],  r: 5, count: regionTotals['south_asia']       || 0 },
+      { name: 'Latin America', coordinates: [-55, -10], r: 4, count: regionTotals['latin_america']    || 0 },
+    ].filter((m) => m.count > 0)
+  }, [])
+
   function shortLabel(name) {
     return name
       .replace('Digital health ', 'DH ')
@@ -113,78 +142,58 @@ export default function Analytics() {
               Global distribution of network nodes.
             </div>
 
-            <div className="relative bg-gray-100 rounded-md overflow-hidden" style={{ height: 380 }}>
-              <div className="w-full h-full" style={{ height: 380 }}>
-                <ComposableMap projectionConfig={{ scale: 140 }} width={960} height={500} style={{ width: '100%', height: '100%' }}>
-                <ZoomableGroup zoom={1} minZoom={1} maxZoom={4} center={[10, 20]}>
-                  <Geographies geography={GEO_URL}>
-                    {({ geographies }) =>
-                      geographies.map((geo) => (
+            <div className="bg-gray-100 rounded-md" style={{ height: 360 }}>
+              <ComposableMap
+                projectionConfig={{ scale: 147, center: [10, 10] }}
+                width={800}
+                height={400}
+                style={{ width: '100%', height: '100%' }}
+              >
+                <Geographies geography={GEO_URL}>
+                  {({ geographies }) =>
+                    geographies.map((geo) => {
+                      const count = countryCounts[geo.properties.name] || 0
+                      return (
                         <Geography
                           key={geo.rsmKey}
                           geography={geo}
-                          fill="#d1d5db"
-                          stroke="#9ca3af"
-                          strokeWidth={0.5}
+                          fill={count > 0 ? countryFill(count) : '#d1d5db'}
+                          stroke="#fff"
+                          strokeWidth={0.4}
                           style={{
                             default: { outline: 'none' },
-                            hover: { fill: '#a1a1aa', outline: 'none' },
+                            hover: { outline: 'none', opacity: 0.75 },
                             pressed: { outline: 'none' },
                           }}
                         />
-                      ))
-                    }
-                  </Geographies>
-                  {REGION_MARKERS.map((m) => (
-                    <g key={m.name}>
-                      <circle
-                        cx={0}
-                        cy={0}
-                        r={m.density === 'high' ? 14 : 10}
-                        fill={DENSITY_COLORS[m.density]}
-                        opacity={0.15}
-                        transform={`translate(${m.coordinates[0]}, ${m.coordinates[1]})`}
-                      />
-                      <circle
-                        cx={0}
-                        cy={0}
-                        r={m.density === 'high' ? 6 : 4}
-                        fill={DENSITY_COLORS[m.density]}
-                        stroke="#fff"
-                        strokeWidth={1.5}
-                        transform={`translate(${m.coordinates[0]}, ${m.coordinates[1]})`}
-                      />
-                      <text
-                        x={0}
-                        y={-12}
-                        textAnchor="middle"
-                        fill="#18181b"
-                        fontSize={6}
-                        fontWeight={700}
-                        fontFamily="system-ui"
-                        transform={`translate(${m.coordinates[0]}, ${m.coordinates[1]})`}
-                      >
-                        {m.name} ({m.count})
-                      </text>
-                    </g>
-                  ))}
-                </ZoomableGroup>
+                      )
+                    })
+                  }
+                </Geographies>
+                {markerData.map((m) => (
+                  <Marker key={m.name} coordinates={m.coordinates}>
+                    <circle r={m.r} fill="#18181b" opacity={0.85} stroke="#fff" strokeWidth={1} />
+                    <text
+                      textAnchor="middle"
+                      y={-m.r - 3}
+                      style={{ fontSize: 5, fontWeight: 700, fill: '#18181b', fontFamily: 'system-ui' }}
+                    >
+                      {m.name} ({m.count})
+                    </text>
+                  </Marker>
+                ))}
               </ComposableMap>
-              </div>
+            </div>
 
-              <div className="absolute bottom-3 left-3 flex gap-3 bg-white/80 backdrop-blur-sm rounded-md px-3 py-1.5 z-10">
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
-                  <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />
-                  High density
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
-                  <div className="w-2.5 h-2.5 rounded-full bg-gray-500" />
-                  Mid density
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
-                  <div className="w-2.5 h-2.5 rounded-full bg-gray-400" />
-                  Emerging
-                </div>
+            <div className="flex gap-4 mt-2">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-gray-500">
+                <div className="w-3 h-3 rounded-sm bg-gray-300" /> No members yet
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-gray-500">
+                <div className="w-3 h-3 rounded-sm bg-gray-500" /> 1–2 members
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-medium text-gray-500">
+                <div className="w-3 h-3 rounded-sm bg-gray-800" /> 3+ members
               </div>
             </div>
           </div>

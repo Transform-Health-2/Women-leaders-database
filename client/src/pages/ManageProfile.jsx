@@ -206,7 +206,7 @@ export default function ManageProfile({ prefill, onBack }) {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="For admin to contact you"
+                  placeholder="We'll send your profile link here — not stored"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400"
                 />
               </div>
