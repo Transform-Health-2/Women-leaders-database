@@ -235,14 +235,6 @@ export default function Submit({ onManageProfile }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-2xl mx-auto px-6 py-4">
-          <h1 className="text-xl font-semibold text-gray-900">
-            Submit Your Profile
-          </h1>
-        </div>
-      </div>
-
       <div className="max-w-2xl mx-auto px-6 py-6">
         {step >= 1 && step <= 4 && (
           <div className="mb-6">
