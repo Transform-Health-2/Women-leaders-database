@@ -64,47 +64,51 @@ export default function App() {
       <SiteHeader />
 
       {route === 'database' && (
-        <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
-          <div style={{ position: 'relative', height: '100%', maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <img src="/illustrations/db1-hero.png" alt="" style={{ height: 260, width: 'auto', flexShrink: 0 }} />
-            <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1.1, textTransform: 'uppercase', textAlign: 'left' }}>
-              <div style={{ color: '#00AAFF' }}>Explore the Leaders</div>
-              <div style={{ color: '#00AAFF' }}>Bridging the Gap</div>
-              <div style={{ color: '#00AAFF' }}>in Digital Health</div>
+        <div className="relative overflow-hidden bg-[#fffff4] font-['Montserrat']">
+          <div className="relative w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center justify-center px-6 py-16 md:flex-row md:justify-between md:px-8 md:py-24">
+            <img src="./illustrations/db1-hero.png" alt="" className="w-full max-w-[320px] flex-shrink-0" style={{ height: 'auto' }} />
+            <div className="text-center md:text-left max-w-3xl">
+              <div className="font-bold uppercase text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] text-[#00AAFF]">
+                <div>Explore the Leaders</div>
+                <div>Bridging the Gap</div>
+                <div>in Digital Health</div>
+              </div>
             </div>
-            <img src="/illustrations/db2-hero.png" alt="" style={{ height: 240, width: 'auto', flexShrink: 0 }} />
+            <img src="./illustrations/db2-hero.png" alt="" className="w-full max-w-[300px] flex-shrink-0" style={{ height: 'auto' }} />
           </div>
         </div>
       )}
 
       {route === 'analytics' && (
-        <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
-          <div style={{ position: 'relative', height: '100%', maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <img src="/illustrations/network2-hero.png" alt="" style={{ height: 260, width: 'auto', flexShrink: 0 }} />
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1.1, textTransform: 'uppercase' }}>
-                <div style={{ color: '#02598e' }}>Global</div>
-                <div style={{ color: '#F85A8E' }}>Network</div>
+        <div className="relative overflow-hidden bg-[#fffff4] font-['Montserrat']">
+          <div className="relative w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center justify-center px-6 py-16 md:flex-row md:justify-between md:px-8 md:py-24">
+            <img src="./illustrations/network2-hero.png" alt="" className="w-full max-w-[320px] flex-shrink-0" style={{ height: 'auto' }} />
+            <div className="text-center md:text-left max-w-3xl">
+              <div className="font-bold uppercase text-[clamp(2.25rem,5vw,4rem)] leading-[1.05]">
+                <div className="text-[#02598e]">Global</div>
+                <div className="text-[#F85A8E]">Network</div>
               </div>
-              <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 18, fontWeight: 400, color: '#333', marginTop: 16, maxWidth: 480, lineHeight: 1.6 }}>
+              <p className="mt-4 max-w-[28rem] text-base leading-7 text-[#333] md:text-lg">
                 A curated community of health leaders driving digital transformation
               </p>
             </div>
-            <img src="/illustrations/network1-hero.png" alt="" style={{ height: 240, width: 'auto', flexShrink: 0 }} />
+            <img src="./illustrations/network1-hero.png" alt="" className="w-full max-w-[300px] flex-shrink-0" style={{ height: 'auto' }} />
           </div>
         </div>
       )}
 
       {route === 'submit' && (
-        <div style={{ position: 'relative', overflow: 'hidden', background: '#fffff4', fontFamily: "'Montserrat', sans-serif", height: 467 }}>
-          <div style={{ position: 'relative', height: '100%', maxWidth: 1440, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <img src="/illustrations/hero-left.png" alt="" style={{ height: 260, width: 'auto', flexShrink: 0 }} />
-            <div style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 64, lineHeight: 1.1, textTransform: 'uppercase', textAlign: 'left' }}>
-              <div style={{ color: '#02598e' }}>Join</div>
-              <div style={{ color: '#F85A8E' }}>The</div>
-              <div style={{ color: '#F85A8E' }}>Database</div>
+        <div className="relative overflow-hidden bg-[#fffff4] font-['Montserrat']">
+          <div className="relative w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center justify-center px-6 py-16 md:flex-row md:justify-between md:px-8 md:py-24">
+            <img src="./illustrations/hero-left.png" alt="" className="w-full max-w-[320px] flex-shrink-0" style={{ height: 'auto' }} />
+            <div className="text-center md:text-left max-w-3xl">
+              <div className="font-bold uppercase text-[clamp(2.25rem,5vw,4rem)] leading-[1.05]">
+                <div className="text-[#02598e]">Join</div>
+                <div className="text-[#F85A8E]">The</div>
+                <div className="text-[#F85A8E]">Database</div>
+              </div>
             </div>
-            <img src="/illustrations/hero-right.png" alt="" style={{ height: 240, width: 'auto', flexShrink: 0 }} />
+            <img src="./illustrations/hero-right.png" alt="" className="w-full max-w-[300px] flex-shrink-0" style={{ height: 'auto' }} />
           </div>
         </div>
       )}
