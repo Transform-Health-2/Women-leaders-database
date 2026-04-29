@@ -1,22 +1,8 @@
 import React, { useMemo, useState } from 'react'
-import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
+import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps'
 import { MOCK_LEADERS } from '../data/mockData'
 
-const GEO_URL = 'https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m-lowres.json'
-
-const REGION_MARKERS = [
-  { name: 'North America', coordinates: [-100, 45], count: 23, density: 'high' },
-  { name: 'Europe', coordinates: [10, 48], count: 18, density: 'mid' },
-  { name: 'Sub-Saharan Africa', coordinates: [25, -5], count: 27, density: 'high' },
-  { name: 'South & SE Asia', coordinates: [95, 15], count: 8, density: 'low' },
-  { name: 'Latin America', coordinates: [-55, -10], count: 5, density: 'low' },
-]
-
-const DENSITY_COLORS = {
-  high: '#18181b',
-  mid: '#71717a',
-  low: '#a1a1aa',
-}
+const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
 const GRAYS = [
   '#18181b',
