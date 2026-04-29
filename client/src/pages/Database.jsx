@@ -2,6 +2,10 @@ import React, { useEffect, useState, useMemo } from 'react'
 import axios from 'axios'
 import { MOCK_LEADERS } from '../data/mockData'
 
+function TBC() {
+  return <span className="text-gray-400 italic text-sm">TBC</span>
+}
+
 const EXPERTISE_OPTIONS = [
   'AI',
   'Digital health',
@@ -22,13 +26,14 @@ const EXPERTISE_OPTIONS = [
 
 const ITEMS_PER_PAGE = 12
 
-export default function Database() {
+export default function Database({ onManageProfile }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [expertiseFilter, setExpertiseFilter] = useState('')
   const [featuredOnly, setFeaturedOnly] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedProfile, setSelectedProfile] = useState(null)
 
   useEffect(() => {
     loadEntries()
@@ -209,6 +214,7 @@ export default function Database() {
               {pagedItems.map((it) => (
                 <div
                   key={it.id}
+                  onClick={() => setSelectedProfile(it)}
                   className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
                 >
                   {it.featured === true || it.featured === 'true' ? (

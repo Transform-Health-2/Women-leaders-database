@@ -1,21 +1,22 @@
 import React, { useMemo, useState } from 'react'
+import { ComposableMap, Geographies, Geography, Marker, Graticule, Sphere } from 'react-simple-maps'
 import { MOCK_LEADERS } from '../data/mockData'
 
-const EXPERTISE_ORDER = [
-  'Health systems strengthening',
-  'Digital health strategy',
-  'Digital health innovation',
-  'Digital health policy',
-  'Digital health advocacy',
-  'AI',
-  'Health information systems',
-  'Health financing',
-  'Digital health',
-  'Research',
-  'Digital health philanthropy',
-  'Digital health transformation',
-  'Health workforce',
+const GEO_URL = 'https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m-lowres.json'
+
+const REGION_MARKERS = [
+  { name: 'North America', coordinates: [-100, 45], count: 23, density: 'high' },
+  { name: 'Europe', coordinates: [10, 48], count: 18, density: 'mid' },
+  { name: 'Sub-Saharan Africa', coordinates: [25, -5], count: 27, density: 'high' },
+  { name: 'South & SE Asia', coordinates: [95, 15], count: 8, density: 'low' },
+  { name: 'Latin America', coordinates: [-55, -10], count: 5, density: 'low' },
 ]
+
+const DENSITY_COLORS = {
+  high: '#18181b',
+  mid: '#71717a',
+  low: '#a1a1aa',
+}
 
 const GRAYS = [
   '#18181b',
@@ -36,7 +37,6 @@ function getInitials(first, last) {
 }
 
 export default function Analytics() {
-  const [selectedRegion, setSelectedRegion] = useState('Global')
   const [modalLeader, setModalLeader] = useState(null)
 
   const stats = useMemo(() => {
@@ -72,8 +72,6 @@ export default function Analytics() {
   const featured = useMemo(() => {
     return MOCK_LEADERS.filter((l) => FEATURED_IDS.includes(l.id)).filter(Boolean)
   }, [])
-
-  const regions = ['Global', 'Africa', 'Europe', 'Americas', 'Asia-Pacific']
 
   function shortLabel(name) {
     return name
@@ -125,83 +123,67 @@ export default function Analytics() {
             <div className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
               Geographic Density
             </div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-xs text-gray-500 mt-1 mb-4">
               Global distribution of network nodes.
             </div>
 
-            <div className="flex gap-2 mt-4 mb-4">
-              {regions.map((r) => (
-                <button
-                  key={r}
-                  onClick={() => setSelectedRegion(r)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
-                    selectedRegion === r
-                      ? 'bg-gray-900 text-white border-gray-900'
-                      : 'bg-white text-gray-500 border-gray-300 hover:border-gray-400'
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
+            <div className="relative bg-gray-100 rounded-md overflow-hidden min-h-[380px]">
+              <ComposableMap
+                projection="geoEqualEarth"
+                projectionConfig={{ scale: 140 }}
+                style={{ width: '100%', height: '100%' }}
+              >
+                <Sphere stroke="#d1d5db" strokeWidth={0.5} fill="#e5e7eb" />
+                <Graticule stroke="#d1d5db" strokeWidth={0.3} opacity={0.5} />
+                <Geographies geography={GEO_URL}>
+                  {({ geographies }) =>
+                    geographies.map((geo) => (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill="#d1d5db"
+                        stroke="#9ca3af"
+                        strokeWidth={0.5}
+                        style={{
+                          default: { outline: 'none' },
+                          hover: { fill: '#a1a1aa', outline: 'none' },
+                          pressed: { outline: 'none' },
+                        }}
+                      />
+                    ))
+                  }
+                </Geographies>
+                {REGION_MARKERS.map((m) => (
+                  <Marker key={m.name} coordinates={m.coordinates}>
+                    <circle
+                      r={m.density === 'high' ? 8 : m.density === 'mid' ? 6 : 5}
+                      fill={DENSITY_COLORS[m.density]}
+                      stroke="#fff"
+                      strokeWidth={2}
+                      style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.25))' }}
+                    />
+                    <circle
+                      r={m.density === 'high' ? 14 : 10}
+                      fill={DENSITY_COLORS[m.density]}
+                      opacity={0.15}
+                    />
+                    <text
+                      textAnchor="middle"
+                      y={-16}
+                      fill="#18181b"
+                      fontSize={7}
+                      fontWeight={700}
+                      fontFamily="system-ui"
+                    >
+                      {m.name} ({m.count})
+                    </text>
+                  </Marker>
+                ))}
+              </ComposableMap>
 
-            <div className="relative bg-gray-100 rounded-md overflow-hidden min-h-[320px]">
-              <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 w-full h-full">
-                <rect width="1000" height="500" fill="#e5e7eb" />
-                <line x1="0" y1="250" x2="1000" y2="250" stroke="#d1d5db" strokeWidth="0.8" strokeDasharray="5,8" opacity="0.7" />
-                <path d="M 41,83 L 64,53 L 152,47 L 263,19 L 305,47 L 352,103 L 325,125 L 294,136 L 285,150 L 278,164 L 278,181 L 258,194 L 250,197 L 247,214 L 236,219 L 219,214 L 203,203 L 194,186 L 167,150 L 155,117 L 125,92 L 83,83 Z" fill="#d1d5db" stroke="#9ca3af" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M 275,233 L 311,219 L 328,219 L 403,264 L 411,275 L 395,306 L 342,356 L 311,403 L 283,361 L 258,303 L 278,264 L 278,250 Z" fill="#d1d5db" stroke="#9ca3af" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M 472,150 L 486,153 L 500,136 L 519,131 L 544,144 L 561,153 L 575,136 L 608,125 L 589,108 L 583,83 L 592,58 L 581,56 L 542,56 L 514,89 L 528,94 L 517,103 L 486,111 Z" fill="#d1d5db" stroke="#9ca3af" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M 483,150 L 531,147 L 589,164 L 594,172 L 622,219 L 642,219 L 617,253 L 611,269 L 600,303 L 592,328 L 553,344 L 544,331 L 533,297 L 525,253 L 514,236 L 497,236 L 486,236 L 472,222 L 458,211 L 453,192 L 461,172 Z" fill="#d1d5db" stroke="#9ca3af" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M 608,125 L 606,67 L 667,69 L 731,47 L 783,39 L 950,56 L 953,94 L 936,167 L 836,167 L 817,189 L 803,219 L 778,236 L 775,211 L 750,189 L 686,181 L 675,181 L 661,189 L 647,197 L 625,214 L 608,192 L 597,169 L 631,164 L 608,147 Z" fill="#d1d5db" stroke="#9ca3af" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M 817,311 L 864,281 L 903,281 L 928,325 L 922,347 L 883,353 L 817,347 Z" fill="#d1d5db" stroke="#9ca3af" strokeWidth="1.5" strokeLinejoin="round" />
-              </svg>
-
-              <div className="absolute w-36 h-36 rounded-full bg-gray-400 opacity-10 blur-3xl top-[20%] left-[14%] pointer-events-none" />
-              <div className="absolute w-44 h-44 rounded-full bg-gray-600 opacity-10 blur-3xl top-[30%] right-[20%] pointer-events-none" />
-              <div className="absolute w-32 h-32 rounded-full bg-gray-500 opacity-10 blur-3xl bottom-[15%] left-[40%] pointer-events-none" />
-
-              <div className="absolute top-[30%] left-[19%] cursor-pointer group">
-                <div className="w-3.5 h-3.5 rounded-full bg-gray-800 border-2 border-white shadow-md relative z-10" />
-                <div className="absolute -inset-1.5 rounded-full bg-gray-800 opacity-30 animate-ping" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  North America · 23 leaders
-                </div>
-              </div>
-
-              <div className="absolute top-[24%] left-[46%] cursor-pointer group">
-                <div className="w-4 h-4 rounded-full bg-gray-600 border-2 border-white shadow-md relative z-10" />
-                <div className="absolute -inset-1.5 rounded-full bg-gray-600 opacity-30 animate-ping" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Europe · 18 leaders
-                </div>
-              </div>
-
-              <div className="absolute top-[50%] left-[47%] cursor-pointer group">
-                <div className="w-4 h-4 rounded-full bg-gray-800 border-2 border-white shadow-md relative z-10" />
-                <div className="absolute -inset-1.5 rounded-full bg-gray-800 opacity-30 animate-ping" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Sub-Saharan Africa · 27 leaders
-                </div>
-              </div>
-
-              <div className="absolute top-[40%] left-[64%] cursor-pointer group">
-                <div className="w-3.5 h-3.5 rounded-full bg-gray-500 border-2 border-white shadow-md relative z-10" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  South & SE Asia · 8 leaders
-                </div>
-              </div>
-
-              <div className="absolute top-[58%] left-[26%] cursor-pointer group">
-                <div className="w-3.5 h-3.5 rounded-full bg-gray-400 border-2 border-white shadow-md relative z-10" />
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-gray-900 text-white text-[10px] font-bold px-2.5 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  Latin America · 5 leaders
-                </div>
-              </div>
-
-              <div className="absolute bottom-3 left-3 flex gap-3 z-10">
+              <div className="absolute bottom-3 left-3 flex gap-3 bg-white/80 backdrop-blur-sm rounded-md px-3 py-1.5 z-10">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
-                  <div className="w-2.5 h-2.5 rounded-full bg-gray-800" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />
                   High density
                 </div>
                 <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-500">
