@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
+import { MOCK_LEADERS } from '../data/mockData'
 
 const MOCK_REQUESTS = [
   {
@@ -122,9 +123,8 @@ export default function Admin() {
           },
         ]
         const mockAll = [
+          ...MOCK_LEADERS.map((l) => ({ ...l, editor_email: '' })),
           ...mockPending,
-          { id: 'th_a1', first_name: 'Adele', last_name: 'Waugaman', role: 'Senior Program Officer', organisation: 'Gates Foundation', bio: '', expertise: 'AI', linkedin: '', editor_email: '', status: 'live' },
-          { id: 'th_a2', first_name: 'Kirsten', last_name: 'Mathieson', role: 'Deputy Director', organisation: 'Transform Health', bio: '', expertise: 'Digital health policy', linkedin: '', editor_email: '', status: 'live', featured: true },
         ]
         setPending(mockPending)
         setAll(mockAll)
