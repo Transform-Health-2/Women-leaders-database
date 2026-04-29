@@ -50,6 +50,7 @@ export default function Submit({ onManageProfile }) {
   const [photoPreview, setPhotoPreview] = useState(null)
   const [photoName, setPhotoName] = useState('')
   const [status, setStatus] = useState('')
+  const [showNoConsentModal, setShowNoConsentModal] = useState(false)
 
   const charCount = bio.length
 
@@ -71,7 +72,7 @@ export default function Submit({ onManageProfile }) {
 
   function handleConsent() {
     if (consent === 'no') {
-      goStep(-1)
+      setShowNoConsentModal(true)
     } else if (consent === 'yes') {
       goStep(2)
     }
@@ -190,27 +191,6 @@ export default function Submit({ onManageProfile }) {
     }
   }
 
-  if (step === -1) {
-    return (
-      <div className="min-h-screen bg-[rgb(255,255,244)] flex items-center justify-center p-6">
-        <div className="bg-transparent border border-gray-200/70 rounded-lg p-8 text-center max-w-md">
-          <div className="text-4xl mb-4">🙏</div>
-          <h2 className="text-xl font-semibold text-[#02598E] mb-2">
-            Thank you. We cannot proceed without consent.
-          </h2>
-          <p className="text-sm text-gray-400 mb-6">
-            If you change your mind, you're welcome to return and submit anytime.
-          </p>
-          <button
-            onClick={() => goStep(1)}
-            className="px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-gray-400"
-          >
-            ← Go back
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   if (status === 'submitted') {
     return (
@@ -248,9 +228,8 @@ export default function Submit({ onManageProfile }) {
   const stepLabels = ['Start', 'Consent', 'Basic Info', 'Profile', 'Links']
 
   const nextDisabled =
-    (step === 2 && (!firstName || !lastName || !role || !org)) ||
-    (step === 3 && (expertise.length === 0 || !bio || !geoScope || charCount < 100 || charCount > 150)) ||
-    (step === 3 && geoScope === 'national' && !country)
+    (step === 2 && (!firstName || !lastName || !country)) ||
+    (step === 3 && (expertise.length === 0 || !bio || !geoScope || charCount < 100 || charCount > 150))
 
   return (
     <div style={{ background: 'rgb(255, 255, 244)' }}>
@@ -354,12 +333,12 @@ export default function Submit({ onManageProfile }) {
                 </div>
               )}
 
-              <div className="flex justify-end mt-4">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
                 <button
                   onClick={handleStep0Continue}
-                  className="px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 disabled:opacity-50"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#E8571D', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
                 >
-                  {branch === 'nominate' ? 'Submit nomination →' : 'Continue →'}
+                  {branch === 'nominate' ? 'SUBMIT NOMINATION →' : 'CONTINUE →'}
                 </button>
               </div>
             </div>
@@ -367,8 +346,6 @@ export default function Submit({ onManageProfile }) {
 
           {step === 1 && (
             <div style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              {/* Step label */}
-              <p style={{ color: '#F85A8E', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Step 1 of 4</p>
               <h2 style={{ fontSize: 28, fontWeight: 700, color: '#02598e', marginBottom: 16 }}>Consent &amp; permissions</h2>
               <p style={{ fontSize: 15, color: '#333', marginBottom: 28, lineHeight: 1.7 }}>
                 Your profile may be publicly displayed. By consenting, you agree that the following will be visible in the directory.
@@ -425,121 +402,125 @@ export default function Submit({ onManageProfile }) {
                 </button>
               </div>
 
-              <div className="flex justify-between pt-4 border-t border-gray-100">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20 }}>
                 <button
                   onClick={() => goStep(0)}
-                  className="px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-gray-400"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
                 >
-                  ← Back
+                  ← BACK
                 </button>
                 <button
-                  onClick={handleConsent}
-                  disabled={consent === null}
-                  className="px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-medium disabled:opacity-50 hover:bg-gray-800"
+                  onClick={handleStep0Continue}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: '#E8571D' }}
                 >
-                  Continue →
+                  {branch === 'nominate' ? 'Submit nomination →' : 'Continue →'}
                 </button>
               </div>
             </div>
           )}
 
           {step === 2 && (
-            <div>
-              <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-gray-100 text-gray-700 mb-4">
-                {branch === 'self' ? '👤 Adding myself' : '🌟 Nominating someone'}
-              </span>
-              <h2 className="text-lg font-medium text-[#02598E] mb-4">Basic Information</h2>
-              <div className="space-y-4">
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                      First Name *
-                    </label>
-                    <input
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Your first name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                      Last Name *
-                    </label>
-                    <input
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Your last name"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
-                    />
-                  </div>
-                </div>
+            <div style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              <h2 style={{ fontSize: 26, fontWeight: 700, color: '#02598e', marginBottom: 8 }}>Basic information</h2>
+              <p style={{ fontSize: 14, color: '#444', marginBottom: 28, lineHeight: 1.7 }}>
+                Tell us who you are. Your email will never be published — it's used only for profile updates.
+              </p>
+
+              {/* First + Last name */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                    Job Title / Role *
-                  </label>
+                  <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>First name *</label>
                   <input
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    placeholder="e.g. Chief Digital Health Officer"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="e.g Anet"
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                    Organisation *
-                  </label>
+                  <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>Last name *</label>
                   <input
-                    value={org}
-                    onChange={(e) => setOrg(e.target.value)}
-                    placeholder="e.g. Ministry of Health, Kenya"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-400 text-sm"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="e.g Clinton"
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
                   />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                    Your photo
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden">
-                      {photoPreview ? (
-                        <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                      ) : (
-                        '👤'
-                      )}
-                    </div>
-                    <div>
-                      <label className="inline-block px-4 py-2 border border-gray-900 rounded-full text-xs font-semibold text-gray-900 cursor-pointer hover:bg-[rgb(255,255,244)]">
-                        Upload photo
-                        <input
-                          type="file"
-                          accept="image/png,image/jpeg"
-                          onChange={handlePhotoUpload}
-                          className="hidden"
-                        />
-                      </label>
-                      {photoName && (
-                        <p className="text-xs text-gray-400 mt-1.5">{photoName}</p>
-                      )}
-                    </div>
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1.5">JPEG or PNG, max 5MB — auto-compressed before upload</p>
                 </div>
               </div>
 
-              <div className="flex justify-between mt-6 pt-4 border-t border-gray-100">
+              {/* Photo upload */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>Profile photo (optional)</label>
+                <label style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  background: '#eef3fb', border: '1.5px solid #d1d9ec', borderRadius: 12,
+                  padding: '52px 24px', cursor: 'pointer', width: '100%', boxSizing: 'border-box',
+                }}>
+                  {photoPreview ? (
+                    <img src={photoPreview} alt="Preview" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', marginBottom: 12 }} />
+                  ) : (
+                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: 12 }}>
+                      <rect x="7" y="4" width="30" height="36" rx="4" stroke="#9ca3af" strokeWidth="1.8" fill="none"/>
+                      <circle cx="22" cy="19" r="6" stroke="#9ca3af" strokeWidth="1.8" fill="none"/>
+                      <path d="M10 38c0-6.627 5.373-10 12-10s12 3.373 12 10" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+                    </svg>
+                  )}
+                  <span style={{ fontSize: 15, fontWeight: 600, color: '#111', marginBottom: 4 }}>Upload a photo</span>
+                  <span style={{ fontSize: 13, color: '#9ca3af' }}>JPEG or PNG .max 5MB</span>
+                  <input type="file" accept="image/png,image/jpeg" onChange={handlePhotoUpload} style={{ display: 'none' }} />
+                </label>
+              </div>
+
+              {/* Country */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>Country of residence *</label>
+                <select
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box', color: country ? '#111' : '#9ca3af' }}
+                >
+                  <option value="">Select a country...</option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Org + Role */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 32 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>Organisation / Institution</label>
+                  <input
+                    value={org}
+                    onChange={(e) => setOrg(e.target.value)}
+                    placeholder="e.g WHO"
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 15, color: '#111', marginBottom: 8 }}>Current role / title</label>
+                  <input
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    placeholder="e.g Director"
+                    style={{ width: '100%', padding: '14px 16px', border: '1.5px solid #d1d5db', borderRadius: 10, fontSize: 15, outline: 'none', background: '#fff', boxSizing: 'border-box' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20 }}>
                 <button
                   onClick={() => goStep(1)}
-                  className="px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-gray-400"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
                 >
-                  ← Back
+                  ← BACK
                 </button>
                 <button
-                  onClick={() => goStep(3)}
-                  disabled={!firstName || !lastName || !role || !org}
-                  className="px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-medium disabled:opacity-50 hover:bg-gray-800"
+                  onClick={handleConsent}
+                  disabled={consent === null}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: consent === null ? '#ccc' : '#E8571D' }}
                 >
-                  Continue →
+                  CONTINUE →
                 </button>
               </div>
             </div>
@@ -606,18 +587,6 @@ export default function Submit({ onManageProfile }) {
                       {geoScope === 'national' ? '✓ ' : ''}National
                     </button>
                   </div>
-                  {geoScope === 'national' && (
-                    <select
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-gray-400"
-                    >
-                      <option value="">Select country…</option>
-                      {COUNTRIES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  )}
                 </div>
 
                 <div>
@@ -646,19 +615,19 @@ export default function Submit({ onManageProfile }) {
                 </div>
               </div>
 
-              <div className="flex justify-between mt-6 pt-4 border-t border-gray-100">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, borderTop: '1px solid #f0f0f0', marginTop: 24 }}>
                 <button
                   onClick={() => goStep(2)}
-                  className="px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-gray-400"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
                 >
-                  ← Back
+                  ← BACK
                 </button>
                 <button
                   onClick={() => goStep(4)}
                   disabled={nextDisabled}
-                  className="px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-medium disabled:opacity-50 hover:bg-gray-800"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: nextDisabled ? '#ccc' : '#E8571D' }}
                 >
-                  Continue →
+                  CONTINUE →
                 </button>
               </div>
             </div>
@@ -769,25 +738,48 @@ export default function Submit({ onManageProfile }) {
                 </div>
               </div>
 
-              <div className="flex justify-between mt-6 pt-4 border-t border-gray-100">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, borderTop: '1px solid #f0f0f0', marginTop: 24 }}>
                 <button
                   onClick={() => goStep(3)}
-                  className="px-4 py-2 border border-gray-300 rounded-full text-sm font-medium hover:border-gray-400"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, color: '#111', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em', textTransform: 'uppercase' }}
                 >
-                  ← Back
+                  ← BACK
                 </button>
                 <button
                   onClick={submit}
                   disabled={status === 'submitting'}
-                  className="px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-medium disabled:opacity-50 hover:bg-gray-800"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 8, color: status === 'submitting' ? '#ccc' : '#E8571D' }}
                 >
-                  {status === 'submitting' ? 'Submitting...' : 'Submit Profile →'}
+                  {status === 'submitting' ? 'SUBMITTING...' : 'SUBMIT PROFILE →'}
                 </button>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {showNoConsentModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-6"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+        >
+          <div className="bg-white rounded-2xl p-10 text-center max-w-md w-full shadow-xl" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#fff0f6', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <span style={{ fontSize: 36 }}>🙏</span>
+            </div>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: '#02598e', marginBottom: 16 }}>Thank you for your time</h2>
+            <p style={{ fontSize: 15, color: '#444', lineHeight: 1.7, marginBottom: 32 }}>
+              We cannot proceed without your consent. You are welcome to return and submit your profile anytime.
+            </p>
+            <button
+              onClick={() => setShowNoConsentModal(false)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, color: '#333', display: 'inline-flex', alignItems: 'center', gap: 8, letterSpacing: '0.05em', textTransform: 'uppercase' }}
+            >
+              ← BACK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
