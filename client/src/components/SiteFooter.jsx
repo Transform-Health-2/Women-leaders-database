@@ -19,11 +19,11 @@ export default function SiteFooter() {
           maxWidth: '70%',
           width: '100%',
         }}>
-          <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-end' }}>
+          <div style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
 
-            {/* Left: links */}
+            {/* Left: links — two balanced columns */}
             <div style={{ flex: 1 }}>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 24px' }}>
                 {[
                   'Policies',
                   'Media Enquiries',
@@ -32,19 +32,17 @@ export default function SiteFooter() {
                   'Equity & Inclusion Dashboard',
                   'Privacy Policy',
                 ].map((link) => (
-                  <li key={link} style={{ marginBottom: 6 }}>
-                    <a href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>
-                      {link}
-                    </a>
-                  </li>
+                  <a key={link} href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>
+                    {link}
+                  </a>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* Right: newsletter */}
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: 20, fontWeight: 400, color: '#fff', marginBottom: 15, marginTop: 0 }}>
-                Subscribe to Transform Health's Newsletter: the Digest
+                Subscribe to our Newsletter
               </p>
               <div style={{ position: 'relative', maxWidth: 340 }}>
                 <input
