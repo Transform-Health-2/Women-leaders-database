@@ -4,8 +4,9 @@ export default function SiteHeader() {
       background: '#fffff4',
       padding: '15px 25px',
       width: '100%',
+      position: 'sticky',
+      top: 0,
       zIndex: 999,
-      borderBottom: '1px solid #e8e7c4',
       fontFamily: "'Montserrat', sans-serif",
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>

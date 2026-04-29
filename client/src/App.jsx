@@ -63,8 +63,8 @@ export default function App() {
     <div className="min-h-screen" style={{ background: 'rgb(255, 255, 244)' }}>
       <SiteHeader />
 
-      {showHero && (
-        <div style={{ background: 'rgb(255, 255, 244)', fontFamily: "'Montserrat', sans-serif" }}>
+      {showHero && route !== 'submit' && (
+        <div style={{ background: '#fffff4', fontFamily: "'Montserrat', sans-serif" }}>
           <div className="max-w-6xl mx-auto px-6 py-12">
             <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#000' }}>
               Transform Health · Women in Digital Health
@@ -80,16 +80,45 @@ export default function App() {
                 <div className="text-3xl font-bold text-black">81</div>
                 <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#333' }}>Leaders</div>
               </div>
-              <div style={{ borderLeft: '1px solid #e8c800', paddingLeft: 32 }}>
+              <div style={{ borderLeft: '1px solid #e8e7c4', paddingLeft: 32 }}>
                 <div className="text-3xl font-bold text-black">15</div>
                 <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#333' }}>Expertise Areas</div>
               </div>
-              <div style={{ borderLeft: '1px solid #e8c800', paddingLeft: 32 }}>
+              <div style={{ borderLeft: '1px solid #e8e7c4', paddingLeft: 32 }}>
                 <div className="text-3xl font-bold text-black">30+</div>
                 <div className="text-xs uppercase tracking-widest mt-1" style={{ color: '#333' }}>Organisations</div>
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {route === 'submit' && (
+        <div style={{ background: '#fffff4', fontFamily: "'Montserrat', sans-serif" }}>
+          {/* Text + illustrations in cream area */}
+          <div style={{ maxWidth: 1268, margin: '0 auto', padding: '48px 48px 40px', display: 'flex', alignItems: 'center', gap: 40 }}>
+            <img
+              src="/illustrations/hero-left.png"
+              alt=""
+              style={{ width: 260, height: 260, flexShrink: 0 }}
+            />
+            <div style={{ lineHeight: 1.05 }}>
+              <div style={{ fontWeight: 700, fontSize: 96, color: '#02598e', textTransform: 'uppercase' }}>Join</div>
+              <div style={{ fontWeight: 700, fontSize: 96, color: '#f97a1a', textTransform: 'uppercase' }}>The</div>
+              <div style={{ fontWeight: 700, fontSize: 96, color: '#f97a1a', textTransform: 'uppercase' }}>Database</div>
+            </div>
+            <img
+              src="/illustrations/hero-right.png"
+              alt=""
+              style={{ width: 240, height: 240, flexShrink: 0, marginLeft: 'auto' }}
+            />
+          </div>
+          {/* Pink swoosh — decorative bottom band */}
+          <div style={{
+            height: 100,
+            background: '#ec4899',
+            clipPath: 'polygon(0% 100%, 100% 0%, 100% 100%, 0% 100%)',
+          }} />
         </div>
       )}
 
