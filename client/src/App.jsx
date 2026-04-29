@@ -9,10 +9,10 @@ import SiteHeader from './components/SiteHeader'
 import SiteFooter from './components/SiteFooter'
 
 const NAV_ITEMS = [
-  { id: 'database', label: 'Database' },
-  { id: 'submit', label: 'Submit' },
-  { id: 'analytics', label: 'Analytics' },
-  { id: 'admin', label: 'Admin' },
+  { id: 'database', label: 'Database', display: 'DATABASE' },
+  { id: 'submit', label: 'Submit', display: 'SUBMIT PROFILE' },
+  { id: 'analytics', label: 'Analytics', display: 'ANALYTICS' },
+  { id: 'admin', label: 'Admin', display: 'ADMIN' },
 ]
 
 export default function App() {
@@ -93,42 +93,60 @@ export default function App() {
         </div>
       )}
 
-      <nav className="sticky top-0 z-50" style={{ background: '#FADF56', borderBottom: '1px solid #e8c800' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between h-12">
-            <div className="flex gap-1">
-              {NAV_ITEMS.filter(item => item.id !== 'admin').map((item) => (
+      <nav className="sticky top-0 z-50" style={{ background: '#FADF56' }}>
+        <div style={{ maxWidth: 1440, margin: '0 auto', padding: '32px 32px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+
+          {/* Main tabs */}
+          <div style={{ display: 'flex', gap: 32 }}>
+            {NAV_ITEMS.filter(item => item.id !== 'admin').map((item) => {
+              const active = route === item.id
+              return (
                 <button
                   key={item.id}
                   onClick={() => setRoute(item.id)}
-                  style={{ fontFamily: "'Montserrat', sans-serif", textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                    route === item.id
-                      ? 'bg-gray-800 text-white'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
+                  style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 500,
+                    fontSize: 24,
+                    letterSpacing: '0.03em',
+                    padding: '10px 28px',
+                    border: 'none',
+                    borderRadius: 0,
+                    cursor: 'pointer',
+                    background: active ? '#E8571D' : 'transparent',
+                    color: active ? '#fff' : '#000',
+                    clipPath: active ? 'polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)' : 'none',
+                    whiteSpace: 'nowrap',
+                    lineHeight: '28px',
+                  }}
                 >
-                  {item.label}
+                  {item.display}
                 </button>
-              ))}
-            </div>
-            <div>
-              {NAV_ITEMS.filter(item => item.id === 'admin').map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setRoute(item.id)}
-                  style={{ fontFamily: "'Montserrat', sans-serif", textTransform: 'uppercase', letterSpacing: '0.05em' }}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                    route === item.id
-                      ? 'bg-gray-800 text-white'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
+              )
+            })}
           </div>
+
+          {/* Admin — tucked to the right, smaller */}
+          <button
+            onClick={() => setRoute('admin')}
+            style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 500,
+              fontSize: 13,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              padding: '6px 14px',
+              marginBottom: 6,
+              border: `1px solid ${route === 'admin' ? 'transparent' : '#555'}`,
+              borderRadius: 4,
+              cursor: 'pointer',
+              background: route === 'admin' ? '#E8571D' : 'transparent',
+              color: route === 'admin' ? '#fff' : '#333',
+            }}
+          >
+            Admin
+          </button>
+
         </div>
       </nav>
       <main>
