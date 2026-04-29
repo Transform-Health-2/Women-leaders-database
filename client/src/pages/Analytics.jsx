@@ -218,7 +218,7 @@ export default function Analytics() {
 
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
-              Expertise Concentration
+              Specialisation
             </div>
             <div className="text-xs text-gray-500 mt-1">
               Based on {stats.total} verified profiles.
