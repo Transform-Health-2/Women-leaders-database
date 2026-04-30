@@ -28,11 +28,47 @@ const INITIAL_VISIBLE = 6;
 const EXPANDED_VISIBLE = 9;
 const PAGE_SIZE = 9;
 
+const CONTINENTS = [
+  "Africa",
+  "Asia",
+  "Europe",
+  "North America",
+  "South America",
+  "Oceania",
+];
+
+const COUNTRY_TO_CONTINENT = {
+  "South Africa": "Africa",
+  Nigeria: "Africa",
+  Kenya: "Africa",
+  Tanzania: "Africa",
+  Uganda: "Africa",
+  Ghana: "Africa",
+  Ethiopia: "Africa",
+  Rwanda: "Africa",
+  Senegal: "Africa",
+  India: "Asia",
+  Malaysia: "Asia",
+  China: "Asia",
+  Japan: "Asia",
+  France: "Europe",
+  "United Kingdom": "Europe",
+  Germany: "Europe",
+  Switzerland: "Europe",
+  "United States": "North America",
+  Canada: "North America",
+  Brazil: "South America",
+  Australia: "Oceania",
+};
+
 export default function Database({ onManageProfile }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [expertiseFilter, setExpertiseFilter] = useState("");
+  const [countryFilter, setCountryFilter] = useState("");
+  const [continentFilter, setContinentFilter] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -80,8 +116,35 @@ export default function Database({ onManageProfile }) {
       );
     }
 
+    if (countryFilter) {
+      result = result.filter((it) => it.country === countryFilter);
+    }
+
+    if (continentFilter) {
+      result = result.filter((it) => {
+        const continent = it.country ? COUNTRY_TO_CONTINENT[it.country] : null;
+        return continent === continentFilter;
+      });
+    }
+
+    if (sortBy === "az") {
+      result = [...result].sort((a, b) =>
+        (a.first_name || "").localeCompare(b.first_name || "")
+      );
+    } else if (sortBy === "za") {
+      result = [...result].sort((a, b) =>
+        (b.first_name || "").localeCompare(a.first_name || "")
+      );
+    } else if (sortBy === "latest") {
+      result = [...result].sort((a, b) => {
+        const aId = parseInt((a.id || "").replace(/\D/g, ""), 10) || 0;
+        const bId = parseInt((b.id || "").replace(/\D/g, ""), 10) || 0;
+        return bId - aId;
+      });
+    }
+
     return result;
-  }, [items, search, expertiseFilter]);
+  }, [items, search, expertiseFilter, countryFilter, continentFilter, sortBy]);
 
   const paginationActive =
     visibleCount >= EXPANDED_VISIBLE && filteredItems.length > EXPANDED_VISIBLE;
@@ -112,6 +175,9 @@ export default function Database({ onManageProfile }) {
   function clearFilters() {
     setSearch("");
     setExpertiseFilter("");
+    setCountryFilter("");
+    setContinentFilter("");
+    setSortBy("");
     setVisibleCount(INITIAL_VISIBLE);
     setCurrentPage(1);
   }
@@ -178,6 +244,57 @@ export default function Database({ onManageProfile }) {
               className="w-full px-4 py-2 border border-gray-300 rounded-full bg-gray-50 focus:bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
             />
           </div>
+
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setVisibleCount(INITIAL_VISIBLE);
+              setCurrentPage(1);
+            }}
+            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
+          >
+            <option value="">Sort by</option>
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+            <option value="latest">Latest</option>
+          </select>
+
+          <select
+            value={continentFilter}
+            onChange={(e) => {
+              setContinentFilter(e.target.value);
+              setVisibleCount(INITIAL_VISIBLE);
+              setCurrentPage(1);
+            }}
+            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
+          >
+            <option value="">All Continents</option>
+            {CONTINENTS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={countryFilter}
+            onChange={(e) => {
+              setCountryFilter(e.target.value);
+              setVisibleCount(INITIAL_VISIBLE);
+              setCurrentPage(1);
+            }}
+            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
+          >
+            <option value="">All Countries</option>
+            {Object.keys(COUNTRY_TO_CONTINENT)
+              .sort()
+              .map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+          </select>
 
           <select
             value={expertiseFilter}
