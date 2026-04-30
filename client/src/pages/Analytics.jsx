@@ -31,8 +31,8 @@ const REGION_MARKERS = [
   {
     key: "europe",
     coordinates: [10, 50],
-    dx: 75,
-    dy: -85,
+    dx: 60,
+    dy: 80,
   },
   {
     key: "sub_saharan_africa",
@@ -253,10 +253,10 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8 items-start">
-          <div className="lg:col-span-3" style={{ backgroundColor: "transparent" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8 items-stretch">
+          <div className="lg:col-span-3 flex flex-col" style={{ backgroundColor: "transparent" }}>
             <ComposableMap
-              projectionConfig={{ scale: 215, center: [-18, 2] }}
+              projectionConfig={{ scale: 215, center: [5, 5] }}
               width={900}
               height={520}
               style={{ width: "100%", height: "auto", backgroundColor: "transparent" }}
@@ -338,7 +338,10 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                 })}
               </ComposableMap>
 
-            <div className="relative mt-5">
+            <div className="relative mt-auto pt-5">
+              <p className="text-center text-[1.1rem] text-gray-400 mb-3 tracking-wide uppercase">
+                Select a region to explore
+              </p>
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
                 <div className="h-px border-t border-dashed border-[#F97A1A] opacity-50" />
               </div>
@@ -348,7 +351,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     key={region.key}
                     type="button"
                     onClick={() => setSelectedRegion(region.key)}
-                    className="flex flex-col items-center gap-2 text-center py-3"
+                    className="flex flex-col items-center gap-1 text-center py-3 px-2 rounded-lg hover:bg-[#F97A1A]/10 transition-colors cursor-pointer"
                   >
                     <span
                       className={`text-[1.1rem] font-semibold transition-colors ${
@@ -358,6 +361,9 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                       }`}
                     >
                       {REGION_LABELS[region.key]}
+                    </span>
+                    <span className="text-[1rem] text-gray-400">
+                      {regionTotals[region.key] || 0} leaders
                     </span>
                     <span
                       className={`w-3.5 h-3.5 rounded-full transition-colors ${
