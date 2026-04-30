@@ -137,11 +137,7 @@ export default function Database({ onManageProfile }) {
         (b.first_name || "").localeCompare(a.first_name || "")
       );
     } else if (sortBy === "latest") {
-      result = [...result].sort((a, b) => {
-        const aId = parseInt((a.id || "").replace(/\D/g, ""), 10) || 0;
-        const bId = parseInt((b.id || "").replace(/\D/g, ""), 10) || 0;
-        return bId - aId;
-      });
+      result = [...result].reverse();
     }
 
     return result;
