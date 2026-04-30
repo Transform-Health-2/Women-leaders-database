@@ -3,7 +3,6 @@ import axios from "axios";
 import { storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { compressImage } from "../utils/compressImage";
-import ManageProfile from "./ManageProfile";
 
 const EXPERTISE_TAGS = [
   "AI & Automation",
@@ -70,7 +69,6 @@ export default function Submit({ onManageProfile }) {
   const [yearsExp, setYearsExp] = useState("");
   const [status, setStatus] = useState("");
   const [showNoConsentModal, setShowNoConsentModal] = useState(false);
-  const [showManageModal, setShowManageModal] = useState(false);
 
   const charCount = bio.length;
 
@@ -727,7 +725,7 @@ export default function Submit({ onManageProfile }) {
                 <p style={{ fontSize: "1.4rem", color: "#444" }}>
                   Already in the database?{" "}
                   <button
-                    onClick={() => setShowManageModal(true)}
+                    onClick={() => onManageProfile(null)}
                     style={{
                       background: "none",
                       border: "none",
@@ -1937,86 +1935,6 @@ export default function Submit({ onManageProfile }) {
           )}
         </div>
       </div>
-
-      {showManageModal && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 60,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          {/* Dimmed backdrop — clicking it closes */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "rgba(0,0,0,0.5)",
-            }}
-            onClick={() => setShowManageModal(false)}
-          />
-          {/* Modal panel slides up from bottom, takes most of the screen */}
-          <div
-            style={{
-              position: "relative",
-              marginTop: "auto",
-              background: "rgb(255,255,244)",
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              maxHeight: "90vh",
-              display: "flex",
-              flexDirection: "column",
-              zIndex: 1,
-            }}
-          >
-            {/* Header */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "1.8rem 2.4rem",
-                borderBottom: "1px solid #e5e7eb",
-                fontFamily: "'Montserrat', sans-serif",
-                flexShrink: 0,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "1.6rem",
-                  fontWeight: 700,
-                  color: "#02598e",
-                }}
-              >
-                Manage profile
-              </span>
-              <button
-                onClick={() => setShowManageModal(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontSize: "2.2rem",
-                  color: "#666",
-                  lineHeight: 1,
-                  padding: 0,
-                }}
-              >
-                ×
-              </button>
-            </div>
-            {/* Scrollable content */}
-            <div style={{ overflowY: "auto", flex: 1 }}>
-              <ManageProfile
-                prefill={null}
-                onBack={() => setShowManageModal(false)}
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
       {showNoConsentModal && (
         <div

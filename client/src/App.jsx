@@ -18,6 +18,7 @@ const NAV_ITEMS = [
 export default function App() {
   const [route, setRoute] = useState("database");
   const [managePrefill, setManagePrefill] = useState(null);
+  const [showManageModal, setShowManageModal] = useState(false);
   const [tokenLoading, setTokenLoading] = useState(false);
   const [tokenError, setTokenError] = useState("");
 
@@ -37,7 +38,7 @@ export default function App() {
       .then((r) => {
         if (r.data?.ok && r.data?.profile) {
           setManagePrefill({ ...r.data.profile, _verified: true });
-          setRoute("manage");
+          setShowManageModal(true);
         } else {
           setTokenError(
             r.data?.error === "token_used"
@@ -52,12 +53,15 @@ export default function App() {
       .finally(() => setTokenLoading(false));
   }, []);
 
-  function goToManage(profile = null) {
+  function openManageModal(profile = null) {
     setManagePrefill(profile);
-    setRoute("manage");
+    setShowManageModal(true);
   }
 
-  const showHero = ["database", "submit", "analytics"].includes(route);
+  function closeManageModal() {
+    setShowManageModal(false);
+    setManagePrefill(null);
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#f5efe0" }}>
@@ -243,7 +247,8 @@ export default function App() {
               <button
                 onClick={() => {
                   setTokenError("");
-                  setRoute("manage");
+                  setManagePrefill(null);
+                  setShowManageModal(true);
                 }}
                 className="px-4 py-2 bg-gray-800 text-white rounded-full text-[1.4rem] font-medium hover:bg-gray-700"
               >
@@ -254,36 +259,52 @@ export default function App() {
         ) : (
           <>
             {route === "database" && (
-              <Database onManageProfile={(profile) => goToManage(profile)} />
+              <Database onManageProfile={openManageModal} />
             )}
             {route === "analytics" && (
               <Analytics
-                onManageProfile={() => goToManage()}
+                onManageProfile={openManageModal}
                 onGoToDirectory={() => setRoute("database")}
               />
             )}
             {route === "submit" && (
               <Submit
-                onManageProfile={() => goToManage()}
+                onManageProfile={openManageModal}
                 onGoToDirectory={() => setRoute("database")}
               />
             )}
             {route === "admin" && (
               <Admin onGoToDirectory={() => setRoute("database")} />
             )}
-            {route === "manage" && (
+          </>
+        )}
+
+        {showManageModal && (
+          <div
+            className="fixed inset-0 z-[100] flex items-end"
+            style={{ background: "rgba(0,0,0,0.4)" }}
+            onClick={closeManageModal}
+          >
+            <div
+              className="relative w-full max-w-2xl mx-auto max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl"
+              style={{ background: "rgb(255, 255, 244)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 z-10 flex justify-end p-4" style={{ background: "rgb(255, 255, 244)" }}>
+                <button
+                  onClick={closeManageModal}
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  style={{ fontSize: 20 }}
+                >
+                  ✕
+                </button>
+              </div>
               <ManageProfile
                 prefill={managePrefill}
-                onBack={() =>
-                  setRoute(
-                    managePrefill?._verified || managePrefill
-                      ? "database"
-                      : "submit"
-                  )
-                }
+                onBack={closeManageModal}
               />
-            )}
-          </>
+            </div>
+          </div>
         )}
       </main>
       {route !== "admin" && <SiteFooter />}
