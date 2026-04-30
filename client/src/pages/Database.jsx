@@ -69,6 +69,7 @@ export default function Database({ onManageProfile }) {
   const [countryFilter, setCountryFilter] = useState("");
   const [continentFilter, setContinentFilter] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -180,7 +181,30 @@ export default function Database({ onManageProfile }) {
     setSortBy("");
     setVisibleCount(INITIAL_VISIBLE);
     setCurrentPage(1);
+    setShowFilters(false);
   }
+
+  function toggleFilter(type, value) {
+    if (type === "continent") {
+      setContinentFilter(continentFilter === value ? "" : value);
+      if (continentFilter !== value) {
+        setCountryFilter("");
+      }
+    } else if (type === "country") {
+      setCountryFilter(countryFilter === value ? "" : value);
+    } else if (type === "expertise") {
+      setExpertiseFilter(expertiseFilter === value ? "" : value);
+    }
+    setVisibleCount(INITIAL_VISIBLE);
+    setCurrentPage(1);
+  }
+
+  const activeFilterCount = [continentFilter, countryFilter, expertiseFilter].filter(Boolean).length;
+
+  const allCountries = Object.keys(COUNTRY_TO_CONTINENT).sort();
+  const visibleCountries = continentFilter
+    ? allCountries.filter((c) => COUNTRY_TO_CONTINENT[c] === continentFilter)
+    : allCountries;
 
   function loadMore() {
     setVisibleCount((count) =>
@@ -228,9 +252,11 @@ export default function Database({ onManageProfile }) {
           position: "sticky",
           top: 0,
           zIndex: 40,
+          borderBottom: showFilters ? "none" : "1px solid #e5e7eb",
         }}
       >
-        <div className="max-w-[1440px] mx-auto px-8 py-3 flex flex-wrap gap-3 items-center">
+        {/* Row 1 — always visible */}
+        <div className="max-w-[1440px] mx-auto px-8 py-3 flex flex-wrap items-center gap-3">
           <div className="flex-1 min-w-[200px] max-w-[420px]">
             <input
               type="text"
@@ -241,7 +267,16 @@ export default function Database({ onManageProfile }) {
                 setVisibleCount(INITIAL_VISIBLE);
                 setCurrentPage(1);
               }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-full bg-gray-50 focus:bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
+              style={{
+                width: "100%",
+                padding: "1.0rem 1.6rem",
+                border: "1.5px solid #d1d5db",
+                borderRadius: 10,
+                fontSize: "1.6rem",
+                outline: "none",
+                background: "rgb(238, 243, 251)",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
@@ -252,7 +287,17 @@ export default function Database({ onManageProfile }) {
               setVisibleCount(INITIAL_VISIBLE);
               setCurrentPage(1);
             }}
-            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
+            style={{
+              padding: "1.0rem 1.6rem",
+              border: "1.5px solid #d1d5db",
+              borderRadius: 10,
+              fontSize: "1.4rem",
+              outline: "none",
+              background: "rgb(238, 243, 251)",
+              cursor: "pointer",
+              fontWeight: 600,
+              color: "#333",
+            }}
           >
             <option value="">Sort by</option>
             <option value="az">A → Z</option>
@@ -260,70 +305,242 @@ export default function Database({ onManageProfile }) {
             <option value="latest">Latest</option>
           </select>
 
-          <select
-            value={continentFilter}
-            onChange={(e) => {
-              setContinentFilter(e.target.value);
-              setVisibleCount(INITIAL_VISIBLE);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
-          >
-            <option value="">All Continents</option>
-            {CONTINENTS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={countryFilter}
-            onChange={(e) => {
-              setCountryFilter(e.target.value);
-              setVisibleCount(INITIAL_VISIBLE);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
-          >
-            <option value="">All Countries</option>
-            {Object.keys(COUNTRY_TO_CONTINENT)
-              .sort()
-              .map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-          </select>
-
-          <select
-            value={expertiseFilter}
-            onChange={(e) => {
-              setExpertiseFilter(e.target.value);
-              setVisibleCount(INITIAL_VISIBLE);
-              setCurrentPage(1);
-            }}
-            className="px-4 py-2 border border-gray-300 rounded-full bg-white focus:outline-none focus:border-gray-400 text-[1.6rem]"
-          >
-            <option value="">All Expertise</option>
-            {EXPERTISE_OPTIONS.map((exp) => (
-              <option key={exp} value={exp}>
-                {exp}
-              </option>
-            ))}
-          </select>
-
           <button
-            onClick={clearFilters}
-            className="px-4 py-2 border border-dashed border-gray-300 text-gray-600 hover:border-gray-400 rounded-full text-[1.4rem]"
+            onClick={() => setShowFilters(!showFilters)}
+            style={{
+              padding: "1.0rem 1.8rem",
+              border: "1.5px solid #02598e",
+              borderRadius: 10,
+              background: showFilters ? "#02598e" : "#fff",
+              color: showFilters ? "#fff" : "#02598e",
+              fontSize: "1.4rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              letterSpacing: "0.02em",
+            }}
           >
-            Clear ×
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+              <path d="M2 3h12M4 6.5h8M6 10h4M7.5 13h1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            Filters
+            {activeFilterCount > 0 && (
+              <span style={{
+                background: showFilters ? "rgba(255,255,255,0.25)" : "#02598e",
+                color: showFilters ? "#fff" : "#fff",
+                borderRadius: 10,
+                padding: "0.1rem 0.55rem",
+                fontSize: "1.2rem",
+                fontWeight: 700,
+                minWidth: 18,
+                textAlign: "center",
+              }}>
+                {activeFilterCount}
+              </span>
+            )}
           </button>
 
-          <div className="ml-auto text-[1.4rem] text-gray-600">
+          <div className="ml-auto text-[1.4rem] text-gray-600" style={{ fontWeight: 500 }}>
             {filteredItems.length} of {stats.total} leaders
           </div>
         </div>
+
+        {/* Active filter chips */}
+        {activeFilterCount > 0 && (
+          <div className="max-w-[1440px] mx-auto px-8 pb-3 flex flex-wrap items-center gap-2">
+            <span style={{ fontSize: "1.3rem", color: "#666", fontWeight: 500 }}>Active:</span>
+            {continentFilter && (
+              <span style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0.4rem 1.0rem",
+                borderRadius: 20,
+                background: "#02598e",
+                color: "#fff",
+                fontSize: "1.3rem",
+                fontWeight: 500,
+              }}>
+                {continentFilter}
+                <button
+                  onClick={() => toggleFilter("continent", continentFilter)}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", fontSize: "1.4rem", lineHeight: 1, padding: 0 }}
+                >×</button>
+              </span>
+            )}
+            {countryFilter && (
+              <span style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0.4rem 1.0rem",
+                borderRadius: 20,
+                background: "#02598e",
+                color: "#fff",
+                fontSize: "1.3rem",
+                fontWeight: 500,
+              }}>
+                {countryFilter}
+                <button
+                  onClick={() => toggleFilter("country", countryFilter)}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", fontSize: "1.4rem", lineHeight: 1, padding: 0 }}
+                >×</button>
+              </span>
+            )}
+            {expertiseFilter && (
+              <span style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "0.4rem 1.0rem",
+                borderRadius: 20,
+                background: "#02598e",
+                color: "#fff",
+                fontSize: "1.3rem",
+                fontWeight: 500,
+              }}>
+                {expertiseFilter}
+                <button
+                  onClick={() => toggleFilter("expertise", expertiseFilter)}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", fontSize: "1.4rem", lineHeight: 1, padding: 0 }}
+                >×</button>
+              </span>
+            )}
+            <button
+              onClick={clearFilters}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "1.3rem",
+                color: "#02598e",
+                fontWeight: 600,
+                textDecoration: "underline",
+                padding: "0.4rem 0",
+              }}
+            >
+              Clear all
+            </button>
+          </div>
+        )}
+
+        {/* Row 2 — collapsible filter panel */}
+        {showFilters && (
+          <div style={{
+            background: "rgb(255, 255, 244)",
+            borderTop: "1px solid #e5e7eb",
+            padding: "2.4rem 2.4rem 2rem",
+          }}>
+            <div className="max-w-[1440px] mx-auto space-y-5">
+              {/* Continent */}
+              <div>
+                <label style={{
+                  display: "block",
+                  fontSize: "1.6rem",
+                  color: "#111",
+                  marginBottom: 12,
+                  fontWeight: 600,
+                }}>
+                  Continent
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {CONTINENTS.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => toggleFilter("continent", c)}
+                      style={{
+                        padding: "0.8rem 1.4rem",
+                        borderRadius: 20,
+                        fontSize: "1.4rem",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        border: continentFilter === c
+                          ? "1.5px solid #02598e"
+                          : "1.5px solid #d1d5db",
+                        background: continentFilter === c ? "#02598e" : "#fff",
+                        color: continentFilter === c ? "#fff" : "#333",
+                      }}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Country */}
+              <div>
+                <label style={{
+                  display: "block",
+                  fontSize: "1.6rem",
+                  color: "#111",
+                  marginBottom: 12,
+                  fontWeight: 600,
+                }}>
+                  Country{continentFilter ? ` — ${continentFilter}` : ""}
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {visibleCountries.map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => toggleFilter("country", c)}
+                      style={{
+                        padding: "0.8rem 1.4rem",
+                        borderRadius: 20,
+                        fontSize: "1.4rem",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        border: countryFilter === c
+                          ? "1.5px solid #02598e"
+                          : "1.5px solid #d1d5db",
+                        background: countryFilter === c ? "#02598e" : "#fff",
+                        color: countryFilter === c ? "#fff" : "#333",
+                      }}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Expertise */}
+              <div>
+                <label style={{
+                  display: "block",
+                  fontSize: "1.6rem",
+                  color: "#111",
+                  marginBottom: 12,
+                  fontWeight: 600,
+                }}>
+                  Expertise
+                </label>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {EXPERTISE_OPTIONS.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => toggleFilter("expertise", tag)}
+                      style={{
+                        padding: "0.8rem 1.4rem",
+                        borderRadius: 20,
+                        fontSize: "1.4rem",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        border: expertiseFilter === tag
+                          ? "1.5px solid #02598e"
+                          : "1.5px solid #d1d5db",
+                        background: expertiseFilter === tag ? "#02598e" : "#fff",
+                        color: expertiseFilter === tag ? "#fff" : "#333",
+                      }}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="max-w-[1440px] mx-auto px-8 py-6">
