@@ -126,9 +126,52 @@ client/src/
 
 ## TODO / Backlog
 
-1. Add CONTRIBUTING.md with profile submission guidelines and PR workflow
-2. Add formal data model and import script for bootstrapping the directory
-3. Add project license and contact information
-4. Add end-to-end testing for submission and admin flows
-5. Enhance analytics with more granular metrics
-6. Add user authentication for admin console
+### Before Monday (Pilot-Ready) — Low Hanging Fruit
+*Each is 30–60 min, completed items marked ✅*
+
+| # | Task | Status | Notes |
+|---|---|---|---|
+| 1 | **Specialisation: add "Other" + raise limit 3→5** | ✅ Done `dc716e4` | One array change + input field in Submit.jsx |
+| 2 | **Bio character limit 300–500** | ✅ Done `04c1c5f` | Changed validation + label |
+| 3 | **Firebase 5MB cap** | ✅ Done (code exists) | Client-side check before upload in compressImage.js |
+| 4 | **Regions of operation field** | ✅ Done (multi-select exists) | `selectedCountries` state in Submit.jsx |
+| 5 | **Optional country field on Submit** | ✅ Done | Email field added `04c1c5f`, country optional |
+| 6 | **Directory dropdown filters** | ✅ Done `b21b3ed` | Swapped chips for `<select>` elements on main row |
+| 7 | **Icons on profile card name/title** | ✅ Done `7beb4ed` | User, building, location pin icons added |
+
+### Moderate — This Weekend (~2–4 hrs each)
+
+| # | Task | Why Harder | Status |
+|---|---|---|---|
+| 8 | **Profile detail modal** | New component, needs to pull all fields and lay them out well | ⏳ Pending |
+| 9 | **Analytics region → show leader cards below map** | Need to wire `selectedRegion` into a filtered list render | ⏳ Pending |
+| 10 | **Admin view new fields** | Extend existing admin card — no new backend, just UI columns | ⏳ Pending |
+
+### Post-Pilot (Needs Backend / External Services)
+
+| # | Task | Why It Takes More Time |
+|---|---|---|
+| 11 | **Google Sheets integration** | Needs a backend proxy or Apps Script web app — can't call Sheets API direct from browser securely |
+| 12 | **SMTP email notifications** | Needs a server (Firebase Function or Node endpoint), email service config, template design |
+| 13 | **Click-through analytics** | Needs an analytics service (Plausible / GA4) or custom event logging — not a one-liner |
+
+### Code Quality / Technical Debt (From Audit)
+
+| # | Task | Priority |
+|---|---|---|
+| 14 | **Compress Card-top.svg** (1.95MB → <100KB) | 🔴 High — blocks LCP |
+| 15 | **Replace inline styles with Tailwind classes** | 🔴 High — 90% inline styles in Submit.jsx |
+| 16 | **Create reusable UI components** (Button, Input, LeaderCard) | 🔴 High — duplicated in Database/Analytics |
+| 17 | **Centralize API layer** (client/src/api/index.js) | 🔴 High — scattered Axios calls |
+| 18 | **Extract monolithic pages** (Submit.jsx 2000+ lines → steps) | 🔴 High — untestable |
+| 19 | **Add useLeaders / useAdminData custom hooks** | 🟡 Medium — no caching currently |
+| 20 | **Configure tailwind.config.js** with design tokens | 🟡 Medium — arbitrary values everywhere |
+| 21 | **Add React Query / SWR for data fetching** | 🟡 Medium — no caching/stale-while-revalidate |
+| 22 | **Accessibility audit** (aria-labels, focus trap, keyboard nav) | 🟢 Low — fails WCAG 2.1 AA |
+| 23 | **Code splitting / lazy loading** | 🟢 Low — all 4 pages bundled initially |
+
+### Recommended Order for Thursday–Sunday
+- **Today (Thursday):** Items 8–9 (profile modal, analytics region filter)
+- **Friday:** Item 10 (admin view new fields)
+- **Weekend:** Start technical debt items 14–17 (SVG compression, Tailwind migration, reusable components)
+- **Post-pilot:** Items 11–13 (Sheets, SMTP, Analytics)
