@@ -270,20 +270,28 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-6 relative z-10">
             <div>
               <div
-                className="text-[2.4rem] font-bold text-white tracking-tight"
-                style={{ letterSpacing: "-0.042em" }}
+                className="text-[2.4rem] font-bold tracking-tight"
+                style={{ letterSpacing: "-0.042em", color: "#24588A" }}
               >
                 Emerging Voices in Practice
-              </div>
-              <div className="text-[1.4rem] text-gray-400 mt-1.5 max-w-lg leading-relaxed">
-                Dynamic leaders driving localised equity initiatives across our
-                global network.
               </div>
             </div>
             <div className="flex-shrink-0">
               <button
                 onClick={() => onGoToDirectory?.()}
-                className="px-5 py-3 rounded-full bg-white text-gray-900 text-[1.2rem] font-semibold uppercase tracking-wider hover:bg-gray-100 transition"
+                style={{
+                  padding: "1.2rem 2.4rem",
+                  borderRadius: 12,
+                  textAlign: "center",
+                  cursor: "pointer",
+                  background: "#fff",
+                  border: "2px solid #e5e7eb",
+                  fontWeight: 600,
+                  fontSize: "1.2rem",
+                  color: "#111",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                }}
               >
                 View Directory
               </button>
