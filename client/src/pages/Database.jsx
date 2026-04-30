@@ -345,6 +345,39 @@ export default function Database({ onManageProfile }) {
             ))}
           </select>
 
+          {((search || sortBy || continentFilter || countryFilter || expertiseFilter)) && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setSortBy("");
+                setContinentFilter("");
+                setCountryFilter("");
+                setExpertiseFilter("");
+                setVisibleCount(INITIAL_VISIBLE);
+                setCurrentPage(1);
+              }}
+              style={{
+                padding: "1.0rem 1.8rem",
+                border: "1.5px solid #ef4444",
+                borderRadius: 10,
+                background: "#fff",
+                color: "#ef4444",
+                fontSize: "1.4rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                letterSpacing: "0.02em",
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M12 4L4 12M4 4l8 8"/>
+              </svg>
+              Clear
+            </button>
+          )}
+
           <div className="ml-auto text-[1.4rem] text-gray-600" style={{ fontWeight: 500 }}>
             {filteredItems.length} of {stats.total} leaders
           </div>
