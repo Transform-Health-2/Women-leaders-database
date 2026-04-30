@@ -1,44 +1,134 @@
-# Transform Health Directory
+# Transform Health Women Leaders Directory
 
-A small static website and wireframes for the "Women Leaders in Digital Health" directory — a project to increase visibility, representation, and engagement of women leaders across leadership, policy, and technical spaces.
+A project to increase visibility, representation, and engagement of women leaders across leadership, policy, and technical spaces in digital health.
 
-## Status
+## Project Structure
 
-- Prototype / static site (HTML wireframes and landing pages).
+- **`client/`** — React + Vite frontend application
+- **`apps-script/`** — Google Apps Script backend for Google Sheets integration (deploy docs: [apps-script/README_DEPLOY.md](./apps-script/README_DEPLOY.md))
+- **`.github/workflows/`** — GitHub Actions for automatic deployment to GitHub Pages
 
-## Contents
+---
 
-- `index.html` — main landing page
-- `public/` — assets and wireframe pages
-	- `analytics-landing.html` — analytics landing wireframe
-	- `wireframe-admin.html` — admin wireframe
-	- `wireframe-directory.html` — directory wireframe
-	- `wireframe-submit.html` — submission form wireframe
-	- images (logos)
+## Client App — Quick Start
 
-## Local preview
+### 1) Install dependencies
 
-You can preview the site by opening `index.html` in your browser, or serve it from a simple local HTTP server:
-
-```
-python3 -m http.server 8000
-# then open http://localhost:8000
+```bash
+cd client
+npm install
 ```
 
-## Purpose
+### 2) Configure environment
 
-This repository holds the static UI prototypes and content for the Transform Health Directory. The wireframes demonstrate flows for submitting entries, browsing the directory, and admin analytics.
+Copy `.env.example` to `.env`:
 
-The client app also includes an admin console for reviewing pending member submissions, handling profile requests, and managing published directory entries. The admin route is presented as a standalone panel with its own header/footer separate from the public site layout.
+```bash
+cp .env.example .env
+```
 
-## Next steps (suggested)
+Set `VITE_APPS_SCRIPT_URL` to your deployed Apps Script web app URL (see `apps-script/README_DEPLOY.md`).
 
-1. Convert wireframes into a single-page app or server-rendered site with a backend (API + database) for storing entries.
-2. Add a CONTRIBUTING.md with guidelines for adding profiles and PR workflow.
-3. Add a simple data model and import script for bootstrapping the directory.
-4. Add license and contact information.
+The app works without this variable — it falls back to mock data for local development.
 
-## Contact
+### 3) Firebase Setup (profile photos)
 
-If you'd like me to update content, scaffold a backend, or add a CONTRIBUTING guide, tell me which piece to work on next.
+Profile photos are uploaded to Firebase Storage. Configure these in your `.env`:
 
+```
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+**Setup steps:**
+1. Create a Firebase project at [firebase.google.com](https://firebase.google.com)
+2. Register a web app and copy the config values
+3. Enable Storage (start in test mode)
+4. Add the values to `.env`
+
+**Photo handling:**
+- Images are compressed client-side (max 600px longest edge, ~80% JPEG quality)
+- Typical file size stays under 200KB
+- Stored in Firebase Storage under `/profile-photos/<timestamp>-<name>.jpg`
+
+### 4) Local development
+
+```bash
+npm run dev
+```
+
+### 5) Build for GitHub Pages
+
+```bash
+npm run build
+```
+
+The `dist/` folder is published to GitHub Pages via `.github/workflows/deploy.yml` on every push to `main`.
+
+---
+
+## Client App — Project Structure
+
+```
+client/src/
+├── App.jsx              # Main app with routing and navigation
+├── main.jsx             # Entry point
+├── firebase.js          # Firebase Storage initialization
+├── components/
+│   ├── SiteHeader.jsx   # Top header bar
+│   └── SiteFooter.jsx   # Footer
+├── pages/
+│   ├── Database.jsx     # Public directory with search/filter
+│   ├── Submit.jsx       # Multi-step submission form
+│   ├── ManageProfile.jsx # Update/remove profile flow
+│   ├── Analytics.jsx    # Statistics and world map
+│   └── Admin.jsx        # Admin console (pending, requests, all entries with search, filter, review details)
+├── data/
+│   └── mockData.js      # Mock leader data for development
+└── utils/
+    └── compressImage.js # Client-side image compression
+```
+
+## Admin Console
+
+- Standalone admin route with a dedicated admin header/footer and no public site nav/footer.
+- Pending review includes a searchable, filterable list of submissions with expandable detail panels.
+- Requests and profile update/delete flows are surfaced in a dedicated Requests tab with inline action buttons.
+- All entries view supports sort order, pagination, and status badges for live/pending/rejected.
+- The sidebar includes a refresh action and a quick "View directory" link back to the public database.
+- Summary metrics surface pending, live, and rejected counts at the top of the console.
+
+## Tech Stack
+
+- **Framework:** React 18 + Vite
+- **Styling:** Inline styles (primary) + Tailwind CSS (limited use)
+- **Maps:** react-simple-maps
+- **HTTP:** Axios
+- **Storage:** Firebase Storage (profile photos)
+- **Backend:** Google Apps Script
+- **Database:** Google Sheets
+- **Deployment:** GitHub Pages
+
+## Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build locally |
+| `npm run format` | Format code with Prettier |
+
+---
+
+## TODO / Backlog
+
+1. Add CONTRIBUTING.md with profile submission guidelines and PR workflow
+2. Add formal data model and import script for bootstrapping the directory
+3. Add project license and contact information
+4. Add end-to-end testing for submission and admin flows
+5. Enhance analytics with more granular metrics
+6. Add user authentication for admin console

@@ -295,8 +295,12 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                   className="relative cursor-pointer rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
                   style={{ border: "1px solid #e5e7eb" }}
                 >
-                  {/* Dark header */}
-                  <div className="h-[120px]" style={{ background: "#333333" }} />
+                  {/* Card top SVG header */}
+                  <img
+                    src="/illustrations/Card-top.svg"
+                    alt="Card top illustration"
+                    className="w-full h-[120px] object-cover"
+                  />
 
                   {/* Profile photo — straddles header/body boundary */}
                   <div
@@ -319,13 +323,15 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                           {getInitials(l.first_name, l.last_name)}
                         </div>
                       )}
-                      {l.linkedin && (
+                      {l.linkedin?.trim() && (
                         <a
                           href={l.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="absolute bottom-0 right-[-4px] w-[28px] h-[28px] rounded-full bg-[#02598E] flex items-center justify-center hover:bg-[#024a75] transition-colors"
                           aria-label="LinkedIn"
+                          title="Open LinkedIn profile"
                         >
                           <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                             <path d="M10.5 5.5C11.563 5.5 12.583 5.921 13.334 6.672C14.085 7.423 14.5 8.437 14.5 9.5V14H12.5V9.5C12.5 8.97 12.289 8.461 11.914 8.086C11.539 7.711 11.03 7.5 10.5 7.5C9.97 7.5 9.461 7.711 9.086 8.086C8.711 8.461 8.5 8.97 8.5 9.5V14H6.5V9.5C6.5 8.437 6.915 7.423 7.666 6.672C8.417 5.921 9.437 5.5 10.5 5.5Z" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -381,9 +387,12 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                       ) : (
                         <span />
                       )}
-                      <span className="text-[1.3rem] text-[#02598E] font-medium">
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center gap-2 w-[134px] h-[40px] bg-[#F85A8E] rounded-[20px] text-white text-[1.3rem] font-medium flex-none order-2"
+                      >
                         Read more →
-                      </span>
+                      </button>
                     </div>
                   </div>
                 </div>
