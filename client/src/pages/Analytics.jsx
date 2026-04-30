@@ -3,7 +3,7 @@ import {
   ComposableMap,
   Geographies,
   Geography,
-  Marker,
+  Annotation,
 } from "react-simple-maps";
 import { MOCK_LEADERS } from "../data/mockData";
 
@@ -16,11 +16,36 @@ const REGION_LABELS = {
 };
 
 const REGION_MARKERS = [
-  { key: "north_america", coordinates: [-100, 40] },
-  { key: "latin_america", coordinates: [-60, -10] },
-  { key: "europe", coordinates: [10, 50] },
-  { key: "sub_saharan_africa", coordinates: [20, 5] },
-  { key: "south_asia", coordinates: [80, 20] },
+  {
+    key: "north_america",
+    coordinates: [-95, 40],
+    dx: -105,
+    dy: -90,
+  },
+  {
+    key: "latin_america",
+    coordinates: [-55, -10],
+    dx: -55,
+    dy: 80,
+  },
+  {
+    key: "europe",
+    coordinates: [10, 50],
+    dx: 75,
+    dy: -85,
+  },
+  {
+    key: "sub_saharan_africa",
+    coordinates: [20, 5],
+    dx: 60,
+    dy: 55,
+  },
+  {
+    key: "south_asia",
+    coordinates: [80, 20],
+    dx: 85,
+    dy: -55,
+  },
 ];
 
 const COUNTRY_TO_REGION = {
@@ -63,22 +88,28 @@ function TBC() {
 const GEO_URL =
   "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-const GRAYS = [
-  "#18181b",
-  "#27272a",
-  "#3f3f46",
-  "#52525b",
-  "#71717a",
-  "#a1a1aa",
-  "#d4d4d8",
-  "#e4e4e7",
-  "#f4f4f5",
+const BAR_COLORS = [
+  "#F97316",
+  "#18181B",
+  "#1E3A5F",
+  "#EAB308",
+  "#22C55E",
+  "#38BDF8",
+  "#EC4899",
+  "#166534",
 ];
 
 const FEATURED_IDS = ["th_38", "th_46", "th_52", "th_80"];
 
 function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
+}
+
+function toTitleCase(str) {
+  return str.replace(/\b\w+/g, (word) => {
+    if (word.toUpperCase() === "AI") return "AI";
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
 }
 
 export default function Analytics({ onManageProfile, onGoToDirectory }) {
@@ -100,15 +131,14 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
 
   const barData = useMemo(() => {
     const entries = Object.entries(stats.expertiseCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8);
+      .filter(([name]) => !name.includes(","))
+      .sort((a, b) => b[1] - a[1]);
     const max = entries[0]?.[1] || 1;
     return entries.map(([name, count], i) => ({
       name,
       count,
-      pct: Math.round((count / stats.total) * 100),
       barPct: Math.round((count / max) * 100),
-      color: GRAYS[2 + (i % (GRAYS.length - 4))],
+      color: BAR_COLORS[i % BAR_COLORS.length],
     }));
   }, [stats]);
 
@@ -223,15 +253,14 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6">
-            <div className="rounded-3xl overflow-hidden">
-              <ComposableMap
-                projectionConfig={{ scale: 147, center: [10, 10] }}
-                width={800}
-                height={400}
-                style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
-              >
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8 items-start">
+          <div className="lg:col-span-3" style={{ backgroundColor: "transparent" }}>
+            <ComposableMap
+              projectionConfig={{ scale: 215, center: [-18, 2] }}
+              width={900}
+              height={520}
+              style={{ width: "100%", height: "auto", backgroundColor: "transparent" }}
+            >
                 <Geographies geography={GEO_URL}>
                   {({ geographies }) =>
                     geographies.map((geo) => {
@@ -260,27 +289,54 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                   const count = regionTotals[marker.key] || 0;
                   if (!count) return null;
                   return (
-                    <Marker key={marker.key} coordinates={marker.coordinates}>
-                      <text
-                        textAnchor="middle"
-                        y={0}
-                        style={{
-                          fontSize: 16,
-                          fontWeight: 700,
-                          fill: "#ffffff",
-                          stroke: "#000000",
-                          strokeWidth: 0.2,
-                          paintOrder: "stroke fill",
-                          fontFamily: "system-ui",
-                        }}
-                      >
-                        {count}
-                      </text>
-                    </Marker>
+                    <Annotation
+                      key={marker.key}
+                      subject={marker.coordinates}
+                      dx={marker.dx}
+                      dy={marker.dy}
+                      connectorProps={{
+                        stroke: "#F8571D",
+                        strokeWidth: 1.5,
+                        strokeLinecap: "round",
+                      }}
+                    >
+                      <g>
+                        <rect
+                          x="-62"
+                          y="-26"
+                          width="124"
+                          height="48"
+                          rx="10"
+                          fill="#F8571D"
+                        />
+                        <text
+                          textAnchor="middle"
+                          y="-8"
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            fill: "#ffffff",
+                            fontFamily: "system-ui",
+                          }}
+                        >
+                          {REGION_LABELS[marker.key]}
+                        </text>
+                        <text
+                          textAnchor="middle"
+                          y="11"
+                          style={{
+                            fontSize: 11,
+                            fill: "#ffffff",
+                            fontFamily: "system-ui",
+                          }}
+                        >
+                          {count} Leaders
+                        </text>
+                      </g>
+                    </Annotation>
                   );
                 })}
               </ComposableMap>
-            </div>
 
             <div className="relative mt-5">
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
@@ -316,42 +372,33 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="text-[1.2rem] font-semibold text-gray-900 uppercase tracking-wider mb-1">
+          <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 flex flex-col">
+            <div className="text-[1.2rem] font-semibold text-gray-500 uppercase tracking-wider mb-2">
               Specialisation
             </div>
-            <div className="text-[1.4rem] text-gray-600 mt-1 mb-4">
-              Based on {stats.total} verified profiles.
+            <div
+              className="text-[1.8rem] font-bold leading-snug mb-4"
+              style={{ color: "#24588A" }}
+            >
+              Based on the {stats.total} verified profiles
             </div>
 
-            <div className="mt-5">
+            <div className="flex-1 space-y-3">
               {barData.map((d) => (
-                <div key={d.name} className="mb-4 last:mb-0">
-                  <div className="flex justify-between text-[1.4rem] font-semibold text-gray-800 mb-1">
-                    <span className="truncate pr-3">{shortLabel(d.name)}</span>
-                    <span className="text-gray-900 flex-shrink-0">
-                      {d.count}{" "}
-                      <span className="text-gray-600 font-normal">
-                        ({d.pct}%)
-                      </span>
-                    </span>
+                <div key={d.name}>
+                  <div className="flex justify-between items-baseline text-[1.35rem] mb-1">
+                    <span className="font-medium text-gray-800">{toTitleCase(d.name)}</span>
+                    <span className="font-bold text-gray-900 flex-shrink-0 ml-3">{d.count}</span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+                  <div className="h-[5px] bg-gray-100 rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-700"
-                      style={{
-                        width: `${d.barPct}%`,
-                        backgroundColor: d.color,
-                      }}
+                      style={{ width: `${d.barPct}%`, backgroundColor: d.color }}
                     />
                   </div>
                 </div>
               ))}
             </div>
-
-            <button className="w-full mt-5 py-2 border border-dashed border-gray-300 rounded-full text-[1.2rem] font-semibold text-gray-600 uppercase tracking-wider hover:border-gray-400 transition-colors">
-              View Full Taxonomy
-            </button>
           </div>
         </div>
 
