@@ -297,7 +297,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                 >
                   {/* Card top SVG header */}
                   <img
-                    src="/illustrations/Card-top.svg"
+                    src="./illustrations/Card-top.svg"
                     alt="Card top illustration"
                     className="w-full h-[120px] object-cover"
                   />
