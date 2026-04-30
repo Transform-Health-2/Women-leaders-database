@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -6,6 +6,55 @@ import {
   Marker,
 } from "react-simple-maps";
 import { MOCK_LEADERS } from "../data/mockData";
+
+const REGION_LABELS = {
+  north_america: "North America",
+  latin_america: "Latin America",
+  europe: "Europe",
+  sub_saharan_africa: "Sub-Saharan Africa",
+  south_asia: "South & SE Asia",
+};
+
+const REGION_MARKERS = [
+  { key: "north_america", coordinates: [-100, 40] },
+  { key: "latin_america", coordinates: [-60, -10] },
+  { key: "europe", coordinates: [10, 50] },
+  { key: "sub_saharan_africa", coordinates: [20, 5] },
+  { key: "south_asia", coordinates: [80, 20] },
+];
+
+const COUNTRY_TO_REGION = {
+  "United States": "north_america",
+  Canada: "north_america",
+  Mexico: "north_america",
+  Brazil: "latin_america",
+  Argentina: "latin_america",
+  Colombia: "latin_america",
+  Peru: "latin_america",
+  Chile: "latin_america",
+  France: "europe",
+  "United Kingdom": "europe",
+  Germany: "europe",
+  Switzerland: "europe",
+  Spain: "europe",
+  Italy: "europe",
+  Netherlands: "europe",
+  "South Africa": "sub_saharan_africa",
+  Nigeria: "sub_saharan_africa",
+  Kenya: "sub_saharan_africa",
+  Tanzania: "sub_saharan_africa",
+  Uganda: "sub_saharan_africa",
+  Ghana: "sub_saharan_africa",
+  Ethiopia: "sub_saharan_africa",
+  Rwanda: "sub_saharan_africa",
+  Senegal: "sub_saharan_africa",
+  India: "south_asia",
+  Pakistan: "south_asia",
+  Bangladesh: "south_asia",
+  "Sri Lanka": "south_asia",
+  Nepal: "south_asia",
+  Bhutan: "south_asia",
+};
 
 function TBC() {
   return <span className="text-gray-600 italic text-[1.4rem]">TBC</span>;
@@ -71,12 +120,39 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     return shuffled.slice(0, 3);
   }, []);
 
+  const [selectedRegion, setSelectedRegion] = useState("latin_america");
+
   const countryCounts = useMemo(() => {
     const counts = {};
     MOCK_LEADERS.forEach((m) => {
       if (m.country) counts[m.country] = (counts[m.country] || 0) + 1;
     });
     return counts;
+  }, []);
+
+  const countryRegionMap = useMemo(() => {
+    const map = {};
+    Object.keys(countryCounts).forEach((countryName) => {
+      const regionKey = COUNTRY_TO_REGION[countryName];
+      if (regionKey) map[countryName] = regionKey;
+    });
+    return map;
+  }, [countryCounts]);
+
+  const regionTotals = useMemo(() => {
+    const totals = {
+      north_america: 0,
+      latin_america: 0,
+      europe: 0,
+      sub_saharan_africa: 0,
+      south_asia: 0,
+    };
+    MOCK_LEADERS.forEach((m) => {
+      const countryName = m.country?.trim();
+      const regionKey = m.region || COUNTRY_TO_REGION[countryName];
+      if (regionKey) totals[regionKey] = (totals[regionKey] || 0) + 1;
+    });
+    return totals;
   }, []);
 
   function countryFill(count) {
@@ -142,35 +218,36 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           >
             Key Highlights from the Database
           </h2>
-          <p className="text-[1.6rem] text-gray-600 mt-2 max-w-xl leading-relaxed">
-            Overview of expertise distribution, demographic representation, and
-            leadership density across the network.
+          <p className="text-[1.6rem] text-gray-600 mt-2 leading-relaxed">
+            Overview of expertise distribution, demographic representation, and leadership density across the network.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6">
-            <div className="bg-gray-100 rounded-md" style={{ height: 360 }}>
+            <div className="rounded-3xl overflow-hidden">
               <ComposableMap
                 projectionConfig={{ scale: 147, center: [10, 10] }}
                 width={800}
                 height={400}
-                style={{ width: "100%", height: "100%" }}
+                style={{ width: "100%", height: "100%", backgroundColor: "transparent" }}
               >
                 <Geographies geography={GEO_URL}>
                   {({ geographies }) =>
                     geographies.map((geo) => {
-                      const count = countryCounts[geo.properties.name] || 0;
+                      const countryName = geo.properties.name;
+                      const regionKey = countryRegionMap[countryName];
+                      const fill = regionKey === selectedRegion ? "#F97A1A" : "#D4D4D8";
                       return (
                         <Geography
                           key={geo.rsmKey}
                           geography={geo}
-                          fill={count > 0 ? countryFill(count) : "#d1d5db"}
-                          stroke="#fff"
-                          strokeWidth={0.4}
+                          fill={fill}
+                          stroke="#FFFFFF"
+                          strokeWidth={0.7}
                           style={{
                             default: { outline: "none" },
-                            hover: { outline: "none", opacity: 0.75 },
+                            hover: { outline: "none", opacity: 0.85 },
                             pressed: { outline: "none" },
                           }}
                         />
@@ -178,42 +255,63 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     })
                   }
                 </Geographies>
-                {markerData.map((m) => (
-                  <Marker key={m.name} coordinates={m.coordinates}>
-                    <circle
-                      r={m.r}
-                      fill="#18181b"
-                      opacity={0.85}
-                      stroke="#fff"
-                      strokeWidth={1}
-                    />
-                    <text
-                      textAnchor="middle"
-                      y={-m.r - 3}
-                      style={{
-                        fontSize: 5,
-                        fontWeight: 700,
-                        fill: "#18181b",
-                        fontFamily: "system-ui",
-                      }}
-                    >
-                      {m.name} ({m.count})
-                    </text>
-                  </Marker>
-                ))}
+                {REGION_MARKERS.map((marker) => {
+                  if (marker.key !== selectedRegion) return null;
+                  const count = regionTotals[marker.key] || 0;
+                  if (!count) return null;
+                  return (
+                    <Marker key={marker.key} coordinates={marker.coordinates}>
+                      <text
+                        textAnchor="middle"
+                        y={0}
+                        style={{
+                          fontSize: 16,
+                          fontWeight: 700,
+                          fill: "#ffffff",
+                          stroke: "#000000",
+                          strokeWidth: 0.2,
+                          paintOrder: "stroke fill",
+                          fontFamily: "system-ui",
+                        }}
+                      >
+                        {count}
+                      </text>
+                    </Marker>
+                  );
+                })}
               </ComposableMap>
             </div>
 
-            <div className="flex gap-4 mt-2">
-              <div className="flex items-center gap-1.5 text-[1.1rem] font-medium text-gray-600">
-                <div className="w-3 h-3 rounded-sm bg-gray-300" /> No members
-                yet
+            <div className="relative mt-5">
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
+                <div className="h-px border-t border-dashed border-[#F97A1A] opacity-50" />
               </div>
-              <div className="flex items-center gap-1.5 text-[1.1rem] font-medium text-gray-600">
-                <div className="w-3 h-3 rounded-sm bg-gray-500" /> 1–2 members
-              </div>
-              <div className="flex items-center gap-1.5 text-[1.1rem] font-medium text-gray-600">
-                <div className="w-3 h-3 rounded-sm bg-gray-800" /> 3+ members
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 relative z-10">
+                {REGION_MARKERS.map((region) => (
+                  <button
+                    key={region.key}
+                    type="button"
+                    onClick={() => setSelectedRegion(region.key)}
+                    className="flex flex-col items-center gap-2 text-center py-3"
+                  >
+                    <span
+                      className={`text-[1.1rem] font-semibold transition-colors ${
+                        selectedRegion === region.key
+                          ? "text-[#F8571D]"
+                          : "text-[#334155]"
+                      }`}
+                    >
+                      {REGION_LABELS[region.key]}
+                    </span>
+                    <span
+                      className={`w-3.5 h-3.5 rounded-full transition-colors ${
+                        selectedRegion === region.key
+                          ? "bg-[#F8571D]"
+                          : "bg-[#F97A1A]/30"
+                      }`}
+                    />
+                  </button>
+                ))}
               </div>
             </div>
           </div>
