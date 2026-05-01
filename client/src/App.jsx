@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import axios from "axios";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Database from "./pages/Database";
-import Submit from "./pages/Submit";
-import Admin from "./pages/Admin";
-import Analytics from "./pages/Analytics";
-import ManageProfile from "./pages/ManageProfile";
+const Database = lazy(() => import("./pages/Database"));
+const Submit = lazy(() => import("./pages/Submit"));
+const Admin = lazy(() => import("./pages/Admin"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const ManageProfile = lazy(() => import("./pages/ManageProfile"));
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 
@@ -236,28 +236,32 @@ function App() {
               </button>
             </div>
           </div>
-        ) : (
-          <>
-            {route === "database" && (
-              <Database onManageProfile={openManageModal} />
-            )}
-            {route === "analytics" && (
-              <Analytics
-                onManageProfile={openManageModal}
-                onGoToDirectory={() => setRoute("database")}
-              />
-            )}
-            {route === "submit" && (
-              <Submit
-                onManageProfile={openManageModal}
-                onGoToDirectory={() => setRoute("database")}
-              />
-            )}
-            {route === "admin" && (
-              <Admin onGoToDirectory={() => setRoute("database")} />
-            )}
-          </>
-        )}
+          ) : (
+            <Suspense fallback={
+              <div className="min-h-screen bg-brand-sand flex items-center justify-center">
+                <div className="text-gray-600 text-[1.8rem]">Loading...</div>
+              </div>
+            }>
+              {route === "database" && (
+                <Database onManageProfile={openManageModal} />
+              )}
+              {route === "analytics" && (
+                <Analytics
+                  onManageProfile={openManageModal}
+                  onGoToDirectory={() => setRoute("database")}
+                />
+              )}
+              {route === "submit" && (
+                <Submit
+                  onManageProfile={openManageModal}
+                  onGoToDirectory={() => setRoute("database")}
+                />
+              )}
+              {route === "admin" && (
+                <Admin onGoToDirectory={() => setRoute("database")} />
+              )}
+            </Suspense>
+          )}
 
         {showManageModal && (
           <div
