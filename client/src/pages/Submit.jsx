@@ -143,10 +143,10 @@ export default function Submit({ onManageProfile }) {
             <p className="text-[1.4rem] text-brand-pink font-semibold tracking-[0.04em] mb-3">
               Submission received
             </p>
-            <h2 className="text-[3.6rem] font-bold text-[#111] mb-8 tracking-heading">
+            <h2 className="text-[3.6rem] font-bold text-brand-dark mb-8 tracking-heading">
               Thank you for contributing
             </h2>
-            <p className="text-[1.8rem] text-[#333] leading-[1.7] max-w-[480px] mx-auto">
+            <p className="text-[1.8rem] text-dark leading-[1.7] max-w-[480px] mx-auto">
               Your submission helps advance gender equity and representation in
               digital health leadership worldwide.
             </p>
@@ -160,8 +160,8 @@ export default function Submit({ onManageProfile }) {
               <div key={title} className="bg-[#f9fafb] border border-[#e5e7eb] rounded-[14px] px-[2.8rem] py-[2.4rem] flex gap-5 items-start">
                 <div className="w-9 h-9 rounded-full border-[3px] border-brand-navy border-t-transparent flex-shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold text-[1.8rem] text-[#111] mb-2">{title}</div>
-                  <p className="text-[1.6rem] text-[#444] leading-[1.7] m-0">{body}</p>
+                  <div className="font-bold text-[1.8rem] text-brand-dark mb-2">{title}</div>
+                  <p className="text-[1.6rem] text-gray-600 leading-[1.7] m-0">{body}</p>
                 </div>
               </div>
             ))}
@@ -261,8 +261,8 @@ export default function Submit({ onManageProfile }) {
               Thank you for your time
             </h2>
             <div className="flex flex-col gap-[10px] mb-8">
-              <p className="text-[1.6rem] text-[#333] leading-[1.7] m-0">We cannot proceed without your consent.</p>
-              <p className="text-[1.6rem] text-[#333] leading-[1.7] m-0">You are welcome to return and submit your profile anytime.</p>
+              <p className="text-[1.6rem] text-dark leading-[1.7] m-0">We cannot proceed without your consent.</p>
+              <p className="text-[1.6rem] text-dark leading-[1.7] m-0">You are welcome to return and submit your profile anytime.</p>
             </div>
             <Button
               variant="ghost"

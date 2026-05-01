@@ -382,12 +382,12 @@ export default function Admin({ onGoToDirectory }) {
           <div className="flex items-center gap-4 justify-start">
             <div className="w-11 h-11 rounded-full bg-brand-navy flex items-center justify-center text-white text-[1.4rem] font-bold">T</div>
             <div>
-              <div className="text-[1.8rem] font-semibold text-gray-900">Transform Health</div>
+              <div className="text-xl font-semibold text-gray-900">Transform Health</div>
               <div className="text-[1.2rem] text-gray-600">Women Leaders in Digital Health Database</div>
             </div>
           </div>
           <div className="text-center">
-            <div className="text-[1.8rem] font-semibold text-gray-900">Admin Console</div>
+            <div className="text-xl font-semibold text-gray-900">Admin Console</div>
           </div>
           <div className="flex justify-end">
             <button disabled className="rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-[1.4rem] font-medium text-gray-500 cursor-not-allowed">
@@ -418,7 +418,7 @@ export default function Admin({ onGoToDirectory }) {
                 <button
                   key={item.id}
                   onClick={() => handleTabChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-[1.6rem] font-medium transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-lg font-medium transition-colors ${
                     isActive
                       ? "bg-brand-blue-tint text-brand-navy border border-brand-blue-border"
                       : "bg-transparent text-gray-500 border border-transparent hover:bg-[#f9fafb]"
@@ -455,25 +455,25 @@ export default function Admin({ onGoToDirectory }) {
           <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <h2 className="text-[2.4rem] font-semibold text-brand-navy tracking-heading">
+                <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">
                   {sidebarData.find((s) => s.id === activeTab)?.label}
                 </h2>
-                <p className="text-[1.6rem] text-gray-600 mt-1">
+                <p className="text-lg text-gray-600 mt-1">
                   Review and manage member submissions, profile requests, and published entries.
                 </p>
               </div>
               <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
                 <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-[#f0c64a]">
                   <div className="text-[1.2rem] uppercase tracking-wider text-[#b8860b]">Pending</div>
-                  <div className="text-[1.8rem] font-semibold text-[#b8860b]">{pendingCount}</div>
+                  <div className="text-xl font-semibold text-[#b8860b]">{pendingCount}</div>
                 </div>
                 <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-green-300">
                   <div className="text-[1.2rem] uppercase tracking-wider text-green-600">Live</div>
-                  <div className="text-[1.8rem] font-semibold text-green-600">{liveCount}</div>
+                  <div className="text-xl font-semibold text-green-600">{liveCount}</div>
                 </div>
                 <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-red-300">
                   <div className="text-[1.2rem] uppercase tracking-wider text-red-600">Rejected</div>
-                  <div className="text-[1.8rem] font-semibold text-red-600">{rejectedCount}</div>
+                  <div className="text-xl font-semibold text-red-600">{rejectedCount}</div>
                 </div>
               </div>
             </div>
@@ -487,13 +487,13 @@ export default function Admin({ onGoToDirectory }) {
                   value={searchQuery}
                   onChange={(e) => { setSearchQuery(e.target.value); setAllPage(1); }}
                   placeholder="Search name, org, role, expertise"
-                  className="min-w-[220px] rounded-lg border border-gray-300 px-4 py-2 text-[1.6rem] shadow-sm focus:outline-none bg-brand-blue-tint"
+                  className="min-w-[220px] rounded-lg border border-gray-300 px-4 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
                 />
                 {(activeTab === "pending" || activeTab === "all") && (
                   <select
                     value={filterCountry}
                     onChange={(e) => { setFilterCountry(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-[1.6rem] shadow-sm focus:outline-none bg-brand-blue-tint"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
                   >
                     <option value="">All countries</option>
                     {countries.map((country) => <option key={country} value={country}>{country}</option>)}
@@ -503,7 +503,7 @@ export default function Admin({ onGoToDirectory }) {
                   <select
                     value={filterExpertise}
                     onChange={(e) => { setFilterExpertise(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-[1.6rem] shadow-sm focus:outline-none bg-brand-blue-tint"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
                   >
                     <option value="">All expertise</option>
                     {expertiseOptions.map((expertise) => <option key={expertise} value={expertise}>{expertise}</option>)}
@@ -513,7 +513,7 @@ export default function Admin({ onGoToDirectory }) {
                   <select
                     value={pendingSort}
                     onChange={(e) => setPendingSort(e.target.value)}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-[1.6rem] shadow-sm focus:outline-none bg-brand-blue-tint"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
                   >
                     <option value="name_az">Name A → Z</option>
                     <option value="name_za">Name Z → A</option>
@@ -532,7 +532,7 @@ export default function Admin({ onGoToDirectory }) {
               </div>
             </div>
             {actionMessage && (
-              <div className="mt-4 rounded-lg px-4 py-3 text-[1.6rem] border border-[#bbf7d0] bg-green-50 text-green-800">
+              <div className="mt-4 rounded-lg px-4 py-3 text-lg border border-[#bbf7d0] bg-green-50 text-green-800">
                 {actionMessage}
               </div>
             )}
@@ -541,7 +541,7 @@ export default function Admin({ onGoToDirectory }) {
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-8 py-6">
             {loading ? (
-              <div className="text-center py-12 text-[1.8rem] text-brand-navy">Loading...</div>
+              <div className="text-center py-12 text-xl text-brand-navy">Loading...</div>
 
             ) : activeTab === "requests" ? (
               <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-white">
@@ -549,7 +549,7 @@ export default function Admin({ onGoToDirectory }) {
                 <div className="flex border-b border-brand-warm-border bg-brand-parchment">
                   <button
                     onClick={() => setRequestSubTab("updates")}
-                    className={`flex-1 px-5 py-3 text-[1.6rem] font-semibold transition-colors ${
+                    className={`flex-1 px-5 py-3 text-lg font-semibold transition-colors ${
                       requestSubTab === "updates"
                         ? "bg-white text-brand-navy border-b-[3px] border-brand-navy"
                         : "bg-transparent text-gray-500 border-b-[3px] border-transparent"
@@ -564,7 +564,7 @@ export default function Admin({ onGoToDirectory }) {
                   </button>
                   <button
                     onClick={() => setRequestSubTab("deletes")}
-                    className={`flex-1 px-5 py-3 text-[1.6rem] font-semibold transition-colors ${
+                    className={`flex-1 px-5 py-3 text-lg font-semibold transition-colors ${
                       requestSubTab === "deletes"
                         ? "bg-white text-red-600 border-b-[3px] border-red-600"
                         : "bg-transparent text-gray-500 border-b-[3px] border-transparent"
@@ -584,7 +584,7 @@ export default function Admin({ onGoToDirectory }) {
                     {updateRequests.length === 0 ? (
                       <div className="text-center py-20">
                         <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                        <div className="text-[1.6rem] text-green-600">No pending update requests</div>
+                        <div className="text-lg text-green-600">No pending update requests</div>
                       </div>
                     ) : (
                       <>
@@ -613,7 +613,7 @@ export default function Admin({ onGoToDirectory }) {
                                 </div>
                                 <div className="flex-1 min-w-0 mr-4">
                                   <div className="flex items-center gap-3">
-                                    <span className="font-semibold text-[1.6rem] truncate text-[#111]">{req.first_name} {req.last_name}</span>
+                                    <span className="font-semibold text-lg truncate text-brand-dark">{req.first_name} {req.last_name}</span>
                                     <span className="text-[1.4rem] truncate text-gray-500">{req.email}</span>
                                   </div>
                                   <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
@@ -709,7 +709,7 @@ export default function Admin({ onGoToDirectory }) {
                     {deleteRequests.length === 0 ? (
                       <div className="text-center py-20">
                         <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                        <div className="text-[1.6rem] text-green-600">No pending deletion requests</div>
+                        <div className="text-lg text-green-600">No pending deletion requests</div>
                       </div>
                     ) : (
                       deleteRequests.map((req) => {
@@ -740,7 +740,7 @@ export default function Admin({ onGoToDirectory }) {
                               </div>
                               <div className="flex-1 min-w-0 mr-4">
                                 <div className="flex items-center gap-3">
-                                  <span className="font-semibold text-[1.6rem] truncate text-[#111]">{req.first_name} {req.last_name}</span>
+                                  <span className="font-semibold text-lg truncate text-brand-dark">{req.first_name} {req.last_name}</span>
                                   <span className="text-[1.4rem] truncate text-gray-500">{req.email}</span>
                                 </div>
                                 <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
@@ -798,11 +798,11 @@ export default function Admin({ onGoToDirectory }) {
               nominatedList.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                  <div className="text-[1.6rem] text-green-600">No pending nominations</div>
+                  <div className="text-lg text-green-600">No pending nominations</div>
                 </div>
               ) : (
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                  <div className="flex items-center justify-between px-5 py-3 border-b bg-[#fdf2f8] border-[#f9a8d4]">
+                  <div className="flex items-center justify-between px-5 py-3 border-b bg-pink-light border-[#f9a8d4]">
                     <div className="text-[1.4rem] font-semibold text-[#be185d]">
                       {nominatedList.length} nominations to reach out to
                     </div>
@@ -825,12 +825,12 @@ export default function Admin({ onGoToDirectory }) {
                           <div className="flex-shrink-0 mr-4">
                             <div className="w-2.5 h-2.5 rounded-full bg-brand-pink" />
                           </div>
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 mr-4 bg-[#fdf2f8] text-[#be185d]">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 mr-4 bg-pink-light text-[#be185d]">
                             {getInitials(item.first_name, item.last_name)}
                           </div>
                           <div className="flex-1 min-w-0 mr-4">
                             <div className="flex items-center gap-3">
-                              <span className="font-semibold text-[1.6rem] truncate text-[#111]">{item.first_name} {item.last_name}</span>
+                              <span className="font-semibold text-lg truncate text-brand-dark">{item.first_name} {item.last_name}</span>
                               <span className="text-[1.4rem] truncate flex-shrink-0 text-gray-500">{item.role || 'No role'} · {item.organisation || 'No org'}</span>
                             </div>
                             <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
@@ -884,12 +884,12 @@ export default function Admin({ onGoToDirectory }) {
                             {item.bio && (
                               <div className="rounded-lg p-4 mb-4 bg-brand-parchment border border-brand-blue-border">
                                 <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">Bio</div>
-                                <div className="text-[1.6rem] text-brand-dark-blue leading-[1.7]">{item.bio}</div>
+                                <div className="text-lg text-brand-dark-blue leading-[1.7]">{item.bio}</div>
                               </div>
                             )}
 
                             <div className="rounded-lg overflow-hidden border-[1.5px] border-[#f9a8d4]">
-                              <div className="flex items-center justify-between px-4 py-3 bg-[#fdf2f8]">
+                              <div className="flex items-center justify-between px-4 py-3 bg-pink-light">
                                 <div className="text-[1.4rem] font-semibold text-[#be185d]">Outreach message</div>
                                 <button
                                   onClick={() => handleCopyMessage(item)}
@@ -900,7 +900,7 @@ export default function Admin({ onGoToDirectory }) {
                                   {isCopied ? "✓ Copied" : "Copy message"}
                                 </button>
                               </div>
-                              <div className="px-4 py-3 text-[1.5rem] bg-brand-parchment text-[#374151] leading-[1.7] whitespace-pre-wrap">
+                              <div className="px-4 py-3 text-[1.5rem] bg-brand-parchment text-gray-700 leading-[1.7] whitespace-pre-wrap">
                                 {buildOutreachMessage(item)}
                               </div>
                             </div>
@@ -933,12 +933,12 @@ export default function Admin({ onGoToDirectory }) {
               pending.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                  <div className="text-[1.6rem] text-green-600">No pending submissions</div>
+                  <div className="text-lg text-green-600">No pending submissions</div>
                 </div>
               ) : filteredPending.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="text-[4.8rem] mb-4 text-gray-400">🔍</div>
-                  <div className="text-[1.6rem] text-gray-500">No matching results for your filters</div>
+                  <div className="text-lg text-gray-500">No matching results for your filters</div>
                 </div>
               ) : (
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
@@ -1009,7 +1009,7 @@ export default function Admin({ onGoToDirectory }) {
                           </div>
                           <div className="flex-1 min-w-0 mr-4">
                             <div className="flex items-center gap-3">
-                              <span className="font-semibold text-[1.6rem] truncate text-[#111]">{item.first_name} {item.last_name}</span>
+                              <span className="font-semibold text-lg truncate text-brand-dark">{item.first_name} {item.last_name}</span>
                               <span className="text-[1.4rem] truncate flex-shrink-0 text-gray-500">{item.role || 'No role'} · {item.organisation || 'No org'}</span>
                             </div>
                             <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
@@ -1051,12 +1051,12 @@ export default function Admin({ onGoToDirectory }) {
                               {item.bio && (
                                 <div className="rounded-lg p-4 bg-brand-parchment border border-brand-blue-border">
                                   <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">Bio</div>
-                                  <div className="text-[1.6rem] text-brand-dark-blue leading-[1.7]">{item.bio}</div>
+                                  <div className="text-lg text-brand-dark-blue leading-[1.7]">{item.bio}</div>
                                 </div>
                               )}
                               <div className="rounded-lg p-4 bg-brand-parchment border border-brand-blue-border">
                                 <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">Profile details</div>
-                                <div className="grid gap-3 md:grid-cols-2 text-[1.6rem] text-brand-dark-blue">
+                                <div className="grid gap-3 md:grid-cols-2 text-lg text-brand-dark-blue">
                                   <div><span className="text-brand-navy font-semibold">Country: </span>{item.country || "—"}</div>
                                   <div><span className="text-brand-navy font-semibold">Experience: </span>{item.yearsExp || item.years_experience || "—"}</div>
                                   <div><span className="text-brand-navy font-semibold">Geo scope: </span>{item.geoScope || item.geo_scope || "—"}</div>
@@ -1072,7 +1072,7 @@ export default function Admin({ onGoToDirectory }) {
                                   <div className="space-y-3">
                                     {item.notableItems.map((notable, idx) => (
                                       <div key={idx} className="rounded-lg p-3 border border-brand-warm-border">
-                                        <div className="text-[1.6rem] font-semibold text-[#111]">{notable.title || "Untitled"}</div>
+                                        <div className="text-lg font-semibold text-brand-dark">{notable.title || "Untitled"}</div>
                                         <div className="text-[1.4rem] text-gray-500">{notable.type || "—"}</div>
                                         {notable.link && (
                                           <div className="mt-1 text-[1.4rem]">
@@ -1128,12 +1128,12 @@ export default function Admin({ onGoToDirectory }) {
                             >
                               <td className="px-5 py-3.5">
                                 <div className="flex items-center gap-3">
-                                  <span className="text-[1.6rem] font-medium text-[#111]">{item.first_name} {item.last_name}</span>
+                                  <span className="text-lg font-medium text-brand-dark">{item.first_name} {item.last_name}</span>
                                   <span className="text-[1.2rem] text-gray-500">{isExpanded ? 'Hide details' : 'View details'}</span>
                                 </div>
                               </td>
-                              <td className="px-5 py-3.5 text-[1.6rem] text-[#444]">{item.role}</td>
-                              <td className="px-5 py-3.5 text-[1.6rem] text-[#444]">{item.organisation}</td>
+                              <td className="px-5 py-3.5 text-lg text-gray-600">{item.role}</td>
+                              <td className="px-5 py-3.5 text-lg text-gray-600">{item.organisation}</td>
                               <td className="px-5 py-3.5">
                                 <span className={`text-[1.2rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
                                   item.status === "live"
@@ -1190,7 +1190,7 @@ export default function Admin({ onGoToDirectory }) {
                         className={`px-3 py-1.5 border rounded text-[1.4rem] font-medium transition-colors ${
                           allPage === i + 1
                             ? "bg-brand-navy text-white border-brand-navy"
-                            : "bg-brand-parchment text-[#111] border-gray-300 hover:border-gray-400"
+                            : "bg-brand-parchment text-brand-dark border-gray-300 hover:border-gray-400"
                         }`}
                       >
                         {i + 1}
@@ -1225,14 +1225,14 @@ export default function Admin({ onGoToDirectory }) {
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/[0.45]">
           <div className="rounded-2xl px-8 py-6 shadow-xl max-w-sm mx-4 bg-white border border-brand-warm-border">
-            <div className={`text-[1.8rem] font-semibold mb-2 ${
+            <div className={`text-xl font-semibold mb-2 ${
               showConfirm.action === "reject" || showConfirm.action === "delete"
                 ? "text-red-600"
                 : "text-brand-navy"
             }`}>
               {showConfirm.title}
             </div>
-            <div className="text-[1.5rem] mb-6 text-[#4b5563] leading-[1.6]">
+            <div className="text-[1.5rem] mb-6 text-gray-600 leading-[1.6]">
               {showConfirm.message}
             </div>
             <div className="flex gap-3 justify-end">

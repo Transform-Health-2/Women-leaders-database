@@ -63,7 +63,7 @@ function Avatar() {
             className="w-[76px] h-[76px] rounded-full object-cover border-2 border-brand-pink"
           />
         ) : (
-          <div className="w-[76px] h-[76px] rounded-full bg-[#D9D9D9] border-2 border-brand-pink flex items-center justify-center text-[2rem] font-semibold text-gray-600">
+          <div className="w-[76px] h-[76px] rounded-full bg-gray-300 border-2 border-brand-pink flex items-center justify-center text-[2rem] font-semibold text-gray-600">
             {getInitials(l.first_name, l.last_name)}
           </div>
         )}
@@ -73,7 +73,7 @@ function Avatar() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="absolute bottom-0 right-[-4px] w-[28px] h-[28px] rounded-full bg-brand-navy flex items-center justify-center hover:bg-[#024a75] transition-colors"
+            className="absolute bottom-0 right-[-4px] w-[28px] h-[28px] rounded-full bg-brand-navy flex items-center justify-center hover:bg-navy-dark transition-colors"
             aria-label="LinkedIn profile"
             title="Open LinkedIn profile"
           >

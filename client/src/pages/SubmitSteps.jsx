@@ -30,8 +30,8 @@ export const COUNTRIES = [
 ];
 
 // Shared class overrides to match the submit form's visual design
-const F_INPUT = "bg-brand-blue-tint text-[1.6rem] py-[1.4rem] px-[1.6rem]";
-const LABEL_CLASS = "block text-[1.6rem] text-[#111] mb-2";
+const F_INPUT = "bg-brand-blue-tint text-lg py-[1.4rem] px-[1.6rem]";
+const LABEL_CLASS = "block text-lg text-brand-dark mb-2";
 const BACK_CLS   = "font-bold tracking-[0.06em] text-[1.4rem] text-gray-900 hover:no-underline";
 const CONT_CLS   = "font-bold tracking-[0.06em] text-[1.4rem]";
 
@@ -39,24 +39,24 @@ const CONT_CLS   = "font-bold tracking-[0.06em] text-[1.4rem]";
 export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, onContinue, onManageProfile }) {
   return (
     <div>
-      <h2 className="text-[3rem] font-bold text-brand-navy mb-4 tracking-heading">
+      <h2 className="text-4xl font-bold text-brand-navy mb-4 tracking-heading">
         Women Leaders in Digital Health Database
       </h2>
-      <p className="text-[1.8rem] text-[#333] leading-[1.8] mb-6">
+      <p className="text-xl text-dark leading-[1.8] mb-6">
         Transform Health is building a global database of women leaders
         in digital health to increase visibility, representation, and
         engagement in leadership, policy, and technical spaces.
       </p>
 
       <div className="border-l-4 border-brand-navy bg-brand-blue-tint rounded-lg px-[2.4rem] py-[2rem] mb-8 flex flex-col gap-[10px]">
-        <p className="text-[1.6rem] text-[#222] leading-[1.7] m-0">
+        <p className="text-lg text-[#222] leading-[1.7] m-0">
           Information submitted may be featured in a publicly accessible database.
         </p>
-        <p className="text-[1.6rem] text-[#222] leading-[1.7] m-0">
+        <p className="text-lg text-[#222] leading-[1.7] m-0">
           By consenting, you agree that your name, role, organisation,
           biography, and relevant links may be publicly displayed.
         </p>
-        <p className="text-[1.6rem] text-[#222] leading-[1.7] m-0">
+        <p className="text-lg text-[#222] leading-[1.7] m-0">
           <strong>Your email address will not be publicly displayed.</strong>
         </p>
       </div>
@@ -70,8 +70,8 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
           }`}
         >
           <img src="./illustrations/self.png" alt="" className="w-[80px] h-[80px] object-contain mx-auto mb-8 block" />
-          <div className="font-bold text-[1.8rem] text-[#111] mb-2">I am nominating myself</div>
-          <div className="text-[1.6rem] text-[#444] leading-[1.5]">Submit your own profile to the database</div>
+          <div className="font-bold text-xl text-brand-dark mb-2">I am nominating myself</div>
+          <div className="text-lg text-gray-600 leading-[1.5]">Submit your own profile to the database</div>
         </button>
 
         <button
@@ -81,15 +81,15 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
           }`}
         >
           <img src="./illustrations/nominate.png" alt="" className="w-[80px] h-[80px] object-contain mx-auto mb-8 block" />
-          <div className="font-bold text-[1.8rem] text-[#111] mb-2">I am nominating someone else</div>
-          <div className="text-[1.6rem] text-[#444] leading-[1.5]">Nominate another woman leader you know</div>
+          <div className="font-bold text-xl text-brand-dark mb-2">I am nominating someone else</div>
+          <div className="text-lg text-gray-600 leading-[1.5]">Nominate another woman leader you know</div>
         </button>
       </div>
 
       {branch === "nominate" && (
         <div className="mb-5">
           <label className={LABEL_CLASS}>Public profile link of the person you are nominating *</label>
-          <p className="text-[1.4rem] text-[#666] mb-2">e.g. LinkedIn URL or professional website</p>
+          <p className="text-[1.4rem] text-gray-500 mb-2">e.g. LinkedIn URL or professional website</p>
           <Input
             value={nominateLink}
             onChange={(e) => setNominateLink(e.target.value)}
@@ -100,7 +100,7 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
       )}
 
       <div className="flex justify-between items-center mt-2">
-        <p className="text-[1.4rem] text-[#444] flex items-center gap-1.5">
+        <p className="text-[1.4rem] text-gray-600 flex items-center gap-1.5">
           <span>⏱</span> This form takes 3–5 minutes.
         </p>
         <Button variant="ghost" size="sm" className={CONT_CLS} onClick={onContinue}>
@@ -109,7 +109,7 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
       </div>
 
       <div className="mt-6 pt-5 border-t border-[#e5e7eb] text-center">
-        <p className="text-[1.4rem] text-[#444]">
+        <p className="text-[1.4rem] text-gray-600">
           Already in the database?{" "}
           {/* Inline link — intentionally raw <button> */}
           <button
@@ -128,20 +128,20 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
 export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
   return (
     <div>
-      <h2 className="text-[3rem] font-bold text-brand-navy mb-4 tracking-heading">
+      <h2 className="text-4xl font-bold text-brand-navy mb-4 tracking-heading">
         Consent &amp; permissions
       </h2>
-      <p className="text-[1.8rem] text-[#333] mb-7 leading-[1.7]">
+      <p className="text-xl text-dark mb-7 leading-[1.7]">
         Your profile may be publicly displayed. By consenting, you agree
         that the following will be visible in the directory.
       </p>
 
       <div className="border-l-4 border-brand-pink bg-[#fff0f6] rounded-lg px-[2rem] py-[1.6rem] mb-8">
-        <p className="text-[1.6rem] text-[#333] mb-2">
+        <p className="text-lg text-dark mb-2">
           <span className="text-brand-pink font-semibold">Public: </span>
           Name, role, organisation, expertise areas, bio, and LinkedIn profile.
         </p>
-        <p className="text-[1.6rem] text-[#333] m-0">
+        <p className="text-lg text-dark m-0">
           <span className="text-brand-pink font-semibold">Private: </span>
           Email address — used for follow-up only, never published.
         </p>
@@ -156,11 +156,11 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
           }`}
         >
           <div className="w-9 h-9 rounded-full bg-brand-navy flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[1.8rem] font-bold">✓</span>
+            <span className="text-white text-xl font-bold">✓</span>
           </div>
           <div>
-            <div className="font-bold text-[1.6rem] text-[#111] mb-0.5">Yes, I consent</div>
-            <div className="text-[1.4rem] text-[#444]">Add my profile to the Transform Health directory</div>
+            <div className="font-bold text-lg text-brand-dark mb-0.5">Yes, I consent</div>
+            <div className="text-[1.4rem] text-gray-600">Add my profile to the Transform Health directory</div>
           </div>
         </button>
 
@@ -171,11 +171,11 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
           }`}
         >
           <div className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-[1.8rem] font-bold">✕</span>
+            <span className="text-white text-xl font-bold">✕</span>
           </div>
           <div>
-            <div className="font-bold text-[1.6rem] text-[#111] mb-0.5">No, I do not consent</div>
-            <div className="text-[1.4rem] text-[#444]">I prefer not to be included at this time</div>
+            <div className="font-bold text-lg text-brand-dark mb-0.5">No, I do not consent</div>
+            <div className="text-[1.4rem] text-gray-600">I prefer not to be included at this time</div>
           </div>
         </button>
       </div>
@@ -192,8 +192,8 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
 export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, photoPreview, onPhotoUpload, country, setCountry, org, setOrg, role, setRole, onBack, onContinue }) {
   return (
     <div>
-      <h2 className="text-[3rem] font-bold text-brand-navy mb-2 tracking-heading">Basic information</h2>
-      <p className="text-[1.6rem] text-[#333] mb-7 leading-[1.7]">
+      <h2 className="text-4xl font-bold text-brand-navy mb-2 tracking-heading">Basic information</h2>
+      <p className="text-lg text-dark mb-7 leading-[1.7]">
         Tell us who you are. Your email will never be published — it's used only for profile updates.
       </p>
 
@@ -220,8 +220,8 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
               <path d="M10 38c0-6.627 5.373-10 12-10s12 3.373 12 10" stroke="#9ca3af" strokeWidth="1.8" strokeLinecap="round" fill="none" />
             </svg>
           )}
-          <span className="text-[1.6rem] font-semibold text-[#111] mb-1">Upload a photo</span>
-          <span className="text-[1.4rem] text-[#666]">JPEG or PNG · max 5MB</span>
+          <span className="text-lg font-semibold text-brand-dark mb-1">Upload a photo</span>
+          <span className="text-[1.4rem] text-gray-500">JPEG or PNG · max 5MB</span>
           {/* Native file input — no component equivalent */}
           <input type="file" accept="image/png,image/jpeg" onChange={onPhotoUpload} className="hidden" />
         </label>
@@ -262,7 +262,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
 export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleExpertise, otherExpertise, setOtherExpertise, selectedCountries, setSelectedCountries, email, setEmail, bio, setBio, charCount, bioCharWarning, onBack, onContinue, nextDisabled }) {
   return (
     <div>
-      <h2 className="text-[3rem] font-bold text-brand-navy mb-7 tracking-heading">Profile details</h2>
+      <h2 className="text-4xl font-bold text-brand-navy mb-7 tracking-heading">Profile details</h2>
 
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>Years of experience in digital health *</label>
@@ -272,8 +272,8 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
             <button
               key={opt}
               onClick={() => setYearsExp(opt)}
-              className={`py-[1.4rem] px-[0.8rem] rounded-[10px] text-[1.6rem] font-medium cursor-pointer border-[1.5px] ${
-                yearsExp === opt ? "border-brand-navy bg-brand-navy text-white" : "border-gray-300 bg-white text-[#111]"
+              className={`py-[1.4rem] px-[0.8rem] rounded-[10px] text-lg font-medium cursor-pointer border-[1.5px] ${
+                yearsExp === opt ? "border-brand-navy bg-brand-navy text-white" : "border-gray-300 bg-white text-brand-dark"
               }`}
             >
               {opt}
@@ -285,7 +285,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>
           Areas of expertise *{" "}
-          <span className="text-[1.4rem] text-[#666] font-normal">(select up to 5)</span>
+          <span className="text-[1.4rem] text-gray-500 font-normal">(select up to 5)</span>
         </label>
         {/* Tag pill selector — custom layout, intentionally raw <button> */}
         <div className="flex flex-wrap gap-2">
@@ -295,14 +295,14 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
               onClick={() => toggleExpertise(tag)}
               disabled={!expertise.includes(tag) && expertise.length >= 5}
               className={`py-[0.8rem] px-[1.4rem] rounded-[20px] text-[1.4rem] font-medium cursor-pointer border-[1.5px] transition-opacity ${
-                expertise.includes(tag) ? "border-brand-navy bg-brand-navy text-white" : "border-gray-300 bg-white text-[#333]"
+                expertise.includes(tag) ? "border-brand-navy bg-brand-navy text-white" : "border-gray-300 bg-white text-dark"
               } ${!expertise.includes(tag) && expertise.length >= 5 ? "opacity-40" : "opacity-100"}`}
             >
               {tag}
             </button>
           ))}
         </div>
-        <p className="text-[1.4rem] text-[#666] mt-2">{expertise.length} of 5 selected</p>
+        <p className="text-[1.4rem] text-gray-500 mt-2">{expertise.length} of 5 selected</p>
       </div>
 
       {expertise.includes("Other") && (
@@ -355,7 +355,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>
           Email *{" "}
-          <span className="text-[1.4rem] text-[#666] font-normal">(not publicly displayed)</span>
+          <span className="text-[1.4rem] text-gray-500 font-normal">(not publicly displayed)</span>
         </label>
         <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your.email@example.com" className={F_INPUT} />
       </div>
@@ -363,7 +363,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>
           Short bio *{" "}
-          <span className="text-[1.4rem] text-[#666] font-normal">(300–500 characters)</span>
+          <span className="text-[1.4rem] text-gray-500 font-normal">(300–500 characters)</span>
         </label>
         <Textarea
           value={bio}
@@ -373,7 +373,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
           error={bioCharWarning() ? "Please keep bio between 300–500 characters." : ""}
           className={F_INPUT}
         />
-        <span className="text-[1.4rem] text-[#666] mt-1.5 block">{charCount} characters</span>
+        <span className="text-[1.4rem] text-gray-500 mt-1.5 block">{charCount} characters</span>
       </div>
 
       <div className="flex justify-between items-center pt-5 mt-2">
@@ -388,10 +388,10 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
 export function Step4Links({ linkedin, setLinkedin, notableItems, addNotableItem, removeNotableItem, updateNotableItem, status, onBack, onSubmit }) {
   return (
     <div>
-      <h2 className="text-[3rem] font-bold text-brand-navy mb-2 tracking-heading">
+      <h2 className="text-4xl font-bold text-brand-navy mb-2 tracking-heading">
         Links &amp; achievements
       </h2>
-      <p className="text-[1.6rem] text-[#333] mb-7 leading-[1.7]">
+      <p className="text-lg text-dark mb-7 leading-[1.7]">
         Add your LinkedIn and up to 3 notable publications, projects, or achievements.
       </p>
 
@@ -405,9 +405,9 @@ export function Step4Links({ linkedin, setLinkedin, notableItems, addNotableItem
           <div>
             <label className={`${LABEL_CLASS} mb-0`}>
               Notable achievements{" "}
-              <span className="text-[1.4rem] text-[#666] font-normal">(optional, up to 3)</span>
+              <span className="text-[1.4rem] text-gray-500 font-normal">(optional, up to 3)</span>
             </label>
-            <p className="text-[1.4rem] text-[#666] mt-1">Publications, projects, awards, or initiatives</p>
+            <p className="text-[1.4rem] text-gray-500 mt-1">Publications, projects, awards, or initiatives</p>
           </div>
           <Button
             variant="secondary"
@@ -421,29 +421,29 @@ export function Step4Links({ linkedin, setLinkedin, notableItems, addNotableItem
         </div>
 
         {notableItems.length === 0 && (
-          <p className="text-[1.4rem] text-[#666]">No items added yet.</p>
+          <p className="text-[1.4rem] text-gray-500">No items added yet.</p>
         )}
 
         <div className="flex flex-col gap-4">
           {notableItems.map((item, index) => (
             <div key={index} className="border-[1.5px] border-gray-300 rounded-[10px] px-5 pt-5 pb-4">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-[1.6rem] font-semibold text-brand-navy">Achievement {index + 1}</span>
+                <span className="text-lg font-semibold text-brand-navy">Achievement {index + 1}</span>
                 <Button variant="ghost" size="sm" className="text-red-500 hover:no-underline" onClick={() => removeNotableItem(index)}>
                   Remove
                 </Button>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-[1.4rem] text-[#111] mb-1.5">Title</label>
+                  <label className="block text-[1.4rem] text-brand-dark mb-1.5">Title</label>
                   <Input value={item.title} onChange={(e) => updateNotableItem(index, "title", e.target.value)} placeholder="e.g. Global Health Report" className={F_INPUT} />
                 </div>
                 <div>
-                  <label className="block text-[1.4rem] text-[#111] mb-1.5">Link</label>
+                  <label className="block text-[1.4rem] text-brand-dark mb-1.5">Link</label>
                   <Input value={item.link} onChange={(e) => updateNotableItem(index, "link", e.target.value)} placeholder="https://…" className={F_INPUT} />
                 </div>
                 <div>
-                  <label className="block text-[1.4rem] text-[#111] mb-1.5">Type</label>
+                  <label className="block text-[1.4rem] text-brand-dark mb-1.5">Type</label>
                   <Select value={item.type} onChange={(e) => updateNotableItem(index, "type", e.target.value)} className={F_INPUT}>
                     <option value="">Select type</option>
                     <option value="Publication">Publication</option>
