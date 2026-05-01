@@ -170,14 +170,14 @@ client/src/
 | 22 | **Accessibility audit** (aria-labels, focus trap, keyboard nav) | 🟢 Low | ❌ Not started — ProfileModal has no focus trap |
 | 23 | **Code splitting / lazy loading** | 🟢 Low | ❌ Not started — App.jsx imports all pages directly |
 | 24 | **DRY up icons** (LeaderCard + ProfileModal duplicate SVG) | 🟡 Medium | ✅ **Done** — commit `b31a6c1`, icons.jsx created |
-| 25 | **Move COUNTRY_TO_CONTINENT out of hook** | 🟡 Medium | ❌ Not started — exported from useLeaders.js |
+| 25 | **Move COUNTRY_TO_CONTINENT out of hook** | 🟡 Medium | ✅ **Done** — commit `4abfc01`, moved to utils/countries.js |
 | 26 | **Wire up Admin.jsx to use API layer** | 🔴 High | ✅ **Done** — commit `71fbd6c`, all axios replaced with api.* |
 | 27 | **Wire up SubmitSteps.jsx to use Button/Input** | 🔴 High | ✅ **Done** — grep: 39 usages of Button/Input/Textarea/Select |
 
 ### Recommended Next Steps (In Priority Order)
 
-1. **Wire up Analytics region → cards** (TODO #9, ~1hr) — `useLeaders` hook ready, render cards below map when `selectedRegion` changes
-2. **Add React Query/SWR** (item 21, ~2hrs) — Replace raw `useEffect+axios` in `useLeaders.js` with proper caching/stale-while-revalidate
-3. **Move COUNTRY_TO_CONTINENT** (item 25, ~15min) — Export from `utils/countries.js` instead of `hooks/useLeaders.js`
-4. **Accessibility audit** (item 22, ~1hr) — Add aria-labels to search, focus trap to ProfileModal, keyboard nav
-5. **Code splitting** (item 23, ~1hr) — Use `React.lazy()` in `App.jsx` for all 4 pages
+1. **Add React Query/SWR** (item 21, ~2hrs) — Replace raw `useEffect+axios` in `useLeaders.js` with proper caching/stale-while-revalidate
+2. **Accessibility audit** (item 22, ~1hr) — Add aria-labels to search, focus trap to ProfileModal, keyboard nav
+3. **Code splitting** (item 23, ~1hr) — Use `React.lazy()` in `App.jsx` for all 4 pages
+4. **Admin view new fields** (item 10, ~1hr) — Extend existing admin card with new columns
+5. **Profile detail modal** (item 8, ~1hr) — New component, pull all fields and layout
