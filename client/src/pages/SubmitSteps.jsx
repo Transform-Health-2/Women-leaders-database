@@ -30,10 +30,10 @@ export const COUNTRIES = [
 ];
 
 // Shared class overrides to match the submit form's visual design
-const F_INPUT = "bg-brand-blue-tint text-lg py-[1.4rem] px-[1.6rem]";
+const F_INPUT = "bg-brand-blue-tint text-lg py-5 px-[1.6rem]";
 const LABEL_CLASS = "block text-lg text-brand-dark mb-2";
-const BACK_CLS   = "font-bold tracking-[0.06em] text-[1.4rem] text-gray-900 hover:no-underline";
-const CONT_CLS   = "font-bold tracking-[0.06em] text-[1.4rem]";
+const BACK_CLS   = "font-bold tracking-[0.06em] text-1.4 text-gray-900 hover:no-underline";
+const CONT_CLS   = "font-bold tracking-[0.06em] text-1.4";
 
 // ─── Step 0: Branch selection ────────────────────────────────────────────────
 export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, onContinue, onManageProfile }) {
@@ -49,14 +49,14 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
       </p>
 
       <div className="border-l-4 border-brand-navy bg-brand-blue-tint rounded-lg px-[2.4rem] py-[2rem] mb-8 flex flex-col gap-[10px]">
-        <p className="text-lg text-[#222] leading-[1.7] m-0">
+        <p className="text-lg text-gray-800 leading-[1.7] m-0">
           Information submitted may be featured in a publicly accessible database.
         </p>
-        <p className="text-lg text-[#222] leading-[1.7] m-0">
+        <p className="text-lg text-gray-800 leading-[1.7] m-0">
           By consenting, you agree that your name, role, organisation,
           biography, and relevant links may be publicly displayed.
         </p>
-        <p className="text-lg text-[#222] leading-[1.7] m-0">
+        <p className="text-lg text-gray-800 leading-[1.7] m-0">
           <strong>Your email address will not be publicly displayed.</strong>
         </p>
       </div>
@@ -66,7 +66,7 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
         <button
           onClick={() => setBranch("self")}
           className={`pt-[3.6rem] px-[2.4rem] pb-[2.8rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
-            branch === "self" ? "border-brand-navy" : "border-[#e5e7eb]"
+            branch === "self" ? "border-brand-navy" : "border-gray-200"
           }`}
         >
           <img src="./illustrations/self.png" alt="" className="w-[80px] h-[80px] object-contain mx-auto mb-8 block" />
@@ -77,7 +77,7 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
         <button
           onClick={() => setBranch("nominate")}
           className={`pt-[3.6rem] px-[2.4rem] pb-[2.8rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
-            branch === "nominate" ? "border-brand-navy" : "border-[#e5e7eb]"
+            branch === "nominate" ? "border-brand-navy" : "border-gray-200"
           }`}
         >
           <img src="./illustrations/nominate.png" alt="" className="w-[80px] h-[80px] object-contain mx-auto mb-8 block" />
@@ -89,7 +89,7 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
       {branch === "nominate" && (
         <div className="mb-5">
           <label className={LABEL_CLASS}>Public profile link of the person you are nominating *</label>
-          <p className="text-[1.4rem] text-gray-500 mb-2">e.g. LinkedIn URL or professional website</p>
+          <p className="text-1.4 text-gray-500 mb-2">e.g. LinkedIn URL or professional website</p>
           <Input
             value={nominateLink}
             onChange={(e) => setNominateLink(e.target.value)}
@@ -100,7 +100,7 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
       )}
 
       <div className="flex justify-between items-center mt-2">
-        <p className="text-[1.4rem] text-gray-600 flex items-center gap-1.5">
+        <p className="text-1.4 text-gray-600 flex items-center gap-1.5">
           <span>⏱</span> This form takes 3–5 minutes.
         </p>
         <Button variant="ghost" size="sm" className={CONT_CLS} onClick={onContinue}>
@@ -108,13 +108,13 @@ export function Step0Branch({ branch, setBranch, nominateLink, setNominateLink, 
         </Button>
       </div>
 
-      <div className="mt-6 pt-5 border-t border-[#e5e7eb] text-center">
-        <p className="text-[1.4rem] text-gray-600">
+      <div className="mt-6 pt-5 border-t border-gray-200 text-center">
+        <p className="text-1.4 text-gray-600">
           Already in the database?{" "}
           {/* Inline link — intentionally raw <button> */}
           <button
             onClick={() => onManageProfile(null)}
-            className="bg-transparent border-0 cursor-pointer text-brand-navy font-semibold text-[1.4rem] underline p-0"
+            className="bg-transparent border-0 cursor-pointer text-brand-navy font-semibold text-1.4 underline p-0"
           >
             Manage or remove your profile
           </button>
@@ -136,7 +136,7 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
         that the following will be visible in the directory.
       </p>
 
-      <div className="border-l-4 border-brand-pink bg-[#fff0f6] rounded-lg px-[2rem] py-[1.6rem] mb-8">
+      <div className="border-l-4 border-brand-pink bg-brand-pink-light rounded-lg px-8 py-6 mb-8">
         <p className="text-lg text-dark mb-2">
           <span className="text-brand-pink font-semibold">Public: </span>
           Name, role, organisation, expertise areas, bio, and LinkedIn profile.
@@ -151,8 +151,8 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
         {/* Consent option cards — custom layout, intentionally raw <button> */}
         <button
           onClick={() => setConsent("yes")}
-          className={`flex items-center gap-4 px-[2rem] py-[1.6rem] rounded-[10px] text-left cursor-pointer border-2 ${
-            consent === "yes" ? "border-brand-navy bg-[#f0f7ff]" : "border-[#e5e7eb] bg-white"
+          className={`flex items-center gap-4 px-8 py-6 rounded-lg text-left cursor-pointer border-2 ${
+            consent === "yes" ? "border-brand-navy bg-brand-blue-light" : "border-gray-200 bg-white"
           }`}
         >
           <div className="w-9 h-9 rounded-full bg-brand-navy flex items-center justify-center flex-shrink-0">
@@ -160,14 +160,14 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
           </div>
           <div>
             <div className="font-bold text-lg text-brand-dark mb-0.5">Yes, I consent</div>
-            <div className="text-[1.4rem] text-gray-600">Add my profile to the Transform Health directory</div>
+            <div className="text-1.4 text-gray-600">Add my profile to the Transform Health directory</div>
           </div>
         </button>
 
         <button
           onClick={() => setConsent("no")}
-          className={`flex items-center gap-4 px-[2rem] py-[1.6rem] rounded-[10px] text-left cursor-pointer border-2 ${
-            consent === "no" ? "border-red-600 bg-[#fff5f5]" : "border-[#e5e7eb] bg-[#f9fafb]"
+          className={`flex items-center gap-4 px-8 py-6 rounded-lg text-left cursor-pointer border-2 ${
+            consent === "no" ? "border-red-600 bg-brand-red-light" : "border-gray-200 bg-gray-50"
           }`}
         >
           <div className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
@@ -175,7 +175,7 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
           </div>
           <div>
             <div className="font-bold text-lg text-brand-dark mb-0.5">No, I do not consent</div>
-            <div className="text-[1.4rem] text-gray-600">I prefer not to be included at this time</div>
+            <div className="text-1.4 text-gray-600">I prefer not to be included at this time</div>
           </div>
         </button>
       </div>
@@ -210,7 +210,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
 
       <div className="mb-5">
         <label className={LABEL_CLASS}>Profile photo (optional)</label>
-        <label className="flex flex-col items-center justify-center bg-brand-blue-tint border-[1.5px] border-[#d1d9ec] rounded-xl py-[5.2rem] px-[2.4rem] cursor-pointer w-full">
+        <label className="flex flex-col items-center justify-center bg-brand-blue-tint border-[1.5px] border-brand-blue-border rounded-xl py-[5.2rem] px-[2.4rem] cursor-pointer w-full">
           {photoPreview ? (
             <img src={photoPreview} alt="Preview" className="w-[80px] h-[80px] rounded-full object-cover mb-3" />
           ) : (
@@ -221,7 +221,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
             </svg>
           )}
           <span className="text-lg font-semibold text-brand-dark mb-1">Upload a photo</span>
-          <span className="text-[1.4rem] text-gray-500">JPEG or PNG · max 5MB</span>
+          <span className="text-1.4 text-gray-500">JPEG or PNG · max 5MB</span>
           {/* Native file input — no component equivalent */}
           <input type="file" accept="image/png,image/jpeg" onChange={onPhotoUpload} className="hidden" />
         </label>
@@ -272,7 +272,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
             <button
               key={opt}
               onClick={() => setYearsExp(opt)}
-              className={`py-[1.4rem] px-[0.8rem] rounded-[10px] text-lg font-medium cursor-pointer border-[1.5px] ${
+              className={`py-5 px-[0.8rem] rounded-lg text-lg font-medium cursor-pointer border-[1.5px] ${
                 yearsExp === opt ? "border-brand-navy bg-brand-navy text-white" : "border-gray-300 bg-white text-brand-dark"
               }`}
             >
@@ -285,7 +285,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>
           Areas of expertise *{" "}
-          <span className="text-[1.4rem] text-gray-500 font-normal">(select up to 5)</span>
+          <span className="text-1.4 text-gray-500 font-normal">(select up to 5)</span>
         </label>
         {/* Tag pill selector — custom layout, intentionally raw <button> */}
         <div className="flex flex-wrap gap-2">
@@ -294,7 +294,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
               key={tag}
               onClick={() => toggleExpertise(tag)}
               disabled={!expertise.includes(tag) && expertise.length >= 5}
-              className={`py-[0.8rem] px-[1.4rem] rounded-[20px] text-[1.4rem] font-medium cursor-pointer border-[1.5px] transition-opacity ${
+              className={`py-[0.8rem] px-[1.4rem] rounded-[20px] text-1.4 font-medium cursor-pointer border-[1.5px] transition-opacity ${
                 expertise.includes(tag) ? "border-brand-navy bg-brand-navy text-white" : "border-gray-300 bg-white text-dark"
               } ${!expertise.includes(tag) && expertise.length >= 5 ? "opacity-40" : "opacity-100"}`}
             >
@@ -302,7 +302,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
             </button>
           ))}
         </div>
-        <p className="text-[1.4rem] text-gray-500 mt-2">{expertise.length} of 5 selected</p>
+        <p className="text-1.4 text-gray-500 mt-2">{expertise.length} of 5 selected</p>
       </div>
 
       {expertise.includes("Other") && (
@@ -337,12 +337,12 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
         {selectedCountries.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2.5">
             {selectedCountries.map((c) => (
-              <span key={c} className="inline-flex items-center gap-1.5 px-[1.2rem] py-[0.6rem] rounded-[20px] bg-brand-navy text-white text-[1.4rem] font-medium">
+              <span key={c} className="inline-flex items-center gap-1.5 px-[1.2rem] py-[0.6rem] rounded-[20px] bg-brand-navy text-white text-1.4 font-medium">
                 {c}
                 {/* Inline chip remove — intentionally raw <button> */}
                 <button
                   onClick={() => setSelectedCountries(selectedCountries.filter((x) => x !== c))}
-                  className="bg-transparent border-0 cursor-pointer text-white text-[1.4rem] leading-none p-0"
+                  className="bg-transparent border-0 cursor-pointer text-white text-1.4 leading-none p-0"
                 >
                   ×
                 </button>
@@ -355,7 +355,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>
           Email *{" "}
-          <span className="text-[1.4rem] text-gray-500 font-normal">(not publicly displayed)</span>
+          <span className="text-1.4 text-gray-500 font-normal">(not publicly displayed)</span>
         </label>
         <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your.email@example.com" className={F_INPUT} />
       </div>
@@ -363,7 +363,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       <div className="mb-6">
         <label className={`${LABEL_CLASS} mb-3`}>
           Short bio *{" "}
-          <span className="text-[1.4rem] text-gray-500 font-normal">(300–500 characters)</span>
+          <span className="text-1.4 text-gray-500 font-normal">(300–500 characters)</span>
         </label>
         <Textarea
           value={bio}
@@ -373,7 +373,7 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
           error={bioCharWarning() ? "Please keep bio between 300–500 characters." : ""}
           className={F_INPUT}
         />
-        <span className="text-[1.4rem] text-gray-500 mt-1.5 block">{charCount} characters</span>
+        <span className="text-1.4 text-gray-500 mt-1.5 block">{charCount} characters</span>
       </div>
 
       <div className="flex justify-between items-center pt-5 mt-2">
@@ -405,9 +405,9 @@ export function Step4Links({ linkedin, setLinkedin, notableItems, addNotableItem
           <div>
             <label className={`${LABEL_CLASS} mb-0`}>
               Notable achievements{" "}
-              <span className="text-[1.4rem] text-gray-500 font-normal">(optional, up to 3)</span>
+              <span className="text-1.4 text-gray-500 font-normal">(optional, up to 3)</span>
             </label>
-            <p className="text-[1.4rem] text-gray-500 mt-1">Publications, projects, awards, or initiatives</p>
+            <p className="text-1.4 text-gray-500 mt-1">Publications, projects, awards, or initiatives</p>
           </div>
           <Button
             variant="secondary"
@@ -421,12 +421,12 @@ export function Step4Links({ linkedin, setLinkedin, notableItems, addNotableItem
         </div>
 
         {notableItems.length === 0 && (
-          <p className="text-[1.4rem] text-gray-500">No items added yet.</p>
+          <p className="text-1.4 text-gray-500">No items added yet.</p>
         )}
 
         <div className="flex flex-col gap-4">
           {notableItems.map((item, index) => (
-            <div key={index} className="border-[1.5px] border-gray-300 rounded-[10px] px-5 pt-5 pb-4">
+            <div key={index} className="border-[1.5px] border-gray-300 rounded-lg px-5 pt-5 pb-4">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-lg font-semibold text-brand-navy">Achievement {index + 1}</span>
                 <Button variant="ghost" size="sm" className="text-red-500 hover:no-underline" onClick={() => removeNotableItem(index)}>
@@ -435,15 +435,15 @@ export function Step4Links({ linkedin, setLinkedin, notableItems, addNotableItem
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-[1.4rem] text-brand-dark mb-1.5">Title</label>
+                  <label className="block text-1.4 text-brand-dark mb-1.5">Title</label>
                   <Input value={item.title} onChange={(e) => updateNotableItem(index, "title", e.target.value)} placeholder="e.g. Global Health Report" className={F_INPUT} />
                 </div>
                 <div>
-                  <label className="block text-[1.4rem] text-brand-dark mb-1.5">Link</label>
+                  <label className="block text-1.4 text-brand-dark mb-1.5">Link</label>
                   <Input value={item.link} onChange={(e) => updateNotableItem(index, "link", e.target.value)} placeholder="https://…" className={F_INPUT} />
                 </div>
                 <div>
-                  <label className="block text-[1.4rem] text-brand-dark mb-1.5">Type</label>
+                  <label className="block text-1.4 text-brand-dark mb-1.5">Type</label>
                   <Select value={item.type} onChange={(e) => updateNotableItem(index, "type", e.target.value)} className={F_INPUT}>
                     <option value="">Select type</option>
                     <option value="Publication">Publication</option>

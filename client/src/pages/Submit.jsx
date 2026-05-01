@@ -140,7 +140,7 @@ export default function Submit({ onManageProfile }) {
       <div className="bg-brand-sand min-h-screen font-sans">
         <div className="max-w-[600px] mx-auto px-[2.4rem] pt-[6.4rem]">
           <div className="text-center mb-10">
-            <p className="text-[1.4rem] text-brand-pink font-semibold tracking-[0.04em] mb-3">
+            <p className="text-1.4 text-brand-pink font-semibold tracking-[0.04em] mb-3">
               Submission received
             </p>
             <h2 className="text-[3.6rem] font-bold text-brand-dark mb-8 tracking-heading">
@@ -157,18 +157,18 @@ export default function Submit({ onManageProfile }) {
               { title: "Profile under review", body: "The Transform Health team reviews all submissions before they go live. This typically takes 3–5 business days." },
               { title: "Once approved",        body: "Your full profile card will appear in the public directory at transformhealthcoalition.org/leaders" },
             ].map(({ title, body }) => (
-              <div key={title} className="bg-[#f9fafb] border border-[#e5e7eb] rounded-[14px] px-[2.8rem] py-[2.4rem] flex gap-5 items-start">
+              <div key={title} className="bg-gray-50 border border-gray-200 rounded-xl px-11 py-9 flex gap-5 items-start">
                 <div className="w-9 h-9 rounded-full border-[3px] border-brand-navy border-t-transparent flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-[1.8rem] text-brand-dark mb-2">{title}</div>
-                  <p className="text-[1.6rem] text-gray-600 leading-[1.7] m-0">{body}</p>
+                  <p className="text-1.6 text-gray-600 leading-[1.7] m-0">{body}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="flex justify-end items-center max-w-[600px] mx-auto px-[2.4rem] py-8 border-t border-[#e5e7eb]">
+        <div className="flex justify-end items-center max-w-[600px] mx-auto px-[2.4rem] py-8 border-t border-gray-200">
           <Button variant="ghost" size="sm" className="font-bold tracking-[0.06em] uppercase" onClick={resetForm}>
             SUBMIT ANOTHER PROFILE →
           </Button>
@@ -187,14 +187,14 @@ export default function Submit({ onManageProfile }) {
             <div className="flex items-center gap-2">
               {[0, 1, 2, 3, 4].map((s) => (
                 <React.Fragment key={s}>
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[1.4rem] font-medium ${s <= step ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600"}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-1.4 font-medium ${s <= step ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600"}`}>
                     {s < step ? "✓" : s + 1}
                   </div>
                   <div className={`flex-1 h-0.5 ${s < step ? "bg-gray-800" : "bg-gray-200"} ${s === 4 ? "hidden" : ""}`} />
                 </React.Fragment>
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-[1.2rem] text-gray-600">
+            <div className="flex justify-between mt-2 text-1.2 text-gray-600">
               {STEP_LABELS.map((label, i) => <span key={i}>{label}</span>)}
             </div>
           </div>
@@ -257,12 +257,12 @@ export default function Submit({ onManageProfile }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/[0.45]">
           <div className="bg-white rounded-2xl p-10 text-center max-w-md w-full shadow-xl font-sans">
             <img src="./illustrations/thank-you.png" alt="" className="w-[90px] h-[90px] object-contain mx-auto mb-8 block" />
-            <h2 className="text-[2.4rem] font-bold text-brand-navy mb-4 tracking-heading">
+            <h2 className="text-2.4 font-bold text-brand-navy mb-4 tracking-heading">
               Thank you for your time
             </h2>
             <div className="flex flex-col gap-[10px] mb-8">
-              <p className="text-[1.6rem] text-dark leading-[1.7] m-0">We cannot proceed without your consent.</p>
-              <p className="text-[1.6rem] text-dark leading-[1.7] m-0">You are welcome to return and submit your profile anytime.</p>
+              <p className="text-1.6 text-dark leading-[1.7] m-0">We cannot proceed without your consent.</p>
+              <p className="text-1.6 text-dark leading-[1.7] m-0">You are welcome to return and submit your profile anytime.</p>
             </div>
             <Button
               variant="ghost"

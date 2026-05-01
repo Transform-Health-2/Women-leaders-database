@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import axios from "axios";
 import { MOCK_LEADERS } from "../data/mockData";
 
-const INPUT_CLASS = "w-full px-[1.6rem] py-[1.4rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.5rem] outline-none bg-brand-blue-tint";
-const LABEL_CLASS = "block text-[1.5rem] text-brand-dark mb-2";
+const INPUT_CLASS = "w-full px-[1.6rem] py-5 border-[1.5px] border-gray-300 rounded-lg text-1.5 outline-none bg-brand-blue-tint";
+const LABEL_CLASS = "block text-1.5 text-brand-dark mb-2";
 const NAV_CLASS  = "flex justify-between items-center pt-5 mt-2";
-const BACK_CLASS = "bg-transparent border-0 cursor-pointer text-[1.4rem] font-bold text-brand-dark inline-flex items-center gap-2 tracking-[0.06em] uppercase";
+const BACK_CLASS = "bg-transparent border-0 cursor-pointer text-1.4 font-bold text-brand-dark inline-flex items-center gap-2 tracking-[0.06em] uppercase";
 
 function ContinueBtn({ disabled, onClick, children }) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`bg-transparent border-0 text-[1.4rem] font-bold tracking-[0.06em] uppercase inline-flex items-center gap-2 ${
-        disabled ? "cursor-not-allowed text-[#ccc]" : "cursor-pointer text-[#E8571D]"
+      className={`bg-transparent border-0 text-1.4 font-bold tracking-[0.06em] uppercase inline-flex items-center gap-2 ${
+        disabled ? "cursor-not-allowed text-gray-300" : "cursor-pointer text-brand-orange"
       }`}
     >
       {children}
@@ -128,12 +128,12 @@ export default function ManageProfile({ prefill, onBack }) {
           <h2 className="text-3xl font-bold text-brand-navy mb-3">
             Request received
           </h2>
-          <p className="text-[1.5rem] text-gray-600 leading-[1.7] mb-5">
+          <p className="text-1.5 text-gray-600 leading-[1.7] mb-5">
             {requestType === "delete"
               ? "Your removal request has been sent. The admin team will process it shortly."
               : "Your update request has been sent. The admin team will review and apply the changes shortly."}
           </p>
-          <p className="text-[1.3rem] text-gray-400">
+          <p className="text-1.3 text-gray-400">
             You'll be notified by email at {email}
           </p>
         </div>
@@ -149,10 +149,10 @@ export default function ManageProfile({ prefill, onBack }) {
           <h2 className="text-3xl font-bold text-brand-navy mb-3">
             Check your inbox
           </h2>
-          <p className="text-[1.5rem] text-gray-600 leading-[1.7] mb-2">
+          <p className="text-1.5 text-gray-600 leading-[1.7] mb-2">
             We've sent your profile link to <strong>{email}</strong>.
           </p>
-          <p className="text-[1.3rem] text-gray-400 mb-5">
+          <p className="text-1.3 text-gray-400 mb-5">
             The link can only be used once. Check your spam folder if you don't
             see it.
           </p>
@@ -161,7 +161,7 @@ export default function ManageProfile({ prefill, onBack }) {
               setLinkSent(false);
               setLinkError("");
             }}
-            className="bg-transparent border-0 cursor-pointer text-[1.3rem] text-brand-navy underline"
+            className="bg-transparent border-0 cursor-pointer text-1.3 text-brand-navy underline"
           >
             Try again with a different email
           </button>
@@ -178,7 +178,7 @@ export default function ManageProfile({ prefill, onBack }) {
             <h2 className="text-[2.6rem] font-bold text-brand-navy mb-2">
               Manage your profile
             </h2>
-            <p className="text-[1.4rem] text-gray-600 leading-[1.7] mb-7">
+            <p className="text-1.4 text-gray-600 leading-[1.7] mb-7">
               Enter your details to find and update or remove your profile from
               the database.
             </p>
@@ -222,7 +222,7 @@ export default function ManageProfile({ prefill, onBack }) {
             <div className="mb-6">
               <label className={LABEL_CLASS}>
                 LinkedIn profile{" "}
-                <span className="text-[1.3rem] text-gray-400 font-normal">
+                <span className="text-1.3 text-gray-400 font-normal">
                   (optional — helps us find you)
                 </span>
               </label>
@@ -237,11 +237,11 @@ export default function ManageProfile({ prefill, onBack }) {
             </div>
 
             {notFound && (
-              <div className="border-l-4 border-gray-300 bg-[#f9fafb] rounded-lg px-[1.8rem] py-[1.4rem] mb-5">
-                <p className="text-[1.4rem] font-semibold text-brand-dark mb-1">
+              <div className="border-l-4 border-gray-300 bg-gray-50 rounded-lg px-7 py-5 mb-5">
+                <p className="text-1.4 font-semibold text-brand-dark mb-1">
                   Profile not found
                 </p>
-                <p className="text-[1.3rem] text-gray-500">
+                <p className="text-1.3 text-gray-500">
                   We couldn't find a profile matching those details. Try your
                   LinkedIn URL or contact the admin team.
                 </p>
@@ -249,14 +249,14 @@ export default function ManageProfile({ prefill, onBack }) {
             )}
 
             {foundProfile && (
-              <div className="border-[1.5px] border-brand-navy rounded-[10px] px-5 py-4 mb-5 bg-brand-blue-tint">
-                <p className="text-[1.2rem] font-semibold text-brand-navy uppercase tracking-[0.06em] mb-2.5">
+              <div className="border-[1.5px] border-brand-navy rounded-lg px-5 py-4 mb-5 bg-brand-blue-tint">
+                <p className="text-1.2 font-semibold text-brand-navy uppercase tracking-[0.06em] mb-2.5">
                   Profile found
                 </p>
-                <p className="text-[1.5rem] font-bold text-brand-dark mb-1">
+                <p className="text-1.5 font-bold text-brand-dark mb-1">
                   {foundProfile.first_name} {foundProfile.last_name}
                 </p>
-                <p className="text-[1.3rem] text-gray-600">
+                <p className="text-1.3 text-gray-600">
                   {foundProfile.role} · {foundProfile.organisation}
                 </p>
               </div>
@@ -275,8 +275,8 @@ export default function ManageProfile({ prefill, onBack }) {
             </div>
 
             {foundProfile && (
-              <div className="mt-6 pt-5 border-t border-[#e5e7eb]">
-                <p className="text-[1.3rem] text-gray-500 mb-4 text-center">
+              <div className="mt-6 pt-5 border-t border-gray-200">
+                <p className="text-1.3 text-gray-500 mb-4 text-center">
                   What would you like to do?
                 </p>
                 <div className="grid grid-cols-2 gap-3">
@@ -285,7 +285,7 @@ export default function ManageProfile({ prefill, onBack }) {
                       setRequestType("update");
                       setStep("edit");
                     }}
-                    className="px-4 py-[1.4rem] rounded-[10px] border-[1.5px] border-brand-navy bg-white text-brand-navy text-[1.4rem] font-bold cursor-pointer tracking-[0.04em] hover:bg-brand-blue-tint transition-colors"
+                    className="px-4 py-5 rounded-lg border-[1.5px] border-brand-navy bg-white text-brand-navy text-1.4 font-bold cursor-pointer tracking-[0.04em] hover:bg-brand-blue-tint transition-colors"
                   >
                     Update profile
                   </button>
@@ -294,7 +294,7 @@ export default function ManageProfile({ prefill, onBack }) {
                       setRequestType("delete");
                       setStep("remove");
                     }}
-                    className="px-4 py-[1.4rem] rounded-[10px] border-[1.5px] border-red-500 bg-white text-red-500 text-[1.4rem] font-bold cursor-pointer tracking-[0.04em] hover:bg-red-50 transition-colors"
+                    className="px-4 py-5 rounded-lg border-[1.5px] border-red-500 bg-white text-red-500 text-1.4 font-bold cursor-pointer tracking-[0.04em] hover:bg-red-50 transition-colors"
                   >
                     Remove profile
                   </button>
@@ -307,7 +307,7 @@ export default function ManageProfile({ prefill, onBack }) {
                 <button
                   onClick={requestMagicLink}
                   disabled={linkLoading || !email}
-                  className={`bg-transparent border-0 cursor-pointer text-[1.3rem] text-brand-navy underline transition-opacity ${
+                  className={`bg-transparent border-0 cursor-pointer text-1.3 text-brand-navy underline transition-opacity ${
                     !email || linkLoading ? "opacity-40" : "opacity-100"
                   }`}
                 >
@@ -316,7 +316,7 @@ export default function ManageProfile({ prefill, onBack }) {
                     : "Or send my profile to this email instead →"}
                 </button>
                 {linkError && (
-                  <p className="text-[1.3rem] text-red-500 mt-1.5">{linkError}</p>
+                  <p className="text-1.3 text-red-500 mt-1.5">{linkError}</p>
                 )}
               </div>
             )}
@@ -326,11 +326,11 @@ export default function ManageProfile({ prefill, onBack }) {
         {(step === "edit" || step === "remove") && (
           <div>
             {foundProfile && (
-              <div className="border-[1.5px] border-gray-300 rounded-[10px] px-[1.8rem] py-[1.4rem] mb-7 bg-brand-blue-tint">
-                <p className="text-[1.5rem] font-bold text-brand-dark mb-0.5">
+              <div className="border-[1.5px] border-gray-300 rounded-lg px-7 py-5 mb-7 bg-brand-blue-tint">
+                <p className="text-1.5 font-bold text-brand-dark mb-0.5">
                   {foundProfile.first_name} {foundProfile.last_name}
                 </p>
-                <p className="text-[1.3rem] text-gray-600">
+                <p className="text-1.3 text-gray-600">
                   {foundProfile.role} · {foundProfile.organisation}
                 </p>
               </div>
@@ -341,34 +341,34 @@ export default function ManageProfile({ prefill, onBack }) {
                 <h2 className="text-[2.6rem] font-bold text-brand-navy mb-2">
                   Update your profile
                 </h2>
-                <p className="text-[1.4rem] text-gray-600 leading-[1.7] mb-6">
+                <p className="text-1.4 text-gray-600 leading-[1.7] mb-6">
                   Describe what you'd like to change — role, organisation, bio,
                   expertise, or LinkedIn.
                 </p>
 
                 {foundProfile && (
-                  <div className="border-l-4 border-gray-300 bg-[#f9fafb] rounded-lg px-[1.8rem] py-[1.4rem] mb-5">
-                    <p className="text-[1.2rem] text-gray-400 font-semibold uppercase tracking-[0.06em] mb-2">
+                  <div className="border-l-4 border-gray-300 bg-gray-50 rounded-lg px-7 py-5 mb-5">
+                    <p className="text-1.2 text-gray-400 font-semibold uppercase tracking-[0.06em] mb-2">
                       Current details
                     </p>
                     {foundProfile.role && (
-                      <p className="text-[1.3rem] text-gray-600 mb-1">
+                      <p className="text-1.3 text-gray-600 mb-1">
                         <strong>Role:</strong> {foundProfile.role}
                       </p>
                     )}
                     {foundProfile.organisation && (
-                      <p className="text-[1.3rem] text-gray-600 mb-1">
+                      <p className="text-1.3 text-gray-600 mb-1">
                         <strong>Organisation:</strong>{" "}
                         {foundProfile.organisation}
                       </p>
                     )}
                     {foundProfile.bio && (
-                      <p className="text-[1.3rem] text-gray-600 mb-1">
+                      <p className="text-1.3 text-gray-600 mb-1">
                         <strong>Bio:</strong> {foundProfile.bio}
                       </p>
                     )}
                     {foundProfile.expertise && (
-                      <p className="text-[1.3rem] text-gray-600">
+                      <p className="text-1.3 text-gray-600">
                         <strong>Expertise:</strong> {foundProfile.expertise}
                       </p>
                     )}
@@ -402,7 +402,7 @@ export default function ManageProfile({ prefill, onBack }) {
                 <h2 className="text-[2.6rem] font-bold text-red-500 mb-2">
                   Remove your profile
                 </h2>
-                <p className="text-[1.4rem] text-gray-600 leading-[1.7] mb-6">
+                <p className="text-1.4 text-gray-600 leading-[1.7] mb-6">
                   Optional — let us know why. This helps us improve the
                   database.
                 </p>
@@ -410,7 +410,7 @@ export default function ManageProfile({ prefill, onBack }) {
                 <div className="mb-5">
                   <label className={LABEL_CLASS}>
                     Reason{" "}
-                    <span className="text-[1.3rem] text-gray-400 font-normal">
+                    <span className="text-1.3 text-gray-400 font-normal">
                       (optional)
                     </span>
                   </label>
@@ -423,8 +423,8 @@ export default function ManageProfile({ prefill, onBack }) {
                   />
                 </div>
 
-                <div className="border-l-4 border-red-300 bg-red-50 rounded-lg px-[1.8rem] py-[1.4rem] mb-6">
-                  <p className="text-[1.3rem] text-gray-500">
+                <div className="border-l-4 border-red-300 bg-red-50 rounded-lg px-7 py-5 mb-6">
+                  <p className="text-1.3 text-gray-500">
                     Your profile will be removed from the public database after
                     admin review.
                   </p>
@@ -450,20 +450,20 @@ export default function ManageProfile({ prefill, onBack }) {
             </h2>
 
             {(foundProfile || firstName) && (
-              <div className="border-[1.5px] border-gray-300 rounded-[10px] px-[1.8rem] py-[1.4rem] mb-5 bg-brand-blue-tint">
-                <p className="text-[1.5rem] font-bold text-brand-dark mb-0.5">
+              <div className="border-[1.5px] border-gray-300 rounded-lg px-7 py-5 mb-5 bg-brand-blue-tint">
+                <p className="text-1.5 font-bold text-brand-dark mb-0.5">
                   {foundProfile?.first_name || firstName}{" "}
                   {foundProfile?.last_name || lastName}
                 </p>
-                <p className="text-[1.3rem] text-gray-400">{email}</p>
+                <p className="text-1.3 text-gray-400">{email}</p>
               </div>
             )}
 
-            <div className="border-[1.5px] border-gray-300 rounded-[10px] overflow-hidden mb-6">
-              <div className="flex justify-between items-center px-[1.8rem] py-[1.4rem] border-b border-[#e5e7eb]">
-                <span className="text-[1.4rem] text-gray-500">Request type</span>
+            <div className="border-[1.5px] border-gray-300 rounded-lg overflow-hidden mb-6">
+              <div className="flex justify-between items-center px-7 py-5 border-b border-gray-200">
+                <span className="text-1.4 text-gray-500">Request type</span>
                 <span
-                  className={`text-[1.3rem] font-bold ${
+                  className={`text-1.3 font-bold ${
                     requestType === "delete" ? "text-red-500" : "text-brand-navy"
                   }`}
                 >
@@ -473,19 +473,19 @@ export default function ManageProfile({ prefill, onBack }) {
                 </span>
               </div>
               {requestType === "update" && changes && (
-                <div className="px-[1.8rem] py-[1.4rem]">
-                  <p className="text-[1.3rem] text-gray-500 mb-1.5">
+                <div className="px-7 py-5">
+                  <p className="text-1.3 text-gray-500 mb-1.5">
                     Changes requested
                   </p>
-                  <p className="text-[1.4rem] text-brand-dark leading-[1.6]">
+                  <p className="text-1.4 text-brand-dark leading-[1.6]">
                     {changes}
                   </p>
                 </div>
               )}
               {requestType === "delete" && reason && (
-                <div className="px-[1.8rem] py-[1.4rem]">
-                  <p className="text-[1.3rem] text-gray-500 mb-1.5">Reason</p>
-                  <p className="text-[1.4rem] text-brand-dark leading-[1.6]">
+                <div className="px-7 py-5">
+                  <p className="text-1.3 text-gray-500 mb-1.5">Reason</p>
+                  <p className="text-1.4 text-brand-dark leading-[1.6]">
                     {reason}
                   </p>
                 </div>
@@ -493,7 +493,7 @@ export default function ManageProfile({ prefill, onBack }) {
             </div>
 
             {status === "error" && (
-              <p className="text-[1.3rem] text-red-500 mb-4">
+              <p className="text-1.3 text-red-500 mb-4">
                 Something went wrong. Please try again.
               </p>
             )}

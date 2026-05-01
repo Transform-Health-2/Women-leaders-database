@@ -79,7 +79,7 @@ export default function App() {
               className="w-full max-w-[220px] flex-shrink-0 h-auto"
             />
             <div className="text-center md:text-left">
-              <div className="font-bold uppercase text-[clamp(3.6rem,6vw,7rem)] leading-[1.1] text-[#00AAFF] tracking-heading">
+              <div className="font-bold uppercase text-[clamp(3.6rem,6vw,7rem)] leading-[1.1] text-brand-blue-bright tracking-heading">
                 <div>Women Leaders Bridging the Gap</div>
                 <div>in Digital Health</div>
               </div>
@@ -108,10 +108,10 @@ export default function App() {
             />
             <div className="text-center md:text-left">
               <div className="font-bold uppercase text-[clamp(3.6rem,6vw,7rem)] leading-[1.1] tracking-heading">
-                <div className="text-[#02598e]">Global</div>
-                <div className="text-[#F85A8E]">Network</div>
+                <div className="text-brand-navy">Global</div>
+                <div className="text-brand-pink">Network</div>
               </div>
-              <p className="mt-6 text-[clamp(1.4rem,1.6vw,2rem)] leading-[1.5] text-[#333]">
+              <p className="mt-6 text-[clamp(1.4rem,1.6vw,2rem)] leading-[1.5] text-brand-dark">
                 A curated community of health leaders driving digital
                 transformation
               </p>
@@ -140,9 +140,9 @@ export default function App() {
             />
             <div className="text-center md:text-left">
               <div className="font-bold uppercase text-[clamp(3.6rem,6vw,7rem)] leading-[1.1] tracking-heading">
-                <div className="text-[#02598e]">Join</div>
-                <div className="text-[#F85A8E]">The</div>
-                <div className="text-[#F85A8E]">Database</div>
+                <div className="text-brand-navy">Join</div>
+                <div className="text-brand-pink">The</div>
+                <div className="text-brand-pink">Database</div>
               </div>
             </div>
             <img
@@ -178,7 +178,7 @@ export default function App() {
                     aria-selected={active}
                     className={`font-['Montserrat'] font-medium text-[2rem] tracking-[0.03em] px-8 h-[4.4rem] whitespace-nowrap cursor-pointer ${
                       active
-                        ? "text-white bg-[#E8571D] -skew-x-[10deg] rounded-t-lg"
+                        ? "text-white bg-brand-orange -skew-x-[10deg] rounded-t-lg"
                         : "text-black bg-transparent"
                     }`}
                   >
@@ -195,8 +195,8 @@ export default function App() {
               onClick={() => setRoute("admin")}
               className={`font-['Montserrat'] font-medium text-[1.2rem] tracking-[0.08em] uppercase px-3.5 py-1.5 mb-1.5 cursor-pointer rounded ${
                 route === "admin"
-                  ? "text-white border-transparent bg-[#E8571D]"
-                  : "text-[#333] border border-[#555] bg-transparent"
+                  ? "text-white border-transparent bg-brand-orange"
+                  : "text-brand-dark border border-gray-500 bg-transparent"
               }`}
             >
               Admin

@@ -463,7 +463,7 @@ export default function Admin({ onGoToDirectory }) {
                 </p>
               </div>
               <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-[#f0c64a]">
+                <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-brand-yellow-border">
                   <div className="text-[1.2rem] uppercase tracking-wider text-accent-amber">Pending</div>
                   <div className="text-xl font-semibold text-accent-amber">{pendingCount}</div>
                 </div>
@@ -480,7 +480,7 @@ export default function Admin({ onGoToDirectory }) {
           </div>
 
           {/* Filter bar */}
-          <div className="px-8 py-4 border-b border-[#d0c2b3] flex-shrink-0 bg-brand-parchment">
+          <div className="px-8 py-4 border-b border-brand-parchment-border flex-shrink-0 bg-brand-parchment">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
                 <input
@@ -532,7 +532,7 @@ export default function Admin({ onGoToDirectory }) {
               </div>
             </div>
             {actionMessage && (
-              <div className="mt-4 rounded-lg px-4 py-3 text-lg border border-[#bbf7d0] bg-green-50 text-green-800">
+              <div className="mt-4 rounded-lg px-4 py-3 text-lg border border-brand-green-border bg-green-50 text-green-800">
                 {actionMessage}
               </div>
             )}
@@ -802,7 +802,7 @@ export default function Admin({ onGoToDirectory }) {
                 </div>
               ) : (
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                  <div className="flex items-center justify-between px-5 py-3 border-b bg-pink-light border-[#f9a8d4]">
+                  <div className="flex items-center justify-between px-5 py-3 border-b bg-pink-light border-brand-pink-border">
                     <div className="text-[1.4rem] font-semibold text-accent-pink">
                       {nominatedList.length} nominations to reach out to
                     </div>
@@ -867,7 +867,7 @@ export default function Admin({ onGoToDirectory }) {
                                   <div><span className="text-brand-navy font-semibold">Expertise: </span>{item.expertise || "—"}</div>
                                 </div>
                               </div>
-                              <div className="rounded-lg p-4 bg-brand-parchment border border-[#f9a8d4]">
+                              <div className="rounded-lg p-4 bg-brand-parchment border border-brand-pink-border">
                                 <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-accent-pink">Contact</div>
                                 <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
                                   <div><span className="text-accent-pink font-semibold">Nominator: </span>{item.editor_email || item.editorEmail || "—"}</div>
@@ -888,7 +888,7 @@ export default function Admin({ onGoToDirectory }) {
                               </div>
                             )}
 
-                            <div className="rounded-lg overflow-hidden border-[1.5px] border-[#f9a8d4]">
+                            <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-pink-border">
                               <div className="flex items-center justify-between px-4 py-3 bg-pink-light">
                                 <div className="text-[1.4rem] font-semibold text-accent-pink">Outreach message</div>
                                 <button

@@ -1,6 +1,6 @@
 export default function SiteFooter() {
   return (
-    <footer className="font-sans relative bg-[#FEE5F6]">
+    <footer className="font-sans relative bg-brand-pink-light">
       <div className="relative">
         <img
           src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/footer_icon_bg.svg"
@@ -20,7 +20,7 @@ export default function SiteFooter() {
               <a
                 key={link}
                 href="#"
-                className="text-white no-underline text-[1.4rem]"
+                className="text-white no-underline text-1.4"
               >
                 {link}
               </a>
@@ -29,7 +29,7 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      <div className="bg-[#002D48] text-white text-[1.4rem] font-light py-[1rem] text-center">
+      <div className="bg-brand-navy-dark text-white text-1.4 font-light py-4 text-center">
         Copyright © {new Date().getFullYear()} Transform Health. All Rights Reserved.
       </div>
     </footer>

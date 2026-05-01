@@ -22,7 +22,7 @@ export default function SiteHeader() {
               <li key={item}>
                 <a
                   href="#"
-                  className="text-[1.6rem] uppercase px-[1.5rem] text-[#333] no-underline font-medium tracking-[0.03em]"
+                  className="text-1.6 uppercase px-6 text-brand-dark no-underline font-medium tracking-[0.03em]"
                 >
                   {item}
                 </a>

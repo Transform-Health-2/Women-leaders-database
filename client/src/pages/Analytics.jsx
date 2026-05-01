@@ -120,7 +120,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           <h2 className="text-[3rem] font-bold text-gray-900 tracking-heading">
             Key Highlights from the Database
           </h2>
-          <p className="text-[1.6rem] text-gray-600 mt-2 leading-relaxed">
+          <p className="text-1.6 text-gray-600 mt-2 leading-relaxed">
             Overview of expertise distribution, demographic representation, and leadership density across the network.
           </p>
         </div>
@@ -187,7 +187,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
 
             {/* Region selector */}
             <div className="relative mt-auto pt-5">
-              <p className="text-center text-[1.1rem] text-gray-400 mb-3 tracking-wide uppercase">
+              <p className="text-center text-1.1 text-gray-400 mb-3 tracking-wide uppercase">
                 Select a region to explore
               </p>
               <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
@@ -201,7 +201,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     onClick={() => setSelectedRegion(region.key)}
                     className="flex flex-col items-center gap-1 text-center py-3 px-2 rounded-lg hover:bg-brand-orange-light/10 transition-colors cursor-pointer"
                   >
-                    <span className={`text-[1.1rem] font-semibold transition-colors ${selectedRegion === region.key ? "text-brand-orange" : "text-[#334155]"}`}>
+                    <span className={`text-1.1 font-semibold transition-colors ${selectedRegion === region.key ? "text-brand-orange" : "text-gray-700"}`}>
                       {REGION_LABELS[region.key]}
                     </span>
                     <span className="text-[1rem] text-gray-400">
@@ -216,7 +216,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
 
           {/* Specialisation sidebar */}
           <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 flex flex-col">
-            <div className="text-[1.2rem] font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            <div className="text-1.2 font-semibold text-gray-500 uppercase tracking-wider mb-2">
               Specialisation
             </div>
             <div className="text-[1.8rem] font-bold leading-snug mb-4 text-brand-blue">
@@ -245,13 +245,13 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
         {/* Emerging Voices */}
         <div className="p-8 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-6">
-            <div className="text-[2.4rem] font-bold tracking-heading text-brand-blue">
+            <div className="text-2.4 font-bold tracking-heading text-brand-blue">
               Emerging Voices in Practice
             </div>
             <div className="flex-shrink-0">
               <button
                 onClick={() => onGoToDirectory?.()}
-                className="px-6 py-3 bg-brand-orange text-white rounded-lg text-[1.6rem] font-medium hover:bg-brand-orange-hover transition-colors"
+                className="px-6 py-3 bg-brand-orange text-white rounded-lg text-1.6 font-medium hover:bg-brand-orange-hover transition-colors"
               >
                 View Directory
               </button>
@@ -266,24 +266,24 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 text-gray-500 text-[1.4rem]">
+            <div className="text-center py-12 text-gray-500 text-1.4">
               No featured leaders configured.
             </div>
           )}
         </div>
 
-        <p className="text-center text-[1.1rem] text-gray-600 mt-6">
+        <p className="text-center text-1.1 text-gray-600 mt-6">
           Data sourced from the Transform Health Women Leaders Database · {stats.total} verified profiles
         </p>
       </div>
 
       {/* Manage profile footer */}
       <div className="text-center pt-[2.4rem] pb-[3.2rem] font-sans">
-        <p className="text-[1.4rem] text-gray-500">
+        <p className="text-1.4 text-gray-500">
           Already in the database?{" "}
           <button
             onClick={() => onManageProfile(null)}
-            className="bg-transparent border-0 cursor-pointer text-brand-navy font-semibold text-[1.4rem] underline p-0"
+            className="bg-transparent border-0 cursor-pointer text-brand-navy font-semibold text-1.4 underline p-0"
           >
             Manage or remove your profile
           </button>
