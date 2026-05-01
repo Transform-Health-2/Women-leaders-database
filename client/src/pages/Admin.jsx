@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios";
-import { MOCK_LEADERS } from "../data/mockData";
+import { api } from "../api/leaders";
 
 const MOCK_REQUESTS = [
   {
@@ -146,33 +145,21 @@ export default function Admin({ onGoToDirectory }) {
   const [copiedId,         setCopiedId]         = useState(null);
   const [showConfirm,      setShowConfirm]      = useState(null);
   const [pendingSort,      setPendingSort]      = useState("name_az");
-  const appsScriptUrl = import.meta.env.VITE_APPS_SCRIPT_URL;
-  const PAGE_SIZE = 15;
+    const PAGE_SIZE = 15;
 
   useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     setLoading(true);
     try {
-      if (appsScriptUrl) {
-        const [pendingRes, allRes] = await Promise.all([
-          axios.get(appsScriptUrl + "?api=entries&status=pending"),
-          axios.get(appsScriptUrl + "?api=entries"),
-        ]);
-        setPending(pendingRes.data || []);
-        setAll(allRes.data || []);
-      } else {
-        const mockPending = [
-          { id: "th_p1", first_name: "Jane",  last_name: "Doe",    role: "Health Tech Lead",         organisation: "HealthCorp",    bio: "Digital health innovator building AI solutions.",                              expertise: "AI",                       linkedin: "https://linkedin.com/in/janedoe",    editor_email: "jane@example.com",      status: "pending", branch: "self"     },
-          { id: "th_p2", first_name: "Maria", last_name: "Santos", role: "CEO",                      organisation: "MedTech Africa", bio: "Building health solutions for Africa.",                                       expertise: "Digital health innovation", linkedin: "https://linkedin.com/in/mariasantos", editor_email: "maria@example.com",     status: "pending", branch: "nominate" },
-          { id: "th_p3", first_name: "Amina", last_name: "Khan",   role: "Digital Health Director",  organisation: "AfriHealth",    bio: "Leading digital transformation in maternal health across East Africa.",      expertise: "mHealth, Health systems",  linkedin: "https://linkedin.com/in/aminakhan",  editor_email: "nominator@example.com", status: "pending", branch: "nominate" },
-        ];
-        const mockAll = [...MOCK_LEADERS.map((l) => ({ ...l, editor_email: "" })), ...mockPending];
-        setPending(mockPending);
-        setAll(mockAll);
-      }
+      const [pending, all] = await Promise.all([
+        api.getLeaders("pending"),
+        api.getLeaders("live"),
+      ]);
+      setPending(pending || []);
+      setAll(all || []);
     } catch (e) {
-      console.error(e);
+      console.error("Failed to load admin data:", e);
     } finally {
       setLoading(false);
     }
@@ -182,9 +169,9 @@ export default function Admin({ onGoToDirectory }) {
     setActionId(id);
     setActionMessage("");
     try {
-      if (appsScriptUrl) {
-        await axios.post(appsScriptUrl, { action, id, adminPassword: "demo" }, { headers: { "Content-Type": "application/json" } });
-      }
+      if (action === "approve") await api.approveRequest(id);
+      else await api.rejectRequest(id);
+
       const item = all.find((i) => i.id === id);
       const updated = item ? { ...item, status: action === "approve" ? "live" : "rejected" } : null;
       if (updated) setAll(all.map((i) => (i.id === id ? updated : i)));
@@ -239,9 +226,7 @@ export default function Admin({ onGoToDirectory }) {
     setActionId(req.id);
     setActionMessage("");
     try {
-      if (appsScriptUrl) {
-        await axios.post(appsScriptUrl, { action: "sendProfileLink", firstName: req.first_name, lastName: req.last_name, email: req.email, linkedin: req.linkedin }, { headers: { "Content-Type": "application/json" } });
-      }
+      await api.requestManage({ firstName: req.first_name, lastName: req.last_name, email: req.email, linkedin: req.linkedin });
       setRequests((current) => current.map((r) => (r.id === req.id ? { ...r, link_sent: true } : r)));
       setActionMessage(`Update link sent to ${req.email}.`);
     } catch (e) {
@@ -300,9 +285,15 @@ export default function Admin({ onGoToDirectory }) {
   async function executeBulkDelete() {
     setActionMessage("");
     try {
-      if (appsScriptUrl) {
-        await Promise.all(selectedDeletes.map((id) => axios.post(appsScriptUrl, { action: "approve", id, adminPassword: "demo" }, { headers: { "Content-Type": "application/json" } })));
-      }
+      await Promise.all(selectedDeletes.map((id) => api.approveRequest(id)));
+      setRequests((current) => current.map((r) => selectedDeletes.includes(r.id) ? { ...r, status: "approved" } : r));
+      setActionMessage(`${selectedDeletes.length} deletion request(s) approved.`);
+      setSelectedDeletes([]);
+    } catch (e) {
+      console.error(e);
+      setActionMessage("Unable to complete bulk deletion. Please try again.");
+    }
+  }
       setRequests((current) => current.map((r) => selectedDeletes.includes(r.id) ? { ...r, status: "approved" } : r));
       setActionMessage(`${selectedDeletes.length} deletion request(s) approved.`);
       setSelectedDeletes([]);
