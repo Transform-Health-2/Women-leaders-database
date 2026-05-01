@@ -143,7 +143,7 @@ client/src/
 
 | # | Task | Why Harder | Status |
 |---|---|---|---|
-| 8 | **Profile detail modal** | New component, needs to pull all fields and lay them out well | ⏳ Pending |
+| 8 | **Profile detail modal** | New component, needs to pull all fields and lay them out well | ✅ **Done** — ProfileModal.jsx complete |
 | 9 | **Analytics region → show leader cards below map** | Need to wire `selectedRegion` into a filtered list render | ⏳ Pending |
 | 10 | **Admin view new fields** | Extend existing admin card — no new backend, just UI columns | ✅ **Done** — commit, yearsExp + countries added |
 
@@ -176,8 +176,8 @@ client/src/
 
 ### Recommended Next Steps (In Priority Order)
 
-1. **Admin view new fields** (item 10, ~1hr) — Extend existing admin card with new columns
-2. **Profile detail modal** (item 8, ~1hr) — New component, pull all fields and layout
-3. **SMTP email notifications** (item 12) — Needs server/Firebase Function + email service config
-4. **Google Sheets integration** (item 11) — Needs backend proxy or Apps Script web app
-5. **Click-through analytics** (item 13) — Needs analytics service (Plausible/GA4) or custom logging
+1. **SMTP email notifications** (item 12) — Needs server/Firebase Function + email service config
+2. **Google Sheets integration** (item 11) — Needs backend proxy or Apps Script web app
+3. **Click-through analytics** (item 13) — Needs analytics service (Plausible/GA4) or custom logging
+4. **Compression audit** — Run Lighthouse, identify remaining large assets
+5. **Mobile UX review** — Test all pages on mobile, fix any overflow/overlap issues
