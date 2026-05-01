@@ -1,42 +1,16 @@
 export default function SiteHeader() {
   return (
-    <header
-      style={{
-        background: "#fffff4",
-        padding: "15px 25px",
-        width: "100%",
-        position: "sticky",
-        top: 0,
-        zIndex: 999,
-        fontFamily: "'Montserrat', sans-serif",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          maxWidth: "1400px",
-          margin: "0 auto",
-        }}
-      >
+    <header className="bg-brand-cream px-[2.5rem] py-[1.5rem] w-full sticky top-0 z-[999] font-sans">
+      <div className="flex justify-between items-center max-w-[1400px] mx-auto">
         <div className="logo">
           <img
             src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/main_logo.svg"
             alt="Transform Health"
-            style={{ height: 40, display: "block" }}
+            className="h-[4rem] block"
           />
         </div>
         <nav>
-          <ul
-            style={{
-              display: "flex",
-              listStyle: "none",
-              margin: 0,
-              padding: 0,
-              gap: 0,
-            }}
-          >
+          <ul className="flex list-none m-0 p-0">
             {[
               "Home",
               "About",
@@ -48,16 +22,7 @@ export default function SiteHeader() {
               <li key={item}>
                 <a
                   href="#"
-                  style={{
-                    fontSize: 16,
-                    textTransform: "uppercase",
-                    padding: "0 15px",
-                    color: "#333",
-                    textDecoration: "none",
-                    fontFamily: "'Montserrat', sans-serif",
-                    fontWeight: 500,
-                    letterSpacing: "0.03em",
-                  }}
+                  className="text-[1.6rem] uppercase px-[1.5rem] text-[#333] no-underline font-medium tracking-[0.03em]"
                 >
                   {item}
                 </a>

@@ -1,37 +1,14 @@
 export default function SiteFooter() {
   return (
-    <footer
-      style={{
-        fontFamily: "'Montserrat', sans-serif",
-        position: "relative",
-        backgroundColor: "#FEE5F6",
-      }}
-    >
-      {/* SVG background image sets the natural height — content sits on top of it */}
-      <div style={{ position: "relative" }}>
+    <footer className="font-sans relative bg-[#FEE5F6]">
+      <div className="relative">
         <img
           src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/footer_icon_bg.svg"
           alt=""
-          style={{
-            display: "block",
-            width: "100%",
-            padding: "25px 5vw",
-            boxSizing: "border-box",
-          }}
+          className="block w-full px-[5vw] py-[2.5rem]"
         />
-
-        {/* Content absolutely centred over the SVG — matches parent site's top:45% left:55% */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "55%",
-            transform: "translate(-50%, -50%)",
-            maxWidth: "70%",
-            width: "100%",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div className="absolute top-1/2 left-[55%] -translate-x-1/2 -translate-y-1/2 max-w-[70%] w-full">
+          <div className="flex flex-col gap-2">
             {[
               "Policies",
               "Media Enquiries",
@@ -43,7 +20,7 @@ export default function SiteFooter() {
               <a
                 key={link}
                 href="#"
-                style={{ color: "#fff", textDecoration: "none", fontSize: 14 }}
+                className="text-white no-underline text-[1.4rem]"
               >
                 {link}
               </a>
@@ -52,19 +29,8 @@ export default function SiteFooter() {
         </div>
       </div>
 
-      {/* Copyright bar */}
-      <div
-        style={{
-          background: "#002D48",
-          color: "#fff",
-          fontSize: 14,
-          fontWeight: 300,
-          padding: "10px 0",
-          textAlign: "center",
-        }}
-      >
-        Copyright © {new Date().getFullYear()} Transform Health. All Rights
-        Reserved.
+      <div className="bg-[#002D48] text-white text-[1.4rem] font-light py-[1rem] text-center">
+        Copyright © {new Date().getFullYear()} Transform Health. All Rights Reserved.
       </div>
     </footer>
   );
