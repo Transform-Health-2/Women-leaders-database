@@ -171,11 +171,14 @@ client/src/
 | 23 | **Code splitting / lazy loading** | 🟢 Low | ❌ Not started — App.jsx imports all pages directly |
 | 24 | **DRY up icons** (LeaderCard + ProfileModal duplicate SVG) | 🟡 Medium | ❌ Not started — same icons defined twice |
 | 25 | **Move COUNTRY_TO_CONTINENT out of hook** | 🟡 Medium | ❌ Not started — exported from useLeaders.js |
-| 26 | **Wire up Admin.jsx to use API layer** | 🔴 High | ❌ Not started — grep: 0 usages of api.* |
+| 26 | **Wire up Admin.jsx to use API layer** | 🔴 High | ✅ **Done** — commit `71fbd6c`, all axios replaced with api.* |
 | 27 | **Wire up SubmitSteps.jsx to use Button/Input** | 🔴 High | ✅ **Done** — grep: 39 usages of Button/Input/Textarea/Select |
 
-### Recommended Order for Thursday–Sunday
-- **Today (Thursday):** Items 8–9 (profile modal, analytics region filter)
-- **Friday:** Item 10 (admin view new fields)
-- **Weekend:** Start technical debt items 14–17 (SVG compression, Tailwind migration, reusable components)
-- **Post-pilot:** Items 11–13 (Sheets, SMTP, Analytics)
+### Recommended Next Steps (In Priority Order)
+
+1. **DRY up icons** (item 24, ~30min) — Move `LinkedInIcon`, `PersonIcon`, `OrgIcon`, `LocationIcon` to `components/icons.jsx`, import in LeaderCard + ProfileModal
+2. **Wire up Analytics region → cards** (TODO #9, ~1hr) — `useLeaders` hook ready, render cards below map when `selectedRegion` changes
+3. **Add React Query/SWR** (item 21, ~2hrs) — Replace raw `useEffect+axios` in `useLeaders.js` with proper caching/stale-while-revalidate
+4. **Move COUNTRY_TO_CONTINENT** (item 25, ~15min) — Export from `utils/countries.js` instead of `hooks/useLeaders.js`
+5. **Accessibility audit** (item 22, ~1hr) — Add aria-labels to search, focus trap to ProfileModal, keyboard nav
+6. **Code splitting** (item 23, ~1hr) — Use `React.lazy()` in `App.jsx` for all 4 pages
