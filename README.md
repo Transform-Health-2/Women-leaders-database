@@ -176,8 +176,8 @@ client/src/
 
 ### Recommended Next Steps (In Priority Order)
 
-1. **Add React Query/SWR** (item 21, ~2hrs) — Replace raw `useEffect+axios` in `useLeaders.js` with proper caching/stale-while-revalidate
-2. **Accessibility audit** (item 22, ~1hr) — Add aria-labels to search, focus trap to ProfileModal, keyboard nav
-3. **Code splitting** (item 23, ~1hr) — Use `React.lazy()` in `App.jsx` for all 4 pages
-4. **Admin view new fields** (item 10, ~1hr) — Extend existing admin card with new columns
-5. **Profile detail modal** (item 8, ~1hr) — New component, pull all fields and layout
+1. **Accessibility audit** (item 22, ~1hr) — Add aria-labels to search, focus trap to ProfileModal, keyboard nav
+2. **Code splitting** (item 23, ~1hr) — Use `React.lazy()` in `App.jsx` for all 4 pages
+3. **Admin view new fields** (item 10, ~1hr) — Extend existing admin card with new columns
+4. **Profile detail modal** (item 8, ~1hr) — New component, pull all fields and layout
+5. **SMTP email notifications** (item 12) — Needs server/Firebase Function + email service config
