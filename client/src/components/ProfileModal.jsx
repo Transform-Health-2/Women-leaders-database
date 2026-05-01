@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { LinkedInIcon, PersonIcon, OrgIcon } from "./icons";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 function TBC() {
   return <span className="italic text-gray-400">TBC</span>;
@@ -19,6 +20,16 @@ function MetaRow({ label, children }) {
 }
 
 export default function ProfileModal({ leader, onClose, onManage }) {
+  const modalRef = useFocusTrap(true);
+  const previousFocus = useRef(null);
+
+  useEffect(() => {
+    previousFocus.current = document.activeElement;
+    return () => {
+      previousFocus.current?.focus();
+    };
+  }, []);
+
   if (!leader) return null;
 
   const isFeatured = leader.featured === true || leader.featured === "true";
@@ -27,10 +38,15 @@ export default function ProfileModal({ leader, onClose, onManage }) {
     <div
       className="fixed inset-0 bg-black/50 z-[1000] flex items-start justify-center overflow-y-auto py-10 px-4"
       onClick={onClose}
+      role="presentation"
     >
       <div
+        ref={modalRef}
         className="bg-white rounded-xl max-w-2xl w-full p-6 relative max-h-[calc(100vh-4rem)] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="profile-modal-title"
       >
         <button
           onClick={onClose}
@@ -62,7 +78,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                 ★ Featured
               </span>
             )}
-            <h2 className="text-[2rem] font-bold text-gray-900 flex items-center gap-2">
+            <h2 id="profile-modal-title" className="text-[2rem] font-bold text-gray-900 flex items-center gap-2">
               {leader.first_name} {leader.last_name}
               {leader.linkedin?.trim() && (
                 <a href={leader.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn Profile" className="inline-flex">

@@ -120,33 +120,36 @@ export default function Database({ onManageProfile }) {
         <div className="max-w-[1440px] mx-auto px-8 py-3 flex flex-wrap items-center gap-3">
           {/* Search */}
           <div className="flex-1 min-w-[180px] max-w-[280px]">
+            <label htmlFor="leader-search" className="sr-only">Search leaders</label>
             <input
+              id="leader-search"
               type="text"
               placeholder="Search..."
               value={search}
               onChange={handleSearch}
               className="w-full px-[1.6rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.6rem] outline-none bg-brand-blue-tint"
+              aria-label="Search leaders by name, role, organisation, or bio"
             />
           </div>
 
-          <select value={sortBy}          onChange={handleSort}      className={SELECT_CLASS}>
+          <select value={sortBy}          onChange={handleSort}      className={SELECT_CLASS} aria-label="Sort leaders">
             <option value="">Sort by</option>
             <option value="az">A → Z</option>
             <option value="za">Z → A</option>
             <option value="latest">Latest</option>
           </select>
 
-          <select value={continentFilter} onChange={handleContinent} className={SELECT_CLASS}>
+          <select value={continentFilter} onChange={handleContinent} className={SELECT_CLASS} aria-label="Filter by continent">
             <option value="">Continent: All</option>
             {CONTINENTS.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
 
-          <select value={countryFilter}   onChange={handleCountry}   className={SELECT_CLASS}>
+          <select value={countryFilter}   onChange={handleCountry}   className={SELECT_CLASS} aria-label="Filter by country">
             <option value="">Country: All</option>
             {visibleCountries.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
 
-          <select value={expertiseFilter} onChange={handleExpertise} className={SELECT_CLASS}>
+          <select value={expertiseFilter} onChange={handleExpertise} className={SELECT_CLASS} aria-label="Filter by expertise">
             <option value="">Expertise: All</option>
             {EXPERTISE_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
