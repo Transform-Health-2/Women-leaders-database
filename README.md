@@ -145,7 +145,7 @@ client/src/
 |---|---|---|---|
 | 8 | **Profile detail modal** | New component, needs to pull all fields and lay them out well | ⏳ Pending |
 | 9 | **Analytics region → show leader cards below map** | Need to wire `selectedRegion` into a filtered list render | ⏳ Pending |
-| 10 | **Admin view new fields** | Extend existing admin card — no new backend, just UI columns | ⏳ Pending |
+| 10 | **Admin view new fields** | Extend existing admin card — no new backend, just UI columns | ✅ **Done** — commit, yearsExp + countries added |
 
 ### Post-Pilot (Needs Backend / External Services)
 
