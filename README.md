@@ -43,7 +43,7 @@ npm install
    - Click **Project Settings (gear icon) → Script Properties**
    - Add these properties:
      ```
-     TARGET_SHEET_ID   = {your Sheet ID from step 1}
+     TARGET_SHEET_ID   = 1ElqmE1NDvhSNrGPPcTU67g_ndKxsZs68FRn04yus4C0
      ADMIN_PASSWORD    = {choose a secure admin password}
      SITE_URL          = {your deployed site URL, e.g. https://yourname.github.io/transform-health-directory}
      ```
@@ -147,6 +147,35 @@ npm run dev
    - Click **Deploy → Manage deployments → Edit**
    - Version: **New version**
    - Click **Deploy**
+
+---
+
+### Step 5.5: Quick Test Checklist (Personal Account)
+
+**Pre-flight check:**
+```bash
+# 1. Verify .env exists with your Sheet ID
+cat client/.env | grep VITE_SHEET_ID
+
+# 2. Start local dev server
+cd client
+npm run dev
+# Should start on http://localhost:5173
+
+# 3. Test API connection (in new terminal)
+curl "http://localhost:5173/api/entries?status=live"
+# Should return: [] (empty array = API working)
+```
+
+**Manual testing flow:**
+1. ✅ Open `http://localhost:5173`
+2. ✅ Submit a test profile via "SUBMIT PROFILE" tab
+3. ✅ Check your Google Sheet → Should see new row with status "pending"
+4. ✅ Go to "ADMIN" tab → Enter your admin password
+5. ✅ Approve the test submission
+6. ✅ Check "DATABASE" tab → Profile should appear
+7. ✅ Test "Manage your profile" → Enter your email
+8. ✅ Check email → Click magic link → Should open profile editor
 
 ---
 
