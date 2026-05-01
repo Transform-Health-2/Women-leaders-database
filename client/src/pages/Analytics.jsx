@@ -103,6 +103,14 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     return totals;
   }, [allLeaders]);
 
+  const regionLeaders = useMemo(() => {
+    if (!selectedRegion) return [];
+    return allLeaders.filter((l) => {
+      const leaderRegion = l.region || COUNTRY_TO_REGION[l.country?.trim()];
+      return leaderRegion === selectedRegion;
+    });
+  }, [allLeaders, selectedRegion]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-brand-sand flex items-center justify-center">
@@ -241,6 +249,28 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
             </div>
           </div>
         </div>
+
+        {/* Region Leaders */}
+        {selectedRegion && regionLeaders.length > 0 && (
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-1.6 font-bold text-brand-navy">
+                {REGION_LABELS[selectedRegion]} · {regionLeaders.length} Leaders
+              </h3>
+              <button
+                onClick={() => setSelectedRegion(null)}
+                className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors"
+              >
+                Clear selection
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {regionLeaders.map((l) => (
+                <LeaderCard key={l.id} leader={l} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Emerging Voices */}
         <div className="p-8 relative overflow-hidden">
