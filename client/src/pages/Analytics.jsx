@@ -6,37 +6,8 @@ import {
   Annotation,
 } from "react-simple-maps";
 import { useLeaders } from "../hooks/useLeaders";
+import { COUNTRY_TO_REGION, REGION_LABELS, REGION_MARKERS } from "../utils/countries";
 import LeaderCard from "../components/LeaderCard";
-
-const REGION_LABELS = {
-  north_america:    "North America",
-  latin_america:    "Latin America",
-  europe:           "Europe",
-  sub_saharan_africa: "Sub-Saharan Africa",
-  south_asia:       "South & SE Asia",
-};
-
-const REGION_MARKERS = [
-  { key: "north_america",     coordinates: [-95, 40],  dx: -105, dy: -90 },
-  { key: "latin_america",     coordinates: [-55, -10], dx: -55,  dy: 80  },
-  { key: "europe",            coordinates: [10, 50],   dx: 60,   dy: 80  },
-  { key: "sub_saharan_africa",coordinates: [20, 5],    dx: 60,   dy: 55  },
-  { key: "south_asia",        coordinates: [80, 20],   dx: 85,   dy: -55 },
-];
-
-const COUNTRY_TO_REGION = {
-  "United States": "north_america", Canada: "north_america", Mexico: "north_america",
-  Brazil: "latin_america", Argentina: "latin_america", Colombia: "latin_america",
-  Peru: "latin_america", Chile: "latin_america",
-  France: "europe", "United Kingdom": "europe", Germany: "europe",
-  Switzerland: "europe", Spain: "europe", Italy: "europe", Netherlands: "europe",
-  "South Africa": "sub_saharan_africa", Nigeria: "sub_saharan_africa",
-  Kenya: "sub_saharan_africa", Tanzania: "sub_saharan_africa",
-  Uganda: "sub_saharan_africa", Ghana: "sub_saharan_africa",
-  Ethiopia: "sub_saharan_africa", Rwanda: "sub_saharan_africa", Senegal: "sub_saharan_africa",
-  India: "south_asia", Pakistan: "south_asia", Bangladesh: "south_asia",
-  "Sri Lanka": "south_asia", Nepal: "south_asia", Bhutan: "south_asia",
-};
 
 const BAR_COLORS = ["#F97316","#18181B","#1E3A5F","#EAB308","#22C55E","#38BDF8","#EC4899","#166534"];
 

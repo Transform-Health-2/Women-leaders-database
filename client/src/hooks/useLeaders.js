@@ -1,17 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
-
-// Exported so Database can reuse for country dropdown filtering
-export const COUNTRY_TO_CONTINENT = {
-  "South Africa": "Africa",  Nigeria: "Africa",    Kenya: "Africa",
-  Tanzania:       "Africa",  Uganda: "Africa",     Ghana: "Africa",
-  Ethiopia:       "Africa",  Rwanda: "Africa",     Senegal: "Africa",
-  India:          "Asia",    Malaysia: "Asia",     China: "Asia",     Japan: "Asia",
-  France:         "Europe",  "United Kingdom": "Europe", Germany: "Europe", Switzerland: "Europe",
-  "United States": "North America", Canada: "North America",
-  Brazil:         "South America",
-  Australia:      "Oceania",
-};
+import { COUNTRY_TO_CONTINENT } from "../utils/countries";
 
 /**
  * useLeaders — single source of truth for leader data.
