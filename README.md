@@ -167,7 +167,7 @@ client/src/
 | 19 | **Add useLeaders / useAdminData custom hooks** | 🟡 Medium | ✅ **Done** — useLeaders.js (69 lines) |
 | 20 | **Configure tailwind.config.js** with design tokens | 🟡 Medium | ✅ **Done** — brand colors added |
 | 21 | **Add React Query / SWR for data fetching** | 🟡 Medium | ✅ **Done** — commit, useQuery with 5min stale time |
-| 22 | **Accessibility audit** (aria-labels, focus trap, keyboard nav) | 🟢 Low | ❌ Not started — ProfileModal has no focus trap |
+| 22 | **Accessibility audit** (aria-labels, focus trap, keyboard nav) | 🟢 Low | ✅ **Done** — commit, focus trap + aria-labels added |
 | 23 | **Code splitting / lazy loading** | 🟢 Low | ❌ Not started — App.jsx imports all pages directly |
 | 24 | **DRY up icons** (LeaderCard + ProfileModal duplicate SVG) | 🟡 Medium | ✅ **Done** — commit `b31a6c1`, icons.jsx created |
 | 25 | **Move COUNTRY_TO_CONTINENT out of hook** | 🟡 Medium | ✅ **Done** — commit `4abfc01`, moved to utils/countries.js |
