@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transform Health Database — Testing Sheet</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5efe0;
+      color: #1a1a1a;
+      padding: 40px 24px;
+    }
+    .page { max-width: 960px; margin: 0 auto; }
+
+    header { margin-bottom: 40px; }
+    header h1 { font-size: 2rem; font-weight: 800; color: #24588A; letter-spacing: -0.03em; }
+    header p { font-size: 0.95rem; color: #555; margin-top: 6px; }
+
+    .section { margin-bottom: 36px; }
+    .section h2 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #F8571D;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 14px;
+    }
+    .card h3 { font-size: 1rem; font-weight: 700; color: #18181b; margin-bottom: 8px; }
+    .card p { font-size: 0.875rem; color: #444; line-height: 1.55; margin-bottom: 6px; }
+    .card ul { padding-left: 16px; }
+    .card li { margin-bottom: 4px; font-size: 0.875rem; color: #444; line-height: 1.55; }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-bottom: 8px;
+    }
+    .tag.high { background: #dcfce7; color: #166534; }
+    .tag.med { background: #fef9c3; color: #854d0e; }
+    .tag.low { background: #fee2e2; color: #991b1b; }
+
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+    th { background: #f8fafc; text-align: left; padding: 10px 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; border-bottom: 1px solid #e5e7eb; }
+    td { padding: 10px 12px; font-size: 0.875rem; border-bottom: 1px solid #f1f5f9; }
+    tr:last-child td { border-bottom: none; }
+    .status-pass { color: #166534; font-weight: 600; }
+    .status-fail { color: #991b1b; font-weight: 600; }
+    .status-pending { color: #854d0e; font-weight: 600; }
+
+    .note { background: #f8fafc; border-left: 4px solid #24588A; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 14px; font-size: 0.875rem; color: #444; line-height: 1.6; }
+    .note strong { color: #18181b; }
+
+    footer { margin-top: 48px; padding-top: 20px; border-top: 1px dashed #d1cfc8; text-align: center; font-size: 0.8rem; color: #888; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Transform Health Database — Testing Sheet</h1>
+    <p>Functional testing checklist for Directory, Analytics & Submit Profile pages · Updated May 2026</p>
+  </header>
+
+  <!-- DIRECTORY PAGE -->
+  <section class="section">
+    <h2>Directory Page Testing</h2>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Search & Filter</h3>
+      <ul>
+        <li>✓ Search bar filters by name, organization, expertise</li>
+        <li>✓ Dropdown: Filter by continent (Africa, Asia, Europe, etc.)</li>
+        <li>✓ Dropdown: Filter by country (updates based on continent)</li>
+        <li>✓ Dropdown: Filter by expertise (AI, Digital health policy, etc.)</li>
+        <li>✓ Sort by: Latest / A–Z / Expertise</li>
+        <li>✓ "Load more" pagination works (loads 12 at a time)</li>
+        <li>✓ No results message shows when filters match nothing</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Profile Cards</h3>
+      <ul>
+        <li>✓ Icons visible: name (person), title (building), location (map-pin)</li>
+        <li>✓ Profile photo or initials circle renders correctly</li>
+        <li>✓ Expertise tags show (max 3 + "+X" overflow)</li>
+        <li>✓ "Read more →" button opens Profile Modal</li>
+        <li>✓ LinkedIn icon (bottom-right of photo) links correctly</li>
+        <li>✓ Clicking card (not buttons) opens Profile Modal</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag med">Medium Priority</span>
+      <h3>Profile Modal</h3>
+      <ul>
+        <li>✓ Modal opens with correct leader data</li>
+        <li>✓ Shows: Name, Role, Organization, Country, Years of experience</li>
+        <li>✓ Shows: Countries of operation, Expertise tags, Bio</li>
+        <li>✓ Email is NOT visible (PII protection)</li>
+        <li>✓ LinkedIn link opens in new tab</li>
+        <li>✓ "Update or remove my profile" button works</li>
+        <li>✓ Close button (✕) and clicking outside closes modal</li>
+        <li>⚠️ Modal width ~672px — needs widening (pending)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ANALYTICS PAGE -->
+  <section class="section">
+    <h2>Analytics Page Testing</h2>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>World Map</h3>
+      <ul>
+        <li>✓ Map renders with region colors (gray/orange)</li>
+        <li>✓ Region tabs below map show leader counts</li>
+        <li>✓ Clicking region tab highlights map + shows leader cards below</li>
+        <li>✓ Clicking "Clear selection" removes region filter</li>
+        <li>⏳ Country-level click on map (not yet built)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Specialisation Bar Chart</h3>
+      <ul>
+        <li>✓ Bar chart shows expertise distribution</li>
+        <li>✓ Clicking a bar highlights corresponding regions on map</li>
+        <li>✓ Clicking bar filters leader cards by that specialisation</li>
+        <li>✓ Combo: Select region + click specialisation → filters combine</li>
+        <li>✓ "Clear specialisation" button resets specialisation filter</li>
+        <li>✓ Bar chart updates dynamically when region is selected</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag med">Medium Priority</span>
+      <h3>Leader Cards Below Map</h3>
+      <ul>
+        <li>✓ Cards render when region or specialisation is selected</li>
+        <li>✓ Card count matches: "X Leaders in [Region]"</li>
+        <li>✓ Cards are clickable and open Profile Modal</li>
+        <li>✓ Responsive: 1 col (mobile), 2 cols (tablet), 3-4 cols (desktop)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SUBMIT PROFILE PAGE -->
+  <section class="section">
+    <h2>Submit Profile Page Testing</h2>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Step 0: Branch Selection</h3>
+      <ul>
+        <li>✓ "I am nominating myself" card selectable</li>
+        <li>✓ "I am nominating someone else" card selectable</li>
+        <li>✓ Nomination: Public profile link field appears</li>
+        <li>✓ "CONTINUE →" button enabled only after selection</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Step 1: Consent</h3>
+      <ul>
+        <li>✓ "Yes, I consent" card selectable</li>
+        <li>✓ "No, I do not consent" card selectable</li>
+        <li>✓ "CONTINUE →" disabled until consent given</li>
+        <li>✓ Back button returns to Step 0</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Step 2: Basic Info</h3>
+      <ul>
+        <li>✓ First name * (required)</li>
+        <li>✓ Last name * (required)</li>
+        <li>✓ Email * (required, NOT public — check modal later)</li>
+        <li>✓ Profile photo * (MANDATORY — was optional, now required)</li>
+        <li>✓ Photo upload: JPEG/PNG only, max 5MB</li>
+        <li>✓ Photo preview shows after upload</li>
+        <li>✓ Country of residence * (dropdown, required)</li>
+        <li>✓ Organisation / Institution (optional)</li>
+        <li>✓ Current role / title (optional)</li>
+        <li>✓ "CONTINUE →" disabled if required fields empty</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Step 3: Profile Details</h3>
+      <ul>
+        <li>✓ Years of experience * (4 options: 0-2, 3-7, 8-15, 15+ yrs)</li>
+        <li>✓ Expertise *: "Other" option + free-text input appears</li>
+        <li>✓ Selection limit: max 5 specialisations</li>
+        <li>✓ Bio *: 300–500 characters (counter shows: "X of 500")</li>
+        <li>✓ Countries of operation * (multi-select country picker)</li>
+        <li>✓ "CONTINUE →" disabled if validation fails</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag med">Medium Priority</span>
+      <h3>Step 4: Links & Notable Items</h3>
+      <ul>
+        <li>✓ LinkedIn URL (optional)</li>
+        <li>✓ Add notable items (max 3): Title, Link, Type</li>
+        <li>✓ Remove notable items button works</li>
+        <li>✓ "SUBMIT" button shows loading state</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag high">High Priority</span>
+      <h3>Submission Flow</h3>
+      <ul>
+        <li>✓ Success message shows after submission</li>
+        <li>✓ "SUBMIT ANOTHER PROFILE →" resets form</li>
+        <li>⏳ Data appears in Google Sheets (Apps Script pending fix)</li>
+        <li>⏳ Admin can approve → profile appears in Directory</li>
+        <li>⏳ Magic link email sent for profile management</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- RESPONSIVE & UI -->
+  <section class="section">
+    <h2>Responsive & UI Testing</h2>
+
+    <div class="card">
+      <span class="tag med">Medium Priority</span>
+      <h3>Responsive Design</h3>
+      <ul>
+        <li>✓ Mobile (375px): All pages render without horizontal scroll</li>
+        <li>✓ Tablet (768px): Grid layouts adjust (2 cols)</li>
+        <li>✓ Desktop (1440px): Full grid layouts (3-4 cols)</li>
+        <li>✓ Toggle button (bottom-right): Hides/shows header & footer</li>
+        <li>✓ Toggle: Database looks like standalone page</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="tag low">Low Priority</span>
+      <h3>Icons & Visuals</h3>
+      <ul>
+        <li>⚠️ Icons on cards appear pixelated — need higher resolution</li>
+        <li>✓ Hero images render correctly on each page</li>
+        <li>✓ Color scheme consistent (brand-navy, brand-orange, brand-pink)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- TEST RESULTS TABLE -->
+  <section class="section">
+    <h2>Test Results Tracker</h2>
+    <div class="note">
+      <strong>Instructions:</strong> Copy this table to Google Sheets. Mark ✅ Pass / ❌ Fail / ⏳ Pending. Add notes for failures.
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Test Scenario</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Directory</td><td>Search filters by name</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Directory</td><td>Dropdown filters work</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Directory</td><td>Profile card icons visible</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Directory</td><td>Profile modal opens & shows data</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Directory</td><td>Email NOT in modal (PII)</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Analytics</td><td>Region selection shows leader cards</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Analytics</td><td>Specialisation bar click filters map</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Analytics</td><td>Combo: Region + Specialisation filter</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Submit</td><td>Email in Basic Info step</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Submit</td><td>Photo upload mandatory (not optional)</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Submit</td><td>Bio 300-500 chars validation</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Submit</td><td>"Other" expertise + 5 limit</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>UI</td><td>Responsive on mobile (375px)</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>UI</td><td>Toggle hides/shows header & footer</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Admin</td><td>Expanded view shows all fields</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+        <tr><td>Admin</td><td>Email visible in Admin (private)</td><td class="status-pending">⏳ Pending</td><td></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    Transform Health · Internal Testing Only · Updated May 2026
+  </footer>
+
+</div>
+</body>
+</html>
