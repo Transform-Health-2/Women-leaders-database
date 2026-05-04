@@ -23,32 +23,38 @@ function toTitleCase(str) {
 
 export default function Analytics({ onManageProfile, onGoToDirectory }) {
   const [selectedRegion, setSelectedRegion] = useState("latin_america");
+  const [selectedSpecialisation, setSelectedSpecialisation] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
   const { allLeaders, loading } = useLeaders();
 
   const stats = useMemo(() => {
-    const expertiseCounts = {};
     const orgSet = new Set();
     allLeaders.forEach((l) => {
-      const exp = l.expertise || "Other";
-      expertiseCounts[exp] = (expertiseCounts[exp] || 0) + 1;
       if (l.organisation) orgSet.add(l.organisation);
     });
-    return { total: allLeaders.length, expertiseCounts, orgs: orgSet.size };
+    return { total: allLeaders.length, orgs: orgSet.size };
   }, [allLeaders]);
 
   const barData = useMemo(() => {
-    const entries = Object.entries(stats.expertiseCounts)
-      .filter(([name]) => !name.includes(","))
-      .sort((a, b) => b[1] - a[1]);
+    const source = selectedRegion
+      ? allLeaders.filter((l) => (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion)
+      : allLeaders;
+    const expertiseCounts = {};
+    source.forEach((l) => {
+      const tags = (l.expertise || "Other").split(/,\s*/).filter(Boolean);
+      tags.forEach((tag) => {
+        expertiseCounts[tag] = (expertiseCounts[tag] || 0) + 1;
+      });
+    });
+    const entries = Object.entries(expertiseCounts).sort((a, b) => b[1] - a[1]);
     const max = entries[0]?.[1] || 1;
     return entries.map(([name, count], i) => ({
       name, count,
       barPct: Math.round((count / max) * 100),
       color: BAR_COLORS[i % BAR_COLORS.length],
     }));
-  }, [stats]);
+  }, [allLeaders, selectedRegion]);
 
   const countryRegionMap = useMemo(() => {
     const map = {};
@@ -69,13 +75,32 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     return totals;
   }, [allLeaders]);
 
-  const regionLeaders = useMemo(() => {
-    if (!selectedRegion) return [];
+  const filteredLeaders = useMemo(() => {
     return allLeaders.filter((l) => {
-      const leaderRegion = l.region || COUNTRY_TO_REGION[l.country?.trim()];
-      return leaderRegion === selectedRegion;
+      const matchRegion = !selectedRegion ||
+        (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion;
+      const matchSpec = !selectedSpecialisation ||
+        (l.expertise || "").split(/,\s*/).some((e) => e.trim() === selectedSpecialisation);
+      return matchRegion && matchSpec;
     });
-  }, [allLeaders, selectedRegion]);
+  }, [allLeaders, selectedRegion, selectedSpecialisation]);
+
+  // Which regions to highlight on the map
+  const highlightedRegions = useMemo(() => {
+    if (selectedSpecialisation) {
+      const regions = new Set();
+      allLeaders
+        .filter((l) =>
+          (l.expertise || "").split(/,\s*/).some((e) => e.trim() === selectedSpecialisation)
+        )
+        .forEach((l) => {
+          const r = l.region || COUNTRY_TO_REGION[l.country?.trim()];
+          if (r) regions.add(r);
+        });
+      return regions;
+    }
+    return selectedRegion ? new Set([selectedRegion]) : new Set();
+  }, [allLeaders, selectedSpecialisation, selectedRegion]);
 
   if (loading) {
     return (
@@ -99,11 +124,11 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           </p>
         </div>
 
-        {/* Map + Specialisation */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8 items-stretch">
+        {/* Map + Specialisation + Region Leaders */}
+        <div className="flex flex-col lg:grid lg:grid-cols-5 lg:gap-6 mb-8">
 
           {/* Map column */}
-          <div className="lg:col-span-3 flex flex-col bg-transparent">
+          <div className="order-1 lg:col-span-3 lg:row-start-1 flex flex-col bg-transparent">
             <ComposableMap
               projectionConfig={{ scale: 215, center: [5, 5] }}
               width={900}
@@ -118,7 +143,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill={regionKey === selectedRegion ? "#F97A1A" : "#D4D4D8"}
+                        fill={regionKey && highlightedRegions.has(regionKey) ? "#F97A1A" : "#D4D4D8"}
                         stroke="#FFFFFF"
                         strokeWidth={0.7}
                         style={{
@@ -134,7 +159,11 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
 
               {REGION_MARKERS.map((marker) => {
                 if (marker.key !== selectedRegion) return null;
-                const count = regionTotals[marker.key] || 0;
+                const count = selectedSpecialisation
+                  ? filteredLeaders.filter((l) =>
+                      (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === marker.key
+                    ).length
+                  : regionTotals[marker.key] || 0;
                 if (!count) return null;
                 return (
                   <Annotation
@@ -189,54 +218,73 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           </div>
 
           {/* Specialisation sidebar */}
-          <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 flex flex-col">
+          <div className="order-3 lg:col-span-2 lg:row-start-1 bg-white border border-gray-200 rounded-lg p-6 flex flex-col mt-6 lg:mt-0">
             <div className="text-1.2 font-semibold text-gray-500 uppercase tracking-wider mb-2">
               Specialisation
             </div>
             <div className="text-[1.8rem] font-bold leading-snug mb-4 text-brand-blue">
-              Based on the {stats.total} verified profiles
+              {selectedRegion
+                ? `${barData.reduce((s, d) => s + d.count, 0)} leaders in ${REGION_LABELS[selectedRegion]}`
+                : `Based on the ${stats.total} verified profiles`}
             </div>
+            <p className="text-[1.1rem] text-gray-400 mb-3">Click a bar to highlight on the map</p>
             <div className="flex-1 space-y-3">
-              {barData.map((d) => (
-                <div key={d.name}>
-                  <div className="flex justify-between items-baseline text-[1.35rem] mb-1">
-                    <span className="font-medium text-gray-800">{toTitleCase(d.name)}</span>
-                    <span className="font-bold text-gray-900 flex-shrink-0 ml-3">{d.count}</span>
-                  </div>
-                  <div className="h-[5px] bg-gray-100 rounded-full overflow-hidden">
-                    {/* width is a dynamic value — inline style required here */}
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${d.barPct}%`, backgroundColor: d.color }}
-                    />
-                  </div>
-                </div>
-              ))}
+              {barData.map((d) => {
+                const isSelected = selectedSpecialisation === d.name;
+                const isDimmed = selectedSpecialisation && !isSelected;
+                return (
+                  <button
+                    key={d.name}
+                    type="button"
+                    onClick={() => setSelectedSpecialisation(isSelected ? null : d.name)}
+                    className={`w-full text-left rounded-md px-1 py-0.5 -mx-1 hover:bg-gray-50 cursor-pointer transition-opacity ${isDimmed ? "opacity-35" : "opacity-100"}`}
+                  >
+                    <div className="flex justify-between items-baseline text-[1.35rem] mb-1">
+                      <span className={`font-medium ${isSelected ? "text-brand-orange" : "text-gray-800"}`}>{toTitleCase(d.name)}</span>
+                      <span className={`font-bold flex-shrink-0 ml-3 ${isSelected ? "text-brand-orange" : "text-gray-900"}`}>{d.count}</span>
+                    </div>
+                    <div className="h-[5px] bg-gray-100 rounded-full overflow-hidden">
+                      {/* width is a dynamic value — inline style required here */}
+                      <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{ width: `${d.barPct}%`, backgroundColor: isSelected ? "#F97316" : d.color }}
+                      />
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        </div>
 
-        {/* Region Leaders */}
-        {selectedRegion && regionLeaders.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-1.6 font-bold text-brand-navy">
-                {REGION_LABELS[selectedRegion]} · {regionLeaders.length} Leaders
-              </h3>
-              <button
-                onClick={() => setSelectedRegion(null)}
-                className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors"
-              >
-                Clear selection
-              </button>
+          {/* Region Leaders */}
+          {(selectedRegion || selectedSpecialisation) && filteredLeaders.length > 0 && (
+            <div className="order-2 lg:col-span-5 lg:row-start-2 mt-6 lg:mt-8">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <h3 className="text-1.6 font-bold text-brand-navy">
+                  {[selectedRegion && REGION_LABELS[selectedRegion], selectedSpecialisation && toTitleCase(selectedSpecialisation)]
+                    .filter(Boolean).join(" · ")} &middot; {filteredLeaders.length} Leaders
+                </h3>
+                <div className="flex items-center gap-3">
+                  {selectedRegion && (
+                    <button onClick={() => setSelectedRegion(null)} className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors">
+                      Clear region
+                    </button>
+                  )}
+                  {selectedSpecialisation && (
+                    <button onClick={() => setSelectedSpecialisation(null)} className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors">
+                      Clear specialisation
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredLeaders.map((l) => (
+                  <LeaderCard key={l.id} leader={l} onSelect={setSelectedProfile} />
+                ))}
+              </div>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {regionLeaders.map((l) => (
-                <LeaderCard key={l.id} leader={l} onSelect={setSelectedProfile} />
-              ))}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <p className="text-center text-1.1 text-gray-600 mt-6">
           Data sourced from the Transform Health Women Leaders Database · {stats.total} verified profiles
