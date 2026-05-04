@@ -43,7 +43,7 @@ export default function Submit({ onManageProfile }) {
   function goStep(n) { if (n >= 0 && n <= 5) setStep(n); }
 
   function handleStep0Continue() {
-    if (branch === "nominate" && nominateLink) { goStep(5); return; }
+    if (branch === "nominate" && nominateLink) { submit(); return; }
     goStep(1);
   }
 
@@ -116,6 +116,7 @@ export default function Submit({ onManageProfile }) {
         branch, firstName, lastName, email, role,
         organisation: org,
         country,
+        nominateLink: branch === "nominate" ? nominateLink : undefined,
         expertise: [...expertise.filter(e => e !== "Other"), otherExpertise ? `Other: ${otherExpertise}` : ""].filter(Boolean).join(", "),
         yearsExp,
         countries: selectedCountries.join(", "),
