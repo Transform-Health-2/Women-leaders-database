@@ -18,7 +18,7 @@
     header h1 { font-size: 2rem; font-weight: 800; color: #24588A; letter-spacing: -0.03em; }
     header p { font-size: 0.95rem; color: #555; margin-top: 6px; }
 
-    section { margin-bottom: 36px; }
+    section { margin-bottom: 36px; scroll-margin-top: 80px; }
     section h2 {
       font-size: 0.72rem;
       font-weight: 700;
@@ -79,6 +79,19 @@
 
     footer { margin-top: 48px; padding-top: 20px; border-top: 1px dashed #d1cfc8; text-align: center; font-size: 0.8rem; color: #888; }
   </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll("nav a[href^='#']").forEach(function(link) {
+        link.addEventListener("click", function(e) {
+          e.preventDefault();
+          var target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+    });
+  </script>
 </head>
 <body>
 <div class="page">
