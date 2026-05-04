@@ -6,35 +6,53 @@
   <title>Transform Health Database — Talking Points</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f5efe0;
       color: #1a1a1a;
-      padding: 40px 24px;
+      display: flex; flex-direction: column;
     }
-    .page { max-width: 860px; margin: 0 auto; }
+    .page { display: flex; flex-direction: column; height: 100%; max-width: 960px; margin: 0 auto; width: 100%; }
 
-    header { margin-bottom: 40px; }
-    header h1 { font-size: 2rem; font-weight: 800; color: #24588A; letter-spacing: -0.03em; }
-    header p { font-size: 0.95rem; color: #555; margin-top: 6px; }
+    /* TOP NAV */
+    nav {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      padding: 12px 24px;
+      border-bottom: 1px solid #d1cfc8;
+      background: #f5efe0; flex-shrink: 0;
+    }
+    nav a {
+      font-weight: 600; padding: 6px 12px; border-radius: 6px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    nav a:hover { background: rgba(0,0,0,0.05); }
+    nav a.active { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .nav-built { color: #24588A; }
+    .nav-todo { color: #F8571D; }
+    .nav-challenges { color: #18181b; }
+    .nav-journey { color: #7C3AED; }
+    .nav-test { color: #166534; }
+    .nav-live { color: #0A66C2; }
 
-    section { margin-bottom: 36px; scroll-margin-top: 80px; }
+    /* MAIN AREA */
+    .main { flex: 1; overflow-y: auto; padding: 24px; }
+    section { display: none; height: 100%; }
+    section.active { display: block; }
+
+    header { margin-bottom: 20px; }
+    header h1 { font-size: 1.8rem; font-weight: 800; color: #24588A; letter-spacing: -0.03em; }
+    header p { font-size: 0.9rem; color: #555; margin-top: 4px; }
+
     section h2 {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #F8571D;
-      margin-bottom: 14px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #F8571D; margin-bottom: 14px;
     }
 
     .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-
     .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 18px 20px;
-      border: 1px solid #e5e7eb;
+      background: #fff; border-radius: 12px; padding: 18px 20px;
+      border: 1px solid #e5e7eb; margin-bottom: 14px;
     }
     .card h3 { font-size: 0.95rem; font-weight: 700; color: #18181b; margin-bottom: 6px; }
     .card p, .card li { font-size: 0.875rem; color: #444; line-height: 1.55; }
@@ -42,12 +60,8 @@
     .card li { margin-bottom: 4px; }
 
     .tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 99px;
-      margin-bottom: 10px;
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      padding: 2px 8px; border-radius: 99px; margin-bottom: 8px;
     }
     .tag.done { background: #dcfce7; color: #166534; }
     .tag.todo { background: #fef9c3; color: #854d0e; }
@@ -55,41 +69,34 @@
     .tag.caution { background: #ffedd5; color: #9a3412; }
 
     .challenge-block {
-      background: #fff;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      padding: 20px 24px;
-      margin-bottom: 14px;
+      background: #fff; border-radius: 12px;
+      border: 1px solid #e5e7eb; padding: 20px 24px; margin-bottom: 14px;
     }
     .challenge-block h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #18181b;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 0.95rem; font-weight: 700; color: #18181b;
+      margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
     }
     .challenge-block p { font-size: 0.875rem; color: #444; line-height: 1.6; margin-bottom: 8px; }
     .challenge-block p:last-child { margin-bottom: 0; }
     .challenge-block strong { color: #18181b; }
 
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
     @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
 
-    footer { margin-top: 48px; padding-top: 20px; border-top: 1px dashed #d1cfc8; text-align: center; font-size: 0.8rem; color: #888; }
+    footer { margin-top: 24px; padding-top: 16px; border-top: 1px dashed #d1cfc8; text-align: center; font-size: 0.8rem; color: #888; }
   </style>
   <script>
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+      var el = document.getElementById(id);
+      if (el) el.classList.add('active');
+      var navLink = document.querySelector('nav a[data-section="' + id + '"]');
+      if (navLink) navLink.classList.add('active');
+      document.querySelector('.main').scrollTop = 0;
+    }
     document.addEventListener("DOMContentLoaded", function() {
-      document.querySelectorAll("nav a[href^='#']").forEach(function(link) {
-        link.addEventListener("click", function(e) {
-          e.preventDefault();
-          var target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth" });
-          }
-        });
-      });
+      showSection('built');
     });
   </script>
 </head>
@@ -97,24 +104,23 @@
 <div class="page">
 
   <!-- TOP NAV -->
-  <nav style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:24px; padding:12px 0; border-bottom:1px solid #d1cfc8;">
-    <a href="#built" style="font-weight:600; color:#24588A; text-decoration:none;">What We've Built</a>
-    <a href="#todo" style="font-weight:600; color:#F8571D; text-decoration:none;">What's Still to Do</a>
-    <a href="#challenges" style="font-weight:600; color:#18181b; text-decoration:none;">Open Challenges</a>
-    <a href="#journey" style="font-weight:600; color:#7C3AED; text-decoration:none;">User Journey</a>
-    <a href="testing-sheet.html" style="font-weight:600; color:#166534; text-decoration:none;">📋 Testing Sheet</a>
-    <a href="https://docs.google.com/spreadsheets/d/1ElqmE1NDvhSNrGPPcTU67g_ndKxsZs68FRn04yus4C0/edit" target="_blank" style="font-weight:600; color:#0A66C2; text-decoration:none;">📈 Live Sheet</a>
+  <nav>
+    <a href="#" class="nav-built active" data-section="built" onclick="showSection('built'); return false;">What We've Built</a>
+    <a href="#" class="nav-todo" data-section="todo" onclick="showSection('todo'); return false;">What's Still to Do</a>
+    <a href="#" class="nav-challenges" data-section="challenges" onclick="showSection('challenges'); return false;">Open Challenges</a>
+    <a href="#" class="nav-journey" data-section="journey" onclick="showSection('journey'); return false;">User Journey</a>
+    <a href="testing-sheet.html" class="nav-test">📋 Testing Sheet</a>
+    <a href="https://docs.google.com/spreadsheets/d/1ElqmE1NDvhSNrGPPcTU67g_ndKxsZs68FRn04yus4C0/edit" target="_blank" class="nav-live">📈 Live Sheet</a>
   </nav>
 
-  <header>
-    <h1>Transform Health Women Leaders Database</h1>
-    <p>Internal talking points — build status, roadmap, and open challenges &nbsp;·&nbsp; May 2026</p>
-  </header>
+  <div class="main">
 
-  <!-- WHAT WE BUILT -->
-  <section>
-    <h2>What we've built</h2>
-    <div class="cards">
+    <!-- WHAT WE BUILT -->
+    <section id="built" class="active">
+      <header>
+        <h1>What We've Built</h1>
+        <p>Completed features ready for testing · Updated May 2026</p>
+      </header>
 
       <div class="card">
         <span class="tag done">Done</span>
@@ -128,45 +134,43 @@
         </ul>
       </div>
 
-        <div class="card">
-          <span class="tag done">Done</span>
-          <h3>Analytics page</h3>
-          <ul>
-            <li>Interactive world map by region</li>
-            <li>Clickable region tabs with leader counts</li>
-            <li>Select region → shows filtered leader cards below map</li>
-            <li>Specialisation bar chart — click bar to highlight regions on map</li>
-            <li>Filter leaders by region AND/OR specialisation simultaneously</li>
-            <li>Dynamic bar chart updates based on selected region</li>
-          </ul>
-        </div>
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Analytics page</h3>
+        <ul>
+          <li>Interactive world map by region</li>
+          <li>Clickable region tabs with leader counts</li>
+          <li>Select region → shows filtered leader cards below map</li>
+          <li>Specialisation bar chart — click bar to highlight regions on map</li>
+          <li>Filter leaders by region AND/OR specialisation simultaneously</li>
+          <li>Dynamic bar chart updates based on selected region</li>
+        </ul>
+      </div>
 
-        <div class="card">
-          <span class="tag done">Done</span>
-          <h3>Submit / Nominate flow</h3>
-          <ul>
-            <li>Self-submit or nominate someone else</li>
-            <li>Multi-step form with consent gate</li>
-            <li>Nomination submits directly — no blank final step</li>
-            <li>nominateLink included in submission payload</li>
-            <li>Email field in Basic Info (required, not publicly displayed)</li>
-            <li>"Other" specialisation + 5 selection limit</li>
-            <li>Bio character limit: 300–500 characters</li>
-            <li>Countries of operation field (multi-select country picker)</li>
-            <li>Profile photo MANDATORY (5MB cap, client-side validation)</li>
-            <li>Image compression before upload</li>
-          </ul>
-        </div>
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Submit / Nominate flow</h3>
+        <ul>
+          <li>Self-submit or nominate someone else</li>
+          <li>Multi-step form with consent gate</li>
+          <li>Email field in Basic Info (required, not publicly displayed)</li>
+          <li>"Other" specialisation + 5 selection limit</li>
+          <li>Bio character limit: 300–500 characters</li>
+          <li>Countries of operation field (multi-select country picker)</li>
+          <li>Profile photo MANDATORY (5MB cap, client-side validation)</li>
+          <li>Image compression before upload</li>
+        </ul>
+      </div>
 
-        <div class="card">
-          <span class="tag done">Done</span>
-          <h3>Profile Modal</h3>
-          <ul>
-            <li>Modal window for profile details (role, org, country, bio, expertise, years exp)</li>
-            <li>Email NOT shown (PII protection — only in Admin)</li>
-            <li>LinkedIn link + Manage Profile button</li>
-          </ul>
-        </div>
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Profile Modal</h3>
+        <ul>
+          <li>Modal window for profile details (role, org, country, bio, expertise, years exp)</li>
+          <li>Email NOT shown (PII protection — only in Admin)</li>
+          <li>LinkedIn link + Manage Profile button</li>
+        </ul>
+      </div>
 
       <div class="card">
         <span class="tag done">Done</span>
@@ -183,7 +187,7 @@
         <h3>Admin Console</h3>
         <ul>
           <li>Pending requests queue with search/filter</li>
-          <li>Expanded view: role, org, countries, years exp, expertise, bio</li>
+          <li>Expanded view: role, org, countries, years exp, expertise, bio, email</li>
           <li>Approve / reject / send edit-link actions</li>
           <li>Separate route, locked from public UI</li>
         </ul>
@@ -194,7 +198,7 @@
         <h3>Backend / Integrations</h3>
         <ul>
           <li>Google Sheets integration via Apps Script</li>
-          <li>API layer uses correct Apps Script POST format (action payloads)</li>
+          <li>API layer uses correct Apps Script POST format</li>
           <li>bulkSeed endpoint for admin-only bulk data import</li>
           <li>Magic link emails via Apps Script MailApp</li>
           <li>Firebase Storage for profile photos</li>
@@ -202,13 +206,15 @@
         </ul>
       </div>
 
-    </div>
-  </section>
+      <footer>Transform Health · Internal use only · Updated May 2026</footer>
+    </section>
 
-  <!-- WHAT'S LEFT -->
-  <section>
-    <h2>What's still to do</h2>
-    <div class="cards">
+    <!-- WHAT'S STILL TO DO -->
+    <section id="todo">
+      <header>
+        <h1>What's Still to Do</h1>
+        <p>Pending items · Working on these now — should be done by end of day</p>
+      </header>
 
       <div class="card">
         <span class="tag todo">To do</span>
@@ -253,12 +259,6 @@
       </div>
 
       <div class="card">
-        <span class="tag todo">To do</span>
-        <h3>Southeast Asia countries on map</h3>
-        <p>Map region "South & SE Asia" only highlights South Asian countries. SEA countries (Thailand, Vietnam, Indonesia, etc.) not yet mapped.</p>
-      </div>
-
-      <div class="card">
         <span class="tag caution">Caution</span>
         <h3>Admin authentication</h3>
         <p>Admin console uses a simple password gate. Consider Firebase Auth or a more robust auth layer before wider rollout.</p>
@@ -270,178 +270,149 @@
         <p>Uploaded photos go straight to Firebase Storage. An admin review step before photos go live is recommended.</p>
       </div>
 
-    </div>
-  </section>
+      <footer>Transform Health · Internal use only · Updated May 2026</footer>
+    </section>
 
-  <!-- CHALLENGES -->
-  <section>
-    <h2>Open challenges</h2>
+    <!-- OPEN CHALLENGES -->
+    <section id="challenges">
+      <header>
+        <h1>Open Challenges</h1>
+        <p>Known limitations and risks to address before scale</p>
+      </header>
 
-    <div class="challenge-block">
-      <h3>
-        <span style="font-size:1.1rem">🔗</span>
-        LinkedIn URL scraping — why it won't work
-      </h3>
-      <p>
-        The current Manage Profile flow uses a LinkedIn URL as an identity token to look up who is requesting a profile change.
-        The intent was to also <strong>auto-fill profile data by scraping the LinkedIn page</strong> — saving leaders from re-entering their role, organisation, and photo.
-      </p>
-      <p>
-        <strong>The hard reality:</strong> LinkedIn aggressively blocks all automated scraping.
-        Their terms of service prohibit it, they serve login walls to headless browsers,
-        they rotate bot-detection fingerprinting, and they have taken legal action against scrapers (hiQ v. LinkedIn, 2022).
-        Any scraper breaks within days of being built and puts the project at legal risk.
-      </p>
-      <p>
-        <strong>Practical alternatives:</strong>
-        (1) Ask users to paste their LinkedIn URL as a vanity identifier only — no scraping, just a hyperlink.
-        (2) Use the <strong>LinkedIn API</strong> (requires partner approval, significant overhead).
-        (3) Let users fill the form themselves — which is what the current Submit flow already does well.
-      </p>
-    </div>
+      <div class="challenge-block">
+        <h3><span style="font-size:1.1rem">🔗</span> LinkedIn URL scraping — why it won't work</h3>
+        <p>The current Manage Profile flow uses a LinkedIn URL as an identity token to look up who is requesting a profile change. The intent was to also <strong>auto-fill profile data by scraping the LinkedIn page</strong> — saving leaders from re-entering their role, organisation, and photo.</p>
+        <p><strong>The hard reality:</strong> LinkedIn aggressively blocks all automated scraping. Their terms of service prohibit it, they serve login walls to headless browsers, they rotate bot-detection fingerprinting, and they have taken legal action against scrapers (hiQ v. LinkedIn, 2022). Any scraper breaks within days of being built and puts the project at legal risk.</p>
+        <p><strong>Practical alternatives:</strong> (1) Ask users to paste their LinkedIn URL as a vanity identifier only — no scraping, just a hyperlink. (2) Use the <strong>LinkedIn API</strong> (requires partner approval, significant overhead). (3) Let users fill the form themselves — which is what the current Submit flow already does well.</p>
+      </div>
 
-    <div class="challenge-block">
-      <h3>
-        <span style="font-size:1.1rem">⚠️</span>
-        Firebase Storage for photo uploads — proceed with caution
-      </h3>
-      <p>
-        Firebase Storage is already wired up and working for photo uploads in the Submit flow.
-        It's convenient, but there are real risks to understand before going to production.
-      </p>
-      <div class="two-col" style="margin-top:12px;">
-        <div>
-          <p><strong>Cost exposure</strong><br/>
-          Firebase Storage bills per GB stored and per GB downloaded. If the directory grows to hundreds of profiles and gets traffic, costs can spike unexpectedly — especially with no CDN caching layer in front.</p>
-        </div>
-        <div>
-          <p><strong>No moderation gate</strong><br/>
-          Anyone who submits the form can upload any image. Without an admin review step, inappropriate or oversized files go straight into the bucket and are publicly readable.</p>
-        </div>
-        <div>
-          <p><strong>Security rules</strong><br/>
-          The default Firebase Storage rules are often left open during dev. Before launch, rules must restrict writes to authenticated users only and enforce file-type and size limits.</p>
-        </div>
-        <div>
-          <p><strong>Recommendation</strong><br/>
-          Keep Firebase for now but: (1) add file-type + 2 MB size validation client-side (compression util exists), (2) add admin approval before a photo URL is written to the profile record, (3) set a monthly budget alert in the Firebase console.</p>
+      <div class="challenge-block">
+        <h3><span style="font-size:1.1rem">⚠️</span> Firebase Storage for photo uploads — proceed with caution</h3>
+        <p>Firebase Storage is already wired up and working for photo uploads in the Submit flow. It's convenient, but there are real risks to understand before going to production.</p>
+        <div class="two-col" style="margin-top:12px;">
+          <div><p><strong>Cost exposure</strong><br/>Firebase Storage bills per GB stored and per GB downloaded. If the directory grows to hundreds of profiles and gets traffic, costs can spike unexpectedly — especially with no CDN caching layer in front.</p></div>
+          <div><p><strong>No moderation gate</strong><br/>Anyone who submits the form can upload any image. Without an admin review step, inappropriate or oversized files go straight into the bucket and are publicly readable.</p></div>
+          <div><p><strong>Security rules</strong><br/>The default Firebase Storage rules are often left open during dev. Before launch, rules must restrict writes to authenticated users only and enforce file-type and size limits.</p></div>
+          <div><p><strong>Recommendation</strong><br/>Keep Firebase for now but: (1) add file-type + 2 MB size validation client-side (compression util exists), (2) add admin approval before a photo URL is written to the profile record, (3) set a monthly budget alert in the Firebase console.</p></div>
         </div>
       </div>
-    </div>
 
-  </section>
+      <footer>Transform Health · Internal use only · Updated May 2026</footer>
+    </section>
 
-  <!-- USER JOURNEY -->
-  <section id="journey">
-    <h2>User Journey</h2>
+    <!-- USER JOURNEY -->
+    <section id="journey">
+      <header>
+        <h1>User Journey</h1>
+        <p>Complete user flows through the system · Updated May 2026</p>
+      </header>
 
-    <div class="card">
-      <span class="tag done">Public</span>
-      <h3>Public Visitor</h3>
-      <p>Lands on the site and sees the <strong>Directory</strong> tab — a searchable, filterable grid of leader cards. They can:</p>
-      <ul>
-        <li>Search by name, role, or org</li>
-        <li>Filter by continent, country, or expertise via dropdowns</li>
-        <li>Sort by Latest / A–Z / Expertise</li>
-        <li>Load more profiles (pagination)</li>
-        <li>Click a card to open a <strong>Profile Modal</strong> showing full details: role, org, country, bio, expertise, years of experience, LinkedIn link</li>
-        <li>Switch to the <strong>Analytics</strong> tab — world map, region tabs with leader counts, specialisation bar chart, click a region to see filtered leader cards below the map</li>
-      </ul>
-      <p><em>No login, no account. Fully public and read-only.</em></p>
-    </div>
-
-    <div class="card">
-      <span class="tag done">Self Submit</span>
-      <h3>Leader — Self Submit</h3>
-      <ul>
-        <li>Hits <strong>Submit Profile</strong> tab → sees two cards: "I am nominating myself" vs "Nominating someone else" — picks <strong>myself</strong></li>
-        <li><strong>Consent gate</strong> — must click "Yes I consent" to proceed. Declining ends the flow</li>
-        <li><strong>Basic Info</strong> — first name, last name, <strong>email (private, not public)</strong>, profile photo <strong>(MANDATORY, 5MB cap, compressed)</strong>, country of residence, org, role</li>
-        <li><strong>Profile Details</strong> — years of experience (pill selector), up to 5 expertise tags, "Other" with free-text, countries of operation (multi-select), bio (300–500 chars enforced)</li>
-        <li><strong>Links & Achievements</strong> — LinkedIn URL, up to 3 notable items (title, link, type)</li>
-        <li>Hits <strong>Submit Profile</strong> → photo uploads to Firebase Storage, full payload POSTs to Apps Script → row written to Submissions sheet with <code>status: pending</code></li>
-        <li>Sees a thank-you screen: "profile under review, 3–5 business days"</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <span class="tag done">Nominator</span>
-      <h3>Nominator — Submitting Someone Else</h3>
-      <ul>
-        <li>Same Step 0 but picks <strong>"I am nominating someone else"</strong></li>
-        <li>Enters the nominee's LinkedIn or public profile URL</li>
-        <li>Hits <strong>Submit Nomination →</strong> goes directly to submit, skipping consent/bio/photo steps</li>
-        <li>A minimal row lands on the Sheet: <code>branch: "nominate"</code>, <code>nominate_link: &lt;url&gt;</code>, everything else blank</li>
-        <li>Admin sees this in the <strong>Nominated</strong> tab and uses the pre-built outreach message to contact that person</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <span class="tag done">Manage</span>
-      <h3>Leader — Managing Their Profile</h3>
-      <p>Already in the directory and wants to update or remove their listing:</p>
-      <ul>
-        <li>Clicks <strong>"Manage or remove your profile"</strong> on the Submit page (or the button in their Profile Modal)</li>
-        <li><strong>Identify step</strong> — enters first name, last name, email, optional LinkedIn</li>
-        <li>Hits <strong>"Find my profile"</strong> → calls the live Sheet, matches by exact first + last name, shows a "Profile found" card with their role and org</li>
-        <li><strong>Two paths:</strong></li>
+      <div class="card">
+        <span class="tag done">Public</span>
+        <h3>Public Visitor</h3>
+        <p>Lands on the site and sees the <strong>Directory</strong> tab — a searchable, filterable grid of leader cards. They can:</p>
         <ul>
-          <li><strong>Update path:</strong> Picks "Update profile" → free-text box describing what to change ("new role: X, update bio to: …") → Reviews request → submits → <code>profileRequest</code> saved to Requests sheet, status <code>pending</code></li>
-          <li><strong>Delete path:</strong> Picks "Remove profile" → optional reason field → submits → same profileRequest row, <code>request_type: delete</code></li>
+          <li>Search by name, role, or org</li>
+          <li>Filter by continent, country, or expertise via dropdowns</li>
+          <li>Sort by Latest / A–Z / Expertise</li>
+          <li>Load more profiles (pagination)</li>
+          <li>Click a card to open a <strong>Profile Modal</strong> showing full details: role, org, country, bio, expertise, years of experience, LinkedIn link</li>
+          <li>Switch to the <strong>Analytics</strong> tab — world map, region tabs with leader counts, specialisation bar chart, click a region to see filtered leader cards below the map</li>
         </ul>
-        <li><strong>Magic link alternative (faster):</strong></li>
+        <p><em>No login, no account. Fully public and read-only.</em></p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Self Submit</span>
+        <h3>Leader — Self Submit</h3>
         <ul>
-          <li>On the identify step, after profile is found, there's also <strong>"Or send my profile to this email instead →"</strong></li>
-          <li>Triggers <code>sendProfileLink</code> → Apps Script looks up the profile, generates a one-time token, emails a magic link</li>
-          <li>User clicks link → token validated, marked used → profile snapshot returned to the FE → user lands directly in an edit view pre-filled with their current data</li>
+          <li>Hits <strong>Submit Profile</strong> tab → sees two cards: "I am nominating myself" vs "Nominating someone else" — picks <strong>myself</strong></li>
+          <li><strong>Consent gate</strong> — must click "Yes I consent" to proceed. Declining ends the flow</li>
+          <li><strong>Basic Info</strong> — first name, last name, <strong>email (private, not public)</strong>, profile photo <strong>(MANDATORY, 5MB cap, compressed)</strong>, country of residence, org, role</li>
+          <li><strong>Profile Details</strong> — years of experience (pill selector), up to 5 expertise tags, "Other" with free-text, countries of operation (multi-select), bio (300–500 chars enforced)</li>
+          <li><strong>Links & Achievements</strong> — LinkedIn URL, up to 3 notable items (title, link, type)</li>
+          <li>Hits <strong>Submit Profile</strong> → photo uploads to Firebase Storage, full payload POSTs to Apps Script → row written to Submissions sheet with <code>status: pending</code></li>
+          <li>Sees a thank-you screen: "profile under review, 3–5 business days"</li>
         </ul>
-      </ul>
-    </div>
+      </div>
 
-    <div class="card">
-      <span class="tag done">Admin</span>
-      <h3>Admin</h3>
-      <p>Navigates to the <strong>Admin</strong> console (separate route, not in public nav):</p>
-      <ul>
-        <li><strong>Pending Submissions</strong> tab — all self-submitted profiles awaiting review. Searchable + filterable by country, expertise, sort order. Expand any row to see full bio, profile details, <strong>email (private)</strong>, LinkedIn. <strong>Approve</strong> → sets <code>status: live</code> → appears in public directory. <strong>Reject</strong> → sets <code>status: rejected</code>.</li>
-        <li><strong>Nominated</strong> tab — nomination-only submissions (just a LinkedIn URL). Expand to see nominee details and a pre-built outreach message. Copy message to clipboard → reach out manually. Approve or reject once the person has been contacted and confirmed.</li>
-        <li><strong>Profile Requests</strong> tab — update and delete requests from existing leaders.</li>
+      <div class="card">
+        <span class="tag done">Nominator</span>
+        <h3>Nominator — Submitting Someone Else</h3>
         <ul>
-          <li><strong>Updates</strong> sub-tab — leader has described what they want changed; admin clicks <strong>"Send update link via email"</strong> → magic link goes to their inbox for self-service editing</li>
-          <li><strong>Deletes</strong> sub-tab — leader wants to be removed; admin checks boxes and approves → profile set to <code>rejected</code> and removed from public directory</li>
+          <li>Same Step 0 but picks <strong>"I am nominating someone else"</strong></li>
+          <li>Enters the nominee's LinkedIn or public profile URL</li>
+          <li>Hits <strong>Submit Nomination →</strong> goes directly to submit, skipping consent/bio/photo steps</li>
+          <li>A minimal row lands on the Sheet: <code>branch: "nominate"</code>, <code>nominate_link: &lt;url&gt;</code>, everything else blank</li>
+          <li>Admin sees this in the <strong>Nominated</strong> tab and uses the pre-built outreach message to contact that person</li>
         </ul>
-        <li><strong>All Entries</strong> tab — full table of every record (live, pending, rejected) with search, sort, pagination, expandable detail rows.</li>
-        <li>Summary stats (Pending / Live / Rejected counts) always visible at the top.</li>
-      </ul>
-    </div>
+      </div>
 
-    <div class="card">
-      <span class="tag done">Flow</span>
-      <h3>The Full Data Flow</h3>
-      <p style="font-family: monospace; font-size: 0.85rem; line-height: 1.8; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
-        Submit form → Firebase (photo) + Apps Script (profile row, status: pending)<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Admin reviews<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Approve → status: live → appears in Directory<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reject → status: rejected → gone from public view<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leader requests update → Requests sheet (pending)<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Admin sends magic link → one-time token emailed<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leader clicks link → edits profile → new pending submission<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Admin approves again → goes live
-      </p>
-    </div>
+      <div class="card">
+        <span class="tag done">Manage</span>
+        <h3>Leader — Managing Their Profile</h3>
+        <p>Already in the directory and wants to update or remove their listing:</p>
+        <ul>
+          <li>Clicks <strong>"Manage or remove your profile"</strong> on the Submit page (or the button in their Profile Modal)</li>
+          <li><strong>Identify step</strong> — enters first name, last name, email, optional LinkedIn</li>
+          <li>Hits <strong>"Find my profile"</strong> → calls the live Sheet, matches by exact first + last name, shows a "Profile found" card with their role and org</li>
+          <li><strong>Two paths:</strong></li>
+          <ul>
+            <li><strong>Update path:</strong> Picks "Update profile" → free-text box describing what to change → submits → <code>profileRequest</code> saved to Requests sheet, status <code>pending</code></li>
+            <li><strong>Delete path:</strong> Picks "Remove profile" → optional reason field → submits → same profileRequest row, <code>request_type: delete</code></li>
+          </ul>
+          <li><strong>Magic link alternative (faster):</strong></li>
+          <ul>
+            <li>On the identify step, after profile is found, there's also <strong>"Or send my profile to this email instead →"</strong></li>
+            <li>Triggers <code>sendProfileLink</code> → Apps Script looks up the profile, generates a one-time token, emails a magic link</li>
+            <li>User clicks link → token validated, marked used → profile snapshot returned to the FE → user lands directly in an edit view pre-filled with their current data</li>
+          </ul>
+        </ul>
+      </div>
 
-  </section>
+      <div class="card">
+        <span class="tag done">Admin</span>
+        <h3>Admin</h3>
+        <p>Navigates to the <strong>Admin</strong> console (separate route, not in public nav):</p>
+        <ul>
+          <li><strong>Pending Submissions</strong> tab — all self-submitted profiles awaiting review. Searchable + filterable by country, expertise, sort order. Expand any row to see full bio, profile details, <strong>email (private)</strong>, LinkedIn. <strong>Approve</strong> → sets <code>status: live</code> → appears in public directory. <strong>Reject</strong> → sets <code>status: rejected</code>.</li>
+          <li><strong>Nominated</strong> tab — nomination-only submissions (just a LinkedIn URL). Expand to see nominee details and a pre-built outreach message. Copy message to clipboard → reach out manually. Approve or reject once the person has been contacted and confirmed.</li>
+          <li><strong>Profile Requests</strong> tab — update and delete requests from existing leaders.</li>
+          <ul>
+            <li><strong>Updates</strong> sub-tab — leader has described what they want changed; admin clicks <strong>"Send update link via email"</strong> → magic link goes to their inbox for self-service editing</li>
+            <li><strong>Deletes</strong> sub-tab — leader wants to be removed; admin checks boxes and approves → profile set to <code>rejected</code> and removed from public directory</li>
+          </ul>
+          <li><strong>All Entries</strong> tab — full table of every record (live, pending, rejected) with search, sort, pagination, expandable detail rows.</li>
+          <li>Summary stats (Pending / Live / Rejected counts) always visible at the top.</li>
+        </ul>
+      </div>
 
-  <footer>
-    Transform Health · Internal use only · Updated May 2026
-  </footer>
+      <div class="card">
+        <span class="tag done">Flow</span>
+        <h3>The Full Data Flow</h3>
+        <p style="font-family: monospace; font-size: 0.85rem; line-height: 1.8; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          Submit form → Firebase (photo) + Apps Script (profile row, status: pending)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Admin reviews<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Approve → status: live → appears in Directory<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reject → status: rejected → gone from public view<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leader requests update → Requests sheet (pending)<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Admin sends magic link → one-time token emailed<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Leader clicks link → edits profile → new pending submission<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Admin approves again → goes live
+        </p>
+      </div>
 
-</div>
+      <footer>Transform Health · Internal use only · Updated May 2026</footer>
+    </section>
+
+  </div><!-- end .main -->
+</div><!-- end .page -->
 </body>
 </html>
