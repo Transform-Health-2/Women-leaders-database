@@ -118,30 +118,30 @@
           </ul>
         </div>
 
-      <div class="card">
-        <span class="tag done">Done</span>
-        <h3>Submit / Nominate flow</h3>
-        <ul>
-          <li>Self-submit or nominate someone else</li>
-          <li>Multi-step form with consent gate</li>
-          <li>"Other" specialisation + 5 selection limit</li>
-          <li>Bio character limit: 300–500 characters</li>
-          <li>Regions of operation field (multi-select)</li>
-          <li>Optional country specification field</li>
-          <li>Photo upload via Firebase Storage (5MB cap)</li>
-          <li>Image compression before upload</li>
-        </ul>
-      </div>
+        <div class="card">
+          <span class="tag done">Done</span>
+          <h3>Submit / Nominate flow</h3>
+          <ul>
+            <li>Self-submit or nominate someone else</li>
+            <li>Multi-step form with consent gate</li>
+            <li>Email field in Basic Info (required, not publicly displayed)</li>
+            <li>"Other" specialisation + 5 selection limit</li>
+            <li>Bio character limit: 300–500 characters</li>
+            <li>Countries of operation field (multi-select country picker)</li>
+            <li>Profile photo MANDATORY (5MB cap, client-side validation)</li>
+            <li>Image compression before upload</li>
+          </ul>
+        </div>
 
-      <div class="card">
-        <span class="tag done">Done</span>
-        <h3>Profile Modal</h3>
-        <ul>
-          <li>Larger modal window for profile details</li>
-          <li>Shows all fields: role, org, country, bio, expertise</li>
-          <li>LinkedIn link + Manage Profile button</li>
-        </ul>
-      </div>
+        <div class="card">
+          <span class="tag done">Done</span>
+          <h3>Profile Modal</h3>
+          <ul>
+            <li>Modal window for profile details (role, org, country, bio, expertise, years exp)</li>
+            <li>Email NOT shown (PII protection — only in Admin)</li>
+            <li>LinkedIn link + Manage Profile button</li>
+          </ul>
+        </div>
 
       <div class="card">
         <span class="tag done">Done</span>
@@ -186,7 +186,43 @@
       <div class="card">
         <span class="tag todo">To do</span>
         <h3>Country-level map drilldown</h3>
-        <p>Analytics map supports region-level selection. Next step: click a region → show countries; click a country → filter leader cards.</p>
+        <p>Currently only region-level selection; clicking a country to filter leaders is not yet built.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>LinkedIn / website click tracking</h3>
+        <p>Track clicks on LinkedIn and website links to measure database usefulness.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>Production SMTP emails</h3>
+        <p>Magic links currently use Apps Script <code>MailApp</code>. Needs production SMTP (SendGrid, Mailgun) for reliability at scale.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>Click-through analytics (GA4 / Plausible)</h3>
+        <p>Add analytics service to track page views, searches, and filter usage across the directory.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>Profile modal — wider with improved UI</h3>
+        <p>Current modal is functional but narrow (~672px). Needs wider window and better visual design.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>Regions of operation field</h3>
+        <p>Currently implemented as country selector. Update to "global, UN regions, national" multi-select as originally specified.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>Apps Script deployment fix</h3>
+        <p>Endpoint returns "Script function not found". Need to save Code.gs + redeploy as Web App with "New version".</p>
       </div>
 
       <div class="card">
