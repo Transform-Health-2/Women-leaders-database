@@ -57,6 +57,13 @@ function doPost(e) {
       return jsonResponse({ ok: approveById(payload.id, 'live') });
     }
 
+    if (action === 'bulkSeed') {
+      if (!checkAdminPassword(payload.adminPassword)) {
+        return jsonResponse({ ok: false, error: 'auth' });
+      }
+      return jsonResponse(bulkSeed(payload.entries || []));
+    }
+
     if (action === 'sendProfileLink') {
       return jsonResponse(sendProfileLink(payload));
     }
@@ -241,6 +248,40 @@ function saveProfileRequest(payload) {
   ]);
 
   return { ok: true, id: id };
+}
+
+// ---------------------------------------------------------------------------
+// Bulk seed — writes entries directly as 'live' (admin only)
+// ---------------------------------------------------------------------------
+function bulkSeed(entries) {
+  var ss    = SpreadsheetApp.openById(getSheetId());
+  var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['id','created_at','branch','first_name','last_name','role','organisation','bio','linkedin','photo_url','status','admin_token','editor_email','internal_note','country']);
+  }
+  var now = new Date().toISOString();
+  var inserted = 0;
+  entries.forEach(function(e) {
+    sheet.appendRow([
+      e.id || generateId(),
+      now,
+      e.branch || 'self',
+      e.first_name || '',
+      e.last_name  || '',
+      e.role || '',
+      e.organisation || '',
+      e.bio || '',
+      e.linkedin || '',
+      e.photo_url || '',
+      'live',
+      generateToken(),
+      e.email || '',
+      '',
+      e.country || ''
+    ]);
+    inserted++;
+  });
+  return { ok: true, inserted: inserted };
 }
 
 // ---------------------------------------------------------------------------
