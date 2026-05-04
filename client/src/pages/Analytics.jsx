@@ -132,7 +132,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
             <ComposableMap
               projectionConfig={{ scale: 215, center: [5, 5] }}
               width={900}
-              height={520}
+              height={440}
               style={{ width: "100%", height: "auto", backgroundColor: "transparent" }}
             >
               <Geographies geography={GEO_URL}>
