@@ -258,9 +258,9 @@
       </div>
 
       <div class="card">
-        <span class="tag todo">To do</span>
-        <h3>LinkedIn / website click tracking</h3>
-        <p>Track clicks on LinkedIn and website links to measure database usefulness.</p>
+        <span class="tag done">Done</span>
+        <h3>LinkedIn click tracking — LIVE</h3>
+        <p>✅ <code>linkedin_clicks</code> column added to DB. Click count tracked when icons are clicked in LeaderCard + ProfileModal. "LinkedIn Clicks" column visible in Admin "All Entries" table. Filter by Most/Least clicked.</p>
       </div>
 
       <div class="card">
@@ -273,6 +273,36 @@
         <span class="tag todo">To do</span>
         <h3>Click-through analytics (GA4 / Plausible)</h3>
         <p>Add analytics service to track page views, searches, and filter usage across the directory.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Expertise "Other" in Analytics filter</h3>
+        <p>"Other: X" tags normalize to "Other" in bar chart. Clicking "Other" filters all related tags. Capitalization fixed (Digital Health Policy, Health Financing, etc.).</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Map legend — ocean placement</h3>
+        <p>Region labels now sit directly on the ocean (no connector lines). North/South America on Pacific left side, Europe in Atlantic, Africa & South Asia in Indian Ocean. Commit <code>30302a5</code>.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Map highlighting — data-driven</h3>
+        <p>Now based on actual leader <code>country</code> field. Fixed Europe/French Guiana cross-highlight bug. Commit <code>bb78f03</code>.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Clear Region button</h3>
+        <p>Moved underneath the map as a centered, styled "✕ Clear region" button — always visible when a region is selected.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Pink accent banner</h3>
+        <p>Accent design element (<code>Rectangle 6709.svg</code>) uses <code>#F85A8E</code> (brand-pink), consistent with policy brief.</p>
       </div>
 
       <div class="card">
@@ -301,32 +331,14 @@
 
       <div class="card">
         <span class="tag done">Done</span>
-        <h3>Expertise "Other" in Analytics filter</h3>
-        <p>"Other: X" tags normalize to "Other" in bar chart. Clicking "Other" filters all related tags. Capitalization fixed (Digital Health Policy, Health Financing, etc.).</p>
+        <h3>Admin — LinkedIn Clicks column + filters</h3>
+        <p>"LinkedIn Clicks" column added to "All Entries" table. Filter by "Most clicked" (high) or "Least clicked" (low) to see top/underperforming profiles.</p>
       </div>
 
       <div class="card">
-        <span class="tag done">Done</span>
-        <h3>Map legend — ocean placement</h3>
-        <p>Region labels now sit directly on the ocean (no connector lines). North/South America on Pacific left side, Europe in Atlantic, Africa & South Asia in Indian Ocean.</p>
-      </div>
-
-      <div class="card">
-        <span class="tag done">Done</span>
-        <h3>Map highlighting — data-driven</h3>
-        <p>Now based on actual leader <code>country</code> field. Fixed Europe/French Guiana cross-highlight bug. Commit <code>bb78f03</code>.</p>
-      </div>
-
-      <div class="card">
-        <span class="tag done">Done</span>
-        <h3>Clear Region button</h3>
-        <p>Moved underneath the map as a centered, styled "✕ Clear region" button — always visible when a region is selected.</p>
-      </div>
-
-      <div class="card">
-        <span class="tag done">Done</span>
-        <h3>Pink accent banner</h3>
-        <p>Accent design element (<code>Rectangle 6709.svg</code>) uses <code>#F85A8E</code> (brand-pink), consistent with policy brief.</p>
+        <span class="tag todo">Action needed</span>
+        <h3>Replace pixelated illustrations</h3>
+        <p>Current PNGs in <code>client/public/illustrations/</code> are low-res (4–17KB). Please download high-res versions from your design folders (illustrations/icons) and replace them.</p>
       </div>
 
       <div class="card">
@@ -345,12 +357,6 @@
         <span class="tag todo">Before launch</span>
         <h3>Update GitHub Actions CI secrets</h3>
         <p>Add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> to GitHub Actions secrets. Remove <code>VITE_APPS_SCRIPT_URL</code> and any Firebase vars that are no longer needed.</p>
-      </div>
-
-      <div class="card">
-        <span class="tag todo">Action needed</span>
-        <h3>Replace pixelated illustrations</h3>
-        <p>Current PNGs in <code>client/public/illustrations/</code> are low-res (4–17KB). Please replace with high-res versions from your design folders.</p>
       </div>
 
       <footer>Transform Health · Internal use only · Updated May 2026</footer>
