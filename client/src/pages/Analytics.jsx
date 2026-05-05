@@ -14,6 +14,12 @@ const BAR_COLORS = ["#F97316","#18181B","#1E3A5F","#EAB308","#22C55E","#38BDF8",
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
+function toTags(expertise) {
+  if (!expertise) return [];
+  if (Array.isArray(expertise)) return expertise.filter(Boolean);
+  return expertise.split(/,\s*/).filter(Boolean);
+}
+
 function toTitleCase(str) {
   return str.replace(/\b\w+/g, (word) => {
     if (word.toUpperCase() === "AI") return "AI";
@@ -42,7 +48,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
        : allLeaders;
      const expertiseCounts = {};
      source.forEach((l) => {
-       const tags = (l.expertise || "").split(/,\s*/).filter(Boolean);
+       const tags = toTags(l.expertise);
        tags.forEach((tag) => {
          // Normalize "Other: X" tags to just "Other" for the chart
          const normalized = tag.trim().startsWith("Other") ? "Other" : tag.trim();
@@ -88,9 +94,8 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
       const matchRegion = !selectedRegion ||
         (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion;
       const matchSpec = !selectedSpecialisation ||
-        (l.expertise || "").split(/,\s*/).some((e) => {
+        toTags(l.expertise).some((e) => {
           const trimmed = e.trim();
-          // Handle "Other: X" tags — if user clicks "Other" bar, match any "Other:*" tag
           if (selectedSpecialisation === "Other") {
             return trimmed === "Other" || trimmed.startsWith("Other:");
           }
@@ -106,7 +111,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
       const regions = new Set();
       allLeaders
         .filter((l) =>
-          (l.expertise || "").split(/,\s*/).some((e) => e.trim() === selectedSpecialisation)
+          toTags(l.expertise).some((e) => e.trim() === selectedSpecialisation)
         )
         .forEach((l) => {
           const r = l.region || COUNTRY_TO_REGION[l.country?.trim()];
