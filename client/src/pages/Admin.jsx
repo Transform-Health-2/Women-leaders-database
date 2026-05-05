@@ -9,7 +9,6 @@ const SIDEBAR_ITEMS = [
   { id: "nominated", label: "Nominated",            icon: "user-plus" },
   { id: "divider",   label: "",                     icon: "divider"   },
   { id: "tests",     label: "Test Results",          icon: "test"      },
-  { id: "manual",    label: "User Manual",           icon: "manual"    },
 ];
 
 function InboxIcon() {
@@ -409,7 +408,6 @@ export default function Admin({ onGoToDirectory }) {
     { ...SIDEBAR_ITEMS[3], count: nominatedCount },
     SIDEBAR_ITEMS[4],  // divider (no count)
     { ...SIDEBAR_ITEMS[5], count: testResults.length },
-    SIDEBAR_ITEMS[6],
   ];
 
   return (

@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
 // ── Shared primitives ────────────────────────────────────────────────────────
-function H2({ children }) {
-  return <h2 className="text-[2.2rem] font-bold text-brand-navy mb-4 tracking-heading">{children}</h2>;
-}
 function H3({ children }) {
   return <h3 className="text-[1.6rem] font-semibold text-brand-dark mt-6 mb-2">{children}</h3>;
 }
@@ -407,16 +404,9 @@ export default function AdminManual() {
 
       {/* Section content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Section header */}
-        <div className="flex-shrink-0 px-10 pt-8 pb-4 border-b border-gray-100">
-          <div className="text-[1.2rem] text-gray-400 uppercase tracking-widest mb-1">
-            {String(activeIndex + 1).padStart(2, "0")} of {SECTIONS.length}
-          </div>
-          <H2>{activeSection.label}</H2>
-        </div>
 
         {/* Scrollable section body */}
-        <div className="flex-1 overflow-y-auto px-10 py-6">
+        <div className="flex-1 overflow-y-auto px-10 py-8">
           {activeSection.content}
         </div>
 
@@ -430,18 +420,6 @@ export default function AdminManual() {
               ← {prev.label}
             </button>
           ) : <span />}
-          <div className="flex gap-1.5">
-            {SECTIONS.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setActiveId(s.id)}
-                className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${
-                  s.id === activeId ? "bg-brand-navy" : "bg-gray-300 hover:bg-gray-400"
-                }`}
-                title={s.label}
-              />
-            ))}
-          </div>
           {next ? (
             <button
               onClick={() => setActiveId(next.id)}
