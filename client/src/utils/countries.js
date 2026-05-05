@@ -49,7 +49,7 @@ export const REGION_MARKERS = [
   { key: "north_america",     coordinates: [-95, 40],  dx: -105, dy: -90, oceanCoords: [-110, 42] },  // Atlantic left of N. America (visible)
   { key: "latin_america",     coordinates: [-55, -10], dx: -55,  dy: 80,  oceanCoords: [-75, -8]  },  // Pacific left of S. America (visible)
   { key: "europe",            coordinates: [10, 50],   dx: 60,   dy: 80,  oceanCoords: [-25, 44]  },  // Atlantic between Americas & Europe
-  { key: "sub_saharan_africa",coordinates: [20, 5],    dx: 60,   dy: 55,  oceanCoords: [55, -15]  },  // Indian Ocean (same area as S. Asia)
+  { key: "sub_saharan_africa",coordinates: [20, 5],    dx: 60,   dy: 55,  oceanCoords: [78, -12]  },  // Indian Ocean (same spot as South Asia)
   { key: "south_asia",        coordinates: [80, 20],   dx: 85,   dy: -55, oceanCoords: [78, -12]  },  // Indian Ocean (user confirmed working)
 ];
 
