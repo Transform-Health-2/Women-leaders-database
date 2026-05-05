@@ -356,7 +356,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
 }
 
 // ─── Step 3: Profile details ──────────────────────────────────────────────────
-export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleExpertise, otherExpertise, setOtherExpertise, selectedCountries, setSelectedCountries, bio, setBio, charCount, bioCharWarning, onBack, onContinue, nextDisabled }) {
+export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleExpertise, otherExpertise, setOtherExpertise, selectedCountries, setSelectedCountries, geoScope, setGeoScope, bio, setBio, charCount, bioCharWarning, onBack, onContinue, nextDisabled }) {
   return (
     <div>
       <h2 className="text-4xl font-bold text-brand-navy mb-7 tracking-heading">Profile details</h2>
@@ -416,7 +416,21 @@ export function Step3ProfileDetails({ yearsExp, setYearsExp, expertise, toggleEx
       )}
 
       <div className="mb-6">
-        <label className={`${LABEL_CLASS} mb-3`}>Which country/countries? *</label>
+        <label className={`${LABEL_CLASS} mb-3`}>Geographical scope *</label>
+        <Select
+          value={geoScope || ""}
+          onChange={(e) => setGeoScope(e.target.value)}
+          className={`${F_INPUT} ${geoScope ? "text-gray-900" : "text-gray-400"}`}
+        >
+          <option value="">Select a scope...</option>
+          {GEO_SCOPES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+        </Select>
+      </div>
+
+      <div className="mb-6">
+        <label className={`${LABEL_CLASS} mb-3`}>
+          Which country/countries? <span className="text-1.4 text-gray-500">(optional)</span>
+        </label>
         <Select
           value=""
           onChange={(e) => {

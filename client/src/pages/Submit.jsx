@@ -254,6 +254,7 @@ export default function Submit({ onManageProfile }) {
               expertise={expertise} toggleExpertise={toggleExpertise}
               otherExpertise={otherExpertise} setOtherExpertise={setOtherExpertise}
               selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries}
+              geoScope={geoScope} setGeoScope={setGeoScope}
               bio={bio} setBio={setBio}
               charCount={charCount} bioCharWarning={bioCharWarning}
               onBack={() => goStep(2)} onContinue={() => goStep(4)}
