@@ -434,10 +434,15 @@
       persist(); debouncedSave();
     }
 
-    function toggleExpand(index) {
-      expandedRow = expandedRow === index ? null : index;
-      renderTable();
-    }
+     function toggleExpand(index, e) {
+       // Don't expand if clicking on select, textarea, or inside .status-select
+       if (e) {
+         const target = e.target || e.srcElement;
+         if (target.closest?.("select, textarea, .status-select, .notes-input")) return;
+       }
+       expandedRow = expandedRow === index ? null : index;
+       renderTable();
+     }
 
     function clearSaved() {
       if (!confirm("Clear all saved results? This cannot be undone.")) return;
@@ -517,20 +522,20 @@
       document.getElementById("tbody").innerHTML = sectionRows.map(({ _i: i, ...r }) => {
         const howToLines = r.howTo.split("\n").map(l => `<li>${l.replace(/^\d+\.\s*/, "")}</li>`).join("");
         const escaped = r.notes.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-        let rows = `
-          <tr class="data-row" onclick="toggleExpand(${i})">
+         let rows = `
+          <tr class="data-row" onclick="toggleExpand(${i}, event)">
             <td style="white-space:nowrap;">${priorityDot(r.priority)}<span class="priority-label">${r.priority}</span></td>
             <td class="scenario-cell">
               <span class="scenario-text">${r.scenario}</span>
               <span class="expand-hint">↕ click row for how-to steps</span>
             </td>
-            <td>
-              <select class="status-select status-${r.status}" onchange="setStatus(${i}, this.value); event.stopPropagation();">
+             <td>
+              <select class="status-select status-${r.status}" onchange="setStatus(${i}, this.value)">
                 <option value="pending" ${r.status==="pending"?"selected":""}>⏳ Pending</option>
                 <option value="pass"    ${r.status==="pass"   ?"selected":""}>✅ Pass</option>
                 <option value="fail"    ${r.status==="fail"   ?"selected":""}>❌ Fail</option>
               </select>
-            </td>
+             </td>
             <td>
               <textarea class="notes-input" rows="2" placeholder="Add notes or feedback…"
                 oninput="setNotes(${i}, this.value)" onclick="event.stopPropagation();">${escaped}</textarea>
