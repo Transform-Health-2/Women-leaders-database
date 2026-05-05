@@ -269,7 +269,7 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
 }
 
 // ─── Step 2: Basic information ────────────────────────────────────────────────
-export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, email, setEmail, photoPreview, onPhotoUpload, country, setCountry, geoScope, setGeoScope, org, setOrg, role, setRole, onBack, onContinue }) {
+export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, email, setEmail, photoPreview, onPhotoUpload, country, setCountry, org, setOrg, role, setRole, onBack, onContinue }) {
   return (
     <div>
       <h2 className="text-4xl font-bold text-brand-navy mb-2 tracking-heading">Basic information</h2>
@@ -313,19 +313,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
       </div>
 
       <div className="mb-5">
-        <label className={LABEL_CLASS}>Geographical scope *</label>
-        <Select
-          value={geoScope || ""}
-          onChange={(e) => setGeoScope(e.target.value)}
-          className={`${F_INPUT} ${geoScope ? "text-gray-900" : "text-gray-400"}`}
-        >
-          <option value="">Select a scope...</option>
-          {GEO_SCOPES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-        </Select>
-      </div>
-
-      <div className="mb-5">
-        <label className={LABEL_CLASS}>Country of residence {geoScope === "National" ? "*" : "(optional)"}</label>
+        <label className={LABEL_CLASS}>Country of residence *</label>
         <Select
           value={country}
           onChange={(e) => setCountry(e.target.value)}

@@ -242,7 +242,6 @@ export default function Submit({ onManageProfile }) {
               email={email} setEmail={setEmail}
               photoPreview={photoPreview} onPhotoUpload={handlePhotoUpload}
               country={country} setCountry={setCountry}
-              geoScope={geoScope} setGeoScope={setGeoScope}
               org={org} setOrg={setOrg}
               role={role} setRole={setRole}
               onBack={() => goStep(1)} onContinue={() => goStep(3)}
