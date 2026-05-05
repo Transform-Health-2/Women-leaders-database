@@ -185,6 +185,49 @@
     }
     .section-nav-bottom .nav-info { font-size: 0.78rem; color: #9ca3af; }
 
+    /* ── OVERVIEW PANEL ── */
+    .overview-panel {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+    }
+    .overview-toggle {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 24px; background: #f0f5ff; border: none; cursor: pointer;
+      font-size: 0.8rem; font-weight: 700; color: #1E3A5F; letter-spacing: 0.03em;
+      border-bottom: 1px solid #dbe4f5; transition: background 0.15s;
+    }
+    .overview-toggle:hover { background: #e5eeff; }
+    .overview-toggle-icon { font-size: 0.75rem; color: #6b7280; transition: transform 0.2s; }
+    .overview-toggle-icon.open { transform: rotate(180deg); }
+    .overview-body {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0; border-top: none;
+    }
+    .overview-body.hidden { display: none; }
+    .ov-block {
+      padding: 16px 20px; border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+    }
+    .ov-block:last-child { border-right: none; }
+    .ov-label {
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em;
+      color: #9ca3af; margin-bottom: 6px;
+    }
+    .ov-title { font-size: 0.92rem; font-weight: 700; color: #1E3A5F; margin-bottom: 5px; }
+    .ov-text { font-size: 0.8rem; color: #4b5563; line-height: 1.6; }
+    .ov-text a { color: #F8571D; font-weight: 600; text-decoration: none; }
+    .ov-text a:hover { text-decoration: underline; }
+    .prio-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 0.8rem; color: #374151; }
+    .prio-row:last-child { margin-bottom: 0; }
+    .sections-list { display: flex; flex-direction: column; gap: 4px; }
+    .section-chip {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; color: #374151; padding: 3px 0;
+    }
+    .chip-num {
+      width: 18px; height: 18px; border-radius: 50%; background: #1E3A5F;
+      color: #fff; font-size: 0.62rem; font-weight: 800; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
     @media (max-width: 640px) {
       .top-bar { padding: 10px 14px; }
       .hero { padding: 14px; }
@@ -194,6 +237,8 @@
       .hero-right { width: 100%; }
       .tester-input-wrap input { width: 100%; }
       .section-header { flex-direction: column; }
+      .overview-toggle { padding: 10px 14px; }
+      .ov-block { padding: 12px 14px; border-right: none; }
     }
   </style>
 
@@ -570,6 +615,90 @@
   </div>
 </div>
 
+<!-- OVERVIEW / INTRO PANEL -->
+<div class="overview-panel">
+  <button class="overview-toggle" onclick="toggleOverview()" id="overview-toggle-btn" aria-expanded="true">
+    <span>About this testing sheet &amp; how to use it</span>
+    <span class="overview-toggle-icon open" id="overview-icon">▼</span>
+  </button>
+  <div class="overview-body" id="overview-body">
+
+    <div class="ov-block">
+      <div class="ov-label">What you're testing</div>
+      <div class="ov-title">Transform Health Women Leaders Database</div>
+      <div class="ov-text">
+        A public directory of women leaders in digital health, built for Transform Health.
+        The platform lets users browse profiles, submit their own profile or nominate someone,
+        manage existing profiles, and view analytics. Admins review and approve submissions
+        through a private console.
+        <br><br>
+        <a href="https://tich-labs.github.io/transform-health-directory/" target="_blank" rel="noopener noreferrer">→ Open the live app</a>
+      </div>
+    </div>
+
+    <div class="ov-block">
+      <div class="ov-label">Testing environment</div>
+      <div class="ov-title">Live Supabase — Test Mode</div>
+      <div class="ov-text">
+        You are testing against the <strong>real Supabase database</strong>.
+        Any profiles or nominations you submit during testing will appear in the admin queue.
+        <br><br>
+        <strong>Admin access</strong> is open — no login is required. Navigate to the Admin tab
+        directly from the nav bar.
+        <br><br>
+        Use clearly fake names like <em>"Test Tester"</em> for any submissions so they can
+        be easily identified and cleaned up afterwards.
+      </div>
+    </div>
+
+    <div class="ov-block">
+      <div class="ov-label">Priority guide</div>
+      <div class="ov-title">What each dot means</div>
+      <div class="ov-text">
+        <div class="prio-row">
+          <span class="priority-dot dot-critical"></span>
+          <strong>Critical</strong> — Must work before launch. A fail here is a blocker.
+        </div>
+        <div class="prio-row">
+          <span class="priority-dot dot-important"></span>
+          <strong>Important</strong> — Should work. Document it if broken but not a hard stop.
+        </div>
+        <div class="prio-row">
+          <span class="priority-dot dot-nice"></span>
+          <strong>Nice to have</strong> — Good to confirm but lowest priority.
+        </div>
+      </div>
+    </div>
+
+    <div class="ov-block">
+      <div class="ov-label">How to use this sheet</div>
+      <div class="ov-title">Step through section by section</div>
+      <div class="ov-text">
+        <strong>1. Enter your name</strong> at the top — results are saved against it.<br><br>
+        <strong>2. Work through each tab</strong> in order. The tab bar shows your pass/total count per section.<br><br>
+        <strong>3. Click any test row</strong> to expand the step-by-step instructions for that scenario.<br><br>
+        <strong>4. Set the status</strong> to Pass, Fail, or leave as Pending.<br><br>
+        <strong>5. Add notes</strong> in the text box — include anything unexpected, error messages, or observations.<br><br>
+        Results <strong>auto-save</strong> to your browser and to Supabase when you enter your name. Use Export CSV to share results.
+      </div>
+    </div>
+
+    <div class="ov-block">
+      <div class="ov-label">Sections covered</div>
+      <div class="ov-title">6 sections · 31 test cases</div>
+      <div class="sections-list">
+        <div class="section-chip"><span class="chip-num">1</span> Setup Check — Supabase connection &amp; admin access</div>
+        <div class="section-chip"><span class="chip-num">2</span> Directory — Search, filters, profile modal, privacy</div>
+        <div class="section-chip"><span class="chip-num">3</span> Analytics — Map, region &amp; specialisation filters</div>
+        <div class="section-chip"><span class="chip-num">4</span> Submit &amp; Nominate — Full form flow, validation, photo</div>
+        <div class="section-chip"><span class="chip-num">5</span> Manage Profile — Lookup, update &amp; delete requests</div>
+        <div class="section-chip"><span class="chip-num">6</span> Admin Console — Approve, reject, profile requests</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- TAB BAR -->
 <div class="tab-bar" id="tabs"></div>
 
@@ -604,6 +733,29 @@
 </div><!-- end .content -->
 
 <script>
+  function toggleOverview() {
+    const body = document.getElementById("overview-body");
+    const icon = document.getElementById("overview-icon");
+    const btn  = document.getElementById("overview-toggle-btn");
+    const isOpen = !body.classList.contains("hidden");
+    body.classList.toggle("hidden", isOpen);
+    icon.classList.toggle("open", !isOpen);
+    btn.setAttribute("aria-expanded", String(!isOpen));
+    localStorage.setItem("th-overview-open", String(!isOpen));
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const saved = localStorage.getItem("th-overview-open");
+    if (saved === "false") {
+      const body = document.getElementById("overview-body");
+      const icon = document.getElementById("overview-icon");
+      const btn  = document.getElementById("overview-toggle-btn");
+      body.classList.add("hidden");
+      icon.classList.remove("open");
+      btn.setAttribute("aria-expanded", "false");
+    }
+  });
+
   // Keep bottom-nav-info in sync
   const _renderAll = renderAll;
   renderAll = function() {
