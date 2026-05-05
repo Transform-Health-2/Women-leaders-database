@@ -125,19 +125,33 @@ export const api = {
   },
 
   trackLinkedInClick: async (leaderId) => {
-    // First get current count
+    // First try to increment via RPC (if set up)
+    const { error: rpcError } = await supabase.rpc("increment_linkedin_clicks", { leader_id: leaderId });
+    if (!rpcError) return { ok: true };
+
+    // Fallback: get current count and update
     const { data, error: fetchError } = await supabase
       .from("leaders")
       .select("linkedin_clicks")
       .eq("id", leaderId)
       .single();
-    if (fetchError) throw fetchError;
+    
+    if (fetchError) {
+      console.warn("linkedin_clicks column may not exist yet:", fetchError.message);
+      return { ok: false, error: "column_not_found" };
+    }
+    
     const current = data?.linkedin_clicks || 0;
-    const { error } = await supabase
+    const { error: updateError } = await supabase
       .from("leaders")
       .update({ linkedin_clicks: current + 1 })
       .eq("id", leaderId);
-    if (error) throw error;
+      
+    if (updateError) {
+      console.warn("Failed to update linkedin_clicks:", updateError.message);
+      return { ok: false, error: updateError.message };
+    }
+    
     return { ok: true };
   },
 };
