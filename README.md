@@ -5,8 +5,8 @@ A project to increase visibility, representation, and engagement of women leader
 ## Project Structure
 
 - **`client/`** — React + Vite frontend application
-- **`apps-script/`** — Google Apps Script (legacy: nomination email tool only — not required for core functionality)
-- **`scripts/`** — One-time migration and utility scripts
+- **`scripts/`** — One-time migration and utility scripts (includes `create-test-results-table.sql`)
+- **`testing-sheet.html`** — Standalone testing checklist (in `client/public/`, bundled with build)
 - **`.github/workflows/`** — GitHub Actions for automatic deployment to GitHub Pages
 
 ---
@@ -141,6 +141,7 @@ Open `http://localhost:5173`.
 
 ## Before Going Live (Checklist)
 
+- [ ] Create `test_results` table in Supabase (run `scripts/create-test-results-table.sql`)
 - [ ] Re-enable admin auth gate — one-line change in `client/src/pages/Admin.jsx` (currently bypassed for testing)
 - [ ] Create admin user in Supabase Auth dashboard (email/password)
 - [ ] Update GitHub Actions CI secrets: add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`, remove `VITE_APPS_SCRIPT_URL` and Firebase vars
@@ -202,6 +203,7 @@ The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the fr
 | `npm run build` | Build for production |
 | `npm run preview` | Preview production build locally |
 | `npm run format` | Format code with Prettier |
+| `node test-dummy-test.js` | Insert a dummy test result into Supabase `test_results` table |
 
 ---
 
@@ -246,30 +248,32 @@ The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the fr
 | Testing sheet (testing-sheet.html) with checklist | Done |
 | Apps Script: `bulkSeed` function added | Done |
 | `scripts/` folder committed (seed scripts) | Done |
-
-### Before Launch
-
-| Task | Notes |
-| --- | --- |
-| Re-enable admin auth gate | One-line change in `Admin.jsx` |
-| Create admin user in Supabase Auth dashboard | Manual step, no code change |
-| Update GitHub Actions CI secrets | Add Supabase vars, remove Firebase + Apps Script vars |
-
-### Pending Features
-
-| Task | Status | Notes |
-| --- | --- | --- |
-| Country-level map drilldown | ⏳ Pending | Currently region-level only; clicking a country to filter leaders not yet built |
-| LinkedIn / website click tracking | ⏳ Pending | Track clicks to measure database usefulness |
+| LinkedIn click tracking — `linkedin_clicks` column + Admin filters | Done |
+| Admin — Test Results tab (Supabase `test_results` table) | Done |
+| Admin Sidebar — reordered (All Entries first, divider before Tests) | Done |
+| Testing Sheet — Testing Notes at top, status dropdown fix | Done |
 | Production SMTP emails | ⏳ Pending | Apps Script MailApp still used for "send update link"; needs SendGrid/Mailgun/Resend |
 | GA4 / Plausible analytics | ⏳ Pending | No analytics service configured |
-| Profile modal — wider + better design | ⏳ Pending | Current modal is 672px wide; needs wider window and improved visual design |
+| Profile modal — wider + better design | ✅ Done | 1200px wide, brand colours, improved spacing |
 | Photo storage | ✅ Done | Supabase Storage fully implemented and working |
 | Regions of operation field | ✅ Done | Implemented as multi-select country picker |
 | Nominations submitter info | ✅ Done | Nominator name/email saved and displayed in Admin Console |
 
 ---
 
+## Before Launch
+
+| Task | Notes |
+| --- | --- |
+| Re-enable admin auth gate | One-line change in `Admin.jsx` |
+| Create admin user in Supabase Auth dashboard | Manual step, no code change |
+| Update GitHub Actions CI secrets | Add Supabase vars, remove Firebase + Apps Script vars |
+| Create `test_results` table in Supabase | Run `scripts/create-test-results-table.sql` in SQL Editor |
+
+---
+
 ## Testing
 
-For interactive testing, open `testing-sheet.html` in your browser — it includes 28 test cases across 6 sections with step-by-step instructions, priority indicators, and auto-saved results.
+For interactive testing, open `testing-sheet.html` in your browser — it includes test cases across multiple sections with step-by-step instructions, priority indicators, and auto-saved results.
+
+**Test results** are saved to the Supabase `test_results` table and visible in the **Admin Console → "Test Results" tab** (new tab with pass/fail/pending summary cards and full results table).

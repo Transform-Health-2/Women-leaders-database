@@ -251,11 +251,35 @@
         <p>Pending items · Working on these now — should be done by end of day</p>
       </header>
 
-      <div class="card">
-        <span class="tag todo">To do</span>
-        <h3>Country-level map drilldown</h3>
-        <p>Currently only region-level selection; clicking a country to filter leaders is not yet built.</p>
-      </div>
+       <div class="card">
+         <span class="tag done">Done</span>
+         <h3>Admin — Test Results tab</h3>
+         <p>New "Test Results" tab added to Admin sidebar (below divider). Shows pass/fail/pending summary cards and full test results table (tester, section, feature, scenario, priority, status, notes, date) fetched live from Supabase <code>test_results</code> table.</p>
+       </div>
+
+       <div class="card">
+         <span class="tag done">Done</span>
+         <h3>Testing Sheet — Testing Notes at top</h3>
+         <p>"Testing Notes" section moved to the top of the testing sheet for better visibility. Status dropdown (Pass/Fail/Pending) now opens correctly without expanding the row.</p>
+       </div>
+
+       <div class="card">
+         <span class="tag done">Done</span>
+         <h3>Admin Sidebar — Reordered</h3>
+         <p>Sidebar now ordered: All Entries → Pending Submissions → Profile Requests → Nominated → divider → Test Results. Testing link moved to nav bar next to Admin (opens in new tab).</p>
+       </div>
+
+       <div class="card">
+         <span class="tag todo">Action needed</span>
+         <h3>Create test_results table in Supabase</h3>
+         <p>SQL script at <code>scripts/create-test-results-table.sql</code>. Run in Supabase SQL Editor to enable test result saving from the testing sheet and display in Admin console.</p>
+       </div>
+
+       <div class="card">
+         <span class="tag todo">To do</span>
+         <h3>Country-level map drilldown</h3>
+         <p>Currently only region-level selection; clicking a country to filter leaders is not yet built.</p>
+       </div>
 
       <div class="card">
         <span class="tag done">Done</span>
