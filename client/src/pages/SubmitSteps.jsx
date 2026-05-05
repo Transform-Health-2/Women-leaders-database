@@ -76,10 +76,10 @@ export function Step0Branch({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 max-w-[640px]">
         <button
           onClick={() => setBranch("self")}
-          className={`pt-[3.6rem] px-[2.4rem] pb-[2.8rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
+          className={`pt-[4.8rem] px-[2.4rem] pb-[4rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
             branch === "self" ? "border-brand-navy" : "border-gray-200"
           }`}
         >
@@ -90,7 +90,7 @@ export function Step0Branch({
 
         <button
           onClick={() => setBranch("nominate")}
-          className={`pt-[3.6rem] px-[2.4rem] pb-[2.8rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
+          className={`pt-[4.8rem] px-[2.4rem] pb-[4rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
             branch === "nominate" ? "border-brand-navy" : "border-gray-200"
           }`}
         >
