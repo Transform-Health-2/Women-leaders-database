@@ -197,7 +197,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
               })}
         </ComposableMap>
 
-        {/* Region selector — clicking the active region deselects it */}
+        {/* Region selector */}
             <div className="relative mt-5 pt-5">
               <p className="text-center text-1.1 text-gray-400 mb-3 tracking-wide uppercase">
                 Select a region to explore
@@ -212,13 +212,11 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     <button
                       key={region.key}
                       type="button"
-                      onClick={() => setSelectedRegion(active ? null : region.key)}
-                      title={active ? "Click to clear region" : undefined}
+                      onClick={() => setSelectedRegion(region.key)}
                       className="flex flex-col items-center gap-1 text-center py-3 px-2 rounded-lg hover:bg-brand-orange-light/10 transition-colors cursor-pointer"
                     >
                       <span className={`text-1.1 font-semibold transition-colors ${active ? "text-brand-orange" : "text-gray-700"}`}>
                         {REGION_LABELS[region.key]}
-                        {active && <span className="ml-1 text-[0.85em] opacity-60">✕</span>}
                       </span>
                       <span className="text-[1rem] text-gray-400">
                         {regionTotals[region.key] || 0} leaders
@@ -271,26 +269,48 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           </div>
 
           {/* Region Leaders */}
-          {(selectedRegion || selectedSpecialisation) && filteredLeaders.length > 0 && (
+          {(selectedRegion || selectedSpecialisation) && (
             <div className="order-2 lg:col-span-5 lg:row-start-2 mt-6 lg:mt-8">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h3 className="text-1.6 font-bold text-brand-navy">
                   {[selectedRegion && REGION_LABELS[selectedRegion], selectedSpecialisation && toTitleCase(selectedSpecialisation)]
-                    .filter(Boolean).join(" · ")} &middot; {filteredLeaders.length} Leaders
+                    .filter(Boolean).join(" · ")}
+                  {filteredLeaders.length > 0 && <span> &middot; {filteredLeaders.length} Leaders</span>}
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {selectedRegion && (
+                    <button
+                      onClick={() => setSelectedRegion(null)}
+                      className="flex items-center gap-1 px-[1.2rem] py-[0.55rem] border-[1.5px] border-red-400 rounded-[10px] bg-white text-red-400 text-[1.2rem] font-bold cursor-pointer tracking-[0.02em]"
+                    >
+                      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M12 4L4 12M4 4l8 8"/>
+                      </svg>
+                      Clear region
+                    </button>
+                  )}
                   {selectedSpecialisation && (
-                    <button onClick={() => setSelectedSpecialisation(null)} className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors">
+                    <button
+                      onClick={() => setSelectedSpecialisation(null)}
+                      className="flex items-center gap-1 px-[1.2rem] py-[0.55rem] border-[1.5px] border-red-400 rounded-[10px] bg-white text-red-400 text-[1.2rem] font-bold cursor-pointer tracking-[0.02em]"
+                    >
+                      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M12 4L4 12M4 4l8 8"/>
+                      </svg>
                       Clear specialisation
                     </button>
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredLeaders.map((l) => (
-                  <LeaderCard key={l.id} leader={l} onSelect={setSelectedProfile} />
-                ))}
-              </div>
+              {filteredLeaders.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {filteredLeaders.map((l) => (
+                    <LeaderCard key={l.id} leader={l} onSelect={setSelectedProfile} />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-400 text-[1.4rem] py-6 text-center">No leaders found for this selection.</p>
+              )}
             </div>
           )}
         </div>
