@@ -2,10 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
 
 const SIDEBAR_ITEMS = [
-  { id: "pending",   label: "Pending Submissions", icon: "inbox"     },
-  { id: "nominated", label: "Nominated",            icon: "user-plus" },
-  { id: "requests",  label: "Profile Requests",     icon: "mail"      },
   { id: "all",       label: "All Entries",           icon: "list"      },
+  { id: "pending",   label: "Pending Submissions", icon: "inbox"     },
+  { id: "requests",  label: "Profile Requests",     icon: "mail"      },
+  { id: "nominated", label: "Nominated",            icon: "user-plus" },
+  { id: "divider",   label: "",                     icon: "divider"   },
   { id: "tests",     label: "Test Results",          icon: "test"      },
 ];
 
@@ -99,6 +100,8 @@ export default function Admin({ onGoToDirectory }) {
   const [copiedId,         setCopiedId]         = useState(null);
   const [showConfirm,      setShowConfirm]      = useState(null);
   const [pendingSort,      setPendingSort]      = useState("name_az");
+  const [expandedTester,   setExpandedTester]   = useState(null);
+  const [expandedTestSection, setExpandedTestSection] = useState(null);
   const PAGE_SIZE = 15;
 
   useEffect(() => { loadData(); }, []);
@@ -358,11 +361,12 @@ export default function Admin({ onGoToDirectory }) {
   }, [all, searchQuery, filterCountry, filterExpertise, filterClicks, sortOrder]);
 
   const sidebarData = [
-    { ...SIDEBAR_ITEMS[0], count: pendingCount   },
-    { ...SIDEBAR_ITEMS[1], count: nominatedCount },
+    { ...SIDEBAR_ITEMS[0], count: allCount       },
+    { ...SIDEBAR_ITEMS[1], count: pendingCount   },
     { ...SIDEBAR_ITEMS[2], count: requestsCount  },
-    { ...SIDEBAR_ITEMS[3], count: allCount       },
-    { ...SIDEBAR_ITEMS[4], count: testResults.length },
+    { ...SIDEBAR_ITEMS[3], count: nominatedCount },
+    SIDEBAR_ITEMS[4],  // divider (no count)
+    { ...SIDEBAR_ITEMS[5], count: testResults.length },
   ];
 
   return (
@@ -400,6 +404,11 @@ export default function Admin({ onGoToDirectory }) {
 
           <nav className="flex-1 px-3 py-4 space-y-1">
             {sidebarData.map((item) => {
+              // Divider row
+              if (item.id === "divider") {
+                return <hr key="divider" className="my-2 border-t border-gray-200" />;
+              }
+
               const Icon = ICONS[item.icon];
               const isActive = activeTab === item.id;
               return (
@@ -1185,85 +1194,197 @@ export default function Admin({ onGoToDirectory }) {
                   </div>
                 )}
               </>
-            ) : activeTab === "tests" ? (
-              <>
-                <div className="px-8 py-6 border-b border-brand-warm-border">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">Test Results</h2>
-                      <p className="text-lg text-gray-600 mt-1">View testing results submitted by the team via the testing sheet.</p>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                      <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-green-300">
-                        <div className="text-[1.2rem] uppercase tracking-wider text-green-600">Pass</div>
-                        <div className="text-xl font-semibold text-green-600">{testResults.filter(r => r.status === "pass").length}</div>
-                      </div>
-                      <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-red-300">
-                        <div className="text-[1.2rem] uppercase tracking-wider text-red-600">Fail</div>
-                        <div className="text-xl font-semibold text-red-600">{testResults.filter(r => r.status === "fail").length}</div>
-                      </div>
-                      <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-amber-300">
-                        <div className="text-[1.2rem] uppercase tracking-wider text-amber-600">Pending</div>
-                        <div className="text-xl font-semibold text-amber-600">{testResults.filter(r => r.status === "pending").length}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            ) : activeTab === "tests" ? (() => {
+                // Group rows by tester
+                const byTester = testResults.reduce((acc, r) => {
+                  const key = r.tester_name || "Unknown";
+                  if (!acc[key]) acc[key] = [];
+                  acc[key].push(r);
+                  return acc;
+                }, {});
+                const testerNames = Object.keys(byTester).sort();
 
-                <div className="flex-1 overflow-auto px-8 py-6">
-                  {testResults.length === 0 ? (
-                    <div className="text-center py-20">
-                      <div className="text-[4.8rem] mb-4 text-gray-300">📋</div>
-                      <div className="text-lg text-gray-500">No test results yet. Testers can submit results via the <a href="./testing-sheet.html" target="_blank" rel="noopener noreferrer" className="text-brand-navy underline">Testing Sheet</a>.</div>
+                // Section display order + labels
+                const SECTION_LABELS = {
+                  setup: "Setup Check", dir: "Directory", analytics: "Analytics",
+                  submit: "Submit & Nominate", manage: "Manage Profile", admin: "Admin Console",
+                };
+                const SECTION_ORDER = ["setup", "dir", "analytics", "submit", "manage", "admin"];
+
+                const statusBadge = (status) => {
+                  const cls = status === "pass" ? "bg-green-100 text-green-700" :
+                              status === "fail" ? "bg-red-100 text-red-700" :
+                              "bg-amber-50 text-amber-700";
+                  const label = status === "pass" ? "Pass" : status === "fail" ? "Fail" : "Pending";
+                  return <span className={`text-[1.2rem] font-bold px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
+                };
+
+                const priorityBadge = (p) => {
+                  const cls = p === "critical" ? "bg-red-50 text-red-600" :
+                              p === "important" ? "bg-amber-50 text-amber-600" :
+                              "bg-gray-100 text-gray-500";
+                  return <span className={`text-[1.1rem] font-semibold px-2 py-0.5 rounded-full ${cls}`}>{p || "—"}</span>;
+                };
+
+                const overallPass    = testResults.filter(r => r.status === "pass").length;
+                const overallFail    = testResults.filter(r => r.status === "fail").length;
+                const overallPending = testResults.filter(r => r.status === "pending").length;
+
+                return (
+                  <>
+                    {/* Header */}
+                    <div className="px-8 py-6 border-b border-brand-warm-border">
+                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">Test Results</h2>
+                          <p className="text-lg text-gray-600 mt-1">
+                            {testerNames.length} tester{testerNames.length !== 1 ? "s" : ""} · {testResults.length} test cases recorded
+                          </p>
+                        </div>
+                        <div className="flex gap-3">
+                          <div className="bg-brand-parchment rounded-xl px-5 py-3 border border-green-200 text-center min-w-[72px]">
+                            <div className="text-[1.1rem] uppercase tracking-wider text-green-600 font-semibold">Pass</div>
+                            <div className="text-[2rem] font-bold text-green-600 leading-none mt-0.5">{overallPass}</div>
+                          </div>
+                          <div className="bg-brand-parchment rounded-xl px-5 py-3 border border-red-200 text-center min-w-[72px]">
+                            <div className="text-[1.1rem] uppercase tracking-wider text-red-600 font-semibold">Fail</div>
+                            <div className="text-[2rem] font-bold text-red-600 leading-none mt-0.5">{overallFail}</div>
+                          </div>
+                          <div className="bg-brand-parchment rounded-xl px-5 py-3 border border-amber-200 text-center min-w-[72px]">
+                            <div className="text-[1.1rem] uppercase tracking-wider text-amber-600 font-semibold">Pending</div>
+                            <div className="text-[2rem] font-bold text-amber-600 leading-none mt-0.5">{overallPending}</div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                      <table className="w-full">
-                        <thead className="border-b border-brand-blue-border bg-brand-blue-tint">
-                          <tr>
-                            {["Tester", "Section", "Feature", "Scenario", "Priority", "Status", "Notes", "Date"].map((h) => (
-                              <th key={h} className="text-left text-[1.4rem] font-semibold uppercase tracking-wider px-5 py-3 text-brand-navy">{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#f0ebe0]">
-                          {testResults.map((r) => (
-                            <tr key={r.id} className="transition-colors hover:bg-brand-warm-row">
-                              <td className="px-5 py-3.5 text-lg text-gray-700">{r.tester_name || "—"}</td>
-                              <td className="px-5 py-3.5 text-lg text-gray-600">{r.section || "—"}</td>
-                              <td className="px-5 py-3.5 text-lg font-medium text-brand-dark">{r.feature || "—"}</td>
-                              <td className="px-5 py-3.5 text-lg text-gray-600 max-w-[300px]">{r.scenario || "—"}</td>
-                              <td className="px-5 py-3.5">
-                                <span className={`text-[1.2rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                                  r.priority === "critical" ? "bg-red-100 text-red-600" :
-                                  r.priority === "important" ? "bg-amber-50 text-amber-600" :
-                                  "bg-gray-100 text-gray-600"
-                                }`}>
-                                  {r.priority || "—"}
-                                </span>
-                              </td>
-                              <td className="px-5 py-3.5">
-                                <span className={`text-[1.2rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                                  r.status === "pass" ? "bg-green-100 text-green-600" :
-                                  r.status === "fail" ? "bg-red-100 text-red-600" :
-                                  "bg-amber-50 text-amber-600"
-                                }`}>
-                                  {r.status || "—"}
-                                </span>
-                              </td>
-                              <td className="px-5 py-3.5 text-lg text-gray-600 max-w-[250px] truncate">{r.notes || "—"}</td>
-                              <td className="px-5 py-3.5 text-[1.4rem] text-gray-400">
-                                {r.created_at ? new Date(r.created_at).toLocaleDateString() : "—"}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+
+                    {/* Tester cards */}
+                    <div className="flex-1 overflow-auto px-8 py-6 space-y-4">
+                      {testerNames.length === 0 ? (
+                        <div className="text-center py-20">
+                          <div className="text-[4.8rem] mb-4 text-gray-300">📋</div>
+                          <div className="text-lg text-gray-500">No test results yet. Testers can submit via the <a href="./testing-sheet.html" target="_blank" rel="noopener noreferrer" className="text-brand-navy underline">Testing Sheet</a>.</div>
+                        </div>
+                      ) : testerNames.map((name) => {
+                        const rows = byTester[name];
+                        const pass    = rows.filter(r => r.status === "pass").length;
+                        const fail    = rows.filter(r => r.status === "fail").length;
+                        const pending = rows.filter(r => r.status === "pending").length;
+                        const total   = rows.length;
+                        const pct     = total ? Math.round((pass / total) * 100) : 0;
+                        const latest  = rows.reduce((a, b) => new Date(a.created_at) > new Date(b.created_at) ? a : b, rows[0]);
+                        const isOpen  = expandedTester === name;
+
+                        return (
+                          <div key={name} className="rounded-xl border border-brand-warm-border bg-white overflow-hidden shadow-sm">
+                            {/* Tester summary row */}
+                            <button
+                              className="w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-brand-parchment/60 transition-colors cursor-pointer"
+                              onClick={() => setExpandedTester(isOpen ? null : name)}
+                            >
+                              {/* Avatar */}
+                              <div className="w-9 h-9 rounded-full bg-brand-navy flex items-center justify-center text-white text-[1.3rem] font-bold flex-shrink-0">
+                                {name.charAt(0).toUpperCase()}
+                              </div>
+
+                              {/* Name + date */}
+                              <div className="flex-1 min-w-0">
+                                <div className="text-[1.6rem] font-bold text-brand-navy truncate">{name}</div>
+                                <div className="text-[1.2rem] text-gray-400">
+                                  Last saved {latest?.created_at ? new Date(latest.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—"}
+                                </div>
+                              </div>
+
+                              {/* Progress bar */}
+                              <div className="hidden sm:flex flex-col gap-1 w-36">
+                                <div className="flex justify-between text-[1.1rem] text-gray-500">
+                                  <span>{pct}% passed</span>
+                                  <span>{pass}/{total}</span>
+                                </div>
+                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full transition-all"
+                                    style={{ width: `${pct}%`, background: fail > 0 ? "#ef4444" : "#22c55e" }}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Counts */}
+                              <div className="flex gap-2 flex-shrink-0">
+                                <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700">{pass} pass</span>
+                                {fail > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-700">{fail} fail</span>}
+                                {pending > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">{pending} pending</span>}
+                              </div>
+
+                              {/* Chevron */}
+                              <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6l4 4 4-4"/></svg>
+                            </button>
+
+                            {/* Expanded: sections */}
+                            {isOpen && (
+                              <div className="border-t border-brand-warm-border divide-y divide-[#f0ebe0]">
+                                {SECTION_ORDER.map((secId) => {
+                                  const secRows = rows.filter(r => r.section === secId);
+                                  if (!secRows.length) return null;
+                                  const secKey = `${name}::${secId}`;
+                                  const secOpen = expandedTestSection === secKey;
+                                  const sPass = secRows.filter(r => r.status === "pass").length;
+                                  const sFail = secRows.filter(r => r.status === "fail").length;
+                                  const sPend = secRows.filter(r => r.status === "pending").length;
+
+                                  return (
+                                    <div key={secId}>
+                                      {/* Section header */}
+                                      <button
+                                        className="w-full flex items-center gap-3 px-6 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left cursor-pointer"
+                                        onClick={() => setExpandedTestSection(secOpen ? null : secKey)}
+                                      >
+                                        <span className="text-[1.4rem] font-semibold text-brand-navy flex-1">
+                                          {SECTION_LABELS[secId] || secId}
+                                        </span>
+                                        <span className="flex gap-2 text-[1.1rem]">
+                                          <span className="font-bold text-green-600">{sPass} ✓</span>
+                                          {sFail > 0 && <span className="font-bold text-red-600">{sFail} ✗</span>}
+                                          {sPend > 0 && <span className="text-amber-600">{sPend} ···</span>}
+                                        </span>
+                                        <svg className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${secOpen ? "rotate-180" : ""}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6l4 4 4-4"/></svg>
+                                      </button>
+
+                                      {/* Individual test cases */}
+                                      {secOpen && (
+                                        <table className="w-full">
+                                          <thead className="bg-white border-b border-gray-100">
+                                            <tr>
+                                              {["Scenario", "Priority", "Status", "Notes"].map(h => (
+                                                <th key={h} className="text-left text-[1.1rem] font-semibold uppercase tracking-wider px-6 py-2.5 text-gray-400">{h}</th>
+                                              ))}
+                                            </tr>
+                                          </thead>
+                                          <tbody className="divide-y divide-gray-50">
+                                            {secRows.map((r) => (
+                                              <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                                                <td className="px-6 py-3 text-[1.4rem] text-gray-800 max-w-[380px]">{r.scenario || "—"}</td>
+                                                <td className="px-6 py-3">{priorityBadge(r.priority)}</td>
+                                                <td className="px-6 py-3">{statusBadge(r.status)}</td>
+                                                <td className="px-6 py-3 text-[1.3rem] text-gray-500 max-w-[260px]">{r.notes || <span className="text-gray-300">—</span>}</td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  )}
-                </div>
-              </>
-            ) : null}
+                  </>
+                );
+              })()
+            : null}
           </div>
         </main>
       </div>
