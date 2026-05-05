@@ -93,21 +93,34 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     return totals;
   }, [allLeaders]);
 
+  const filteredLeaders = useMemo(() => {
+    return allLeaders.filter((l) => {
+      const matchRegion = !selectedRegion ||
+        (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion;
+      const matchSpec = !selectedSpecialisation ||
+        toTags(l.expertise).some((e) => {
+          const trimmed = e.trim();
+          if (selectedSpecialisation === "Other") {
+            return trimmed === "Other" || trimmed.startsWith("Other:");
+          }
+          return trimmed === selectedSpecialisation;
+        });
+      return matchRegion && matchSpec;
+    });
+  }, [allLeaders, selectedRegion, selectedSpecialisation]);
+
   // Which regions to highlight on the map
   const highlightedRegions = useMemo(() => {
     if (selectedSpecialisation) {
       const regions = new Set();
       allLeaders
-        .filter((l) =>
-          (l.expertise || "").split(/,\s*/).some((e) => e.trim() === selectedSpecialisation)
-        )
+        .filter((l) => toTags(l.expertise).some((e) => e.trim() === selectedSpecialisation))
         .forEach((l) => {
           const r = l.region || COUNTRY_TO_REGION[l.country?.trim()];
           if (r) regions.add(r);
         });
       return regions;
     }
-    // Only highlight the exact selected region
     return selectedRegion ? new Set([selectedRegion]) : new Set();
   }, [allLeaders, selectedSpecialisation, selectedRegion]);
 
