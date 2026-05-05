@@ -6,7 +6,7 @@ import {
   Annotation,
 } from "react-simple-maps";
 import { useLeaders } from "../hooks/useLeaders";
-import { COUNTRY_TO_REGION, REGION_LABELS, REGION_MARKERS } from "../utils/countries";
+import { COUNTRY_TO_REGION, REGION_LABELS, REGION_MARKERS, ATLAS_TO_CANONICAL } from "../utils/countries";
 import LeaderCard from "../components/LeaderCard";
 import ProfileModal from "../components/ProfileModal";
 
@@ -64,15 +64,18 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
      }));
    }, [allLeaders, selectedRegion]);
 
-  // Build map of country name → region key
-  // When a region is selected, ONLY include countries from that region
-  // This prevents highlighting countries from other regions
+  // Build map of atlas country name → region key
+  // ATLAS_TO_CANONICAL handles mismatches (e.g. "United States of America" → "United States")
   const countryRegionMap = useMemo(() => {
     const map = {};
     allLeaders.forEach((l) => {
       if (l.country && COUNTRY_TO_REGION[l.country]) {
         const r = COUNTRY_TO_REGION[l.country];
         if (!selectedRegion || r === selectedRegion) {
+          // Map canonical name to atlas name for map highlighting
+          const atlasName = Object.keys(ATLAS_TO_CANONICAL).find(k => ATLAS_TO_CANONICAL[k] === l.country) || l.country;
+          map[atlasName] = r;
+          // Also store canonical name in case atlas uses it directly
           map[l.country] = r;
         }
       }
@@ -155,27 +158,30 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
           height={440}
           style={{ width: "100%", height: "auto", backgroundColor: "transparent" }}
         >
-          <Geographies geography={GEO_URL}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const regionKey = countryRegionMap[geo.properties.name];
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={regionKey && highlightedRegions.has(regionKey) ? "#F97A1A" : "#D4D4D8"}
-                    stroke="#FFFFFF"
-                    strokeWidth={0.7}
-                    style={{
-                      default: { outline: "none" },
-                      hover:   { outline: "none", opacity: 0.85 },
-                      pressed: { outline: "none" },
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
+              <Geographies geography={GEO_URL}>
+                {({ geographies }) =>
+                  geographies.map((geo) => {
+                    // Atlas name → canonical name → region key
+                    const atlasName = geo.properties.name;
+                    const canonicalName = ATLAS_TO_CANONICAL[atlasName] || atlasName;
+                    const regionKey = countryRegionMap[canonicalName] || countryRegionMap[atlasName];
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={regionKey && highlightedRegions.has(regionKey) ? "#F97A1A" : "#D4D4D8"}
+                        stroke="#FFFFFF"
+                        strokeWidth={0.7}
+                        style={{
+                          default: { outline: "none" },
+                          hover:   { outline: "none", opacity: 0.85 },
+                          pressed: { outline: "none" },
+                        }}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
 
               {REGION_MARKERS.map((marker) => {
                 if (marker.key !== selectedRegion) return null;

@@ -1,6 +1,14 @@
 // Centralized country → continent mapping
 // Used by: useLeaders hook, Analytics page, Database filters
 
+// Map from world-atlas country name → our canonical name
+export const ATLAS_TO_CANONICAL = {
+  "United States of America": "United States",
+  "United Kingdom": "United Kingdom",
+  "South Africa": "South Africa",
+};
+
+// Canonical name → continent
 export const COUNTRY_TO_CONTINENT = {
   "South Africa": "Africa",  Nigeria: "Africa",    Kenya: "Africa",
   Tanzania:       "Africa",  Uganda: "Africa",     Ghana: "Africa",
@@ -13,6 +21,7 @@ export const COUNTRY_TO_CONTINENT = {
 };
 
 // Analytics page region keys (different grouping)
+// Uses canonical country names (same as COUNTRY_TO_CONTINENT keys)
 export const COUNTRY_TO_REGION = {
   "United States": "north_america", Canada: "north_america", Mexico: "north_america",
   Brazil: "latin_america", Argentina: "latin_america", Colombia: "latin_america",
