@@ -88,6 +88,12 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     return totals;
   }, [allLeaders]);
 
+  const latestLeaders = useMemo(() => {
+    return [...allLeaders]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 3);
+  }, [allLeaders]);
+
   const filteredLeaders = useMemo(() => {
     return allLeaders.filter((l) => {
       const matchRegion = !selectedRegion ||
@@ -272,7 +278,19 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
             </div>
           </div>
 
-          {/* Region Leaders */}
+          {/* Latest additions — shown only when no filter is active */}
+          {!selectedRegion && !selectedSpecialisation && latestLeaders.length > 0 && (
+            <div className="order-2 lg:col-span-5 lg:row-start-2 mt-6 lg:mt-8">
+              <h3 className="text-[1.6rem] font-bold text-brand-navy mb-4">Latest additions</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {latestLeaders.map((l) => (
+                  <LeaderCard key={l.id} leader={l} onSelect={setSelectedProfile} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Region / Specialisation results */}
           {(selectedRegion || selectedSpecialisation) && (
             <div className="order-2 lg:col-span-5 lg:row-start-2 mt-6 lg:mt-8">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
