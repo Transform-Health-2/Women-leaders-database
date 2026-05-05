@@ -266,6 +266,7 @@
       { id: "dir",     label: "Directory" },
       { id: "analytics", label: "Analytics" },
       { id: "submit",  label: "Submit Profile" },
+      { id: "nominate", label: "Nominate" },
       { id: "manage",  label: "Manage Profile" },
       { id: "admin",   label: "Admin Console" },
     ];
@@ -478,6 +479,36 @@
         howTo: "1. While in the Admin console, click the Refresh button in the sidebar.\n2. Data should reload from Supabase.\n3. Any submissions made in another browser tab since the page loaded should appear.\n4. The summary counts (Pending / Live / Rejected) should update.",
         status: "pending", notes: ""
       },
+
+      // --- Nominate ---
+      {
+        section: "submit", feature: "Nominate",
+        scenario: "Nomination flow shows two cards (self vs other)",
+        priority: "critical",
+        howTo: "1. Go to Submit Profile tab.\n2. You should see two cards: 'I am nominating myself' and 'Nominating someone else'.\n3. Click 'Nominating someone else'.\n4. You should proceed to a step asking for the nominee's LinkedIn or public profile URL.",
+        status: "pending", notes: ""
+      },
+      {
+        section: "submit", feature: "Nominate",
+        scenario: "Nominator info (name/email) collected",
+        priority: "critical",
+        howTo: "1. When nominating someone else, the form should collect YOUR name and email (the nominator) before submitting.\n2. Check the code or submit a test nomination.\n3. Verify nominator_name and nominator_email are saved to the database.",
+        status: "pending", notes: ""
+      },
+      {
+        section: "submit", feature: "Nominate",
+        scenario: "Nomination row saved with nominate_link",
+        priority: "critical",
+        howTo: "1. Submit a test nomination with a fake LinkedIn URL.\n2. Go to Admin → Nominated tab.\n3. You should see the nomination with the LinkedIn URL and nominator info.\n4. The status should be 'pending' and branch should be 'nominate'.",
+        status: "pending", notes: ""
+      },
+      {
+        section: "admin", feature: "Admin Console",
+        scenario: "Nominated tab shows nominator info",
+        priority: "important",
+        howTo: "1. Submit a nomination (see test above).\n2. Go to Admin → Nominated tab.\n3. Expand the nomination row.\n4. You should see 'Nominated by [name]' and the nominator's email.\n5. The pre-built outreach message should be visible for copy/paste.",
+        status: "pending", notes: ""
+      },
     ];
 
     let results = [];
@@ -664,6 +695,7 @@
         <a class="section-link" href="#" onclick="scrollToSection('dir'); return false;">Directory</a>
         <a class="section-link" href="#" onclick="scrollToSection('analytics'); return false;">Analytics</a>
         <a class="section-link" href="#" onclick="scrollToSection('submit'); return false;">Submit Profile</a>
+        <a class="section-link" href="#" onclick="scrollToSection('nominate'); return false;">Nominate</a>
         <a class="section-link" href="#" onclick="scrollToSection('manage'); return false;">Manage Profile</a>
         <a class="section-link" href="#" onclick="scrollToSection('admin'); return false;">Admin Console</a>
       </div>
