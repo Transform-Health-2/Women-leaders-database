@@ -351,6 +351,11 @@
         howTo:"1. Reach the Basic Info step.\n2. Fill all other fields but do NOT upload a photo.\n3. The Next button should be disabled.\n4. Upload a photo — the Next button becomes active.", status:"pending", notes:"" },
       { section:"submit", scenario:"Photo preview appears after upload", priority:"critical",
         howTo:"1. On Basic Info, click the photo upload area.\n2. Select a JPG or PNG under 5 MB.\n3. A thumbnail preview should appear immediately.\n4. Try a file over 5 MB — a size warning should appear and upload should be rejected.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Geographical scope dropdown works", priority:"critical",
+        howTo:"1. Reach Basic Info step.\n2. Click the Geographical scope dropdown.\n3. Select 'Africa' — country field should show '(optional)'.\n4. Select 'National' — country field should show '*' (required).\n5. Try each scope — all 5 options should be selectable.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Submission includes geo_scope field", priority:"important",
+        howTo:"1. Complete a full submission with geo_scope = 'Africa'.\n2. Submit.\n3. Go to Admin → Pending Submissions.\n4. Expand the new entry — verify geo_scope field is present and set to 'Africa'.", status:"pending", notes:"" },
+
       { section:"submit", scenario:"Bio character count enforced (300–500 chars)", priority:"critical",
         howTo:"1. On Profile Details, type fewer than 300 characters in the bio — Next should be disabled.\n2. Type over 500 characters — Next should be disabled, character count warning shows.\n3. Enter 300–500 characters — Next button becomes active.", status:"pending", notes:"" },
       { section:"submit", scenario:"Expertise capped at 5 tags", priority:"important",

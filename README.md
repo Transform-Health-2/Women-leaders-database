@@ -157,16 +157,17 @@ client/src/
 ├── main.jsx             # Entry point
 ├── supabase.js          # Supabase client initialization
 ├── api/
-│   └── leaders.js       # All Supabase calls: getLeaders, submitProfile, approveRequest, etc.
+│   └── leaders.js       # All Supabase calls: getLeaders, submitProfile, approveRequest, getTestResults, etc.
 ├── components/
 │   ├── SiteHeader.jsx   # Top header bar
 │   └── SiteFooter.jsx   # Footer
 ├── pages/
 │   ├── Database.jsx     # Public directory with search/filter
-│   ├── Submit.jsx       # Multi-step submission form (photo uploads to Supabase Storage)
+│   ├── Submit.jsx       # Multi-step submission form with geo scope + photo uploads to Supabase Storage
+│   ├── SubmitSteps.jsx   # Step components: Branch, Consent, BasicInfo (geo scope), ProfileDetails, Links
 │   ├── ManageProfile.jsx # Update/remove profile flow (requests written to Supabase)
 │   ├── Analytics.jsx    # Statistics and world map
-│   └── Admin.jsx        # Admin console (Supabase Auth wired, bypassed for test mode)
+│   └── Admin.jsx        # Admin console with Test Results tab (Supabase Auth wired, bypassed for test mode)
 └── utils/
     └── compressImage.js # Client-side image compression
 ```
