@@ -410,11 +410,13 @@
         <p>Lands on the site and sees the <strong>Directory</strong> tab — a searchable, filterable grid of leader cards. They can:</p>
         <ul>
           <li>Search by name, role, or org</li>
-          <li>Filter by continent, country, or expertise via dropdowns</li>
+          <li>Filter by continent, country, or expertise via dropdowns (replaces chip filters for cleaner UI)</li>
           <li>Sort by Latest / A–Z / Expertise</li>
           <li>Load more profiles (pagination)</li>
-          <li>Click a card to open a <strong>Profile Modal</strong> showing full details: role, org, country, bio, expertise, years of experience, LinkedIn link</li>
-          <li>Switch to the <strong>Analytics</strong> tab — world map, region tabs with leader counts, specialisation bar chart, click a region to see filtered leader cards below the map</li>
+          <li>Icons on cards show name, title, location at a glance</li>
+          <li>Click a card to open a <strong>Profile Modal</strong> (1200px, brand colours) showing: role, org, country, bio, expertise, years of experience, LinkedIn link with <strong>click tracking</strong></li>
+          <li>Switch to the <strong>Analytics</strong> tab — world map with ocean-placed region labels, region tabs with leader counts, specialisation bar chart (with "Other" normalization), click a region to see filtered leader cards below the map</li>
+          <li><strong>Clear Region</strong> button centred under the map for easy reset</li>
         </ul>
         <p><em>No login, no account. Fully public and read-only.</em></p>
       </div>
@@ -438,9 +440,9 @@
         <h3>Nominator — Submitting Someone Else</h3>
         <ul>
           <li>Same Step 0 but picks <strong>"I am nominating someone else"</strong></li>
-          <li>Enters the nominee's LinkedIn or public profile URL</li>
+          <li>Enters <strong>their own name/email</strong> (nominator info) + nominee's full name + LinkedIn URL</li>
           <li>Hits <strong>Submit Nomination →</strong> goes directly to submit, skipping consent/bio/photo steps</li>
-          <li>A minimal row lands on the Sheet: <code>branch: "nominate"</code>, <code>nominate_link: &lt;url&gt;</code>, everything else blank</li>
+          <li>A minimal row lands on Supabase: <code>branch: "nominate"</code>, <code>nominator_name</code>, <code>nominator_email</code>, <code>nominate_link: &lt;url&gt;</code></li>
           <li>Admin sees this in the <strong>Nominated</strong> tab and uses the pre-built outreach message to contact that person</li>
         </ul>
       </div>
@@ -452,10 +454,10 @@
         <ul>
           <li>Clicks <strong>"Manage or remove your profile"</strong> on the Submit page (or the button in their Profile Modal)</li>
           <li><strong>Identify step</strong> — enters first name, last name, email, optional LinkedIn</li>
-          <li>Hits <strong>"Find my profile"</strong> → calls the live Sheet, matches by exact first + last name, shows a "Profile found" card with their role and org</li>
+          <li>Hits <strong>"Find my profile"</strong> → calls Supabase, matches by exact first + last name, shows a "Profile found" card with their role and org</li>
           <li><strong>Two paths:</strong></li>
           <ul>
-            <li><strong>Update path:</strong> Picks "Update profile" → free-text box describing what to change → submits → <code>profileRequest</code> saved to Requests sheet, status <code>pending</code></li>
+            <li><strong>Update path:</strong> Picks "Update profile" → free-text box describing what to change → submits → <code>profileRequest</code> saved to Requests table, status <code>pending</code></li>
             <li><strong>Delete path:</strong> Picks "Remove profile" → optional reason field → submits → same profileRequest row, <code>request_type: delete</code></li>
           </ul>
         </ul>
@@ -474,6 +476,8 @@
             <li><strong>Deletes</strong> sub-tab — leader wants to be removed; admin checks boxes and approves → profile set to <code>rejected</code> and removed from public directory</li>
           </ul>
           <li><strong>All Entries</strong> tab — full table of every record (live, pending, rejected) with search, sort, pagination, expandable detail rows.</li>
+          <li><strong>NEW: LinkedIn Clicks column</strong> — shows click count for each leader. Filter by <strong>"Most clicked"</strong> (high engagement) or <strong>"Least clicked"</strong> (low engagement) to identify underperforming profiles.</li>
+          <li><strong>NEW: Expertise filter</strong> — filter All Entries by any expertise tag (e.g. "Digital Health Policy").</li>
           <li>Summary stats (Pending / Live / Rejected counts) always visible at the top.</li>
         </ul>
       </div>
@@ -484,7 +488,7 @@
 
         <div class="card" style="border-left: 4px solid #24588A;">
           <h3 style="font-size: 0.9rem; color: #24588A;">① Submit Form</h3>
-          <p>Submit form → Supabase (profile row, <code>status: pending</code>) · photo now uploads to Supabase Storage <code>profile-photos</code> bucket</p>
+          <p>Submit form → Supabase (profile row, <code>status: pending</code>) · photo uploads to Supabase Storage <code>profile-photos</code> bucket</p>
         </div>
 
         <div style="text-align: center; font-size: 1.2rem; color: #9ca3af;">↓</div>
@@ -512,9 +516,10 @@
 
         <div style="text-align: center; font-size: 1.2rem; color: #9ca3af;">↓</div>
 
-        <div class="card" style="border-left: 4px solid #059669;">
-          <h3 style="font-size: 0.9rem; color: #059669;">⑤ Admin Approves Again</h3>
-          <p>Admin approves again → goes live in Directory</p>
+        <div class="card" style="border-left: 4px solid #8B5CF6;">
+          <h3 style="font-size: 0.9rem; color: #8B5CF6;">⑤ LinkedIn Click Tracking</h3>
+          <p>Public clicks LinkedIn icon → <code>linkedin_clicks</code> column increments in Supabase<br/>
+          Admin sees click counts in "All Entries" table → filter by Most/Least clicked</p>
         </div>
       </div>
 
