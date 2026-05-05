@@ -271,9 +271,8 @@ export default function Submit({ onManageProfile }) {
 
         {step >= 1 && step <= 4 && (
           <div className="hidden lg:flex flex-shrink-0 w-[280px] sticky top-6 self-start">
-            <div className="relative w-full aspect-square rounded-2xl bg-brand-blue-tint flex items-center justify-center overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-navy/20 via-transparent to-brand-blue-tint/80 rounded-2xl" />
-              <img src="./illustrations/card-top-texture-0.png" alt="" className="absolute inset-0 w-full h-full object-cover opacity-40 rounded-2xl mix-blend-overlay" />
+            <div className="relative w-full aspect-square rounded-2xl overflow-hidden flex items-center justify-center">
+              <img src="./illustrations/card-top-texture-0.png" alt="" className="w-full h-full object-cover opacity-40" />
             </div>
           </div>
         )}
