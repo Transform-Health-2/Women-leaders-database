@@ -190,8 +190,9 @@ export default function Submit({ onManageProfile }) {
   }
 
   return (
-    <div className="bg-brand-sand">
+    <div className="bg-brand-sand overflow-x-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-6">
+        <div className="max-w-[1000px] mx-auto">
 
         {/* Progress bar (steps 1–4) */}
         {step >= 1 && step <= 4 && (
@@ -212,7 +213,7 @@ export default function Submit({ onManageProfile }) {
           </div>
         )}
 
-        <div className="bg-transparent rounded-lg p-6 md:p-8 flex gap-8 items-start">
+        <div className="flex gap-8 items-stretch">
         <div className="flex-1 min-w-0">
           {step === 0 && (
             <Step0Branch
@@ -269,14 +270,17 @@ export default function Submit({ onManageProfile }) {
           )}
         </div>
 
-        {step >= 1 && step <= 4 && (
-          <div className="hidden lg:flex flex-shrink-0 w-[280px] sticky top-6 self-start">
-            <div className="relative w-full aspect-square rounded-2xl overflow-hidden flex items-center justify-center">
-              <img src="./illustrations/card-top-texture-0.png" alt="" className="w-full h-full object-cover opacity-40" />
-            </div>
+        {step >= 0 && step <= 4 && (
+          <div className="hidden lg:flex flex-shrink-0 w-[240px] flex-col items-center justify-center py-8">
+            <img
+              src="./illustrations/card-top-texture-0.png"
+              alt=""
+              className="w-[420px] h-auto translate-x-20"
+            />
           </div>
         )}
       </div>
+        </div>{/* max-w-[1000px] */}
       </div>
 
       {showNoConsentModal && (

@@ -63,7 +63,7 @@ export function Step0Branch({
         engagement in leadership, policy, and technical spaces.
       </p>
 
-      <div className="border-l-4 border-brand-navy bg-brand-blue-tint rounded-lg px-[2.4rem] py-[2rem] mb-8 flex flex-col gap-[10px]">
+      <div className="border-l-4 border-brand-navy bg-brand-blue-tint rounded-lg px-[2.4rem] py-[2rem] mb-8 flex flex-col gap-[10px] max-w-[640px]">
         <p className="text-lg text-gray-800 leading-[1.7] m-0">
           Information submitted may be featured in a publicly accessible database.
         </p>
