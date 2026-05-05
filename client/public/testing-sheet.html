@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transform Health — Testing Sheet</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 14px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5efe0; color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── TOP BAR ── */
+    .top-bar {
+      background: #1E3A5F; color: #fff;
+      padding: 12px 24px; display: flex; align-items: center;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .top-bar-title { font-weight: 800; font-size: 1rem; letter-spacing: -0.02em; flex: 1; min-width: 200px; }
+    .top-bar-title span { color: #F8571D; }
+    .top-bar-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .top-link {
+      font-size: 0.78rem; font-weight: 600; padding: 4px 10px;
+      border-radius: 5px; text-decoration: none; border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; transition: background 0.15s;
+    }
+    .top-link:hover { background: rgba(255,255,255,0.12); }
+    .top-link.orange { background: #F8571D; border-color: #F8571D; }
+    .top-link.orange:hover { background: #e04b18; }
+
+    /* ── HERO / HEADER ── */
+    .hero {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      padding: 20px 24px 16px;
+    }
+    .hero-row { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+    .hero-left { flex: 1; min-width: 220px; }
+    .hero-left h1 { font-size: 1.4rem; font-weight: 800; color: #1E3A5F; letter-spacing: -0.03em; }
+    .hero-left p { font-size: 0.8rem; color: #6b7280; margin-top: 3px; }
+    .hero-right { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+
+    /* Tester input */
+    .tester-input-wrap label { font-size: 0.75rem; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+    .tester-input-wrap input {
+      padding: 7px 12px; border: 1.5px solid #d1d5db; border-radius: 7px;
+      font-size: 0.875rem; width: 220px; background: #f9fafb;
+      transition: border-color 0.15s;
+    }
+    .tester-input-wrap input:focus { outline: none; border-color: #1E3A5F; }
+
+    /* Action buttons */
+    .btn {
+      padding: 7px 14px; border-radius: 7px; font-size: 0.8rem;
+      font-weight: 700; cursor: pointer; border: none; transition: all 0.15s; white-space: nowrap;
+    }
+    .btn-primary { background: #1E3A5F; color: #fff; }
+    .btn-primary:hover { background: #16304f; }
+    .btn-orange { background: #F8571D; color: #fff; }
+    .btn-orange:hover { background: #e04b18; }
+    .btn-ghost { background: #fff; color: #374151; border: 1.5px solid #d1d5db; }
+    .btn-ghost:hover { background: #f3f4f6; }
+    .btn-danger { background: #fff; color: #991b1b; border: 1.5px solid #fca5a5; }
+    .btn-danger:hover { background: #fef2f2; }
+
+    /* Save status */
+    .save-status-row { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; }
+    .save-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #9ca3af; flex-shrink: 0; }
+    .save-dot.saved { background: #22c55e; }
+    .save-dot.saving { background: #3b82f6; }
+    .save-dot.error { background: #ef4444; }
+    #save-text { color: #6b7280; }
+
+    /* Progress bar */
+    .progress-wrap { margin-top: 14px; }
+    .progress-label { font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 5px; display: flex; justify-content: space-between; }
+    .progress-track { height: 8px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); border-radius: 99px; transition: width 0.4s ease; }
+    .progress-pills { display: flex; gap: 12px; margin-top: 6px; }
+    .pill { font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+    .pill-pass { background: #dcfce7; color: #166534; }
+    .pill-fail { background: #fee2e2; color: #991b1b; }
+    .pill-pending { background: #fef9c3; color: #854d0e; }
+
+    /* ── TAB BAR ── */
+    .tab-bar {
+      background: #fff; border-bottom: 2px solid #e5e7eb;
+      padding: 0 24px; display: flex; gap: 2px; overflow-x: auto;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .tab-btn {
+      padding: 12px 14px 10px; border: none; background: transparent;
+      cursor: pointer; font-size: 0.82rem; font-weight: 600; color: #6b7280;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; gap: 7px;
+    }
+    .tab-btn:hover { color: #1E3A5F; }
+    .tab-btn.active { color: #F8571D; border-bottom-color: #F8571D; }
+    .tab-badge {
+      font-size: 0.68rem; font-weight: 700; padding: 1px 6px;
+      border-radius: 99px; min-width: 28px; text-align: center;
+    }
+    .badge-pending { background: #f1f5f9; color: #64748b; }
+    .badge-pass    { background: #dcfce7; color: #166534; }
+    .badge-fail    { background: #fee2e2; color: #991b1b; }
+    .badge-wip     { background: #fef9c3; color: #854d0e; }
+
+    /* ── SECTION CONTENT ── */
+    .content { max-width: 1060px; margin: 0 auto; padding: 20px 24px 40px; }
+
+    .section-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+    }
+    .section-title-block {}
+    .section-eyebrow { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 3px; }
+    .section-title { font-size: 1.4rem; font-weight: 800; color: #1E3A5F; }
+    .section-meta { font-size: 0.78rem; color: #6b7280; margin-top: 2px; }
+    .section-nav { display: flex; gap: 8px; }
+
+    /* ── TEST TABLE ── */
+    .test-table {
+      width: 100%; border-collapse: collapse; background: #fff;
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid #e5e7eb; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .test-table th {
+      background: #f8fafc; text-align: left; padding: 10px 14px;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: #64748b; border-bottom: 2px solid #e5e7eb;
+    }
+    .test-table td { padding: 11px 14px; font-size: 0.875rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .test-table tr:last-child td { border-bottom: none; }
+    .data-row { cursor: pointer; transition: background 0.1s; }
+    .data-row:hover td { background: #fafbfc; }
+
+    .scenario-cell { max-width: 360px; }
+    .scenario-text { font-weight: 600; color: #18181b; display: block; line-height: 1.4; }
+    .expand-hint { font-size: 0.7rem; color: #9ca3af; display: block; margin-top: 2px; }
+
+    /* expand row */
+    .expand-row td {
+      background: #f0f7ff; padding: 14px 18px 14px 40px;
+      font-size: 0.82rem; color: #374151; line-height: 1.6;
+      border-bottom: 1px solid #dbeafe; cursor: default;
+    }
+    .howto-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #1E3A5F; margin-bottom: 6px; }
+    .howto-steps { padding-left: 18px; }
+    .howto-steps li { margin-bottom: 4px; }
+
+    /* priority */
+    .priority-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: middle; flex-shrink: 0; }
+    .dot-critical  { background: #ef4444; }
+    .dot-important { background: #f59e0b; }
+    .dot-nice      { background: #9ca3af; }
+    .priority-label { font-size: 0.72rem; text-transform: capitalize; color: #6b7280; }
+
+    /* status */
+    .status-select {
+      padding: 5px 8px; border-radius: 7px; font-size: 0.8rem;
+      border: 1px solid #e5e7eb; cursor: pointer; font-weight: 700;
+      min-width: 100px; appearance: none; text-align: center;
+    }
+    .status-pass    { background: #dcfce7; color: #166534; border-color: #86efac; }
+    .status-fail    { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+    .status-pending { background: #fef9c3; color: #854d0e; border-color: #fde68a; }
+
+    /* notes textarea */
+    .notes-input {
+      width: 100%; padding: 7px 9px; border: 1px solid #e5e7eb;
+      border-radius: 7px; font-size: 0.8rem; resize: vertical;
+      min-height: 52px; font-family: inherit; line-height: 1.5;
+      color: #374151; background: #fafafa; transition: border-color 0.15s;
+    }
+    .notes-input:focus { outline: none; border-color: #1E3A5F; background: #fff; }
+
+    /* section nav bottom */
+    .section-nav-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-top: 1px dashed #d1cfc8; margin-top: 8px;
+    }
+    .section-nav-bottom .nav-info { font-size: 0.78rem; color: #9ca3af; }
+
+    @media (max-width: 640px) {
+      .top-bar { padding: 10px 14px; }
+      .hero { padding: 14px; }
+      .content { padding: 14px 14px 32px; }
+      .tab-bar { padding: 0 8px; }
+      .tab-btn { padding: 10px 10px 8px; font-size: 0.75rem; }
+      .hero-right { width: 100%; }
+      .tester-input-wrap input { width: 100%; }
+      .section-header { flex-direction: column; }
+    }
+  </style>
+
+  <script>
+    // ── Supabase ────────────────────────────────────────────────────────────
+    const SUPABASE_URL     = "https://bahoslsvhwqybqkjonvb.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_5ZfvUrNW983egwvEmfZAYA_igo9CMvT";
+    let supabaseClient = null;
+    let saveTimer = null;
+
+    function initSupabase() {
+      try { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+      catch (e) { console.warn("Supabase init failed", e); }
+    }
+
+    function debouncedSave() {
+      clearTimeout(saveTimer);
+      setDot("pending"); document.getElementById("save-text").textContent = "Changes pending...";
+      saveTimer = setTimeout(saveToSupabase, 1400);
+    }
+
+    async function saveToSupabase() {
+      if (!supabaseClient) return;
+      const name = document.getElementById("tester-name").value.trim();
+      if (!name) { setDot(""); document.getElementById("save-text").textContent = "Enter your name to save results"; return; }
+      setDot("saving"); document.getElementById("save-text").textContent = "Saving…";
+      try {
+        const { error } = await supabaseClient.from("test_results").insert({
+          id: crypto.randomUUID(), tester_name: name,
+          results: results.map(r => ({ scenario: r.scenario, status: r.status, notes: r.notes })),
+          summary: { total: results.length, pass: results.filter(r=>r.status==="pass").length, fail: results.filter(r=>r.status==="fail").length, pending: results.filter(r=>r.status==="pending").length },
+        });
+        if (error) throw error;
+        setDot("saved");
+        document.getElementById("save-text").textContent = "Saved ✓  " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+      } catch (err) {
+        setDot("error"); document.getElementById("save-text").textContent = "Save failed — stored locally";
+      }
+    }
+
+    function setDot(state) {
+      const d = document.getElementById("save-dot");
+      if (!d) return;
+      d.className = "save-dot" + (state && state !== "pending" ? " " + state : "");
+    }
+
+    // ── Data ────────────────────────────────────────────────────────────────
+    let testerName = "";
+    let expandedRow = null;
+    let currentSectionIndex = 0;
+
+    const SECTIONS = [
+      { id: "setup",    label: "Setup Check" },
+      { id: "dir",      label: "Directory" },
+      { id: "analytics",label: "Analytics" },
+      { id: "submit",   label: "Submit & Nominate" },
+      { id: "manage",   label: "Manage Profile" },
+      { id: "admin",    label: "Admin Console" },
+    ];
+
+    const DEFAULT_RESULTS = [
+      // Setup
+      { section:"setup", scenario:"Site loads from Supabase", priority:"critical",
+        howTo:"Open the app. The DATABASE tab should show ~82 leader cards loading from Supabase. If you see 0 leaders or a spinner that never resolves, the Supabase connection is broken.", status:"pending", notes:"" },
+      { section:"setup", scenario:"Admin tab accessible (test mode)", priority:"critical",
+        howTo:"Click Admin in the nav. You should reach the admin console without a login screen — auth is bypassed for testing. If you see a login prompt, the test mode bypass was removed early.", status:"pending", notes:"" },
+
+      // Directory
+      { section:"dir", scenario:"Search filters results in real time", priority:"critical",
+        howTo:"1. Go to DATABASE tab.\n2. Type a name (e.g. 'Sarah') in the search box.\n3. Cards should filter as you type. Only leaders whose name, role, or org matches should appear.\n4. Clear the search — all leaders return.", status:"pending", notes:"" },
+      { section:"dir", scenario:"Continent / country dropdown filter", priority:"critical",
+        howTo:"1. Open the continent dropdown and select a continent (e.g. Africa).\n2. Only leaders from that region should appear.\n3. Select a country within that continent — results narrow further.\n4. Clear filters — all leaders return.", status:"pending", notes:"" },
+      { section:"dir", scenario:"Expertise filter", priority:"important",
+        howTo:"1. Open the expertise dropdown and select a tag (e.g. 'Policy').\n2. Only leaders with that expertise should appear.\n3. Combine with a continent filter — only leaders matching both should show.", status:"pending", notes:"" },
+      { section:"dir", scenario:"Profile modal opens with full details", priority:"critical",
+        howTo:"1. Click any leader card.\n2. A modal opens with: role, organisation, country, bio, expertise tags, years of experience.\n3. Verify the modal is not blank — all fields present.\n4. Close by clicking outside or pressing Escape.", status:"pending", notes:"" },
+      { section:"dir", scenario:"Missing fields show TBC not blank", priority:"important",
+        howTo:"1. Open a profile modal for a leader who has incomplete data.\n2. Fields with no data should show 'TBC' in grey italic text.\n3. The Publications section should show 'None' (not TBC) if empty.\n4. No field should be completely absent from the modal.", status:"pending", notes:"" },
+      { section:"dir", scenario:"LinkedIn link opens in new tab", priority:"important",
+        howTo:"1. Open a profile modal for a leader with a LinkedIn URL.\n2. Click the LinkedIn icon next to their name.\n3. A new browser tab should open to their LinkedIn profile.\n4. Verify the URL is correct, not a broken link.", status:"pending", notes:"" },
+      { section:"dir", scenario:"Email NOT visible in public modal (PII)", priority:"critical",
+        howTo:"1. Open any profile modal.\n2. Scroll through all content.\n3. The leader's email must NOT appear anywhere — it is admin-only.\n4. This is a hard privacy requirement.", status:"pending", notes:"" },
+
+      // Analytics
+      { section:"analytics", scenario:"Region selection shows leaders and highlights map", priority:"critical",
+        howTo:"1. Go to ANALYTICS tab.\n2. Click a region (e.g. Sub-Saharan Africa).\n3. Leader cards for that region appear below.\n4. Countries in that region light up orange on the map.\n5. The count on the tab matches the number of cards.", status:"pending", notes:"" },
+      { section:"analytics", scenario:"Specialisation bar click filters leaders", priority:"important",
+        howTo:"1. In ANALYTICS, click an expertise bar (e.g. 'Digital Health').\n2. Leader cards below update to only show leaders with that expertise.\n3. If a region is also selected, only leaders matching both should show.", status:"pending", notes:"" },
+      { section:"analytics", scenario:"Clear Region and Clear Specialisation buttons work", priority:"important",
+        howTo:"1. Select a region. Click 'Clear region' — region deselects, full map restores.\n2. Select a specialisation. Click 'Clear specialisation' — all bars show again.\n3. Select both. Both clear buttons appear. Clear one at a time — each works independently.", status:"pending", notes:"" },
+      { section:"analytics", scenario:"Latest additions shown when no filter active", priority:"nice-to-have",
+        howTo:"1. Open ANALYTICS with no region or specialisation selected.\n2. A 'Latest additions' row should appear showing the 3 most recently added leaders.\n3. Select a filter — the latest additions row should disappear.", status:"pending", notes:"" },
+
+      // Submit & Nominate
+      { section:"submit", scenario:"Self-submit: form steps progress correctly", priority:"critical",
+        howTo:"1. Click SUBMIT PROFILE tab.\n2. Click 'I am submitting my own profile'.\n3. Step through: Consent → Basic Info → Profile Details → Links.\n4. Each step renders and the Next button works.\n5. The step indicator at the top updates.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Photo upload is mandatory (blocks Next)", priority:"critical",
+        howTo:"1. Reach the Basic Info step.\n2. Fill all other fields but do NOT upload a photo.\n3. The Next button should be disabled.\n4. Upload a photo — the Next button becomes active.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Photo preview appears after upload", priority:"critical",
+        howTo:"1. On Basic Info, click the photo upload area.\n2. Select a JPG or PNG under 5 MB.\n3. A thumbnail preview should appear immediately.\n4. Try a file over 5 MB — a size warning should appear and upload should be rejected.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Bio character count enforced (300–500 chars)", priority:"critical",
+        howTo:"1. On Profile Details, type fewer than 300 characters in the bio — Next should be disabled.\n2. Type over 500 characters — Next should be disabled, character count warning shows.\n3. Enter 300–500 characters — Next button becomes active.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Expertise capped at 5 tags", priority:"important",
+        howTo:"1. On Profile Details, select 5 expertise tags.\n2. Try selecting a 6th — it should not be selectable.\n3. Deselect one, then verify a different one can now be selected.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Submission appears in Admin as pending", priority:"critical",
+        howTo:"1. Complete the full form with test data (use a name like 'Test Tester').\n2. Submit. You should see a confirmation screen.\n3. Go to Admin → Pending Submissions.\n4. The new entry should appear with status 'pending'.\n5. Expand it — verify photo_url is present.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Nominate: step 0 collects nominator + nominee info", priority:"critical",
+        howTo:"1. Click SUBMIT PROFILE, then 'Nominating someone else'.\n2. The form should collect: nominator name, nominator email, nominee first + last name, public profile link.\n3. All 4 fields should be required before the Submit button activates.", status:"pending", notes:"" },
+      { section:"submit", scenario:"Nominate: submission appears in Admin Nominated tab", priority:"critical",
+        howTo:"1. Submit a test nomination with a fake LinkedIn URL.\n2. Go to Admin → Nominated tab.\n3. The nomination should appear with the nominee's name, nominator name, and profile link.\n4. Status should be 'pending', branch should be 'nominate'.", status:"pending", notes:"" },
+
+      // Manage Profile
+      { section:"manage", scenario:"Profile lookup finds existing leader", priority:"critical",
+        howTo:"1. Click 'Manage or remove your profile' (Submit page or inside a profile modal).\n2. Enter first name + last name of a leader in the directory.\n3. Click Find my profile.\n4. A 'Profile found' card appears showing their role and organisation.", status:"pending", notes:"" },
+      { section:"manage", scenario:"Profile not found shows clear error", priority:"important",
+        howTo:"1. In Manage Profile, enter a name that does not exist (e.g. 'Zzz Zzz').\n2. Click Find my profile.\n3. A clear 'not found' error message should appear — no blank screen or frozen spinner.", status:"pending", notes:"" },
+      { section:"manage", scenario:"Update request submitted and visible in Admin", priority:"critical",
+        howTo:"1. Find a real or test profile using the Manage Profile lookup.\n2. Click 'Update profile'.\n3. Type a description of the change.\n4. Submit.\n5. Go to Admin → Profile Requests.\n6. The request should appear with status 'pending'.", status:"pending", notes:"" },
+      { section:"manage", scenario:"Delete request submitted and visible in Admin", priority:"important",
+        howTo:"1. Find a test profile using the Manage Profile lookup.\n2. Click 'Remove profile'.\n3. Optionally add a reason. Submit.\n4. Go to Admin → Profile Requests.\n5. The request should appear with request_type 'delete' and status 'pending'.", status:"pending", notes:"" },
+
+      // Admin Console
+      { section:"admin", scenario:"Pending tab shows new self-submissions", priority:"critical",
+        howTo:"1. Go to Admin → Pending Submissions tab.\n2. Test profiles submitted during testing should appear here.\n3. Try typing the test name in the search box — it should filter the list.", status:"pending", notes:"" },
+      { section:"admin", scenario:"Nominated tab shows nominations correctly", priority:"critical",
+        howTo:"1. Submit a nomination (see Submit & Nominate tests above).\n2. Go to Admin → Nominated tab.\n3. Expand the nomination row.\n4. You should see the nominator name, nominator email, nominee name, and profile link.", status:"pending", notes:"" },
+      { section:"admin", scenario:"Submitter email visible in admin expanded view", priority:"critical",
+        howTo:"1. In Admin → Pending Submissions, find a test submission.\n2. Expand the row.\n3. The submitter's email should be visible in the expanded detail panel.\n4. This is intentional — email is admin-only, never public.", status:"pending", notes:"" },
+      { section:"admin", scenario:"Approve a pending submission", priority:"critical",
+        howTo:"1. In Admin → Pending Submissions, find a test submission.\n2. Click Approve. Confirm if prompted.\n3. The profile disappears from Pending.\n4. Go to DATABASE tab — the profile should now appear as a live leader card.", status:"pending", notes:"" },
+      { section:"admin", scenario:"Reject a pending submission", priority:"critical",
+        howTo:"1. In Admin → Pending Submissions, find a different test submission.\n2. Click Reject. Confirm if prompted.\n3. The profile disappears from Pending.\n4. In Admin → All Entries, find it with status 'rejected'. It should NOT appear in the public DATABASE.", status:"pending", notes:"" },
+      { section:"admin", scenario:"Profile Requests — approve delete request", priority:"important",
+        howTo:"1. If a delete request was submitted, go to Admin → Profile Requests.\n2. Find the delete request. Click Approve Delete.\n3. Go to DATABASE — the leader's profile should no longer appear.\n4. In All Entries their status should show 'rejected'.", status:"pending", notes:"" },
+      { section:"admin", scenario:"All Entries tab shows all statuses", priority:"important",
+        howTo:"1. In Admin, click All Entries.\n2. You should see all leaders with status (live / pending / rejected).\n3. Search for a specific leader by name.\n4. Sort and pagination should work.", status:"pending", notes:"" },
+    ];
+
+    let results = [];
+
+    function getActiveSections() {
+      return SECTIONS.filter(s => results.some(r => r.section === s.id));
+    }
+
+    function sectionStats(sectionId) {
+      const rows = results.filter(r => r.section === sectionId);
+      const pass = rows.filter(r => r.status === "pass").length;
+      const fail = rows.filter(r => r.status === "fail").length;
+      return { total: rows.length, pass, fail, pending: rows.length - pass - fail };
+    }
+
+    function initTable() {
+      const saved = localStorage.getItem("th-test-results-v2");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          results = DEFAULT_RESULTS.map(def => {
+            const s = parsed.find(p => p.scenario === def.scenario);
+            return s ? { ...def, status: s.status, notes: s.notes } : { ...def };
+          });
+        } catch { results = DEFAULT_RESULTS.map(d => ({ ...d })); }
+      } else {
+        results = DEFAULT_RESULTS.map(d => ({ ...d }));
+      }
+      renderAll();
+    }
+
+    function persist() {
+      localStorage.setItem("th-test-results-v2", JSON.stringify(
+        results.map(r => ({ scenario: r.scenario, status: r.status, notes: r.notes }))
+      ));
+    }
+
+    function setStatus(index, val) {
+      results[index].status = val;
+      persist(); renderAll(); debouncedSave();
+    }
+
+    function setNotes(index, val) {
+      results[index].notes = val;
+      persist(); debouncedSave();
+    }
+
+    function toggleExpand(index) {
+      expandedRow = expandedRow === index ? null : index;
+      renderTable();
+    }
+
+    function clearSaved() {
+      if (!confirm("Clear all saved results? This cannot be undone.")) return;
+      localStorage.removeItem("th-test-results-v2");
+      results = DEFAULT_RESULTS.map(d => ({ ...d }));
+      expandedRow = null;
+      renderAll();
+    }
+
+    function goToSection(i) {
+      currentSectionIndex = i;
+      expandedRow = null;
+      renderAll();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function prevSection() { if (currentSectionIndex > 0) goToSection(currentSectionIndex - 1); }
+    function nextSection() { const n = getActiveSections().length; if (currentSectionIndex < n - 1) goToSection(currentSectionIndex + 1); }
+
+    function priorityDot(p) {
+      const cls = p === "critical" ? "dot-critical" : p === "important" ? "dot-important" : "dot-nice";
+      const lbl = p === "critical" ? "Critical" : p === "important" ? "Important" : "Nice to have";
+      return `<span class="priority-dot ${cls}" title="${lbl}"></span>`;
+    }
+
+    function renderTabs() {
+      const sections = getActiveSections();
+      document.getElementById("tabs").innerHTML = sections.map((sec, i) => {
+        const st = sectionStats(sec.id);
+        const done = st.pass + st.fail;
+        let badgeClass = done === 0 ? "badge-pending" : st.fail > 0 ? "badge-fail" : done === st.total ? "badge-pass" : "badge-wip";
+        return `<button class="tab-btn ${i === currentSectionIndex ? "active" : ""}" onclick="goToSection(${i})">
+          ${sec.label}
+          <span class="tab-badge ${badgeClass}">${st.pass}/${st.total}</span>
+        </button>`;
+      }).join("");
+    }
+
+    function renderSectionHeader() {
+      const sections = getActiveSections();
+      const sec = sections[currentSectionIndex];
+      const st = sectionStats(sec.id);
+      const isFirst = currentSectionIndex === 0;
+      const isLast = currentSectionIndex === sections.length - 1;
+      document.getElementById("section-header").innerHTML = `
+        <div class="section-title-block">
+          <div class="section-eyebrow">Section ${currentSectionIndex + 1} of ${sections.length}</div>
+          <div class="section-title">${sec.label}</div>
+          <div class="section-meta">${st.total} test cases &nbsp;·&nbsp; ${st.pass} passed &nbsp;·&nbsp; ${st.fail} failed &nbsp;·&nbsp; ${st.pending} pending</div>
+        </div>
+        <div class="section-nav">
+          ${!isFirst ? `<button class="btn btn-ghost" onclick="prevSection()">← Previous</button>` : ""}
+          ${!isLast ? `<button class="btn btn-orange" onclick="nextSection()">Next section →</button>` : `<button class="btn btn-primary" onclick="saveToSupabase()">Save Results ✓</button>`}
+        </div>
+      `;
+    }
+
+    function renderProgress() {
+      const total = results.length;
+      const pass = results.filter(r => r.status === "pass").length;
+      const fail = results.filter(r => r.status === "fail").length;
+      const pending = results.filter(r => r.status === "pending").length;
+      const pct = total ? Math.round(((pass + fail) / total) * 100) : 0;
+      document.getElementById("progress-bar").style.width = pct + "%";
+      document.getElementById("progress-label-left").textContent = `Overall progress — ${pct}% complete`;
+      document.getElementById("progress-label-right").textContent = `${total} total`;
+      document.getElementById("pill-pass").textContent = `${pass} passed`;
+      document.getElementById("pill-fail").textContent = `${fail} failed`;
+      document.getElementById("pill-pending").textContent = `${pending} pending`;
+    }
+
+    function renderTable() {
+      const sections = getActiveSections();
+      const currentSec = sections[currentSectionIndex];
+      const sectionRows = results.map((r, i) => ({ ...r, _i: i })).filter(r => r.section === currentSec.id);
+
+      document.getElementById("tbody").innerHTML = sectionRows.map(({ _i: i, ...r }) => {
+        const howToLines = r.howTo.split("\n").map(l => `<li>${l.replace(/^\d+\.\s*/, "")}</li>`).join("");
+        const escaped = r.notes.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        let rows = `
+          <tr class="data-row" onclick="toggleExpand(${i})">
+            <td style="white-space:nowrap;">${priorityDot(r.priority)}<span class="priority-label">${r.priority}</span></td>
+            <td class="scenario-cell">
+              <span class="scenario-text">${r.scenario}</span>
+              <span class="expand-hint">↕ click row for how-to steps</span>
+            </td>
+            <td>
+              <select class="status-select status-${r.status}" onchange="setStatus(${i}, this.value); event.stopPropagation();">
+                <option value="pending" ${r.status==="pending"?"selected":""}>⏳ Pending</option>
+                <option value="pass"    ${r.status==="pass"   ?"selected":""}>✅ Pass</option>
+                <option value="fail"    ${r.status==="fail"   ?"selected":""}>❌ Fail</option>
+              </select>
+            </td>
+            <td>
+              <textarea class="notes-input" rows="2" placeholder="Add notes or feedback…"
+                oninput="setNotes(${i}, this.value)" onclick="event.stopPropagation();">${escaped}</textarea>
+            </td>
+          </tr>`;
+        if (expandedRow === i) {
+          rows += `<tr class="expand-row">
+            <td colspan="4">
+              <div class="howto-label">How to test</div>
+              <ol class="howto-steps">${howToLines}</ol>
+            </td>
+          </tr>`;
+        }
+        return rows;
+      }).join("");
+    }
+
+    function renderAll() {
+      renderProgress();
+      renderTabs();
+      renderSectionHeader();
+      renderTable();
+    }
+
+    function exportToCSV() {
+      const name = document.getElementById("tester-name").value.trim();
+      if (!name) { alert("Enter your name first."); return; }
+      let csv = "Tester,Section,Scenario,Priority,Status,Notes\n";
+      results.forEach(r => {
+        csv += `"${name}","${r.section}","${r.scenario}","${r.priority}","${r.status}","${r.notes.replace(/"/g,'""')}"\n`;
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([csv], { type:"text/csv" }));
+      a.download = `testing-${name.replace(/\s+/g,"-")}-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initSupabase();
+      initTable();
+      setDot("");
+      document.getElementById("save-text").textContent = "Auto-saves when you mark a test";
+    });
+  </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-title">Transform Health · <span>Testing Sheet</span></div>
+  <div class="top-bar-links">
+    <a href="talking-points.html" class="top-link">← Talking Points</a>
+    <a href="https://tich-labs.github.io/transform-health-directory/" target="_blank" rel="noopener noreferrer" class="top-link orange">🔗 Live App</a>
+  </div>
+</div>
+
+<!-- HERO / HEADER -->
+<div class="hero">
+  <div class="hero-row">
+    <div class="hero-left">
+      <h1>Functional Testing Checklist</h1>
+      <p>Click any row to expand step-by-step instructions · Results auto-save to your browser</p>
+    </div>
+    <div class="hero-right" style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
+      <div class="tester-input-wrap">
+        <label for="tester-name">Your Name *</label>
+        <input type="text" id="tester-name" placeholder="Enter your name…" oninput="debouncedSave();" />
+      </div>
+      <button class="btn btn-primary" onclick="saveToSupabase()">Save Now</button>
+      <button class="btn btn-ghost"   onclick="exportToCSV()">Export CSV</button>
+      <button class="btn btn-danger"  onclick="clearSaved()">Reset</button>
+    </div>
+  </div>
+
+  <div class="save-status-row" style="margin-bottom:12px;">
+    <span class="save-dot" id="save-dot"></span>
+    <span id="save-text"></span>
+  </div>
+
+  <!-- Overall progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-label-left">Overall progress</span>
+      <span id="progress-label-right"></span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="progress-pills">
+      <span class="pill pill-pass" id="pill-pass">0 passed</span>
+      <span class="pill pill-fail" id="pill-fail">0 failed</span>
+      <span class="pill pill-pending" id="pill-pending">0 pending</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar" id="tabs"></div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- Section header with nav -->
+  <div class="section-header" id="section-header"></div>
+
+  <!-- Test table -->
+  <table class="test-table">
+    <thead>
+      <tr>
+        <th style="width:110px;">Priority</th>
+        <th>Test Scenario <span style="font-weight:400;font-size:0.68rem;text-transform:none;letter-spacing:0;">(click row for how-to steps)</span></th>
+        <th style="width:120px;">Status</th>
+        <th>Notes / Feedback</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <!-- Bottom section nav -->
+  <div class="section-nav-bottom">
+    <span class="nav-info" id="bottom-nav-info"></span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost" onclick="prevSection()">← Previous</button>
+      <button class="btn btn-orange" onclick="nextSection()">Next →</button>
+    </div>
+  </div>
+
+</div><!-- end .content -->
+
+<script>
+  // Keep bottom-nav-info in sync
+  const _renderAll = renderAll;
+  renderAll = function() {
+    _renderAll();
+    const sections = getActiveSections();
+    const el = document.getElementById("bottom-nav-info");
+    if (el) el.textContent = `Section ${currentSectionIndex + 1} of ${sections.length} · ${sections[currentSectionIndex].label}`;
+  };
+</script>
+
+</body>
+</html>

@@ -794,7 +794,7 @@ export default function Admin({ onGoToDirectory }) {
                       {nominatedList.length} nominations to reach out to
                     </div>
                     <div className="text-[1.2rem] text-accent-purple">
-                      Click a nominee to view details &amp; outreach message
+                      Click a nominee to view details
                     </div>
                   </div>
 
