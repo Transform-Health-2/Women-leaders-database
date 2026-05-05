@@ -2,10 +2,9 @@ import { supabase } from "../supabase";
 
 export const api = {
   getLeaders: async (status = "live") => {
-    const { data, error } = await supabase
-      .from("leaders")
-      .select("*")
-      .eq("status", status);
+    let query = supabase.from("leaders").select("*");
+    if (status && status !== "all") query = query.eq("status", status);
+    const { data, error } = await query;
     if (error) throw error;
     return data || [];
   },

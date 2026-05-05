@@ -65,6 +65,7 @@ function toTags(expertise) {
 
 export default function Admin({ onGoToDirectory }) {
   const [pending,          setPending]          = useState([]);
+  const [nominated,        setNominated]        = useState([]);
   const [all,              setAll]              = useState([]);
   const [requests,         setRequests]         = useState([]);
   const [loading,          setLoading]          = useState(true);
@@ -93,13 +94,14 @@ export default function Admin({ onGoToDirectory }) {
   async function loadData() {
     setLoading(true);
     try {
-      const [pending, all, reqs] = await Promise.all([
-        api.getLeaders("pending"),
-        api.getLeaders("live"),
+      const [allLeaders, reqs] = await Promise.all([
+        api.getLeaders("all"),
         api.getRequests(),
       ]);
-      setPending(pending || []);
-      setAll(all || []);
+      const leaders = allLeaders || [];
+      setPending(leaders.filter(l => l.status === "pending" && l.branch !== "nominate"));
+      setNominated(leaders.filter(l => l.status === "pending" && l.branch === "nominate"));
+      setAll(leaders);
       if (reqs?.length) setRequests(reqs);
     } catch (e) {
       console.error("Failed to load admin data:", e);
@@ -119,6 +121,7 @@ export default function Admin({ onGoToDirectory }) {
       const updated = item ? { ...item, status: action === "approve" ? "live" : "rejected" } : null;
       if (updated) setAll(all.map((i) => (i.id === id ? updated : i)));
       setPending((current) => current.filter((p) => p.id !== id));
+      setNominated((current) => current.filter((p) => p.id !== id));
       setActionMessage(action === "approve" ? "Profile approved and published." : "Profile rejected and removed from pending.");
       setExpandedId(null); setExpandedAllId(null); setExpandedNominee(null);
     } catch (e) {
@@ -262,9 +265,10 @@ export default function Admin({ onGoToDirectory }) {
     setAllPage(1); setSearchQuery(""); setFilterCountry(""); setFilterExpertise("");
   };
 
-  const pendingCount   = pending.length;
-  const nominatedList  = useMemo(() => pending.filter((item) => item.branch === "nominate"), [pending]);
-  const nominatedCount = nominatedList.length;
+  const pendingCount      = pending.length;
+  const nominatedList     = nominated;
+  const nominatedCount    = nominated.length;
+  const totalPendingCount = pending.length + nominated.length;
   const updateRequests = requests.filter((r) => r.request_type === "update" && r.status === "pending");
   const deleteRequests = requests.filter((r) => r.request_type === "delete" && r.status === "pending");
   const requestsCount  = requests.filter((r) => r.status === "pending").length;
@@ -274,15 +278,15 @@ export default function Admin({ onGoToDirectory }) {
 
   const countries = useMemo(() => {
     const set = new Set();
-    [...pending, ...all].forEach((item) => { if (item.country) set.add(item.country); });
+    all.forEach((item) => { if (item.country) set.add(item.country); });
     return Array.from(set).sort();
-  }, [pending, all]);
+  }, [all]);
 
   const expertiseOptions = useMemo(() => {
     const set = new Set();
-    [...pending, ...all].forEach((item) => { toTags(item.expertise).forEach((tag) => set.add(tag)); });
+    all.forEach((item) => { toTags(item.expertise).forEach((tag) => set.add(tag)); });
     return Array.from(set).sort();
-  }, [pending, all]);
+  }, [all]);
 
   const filteredPending = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -414,7 +418,7 @@ export default function Admin({ onGoToDirectory }) {
               <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
                 <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-brand-yellow-border">
                   <div className="text-[1.2rem] uppercase tracking-wider text-accent-amber">Pending</div>
-                  <div className="text-xl font-semibold text-accent-amber">{pendingCount}</div>
+                  <div className="text-xl font-semibold text-accent-amber">{totalPendingCount}</div>
                 </div>
                 <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-green-300">
                   <div className="text-[1.2rem] uppercase tracking-wider text-green-600">Live</div>
@@ -473,9 +477,9 @@ export default function Admin({ onGoToDirectory }) {
                 )}
               </div>
               <div className="text-[1.4rem] font-medium text-brand-navy">
-                {activeTab === "pending"   ? `${filteredPending.length} of ${pendingCount} pending submissions`
-                : activeTab === "nominated" ? `${nominatedList.length} nominations`
-                : activeTab === "all"       ? `${filteredAll.length} of ${allCount} entries`
+                {activeTab === "pending"   ? `${filteredPending.length} of ${pendingCount} self-submitted`
+                : activeTab === "nominated" ? `${nominatedCount} nominated`
+                : activeTab === "all"       ? `${filteredAll.length} of ${allCount} total entries`
                 : activeTab === "requests"  ? `${updateRequests.length} update · ${deleteRequests.length} delete`
                 : `${requestsCount} pending requests`}
               </div>
