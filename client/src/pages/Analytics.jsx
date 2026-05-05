@@ -64,22 +64,17 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
      }));
    }, [allLeaders, selectedRegion]);
 
-  // Build set of atlas country names that have leaders in the selected region
-  // This ensures only countries with actual leader data get highlighted
+  // Canonical country names that have leaders in the selected region.
+  // Intentionally only stores canonical names (not atlas names) so the region
+  // double-check below prevents overseas territories from being falsely highlighted.
   const highlightedCountryNames = useMemo(() => {
     const names = new Set();
     allLeaders.forEach((l) => {
       if (!l.country) return;
-      const r = l.region || COUNTRY_TO_REGION[l.country];
+      const canonical = l.country.trim();
+      const r = COUNTRY_TO_REGION[canonical];
       if (!r) return;
-      // Only include if this matches the selected region (or all if no region selected)
-      if (!selectedRegion || r === selectedRegion) {
-        // Map canonical name to atlas name
-        const atlasName = Object.keys(ATLAS_TO_CANONICAL).find(k => ATLAS_TO_CANONICAL[k] === l.country) || l.country;
-        names.add(atlasName);
-        // Also add canonical name in case atlas uses it
-        names.add(l.country);
-      }
+      if (!selectedRegion || r === selectedRegion) names.add(canonical);
     });
     return names;
   }, [allLeaders, selectedRegion]);
@@ -109,20 +104,6 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     });
   }, [allLeaders, selectedRegion, selectedSpecialisation]);
 
-  // Which regions to highlight on the map
-  const highlightedRegions = useMemo(() => {
-    if (selectedSpecialisation) {
-      const regions = new Set();
-      allLeaders
-        .filter((l) => toTags(l.expertise).some((e) => e.trim() === selectedSpecialisation))
-        .forEach((l) => {
-          const r = l.region || COUNTRY_TO_REGION[l.country?.trim()];
-          if (r) regions.add(r);
-        });
-      return regions;
-    }
-    return selectedRegion ? new Set([selectedRegion]) : new Set();
-  }, [allLeaders, selectedSpecialisation, selectedRegion]);
 
   if (loading) {
     return (
@@ -147,7 +128,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
         </div>
 
         {/* Map + Specialisation + Region Leaders */}
-        <div className="flex flex-col lg:grid lg:grid-cols-5 lg:gap-6 mb-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-5 lg:gap-6 lg:items-start mb-8">
 
       {/* Map column */}
       <div className="order-1 lg:col-span-3 lg:row-start-1 flex flex-col bg-transparent">
@@ -162,7 +143,12 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                   geographies.map((geo) => {
                     const atlasName = geo.properties.name;
                     const canonicalName = ATLAS_TO_CANONICAL[atlasName] || atlasName;
-                    const isHighlighted = highlightedCountryNames.has(canonicalName) || highlightedCountryNames.has(atlasName);
+                    // Double-check region membership so overseas territories (e.g. French Guiana
+                    // sharing the "France" atlas name) don't get falsely highlighted.
+                    const geoRegion = COUNTRY_TO_REGION[canonicalName];
+                    const isHighlighted =
+                      highlightedCountryNames.has(canonicalName) &&
+                      (!selectedRegion || geoRegion === selectedRegion);
                     return (
                       <Geography
                         key={geo.rsmKey}
@@ -211,20 +197,8 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
               })}
         </ComposableMap>
 
-        {/* Clear Region button - under the map, more visible */}
-        {selectedRegion && (
-          <div className="flex justify-center mt-3">
-            <button
-              onClick={() => setSelectedRegion(null)}
-              className="px-5 py-2 bg-brand-orange/10 text-brand-orange font-semibold rounded-lg hover:bg-brand-orange/20 transition-colors text-1.2"
-            >
-              ✕ Clear region
-            </button>
-          </div>
-        )}
-
-        {/* Region selector */}
-            <div className="relative mt-auto pt-5">
+        {/* Region selector — clicking the active region deselects it */}
+            <div className="relative mt-5 pt-5">
               <p className="text-center text-1.1 text-gray-400 mb-3 tracking-wide uppercase">
                 Select a region to explore
               </p>
@@ -232,28 +206,33 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                 <div className="h-px border-t border-dashed border-brand-orange-light opacity-50" />
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 relative z-10">
-                {REGION_MARKERS.map((region) => (
-                  <button
-                    key={region.key}
-                    type="button"
-                    onClick={() => setSelectedRegion(region.key)}
-                    className="flex flex-col items-center gap-1 text-center py-3 px-2 rounded-lg hover:bg-brand-orange-light/10 transition-colors cursor-pointer"
-                  >
-                    <span className={`text-1.1 font-semibold transition-colors ${selectedRegion === region.key ? "text-brand-orange" : "text-gray-700"}`}>
-                      {REGION_LABELS[region.key]}
-                    </span>
-                    <span className="text-[1rem] text-gray-400">
-                      {regionTotals[region.key] || 0} leaders
-                    </span>
-                    <span className={`w-3.5 h-3.5 rounded-full transition-colors ${selectedRegion === region.key ? "bg-brand-orange" : "bg-brand-orange-light/30"}`} />
-                  </button>
-                ))}
+                {REGION_MARKERS.map((region) => {
+                  const active = selectedRegion === region.key;
+                  return (
+                    <button
+                      key={region.key}
+                      type="button"
+                      onClick={() => setSelectedRegion(active ? null : region.key)}
+                      title={active ? "Click to clear region" : undefined}
+                      className="flex flex-col items-center gap-1 text-center py-3 px-2 rounded-lg hover:bg-brand-orange-light/10 transition-colors cursor-pointer"
+                    >
+                      <span className={`text-1.1 font-semibold transition-colors ${active ? "text-brand-orange" : "text-gray-700"}`}>
+                        {REGION_LABELS[region.key]}
+                        {active && <span className="ml-1 text-[0.85em] opacity-60">✕</span>}
+                      </span>
+                      <span className="text-[1rem] text-gray-400">
+                        {regionTotals[region.key] || 0} leaders
+                      </span>
+                      <span className={`w-3.5 h-3.5 rounded-full transition-colors ${active ? "bg-brand-orange" : "bg-brand-orange-light/30"}`} />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
 
           {/* Specialisation sidebar */}
-          <div className="order-3 lg:col-span-2 lg:row-start-1 bg-white border border-gray-200 rounded-lg p-6 flex flex-col mt-6 lg:mt-0">
+          <div className="order-3 lg:col-span-2 lg:row-start-1 bg-white border border-gray-200 rounded-lg p-6 flex flex-col mt-6 lg:mt-0 lg:self-start">
             <div className="text-1.2 font-semibold text-gray-500 uppercase tracking-wider mb-2">
               Specialisation
             </div>
@@ -263,7 +242,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                 : `Based on the ${stats.total} verified profiles`}
             </div>
             <p className="text-[1.1rem] text-gray-400 mb-3">Click a bar to highlight on the map</p>
-            <div className="flex-1 space-y-3">
+            <div className="space-y-3 max-h-[28rem] overflow-y-auto pr-1">
               {barData.map((d) => {
                 const isSelected = selectedSpecialisation === d.name;
                 const isDimmed = selectedSpecialisation && !isSelected;
