@@ -126,7 +126,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
           <div className="text-[1.2rem] font-medium text-gray-600 uppercase tracking-wide mb-2">Expertise</div>
           {leader.expertise ? (
             <div className="flex flex-wrap gap-1">
-              {leader.expertise.split(", ").map((tag) => (
+              {(Array.isArray(leader.expertise) ? leader.expertise : leader.expertise.split(", ")).filter(Boolean).map((tag) => (
                 <span key={tag} className="text-[1.4rem] bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
                   {tag}
                 </span>
