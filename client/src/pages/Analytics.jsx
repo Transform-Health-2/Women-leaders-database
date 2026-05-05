@@ -198,33 +198,37 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
         </ComposableMap>
 
         {/* Region selector */}
-            <div className="relative mt-5 pt-5">
-              <p className="text-center text-1.1 text-gray-400 mb-3 tracking-wide uppercase">
+            <div className="mt-5 pt-5">
+              <p className="text-center text-[1.1rem] text-gray-400 mb-4 tracking-wide uppercase">
                 Select a region to explore
               </p>
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
-                <div className="h-px border-t border-dashed border-brand-orange-light opacity-50" />
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 relative z-10">
-                {REGION_MARKERS.map((region) => {
-                  const active = selectedRegion === region.key;
-                  return (
-                    <button
-                      key={region.key}
-                      type="button"
-                      onClick={() => setSelectedRegion(region.key)}
-                      className="flex flex-col items-center gap-1 text-center py-3 px-2 rounded-lg hover:bg-brand-orange-light/10 transition-colors cursor-pointer"
-                    >
-                      <span className={`text-1.1 font-semibold transition-colors ${active ? "text-brand-orange" : "text-gray-700"}`}>
-                        {REGION_LABELS[region.key]}
-                      </span>
-                      <span className="text-[1rem] text-gray-400">
-                        {regionTotals[region.key] || 0} leaders
-                      </span>
-                      <span className={`w-3.5 h-3.5 rounded-full transition-colors ${active ? "bg-brand-orange" : "bg-brand-orange-light/30"}`} />
-                    </button>
-                  );
-                })}
+              {/* Dot-on-line layout — line only shown on md+ where all 5 fit in one row */}
+              <div className="relative">
+                <div className="absolute inset-x-0 bottom-[20px] hidden md:block pointer-events-none">
+                  <div className="border-t-2 border-dashed border-brand-orange" />
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 relative z-10">
+                  {REGION_MARKERS.map((region) => {
+                    const active = selectedRegion === region.key;
+                    return (
+                      <button
+                        key={region.key}
+                        type="button"
+                        onClick={() => setSelectedRegion(region.key)}
+                        className="flex flex-col items-center gap-1.5 text-center py-3 px-2 rounded-lg hover:bg-brand-orange-light/10 transition-colors cursor-pointer"
+                      >
+                        <span className={`text-[1.1rem] font-semibold transition-colors leading-tight ${active ? "text-brand-orange" : "text-gray-700"}`}>
+                          {REGION_LABELS[region.key]}
+                        </span>
+                        <span className="text-[1rem] text-gray-400">
+                          {regionTotals[region.key] || 0} leaders
+                        </span>
+                        {/* Dot sits on the dashed line — always orange, ring when active */}
+                        <span className={`w-4 h-4 rounded-full bg-brand-orange transition-all ${active ? "ring-2 ring-brand-orange ring-offset-2" : ""}`} />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
