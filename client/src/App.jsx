@@ -75,7 +75,7 @@ function App() {
             />
           </div>
           <img
-            src="./illustrations/Rectangle 6709-green.svg"
+            src="./illustrations/Rectangle 6709.svg"
             alt=""
             className="absolute bottom-0 left-0 w-full block pointer-events-none"
           />
@@ -107,7 +107,7 @@ function App() {
             />
           </div>
           <img
-            src="./illustrations/Rectangle 6709-blue.svg"
+            src="./illustrations/Rectangle 6709.svg"
             alt=""
             className="absolute bottom-0 left-0 w-full block pointer-events-none"
           />

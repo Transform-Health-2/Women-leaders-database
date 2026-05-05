@@ -36,35 +36,43 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
     return { total: allLeaders.length, orgs: orgSet.size };
   }, [allLeaders]);
 
-  const barData = useMemo(() => {
-    const source = selectedRegion
-      ? allLeaders.filter((l) => (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion)
-      : allLeaders;
-    const expertiseCounts = {};
-    source.forEach((l) => {
-      const tags = (l.expertise || "Other").split(/,\s*/).filter(Boolean);
-      tags.forEach((tag) => {
-        expertiseCounts[tag] = (expertiseCounts[tag] || 0) + 1;
-      });
-    });
-    const entries = Object.entries(expertiseCounts).sort((a, b) => b[1] - a[1]);
-    const max = entries[0]?.[1] || 1;
-    return entries.map(([name, count], i) => ({
-      name, count,
-      barPct: Math.round((count / max) * 100),
-      color: BAR_COLORS[i % BAR_COLORS.length],
-    }));
-  }, [allLeaders, selectedRegion]);
+   const barData = useMemo(() => {
+     const source = selectedRegion
+       ? allLeaders.filter((l) => (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion)
+       : allLeaders;
+     const expertiseCounts = {};
+     source.forEach((l) => {
+       const tags = (l.expertise || "").split(/,\s*/).filter(Boolean);
+       tags.forEach((tag) => {
+         // Normalize "Other: X" tags to just "Other" for the chart
+         const normalized = tag.trim().startsWith("Other") ? "Other" : tag.trim();
+         expertiseCounts[normalized] = (expertiseCounts[normalized] || 0) + 1;
+       });
+     });
+     const entries = Object.entries(expertiseCounts).sort((a, b) => b[1] - a[1]);
+     const max = entries[0]?.[1] || 1;
+     return entries.map(([name, count], i) => ({
+       name, count,
+       barPct: Math.round((count / max) * 100),
+       color: BAR_COLORS[i % BAR_COLORS.length],
+     }));
+   }, [allLeaders, selectedRegion]);
 
+  // Build map of country name → region key
+  // When a region is selected, ONLY include countries from that region
+  // This prevents highlighting countries from other regions
   const countryRegionMap = useMemo(() => {
     const map = {};
     allLeaders.forEach((l) => {
       if (l.country && COUNTRY_TO_REGION[l.country]) {
-        map[l.country] = COUNTRY_TO_REGION[l.country];
+        const r = COUNTRY_TO_REGION[l.country];
+        if (!selectedRegion || r === selectedRegion) {
+          map[l.country] = r;
+        }
       }
     });
     return map;
-  }, [allLeaders]);
+  }, [allLeaders, selectedRegion]);
 
   const regionTotals = useMemo(() => {
     const totals = { north_america: 0, latin_america: 0, europe: 0, sub_saharan_africa: 0, south_asia: 0 };
@@ -80,7 +88,14 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
       const matchRegion = !selectedRegion ||
         (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === selectedRegion;
       const matchSpec = !selectedSpecialisation ||
-        (l.expertise || "").split(/,\s*/).some((e) => e.trim() === selectedSpecialisation);
+        (l.expertise || "").split(/,\s*/).some((e) => {
+          const trimmed = e.trim();
+          // Handle "Other: X" tags — if user clicks "Other" bar, match any "Other:*" tag
+          if (selectedSpecialisation === "Other") {
+            return trimmed === "Other" || trimmed.startsWith("Other:");
+          }
+          return trimmed === selectedSpecialisation;
+        });
       return matchRegion && matchSpec;
     });
   }, [allLeaders, selectedRegion, selectedSpecialisation]);
@@ -127,68 +142,80 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
         {/* Map + Specialisation + Region Leaders */}
         <div className="flex flex-col lg:grid lg:grid-cols-5 lg:gap-6 mb-8">
 
-          {/* Map column */}
-          <div className="order-1 lg:col-span-3 lg:row-start-1 flex flex-col bg-transparent">
-            <ComposableMap
-              projectionConfig={{ scale: 215, center: [5, 5] }}
-              width={900}
-              height={440}
-              style={{ width: "100%", height: "auto", backgroundColor: "transparent" }}
-            >
-              <Geographies geography={GEO_URL}>
-                {({ geographies }) =>
-                  geographies.map((geo) => {
-                    const regionKey = countryRegionMap[geo.properties.name];
-                    return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        fill={regionKey && highlightedRegions.has(regionKey) ? "#F97A1A" : "#D4D4D8"}
-                        stroke="#FFFFFF"
-                        strokeWidth={0.7}
-                        style={{
-                          default: { outline: "none" },
-                          hover:   { outline: "none", opacity: 0.85 },
-                          pressed: { outline: "none" },
-                        }}
-                      />
-                    );
-                  })
-                }
-              </Geographies>
-
-              {REGION_MARKERS.map((marker) => {
-                if (marker.key !== selectedRegion) return null;
-                const count = selectedSpecialisation
-                  ? filteredLeaders.filter((l) =>
-                      (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === marker.key
-                    ).length
-                  : regionTotals[marker.key] || 0;
-                if (!count) return null;
+      {/* Map column */}
+      <div className="order-1 lg:col-span-3 lg:row-start-1 flex flex-col bg-transparent">
+        <ComposableMap
+          projectionConfig={{ scale: 215, center: [5, 5] }}
+          width={900}
+          height={440}
+          style={{ width: "100%", height: "auto", backgroundColor: "transparent" }}
+        >
+          <Geographies geography={GEO_URL}>
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const regionKey = countryRegionMap[geo.properties.name];
                 return (
-                  <Annotation
-                    key={marker.key}
-                    subject={marker.coordinates}
-                    dx={marker.dx}
-                    dy={marker.dy}
-                    connectorProps={{ stroke: "#F8571D", strokeWidth: 1.5, strokeLinecap: "round" }}
-                  >
-                    <g>
-                      <rect x="-62" y="-26" width="124" height="48" rx="10" fill="#F8571D" />
-                      {/* SVG text styles must stay inline — Tailwind cannot target SVG text elements */}
-                      <text textAnchor="middle" y="-8" style={{ fontSize: 13, fontWeight: 700, fill: "#ffffff", fontFamily: "system-ui" }}>
-                        {REGION_LABELS[marker.key]}
-                      </text>
-                      <text textAnchor="middle" y="11" style={{ fontSize: 11, fill: "#ffffff", fontFamily: "system-ui" }}>
-                        {count} Leaders
-                      </text>
-                    </g>
-                  </Annotation>
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={regionKey && highlightedRegions.has(regionKey) ? "#F97A1A" : "#D4D4D8"}
+                    stroke="#FFFFFF"
+                    strokeWidth={0.7}
+                    style={{
+                      default: { outline: "none" },
+                      hover:   { outline: "none", opacity: 0.85 },
+                      pressed: { outline: "none" },
+                    }}
+                  />
                 );
-              })}
-            </ComposableMap>
+              })
+            }
+          </Geographies>
 
-            {/* Region selector */}
+          {REGION_MARKERS.map((marker) => {
+            if (marker.key !== selectedRegion) return null;
+            const count = selectedSpecialisation
+              ? filteredLeaders.filter((l) =>
+                  (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === marker.key
+                ).length
+              : regionTotals[marker.key] || 0;
+            if (!count) return null;
+            return (
+              <Annotation
+                key={marker.key}
+                subject={marker.coordinates}
+                dx={marker.dx}
+                dy={marker.dy}
+                connectorProps={{ stroke: "#F8571D", strokeWidth: 1.5, strokeLinecap: "round" }}
+              >
+                <g>
+                  <rect x="-62" y="-26" width="124" height="48" rx="10" fill="#F8571D" />
+                  {/* SVG text styles must stay inline — Tailwind cannot target SVG text elements */}
+                  <text textAnchor="middle" y="-8" style={{ fontSize: 13, fontWeight: 700, fill: "#ffffff", fontFamily: "system-ui" }}>
+                    {REGION_LABELS[marker.key]}
+                  </text>
+                  <text textAnchor="middle" y="11" style={{ fontSize: 11, fill: "#ffffff", fontFamily: "system-ui" }}>
+                    {count} Leaders
+                  </text>
+                </g>
+              </Annotation>
+            );
+          })}
+        </ComposableMap>
+
+        {/* Clear Region button - under the map, more visible */}
+        {selectedRegion && (
+          <div className="flex justify-center mt-3">
+            <button
+              onClick={() => setSelectedRegion(null)}
+              className="px-5 py-2 bg-brand-orange/10 text-brand-orange font-semibold rounded-lg hover:bg-brand-orange/20 transition-colors text-1.2"
+            >
+              ✕ Clear region
+            </button>
+          </div>
+        )}
+
+        {/* Region selector */}
             <div className="relative mt-auto pt-5">
               <p className="text-center text-1.1 text-gray-400 mb-3 tracking-wide uppercase">
                 Select a region to explore
@@ -265,11 +292,6 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     .filter(Boolean).join(" · ")} &middot; {filteredLeaders.length} Leaders
                 </h3>
                 <div className="flex items-center gap-3">
-                  {selectedRegion && (
-                    <button onClick={() => setSelectedRegion(null)} className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors">
-                      Clear region
-                    </button>
-                  )}
                   {selectedSpecialisation && (
                     <button onClick={() => setSelectedSpecialisation(null)} className="text-1.2 text-gray-500 hover:text-brand-orange transition-colors">
                       Clear specialisation

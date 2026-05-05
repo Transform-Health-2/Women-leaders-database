@@ -26,6 +26,10 @@ function SectionLabel({ children }) {
   );
 }
 
+function TBC() {
+  return <span className="text-[1.4rem] text-gray-400 italic">TBC</span>;
+}
+
 export default function ProfileModal({ leader, onClose, onManage }) {
   const modalRef = useFocusTrap(true);
   const previousFocus = useRef(null);
@@ -110,43 +114,41 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                 </a>
               )}
             </h2>
-            {leader.role && (
-              <p className="text-[1.6rem] font-semibold text-brand-dark mb-1">{leader.role}</p>
-            )}
-            {leader.organisation && (
-              <p className="text-[1.5rem] text-gray-600">{leader.organisation}</p>
-            )}
+            <p className="text-[1.6rem] font-semibold text-brand-dark mb-1">
+              {leader.role || <TBC />}
+            </p>
+            <p className="text-[1.5rem] text-gray-600">
+              {leader.organisation || <TBC />}
+            </p>
           </div>
         </div>
 
-        {/* ── META STRIP ── */}
-        {(leader.country || yearsExp || countriesList.length > 0) && (
-          <div className="mx-10 mb-6 bg-brand-parchment rounded-xl px-6 py-4 flex flex-wrap gap-x-8 gap-y-3 border border-brand-parchment-border">
-            {leader.country && (
-              <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Based in</div>
-                <div className="text-[1.4rem] text-brand-dark">{leader.country}</div>
-              </div>
-            )}
-            {yearsExp && (
-              <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Experience</div>
-                <div className="text-[1.4rem] text-brand-dark">{yearsExp}</div>
-              </div>
-            )}
-            {countriesList.length > 0 && (
-              <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Works across</div>
-                <div className="text-[1.4rem] text-brand-dark">{countriesList.join(", ")}</div>
-              </div>
-            )}
+        {/* ── META STRIP — always shown ── */}
+        <div className="mx-10 mb-6 bg-brand-parchment rounded-xl px-6 py-4 flex flex-wrap gap-x-8 gap-y-3 border border-brand-parchment-border">
+          <div>
+            <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Based in</div>
+            {leader.country
+              ? <div className="text-[1.4rem] text-brand-dark">{leader.country}</div>
+              : <TBC />}
           </div>
-        )}
+          <div>
+            <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Experience</div>
+            {yearsExp
+              ? <div className="text-[1.4rem] text-brand-dark">{yearsExp}</div>
+              : <TBC />}
+          </div>
+          <div>
+            <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Works across</div>
+            {countriesList.length > 0
+              ? <div className="text-[1.4rem] text-brand-dark">{countriesList.join(", ")}</div>
+              : <TBC />}
+          </div>
+        </div>
 
-        {/* ── EXPERTISE TAGS ── */}
-        {expertiseTags.length > 0 && (
-          <div className="px-10 mb-6">
-            <SectionLabel>Expertise</SectionLabel>
+        {/* ── EXPERTISE TAGS — always shown ── */}
+        <div className="px-10 mb-6">
+          <SectionLabel>Expertise</SectionLabel>
+          {expertiseTags.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {expertiseTags.map((tag) => (
                 <span
@@ -157,21 +159,23 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                 </span>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <TBC />
+          )}
+        </div>
 
-        {/* ── BIO ── */}
-        {leader.bio && (
-          <div className="px-10 mb-6">
-            <SectionLabel>About</SectionLabel>
-            <p className="text-[1.6rem] text-brand-dark leading-[1.8]">{leader.bio}</p>
-          </div>
-        )}
+        {/* ── BIO — always shown ── */}
+        <div className="px-10 mb-6">
+          <SectionLabel>About</SectionLabel>
+          {leader.bio
+            ? <p className="text-[1.6rem] text-brand-dark leading-[1.8]">{leader.bio}</p>
+            : <TBC />}
+        </div>
 
-        {/* ── NOTABLE ACHIEVEMENTS ── */}
-        {notableItems.length > 0 && (
-          <div className="px-10 mb-6">
-            <SectionLabel>Notable achievements</SectionLabel>
+        {/* ── PUBLICATIONS — always shown, "None" when empty ── */}
+        <div className="px-10 mb-6">
+          <SectionLabel>Publications</SectionLabel>
+          {notableItems.length > 0 ? (
             <div className="flex flex-col gap-3">
               {notableItems.map((item, i) => (
                 <div key={i} className="flex gap-4 bg-brand-parchment rounded-xl px-5 py-4 border border-brand-parchment-border">
@@ -191,8 +195,10 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <span className="text-[1.4rem] text-gray-400 italic">None</span>
+          )}
+        </div>
 
         {/* ── FOOTER CTA ── */}
         <div className="px-10 py-6 border-t border-brand-parchment-border">
