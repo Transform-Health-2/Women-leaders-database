@@ -945,7 +945,7 @@ export default function Admin({ onGoToDirectory }) {
                           </div>
                           <div className="flex items-center gap-3 flex-shrink-0">
                             <span className="text-[1.4rem] px-2.5 py-0.5 rounded-full font-medium bg-brand-blue-tint text-brand-navy">
-                              {item.expertise?.split(',')[0] || '—'}
+                              {toTags(item.expertise)[0] || '—'}
                             </span>
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={`text-gray-400 transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}>
                               <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
