@@ -227,10 +227,25 @@ The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the fr
 | Supabase PostgreSQL database — `leaders` + `requests` tables | Done |
 | 82 leaders migrated from Google Sheets to Supabase | Done |
 | Photo storage — Supabase Storage `profile-photos` bucket wired | Done |
+| Photo mandatory on submit (was optional, now enforced) | Done |
 | Supabase Auth wired for admin (bypassed in test mode) | Done |
 | Firebase removed — `firebase.js` deleted, package removed | Done |
 | Mock data removed — `mockData.js` deleted | Done |
 | Apps Script removed as backend — `api/leaders.js` fully rewritten | Done |
+| Email field added (private, not public) | Done |
+| "Other" expertise + 5 selection limit | Done |
+| Bio 300-500 chars enforced | Done |
+| Countries of operation field (multi-select country picker) | Done |
+| Nominator name/email saved and displayed in Admin | Done |
+| Analytics: region + specialization combo filtering | Done |
+| Analytics: dynamic bar chart, clickable bars | Done |
+| Emerging Voices section removed from Analytics | Done |
+| Toggle button to hide/show header & footer | Done |
+| No-scroll layout in talking-points.html | Done |
+| User Journey section added to talking-points.html | Done |
+| Testing sheet (testing-sheet.html) with checklist | Done |
+| Apps Script: `bulkSeed` function added | Done |
+| `scripts/` folder committed (seed scripts) | Done |
 
 ### Before Launch
 
@@ -242,13 +257,16 @@ The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the fr
 
 ### Pending Features
 
-| Task | Notes |
-| --- | --- |
-| Production SMTP emails | Apps Script MailApp still used for "send update link"; needs SendGrid/Mailgun/Resend |
-| Country-level map drilldown | Currently region-level only; country-click filter not built |
-| LinkedIn / website click tracking | Track clicks to measure database usefulness |
-| GA4 / Plausible analytics | No analytics service configured |
-| Profile modal — wider + better design | Current modal functional but narrow |
+| Task | Status | Notes |
+| --- | --- | --- |
+| Country-level map drilldown | ⏳ Pending | Currently region-level only; clicking a country to filter leaders not yet built |
+| LinkedIn / website click tracking | ⏳ Pending | Track clicks to measure database usefulness |
+| Production SMTP emails | ⏳ Pending | Apps Script MailApp still used for "send update link"; needs SendGrid/Mailgun/Resend |
+| GA4 / Plausible analytics | ⏳ Pending | No analytics service configured |
+| Profile modal — wider + better design | ⏳ Pending | Current modal is 672px wide; needs wider window and improved visual design |
+| Photo storage | ✅ Done | Supabase Storage fully implemented and working |
+| Regions of operation field | ✅ Done | Implemented as multi-select country picker |
+| Nominations submitter info | ✅ Done | Nominator name/email saved and displayed in Admin Console |
 
 ---
 
