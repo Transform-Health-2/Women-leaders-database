@@ -6,7 +6,7 @@ import {
   Annotation,
 } from "react-simple-maps";
 import { useLeaders } from "../hooks/useLeaders";
-import { COUNTRY_TO_REGION, REGION_LABELS, REGION_MARKERS, ATLAS_TO_CANONICAL } from "../utils/countries";
+import { COUNTRY_TO_REGION, REGION_LABELS, REGION_MARKERS, ATLAS_TO_CANONICAL, EXCLUDE_FROM_MAP_HIGHLIGHT } from "../utils/countries";
 import LeaderCard from "../components/LeaderCard";
 import ProfileModal from "../components/ProfileModal";
 
@@ -165,11 +165,15 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     const atlasName = geo.properties.name;
                     const canonicalName = ATLAS_TO_CANONICAL[atlasName] || atlasName;
                     const regionKey = countryRegionMap[canonicalName] || countryRegionMap[atlasName];
+                    // Skip countries that cause cross-region highlighting (e.g. France = France + French Guiana)
+                    const countryName = canonicalName;
+                    const shouldHighlight = regionKey && highlightedRegions.has(regionKey) &&
+                      !EXCLUDE_FROM_MAP_HIGHLIGHT.includes(countryName);
                     return (
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill={regionKey && highlightedRegions.has(regionKey) ? "#F97A1A" : "#D4D4D8"}
+                        fill={shouldHighlight ? "#F97A1A" : "#D4D4D8"}
                         stroke="#FFFFFF"
                         strokeWidth={0.7}
                         style={{

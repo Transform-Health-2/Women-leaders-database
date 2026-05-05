@@ -45,6 +45,10 @@ export const REGION_LABELS = {
   south_asia:       "South & SE Asia",
 };
 
+// Countries to exclude from map highlighting (overseas territories cause cross-region highlighting)
+// France includes French Guiana (Latin America), UK includes Falkland Islands, etc.
+export const EXCLUDE_FROM_MAP_HIGHLIGHT = ["France", "United Kingdom"];
+
 export const REGION_MARKERS = [
   { key: "north_america",     coordinates: [-95, 40],  dx: -105, dy: -90, oceanCoords: [-110, 42] },  // Atlantic left of N. America (visible)
   { key: "latin_america",     coordinates: [-55, -10], dx: -55,  dy: 80,  oceanCoords: [-75, -8]  },  // Pacific left of S. America (visible)
