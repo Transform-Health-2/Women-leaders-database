@@ -196,8 +196,12 @@
       border-bottom: 1px solid #dbe4f5; transition: background 0.15s;
     }
     .overview-toggle:hover { background: #e5eeff; }
-    .overview-toggle-icon { font-size: 1.2rem; color: #6b7280; transition: transform 0.2s; }
-    .overview-toggle-icon.open { transform: rotate(180deg); }
+    .overview-toggle-left { display: flex; align-items: center; gap: 10px; }
+    .overview-toggle-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .overview-start-badge { background: #F8571D; color: #fff; font-size: 1.1rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.05em; white-space: nowrap; }
+    .overview-toggle-hint { font-size: 1.2rem; font-weight: 500; color: #6b7280; white-space: nowrap; }
+    .overview-toggle-icon { font-size: 1.6rem; font-weight: 700; color: #6b7280; line-height: 1; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: #f3f4f6; transition: background 0.15s, color 0.15s; }
+    .overview-toggle-icon:hover { background: #e5e7eb; color: #111; }
     .overview-body {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 0; border-top: none;
@@ -266,11 +270,19 @@
       if (!name) { setDot(""); document.getElementById("save-text").textContent = "Enter your name to save results"; return; }
       setDot("saving"); document.getElementById("save-text").textContent = "Saving…";
       try {
-        const { error } = await supabaseClient.from("test_results").insert({
-          id: crypto.randomUUID(), tester_name: name,
-          results: results.map(r => ({ scenario: r.scenario, status: r.status, notes: r.notes })),
-          summary: { total: results.length, pass: results.filter(r=>r.status==="pass").length, fail: results.filter(r=>r.status==="fail").length, pending: results.filter(r=>r.status==="pending").length },
-        });
+        // Delete previous rows for this tester so we don't accumulate duplicates
+        await supabaseClient.from("test_results").delete().eq("tester_name", name);
+        // Insert one flat row per test case — matches the Admin table schema
+        const rows = results.map(r => ({
+          id: crypto.randomUUID(),
+          tester_name: name,
+          section: r.section,
+          scenario: r.scenario,
+          priority: r.priority,
+          status: r.status,
+          notes: r.notes,
+        }));
+        const { error } = await supabaseClient.from("test_results").insert(rows);
         if (error) throw error;
         setDot("saved");
         document.getElementById("save-text").textContent = "Saved ✓  " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
@@ -618,8 +630,14 @@
 <!-- OVERVIEW / INTRO PANEL -->
 <div class="overview-panel">
   <button class="overview-toggle" onclick="toggleOverview()" id="overview-toggle-btn" aria-expanded="true">
-    <span>About this testing sheet &amp; how to use it</span>
-    <span class="overview-toggle-icon open" id="overview-icon">▼</span>
+    <span class="overview-toggle-left">
+      <span class="overview-start-badge">★ Start Here</span>
+      <span>About this testing sheet &amp; how to use it</span>
+    </span>
+    <span class="overview-toggle-right">
+      <span class="overview-toggle-hint" id="overview-hint">Click to hide</span>
+      <span class="overview-toggle-icon" id="overview-icon">✕</span>
+    </span>
   </button>
   <div class="overview-body" id="overview-body">
 
@@ -738,8 +756,10 @@
     const icon = document.getElementById("overview-icon");
     const btn  = document.getElementById("overview-toggle-btn");
     const isOpen = !body.classList.contains("hidden");
+    const hint = document.getElementById("overview-hint");
     body.classList.toggle("hidden", isOpen);
-    icon.classList.toggle("open", !isOpen);
+    icon.textContent = isOpen ? "+" : "\u2715";
+    if (hint) hint.textContent = isOpen ? "Click to read" : "Click to hide";
     btn.setAttribute("aria-expanded", String(!isOpen));
     localStorage.setItem("th-overview-open", String(!isOpen));
   }
@@ -750,8 +770,10 @@
       const body = document.getElementById("overview-body");
       const icon = document.getElementById("overview-icon");
       const btn  = document.getElementById("overview-toggle-btn");
+      const hint = document.getElementById("overview-hint");
       body.classList.add("hidden");
-      icon.classList.remove("open");
+      icon.textContent = "+";
+      if (hint) hint.textContent = "Click to read";
       btn.setAttribute("aria-expanded", "false");
     }
   });
