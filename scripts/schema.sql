@@ -57,6 +57,13 @@ create policy "Admin read all leaders"
   to authenticated
   using (true);
 
+-- Leaders: test mode — allow anon to read all statuses so admin works without auth
+-- Remove this policy before launch and replace with proper admin auth
+create policy "Admin test mode: read all leaders"
+  on public.leaders for select
+  to public
+  using (true);
+
 -- Leaders: anyone can submit (insert pending entry)
 create policy "Anyone can submit"
   on public.leaders for insert
@@ -94,18 +101,24 @@ create policy "Anyone can upload photos"
 
 -- ============================================================
 -- Test Results table (for testing-sheet.html persistence)
--- RLS is intentionally disabled — test feedback is not sensitive
+-- RLS intentionally disabled — test feedback is not sensitive
 -- ============================================================
 
 create table if not exists public.test_results (
   id           text primary key,
   created_at   timestamptz default now(),
-  session_id   text,
   tester_name  text not null,
   results      jsonb,
   summary      jsonb
 );
 
--- No RLS on test_results — open insert for all testers
+-- No RLS on test_results — open for all testers
 grant usage on schema public to anon;
 grant all on public.test_results to anon;
+
+-- ============================================================
+-- Before launch checklist (remove/replace test-mode policies)
+-- ============================================================
+-- 1. Drop "Admin test mode: read all leaders" policy
+-- 2. Create a real admin user in Supabase Auth
+-- 3. Re-enable the Admin auth gate in Admin.jsx
