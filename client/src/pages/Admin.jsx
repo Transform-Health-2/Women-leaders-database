@@ -204,6 +204,26 @@ export default function Admin({ onGoToDirectory }) {
     }
   }
 
+  async function handleDeleteLeader(id, name) {
+    setShowConfirm({
+      title: "Delete entry permanently?",
+      message: `"${name}" will be permanently removed from the database. This cannot be undone.`,
+      action: "delete",
+      confirmLabel: "Delete",
+      onConfirm: async () => {
+        setShowConfirm(null);
+        try {
+          await api.deleteLeader(id);
+          setAll((prev) => prev.filter((l) => l.id !== id));
+          setExpandedAllId(null);
+          setActionMessage("Entry permanently deleted.");
+        } catch (e) {
+          setActionMessage("Error deleting entry: " + e.message);
+        }
+      },
+    });
+  }
+
   function toggleDeleteSelect(id) {
     setSelectedDeletes((current) => current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
   }
@@ -306,6 +326,14 @@ export default function Admin({ onGoToDirectory }) {
     const set = new Set();
     all.forEach((item) => { toTags(item.expertise).forEach((tag) => set.add(tag)); });
     return Array.from(set).sort();
+  }, [all]);
+
+  const liveNames = useMemo(() => {
+    const set = new Set();
+    all.filter(l => l.status === "live").forEach(l => {
+      set.add(`${l.first_name?.toLowerCase()} ${l.last_name?.toLowerCase()}`);
+    });
+    return set;
   }, [all]);
 
   const filteredPending = useMemo(() => {
@@ -974,6 +1002,7 @@ export default function Admin({ onGoToDirectory }) {
                   {filteredPending.map((item) => {
                     const isExpanded = expandedId === item.id;
                     const isChecked  = selectedPending.includes(item.id);
+                    const isDuplicate = liveNames.has(`${item.first_name?.toLowerCase()} ${item.last_name?.toLowerCase()}`);
                     return (
                       <div key={item.id}>
                         <div
@@ -1000,6 +1029,11 @@ export default function Admin({ onGoToDirectory }) {
                           <div className="flex-1 min-w-0 mr-4">
                             <div className="flex items-center gap-3">
                               <span className="font-semibold text-lg truncate text-brand-dark">{item.first_name} {item.last_name}</span>
+                              {isDuplicate && (
+                                <span className="flex-shrink-0 text-[1.2rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">
+                                  ⚠ Possible duplicate
+                                </span>
+                              )}
                               <span className="text-[1.4rem] truncate flex-shrink-0 text-gray-500">{item.role || 'No role'} · {item.organisation || 'No org'}</span>
                             </div>
                             <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
@@ -1154,6 +1188,14 @@ export default function Admin({ onGoToDirectory }) {
                                       <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">Summary</div>
                                       <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">{item.bio || 'No bio available.'}</div>
                                     </div>
+                                  </div>
+                                  <div className="mt-4 flex justify-end">
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handleDeleteLeader(item.id, `${item.first_name} ${item.last_name}`); }}
+                                      className="text-[1.3rem] font-medium text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-4 py-1.5 rounded-lg transition-colors"
+                                    >
+                                      Delete entry
+                                    </button>
                                   </div>
                                 </td>
                               </tr>

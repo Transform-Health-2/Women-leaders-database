@@ -184,6 +184,7 @@
             <li>Geographical scope dropdown: Africa, Americas, Asia, Europe, Oceania, National only — collected in Profile Details (Step 3)</li>
             <li>Country of residence mandatory in Basic Info (Step 2)</li>
             <li>Email field in Basic Info (required, not publicly displayed)</li>
+            <li><strong>Duplicate detection</strong> — on blur of first/last name in Step 2, a live Supabase lookup checks for existing leaders with the same name (live or pending); soft amber warning shown if match found, submission not blocked. Admin pending list flags matching names with a "⚠ Possible duplicate" badge.</li>
             <li>Card dimensions increased (pt-[4.8rem]) + reduced width (max-w-[640px])</li>
             <li>Right-side texture mask (card-top-texture-0.png) centered, no blue-tint</li>
             <li>"Other" expertise + 5 selection limit</li>

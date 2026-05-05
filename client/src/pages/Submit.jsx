@@ -40,8 +40,16 @@ export default function Submit({ onManageProfile }) {
   const [yearsExp,          setYearsExp]          = useState("");
   const [status,            setStatus]            = useState("");
   const [showNoConsentModal, setShowNoConsentModal] = useState(false);
+  const [duplicateWarning,  setDuplicateWarning]  = useState(null);
 
   const charCount = bio.length;
+
+  async function checkDuplicate() {
+    if (!firstName.trim() || !lastName.trim()) return;
+    setDuplicateWarning("checking");
+    const matches = await api.checkDuplicateName(firstName, lastName);
+    setDuplicateWarning(matches.length > 0 ? matches[0] : null);
+  }
 
   function goStep(n) { if (n >= 0 && n <= 5) setStep(n); }
 
@@ -244,6 +252,8 @@ export default function Submit({ onManageProfile }) {
               country={country} setCountry={setCountry}
               org={org} setOrg={setOrg}
               role={role} setRole={setRole}
+              duplicateWarning={duplicateWarning}
+              onNameBlur={checkDuplicate}
               onBack={() => goStep(1)} onContinue={() => goStep(3)}
             />
           )}

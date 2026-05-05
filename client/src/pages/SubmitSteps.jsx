@@ -269,7 +269,7 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
 }
 
 // ─── Step 2: Basic information ────────────────────────────────────────────────
-export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, email, setEmail, photoPreview, onPhotoUpload, country, setCountry, org, setOrg, role, setRole, onBack, onContinue }) {
+export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, email, setEmail, photoPreview, onPhotoUpload, country, setCountry, org, setOrg, role, setRole, duplicateWarning, onNameBlur, onBack, onContinue }) {
   return (
     <div>
       <h2 className="text-4xl font-bold text-brand-navy mb-2 tracking-heading">Basic information</h2>
@@ -277,16 +277,30 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
         Tell us who you are. Your email will never be published — it's used only for profile updates.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
         <div>
           <label className={LABEL_CLASS}>First name *</label>
-          <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="e.g Anet" className={F_INPUT} />
+          <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} onBlur={onNameBlur} placeholder="e.g Anet" className={F_INPUT} />
         </div>
         <div>
           <label className={LABEL_CLASS}>Last name *</label>
-          <Input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="e.g Clinton" className={F_INPUT} />
+          <Input value={lastName} onChange={(e) => setLastName(e.target.value)} onBlur={onNameBlur} placeholder="e.g Clinton" className={F_INPUT} />
         </div>
       </div>
+
+      {duplicateWarning && duplicateWarning !== "checking" && (
+        <div className="mb-4 flex items-start gap-3 bg-amber-50 border border-amber-300 rounded-lg px-4 py-3">
+          <span className="text-amber-500 text-xl flex-shrink-0 mt-0.5">⚠</span>
+          <div>
+            <p className="text-1.4 font-semibold text-amber-800 m-0">A profile with this name may already exist</p>
+            <p className="text-1.4 text-amber-700 m-0 mt-0.5">
+              {duplicateWarning.first_name} {duplicateWarning.last_name} is currently{" "}
+              <span className="font-medium">{duplicateWarning.status}</span> in the database.
+              You can still submit — the admin team will review for duplicates.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="mb-5">
         <label className={LABEL_CLASS}>Email * <span className="text-1.4 text-gray-500 font-normal">(not publicly displayed)</span></label>

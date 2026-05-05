@@ -155,6 +155,16 @@ export const api = {
     return { ok: true };
   },
 
+  checkDuplicateName: async (firstName, lastName) => {
+    const { data } = await supabase
+      .from("leaders")
+      .select("id, first_name, last_name, status")
+      .ilike("first_name", firstName.trim())
+      .ilike("last_name", lastName.trim())
+      .in("status", ["live", "pending"]);
+    return data || [];
+  },
+
   getTestResults: async () => {
     const { data, error } = await supabase
       .from("test_results")
@@ -162,5 +172,11 @@ export const api = {
       .order("created_at", { ascending: false });
     if (error) throw error;
     return data || [];
+  },
+
+  deleteLeader: async (id) => {
+    const { error } = await supabase.from("leaders").delete().eq("id", id);
+    if (error) throw error;
+    return { ok: true };
   },
 };
