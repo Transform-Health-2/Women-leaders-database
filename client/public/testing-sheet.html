@@ -415,6 +415,13 @@
       } else {
         results = DEFAULT_RESULTS.map(d => ({ ...d }));
       }
+
+      // Restore saved section + scroll position
+      const savedSection = localStorage.getItem("th-current-section");
+      if (savedSection !== null) {
+        currentSectionIndex = parseInt(savedSection, 10) || 0;
+      }
+
       renderAll();
     }
 
@@ -457,6 +464,7 @@
       expandedRow = null;
       renderAll();
       window.scrollTo({ top: 0, behavior: "smooth" });
+      localStorage.setItem("th-current-section", String(i));
     }
 
     function prevSection() { if (currentSectionIndex > 0) goToSection(currentSectionIndex - 1); }
@@ -781,6 +789,17 @@
       if (hint) hint.textContent = "Click to read";
       btn.setAttribute("aria-expanded", "false");
     }
+
+    // Restore scroll position
+    const savedScroll = localStorage.getItem("th-scroll-pos");
+    if (savedScroll) {
+      setTimeout(() => window.scrollTo(0, parseInt(savedScroll, 10)), 100);
+    }
+  });
+
+  // Save scroll position when leaving
+  window.addEventListener("beforeunload", () => {
+    localStorage.setItem("th-scroll-pos", String(window.scrollY));
   });
 
   // Keep bottom-nav-info in sync
