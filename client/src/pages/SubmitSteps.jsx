@@ -29,6 +29,15 @@ export const COUNTRIES = [
   "Australia", "Japan", "China",
 ];
 
+export const GEO_SCOPES = [
+  { value: "Africa",    label: "Africa" },
+  { value: "Americas",  label: "Americas" },
+  { value: "Asia",      label: "Asia" },
+  { value: "Europe",    label: "Europe" },
+  { value: "Oceania",   label: "Oceania" },
+  { value: "National",  label: "National only" },
+];
+
 // Shared class overrides to match the submit form's visual design
 const F_INPUT = "bg-brand-blue-tint text-lg py-5 px-[1.6rem]";
 const LABEL_CLASS = "block text-lg text-brand-dark mb-2";
@@ -101,7 +110,7 @@ export function Step0Branch({
       </div>
 
       {branch === "nominate" && (
-        <div className="flex flex-col gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5 max-w-[640px]">
           {/* Nominator */}
           <div>
             <label className={LABEL_CLASS}>Your full name *</label>
@@ -260,7 +269,7 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
 }
 
 // ─── Step 2: Basic information ────────────────────────────────────────────────
-export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, email, setEmail, photoPreview, onPhotoUpload, country, setCountry, org, setOrg, role, setRole, onBack, onContinue }) {
+export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName, email, setEmail, photoPreview, onPhotoUpload, country, setCountry, geoScope, setGeoScope, org, setOrg, role, setRole, onBack, onContinue }) {
   return (
     <div>
       <h2 className="text-4xl font-bold text-brand-navy mb-2 tracking-heading">Basic information</h2>
@@ -304,7 +313,19 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
       </div>
 
       <div className="mb-5">
-        <label className={LABEL_CLASS}>Country of residence *</label>
+        <label className={LABEL_CLASS}>Geographical scope *</label>
+        <Select
+          value={geoScope || ""}
+          onChange={(e) => setGeoScope(e.target.value)}
+          className={`${F_INPUT} ${geoScope ? "text-gray-900" : "text-gray-400"}`}
+        >
+          <option value="">Select a scope...</option>
+          {GEO_SCOPES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+        </Select>
+      </div>
+
+      <div className="mb-5">
+        <label className={LABEL_CLASS}>Country of residence {geoScope === "National" ? "*" : "(optional)"}</label>
         <Select
           value={country}
           onChange={(e) => setCountry(e.target.value)}

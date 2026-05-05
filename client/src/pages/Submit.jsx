@@ -28,6 +28,7 @@ export default function Submit({ onManageProfile }) {
   const [expertise,         setExpertise]         = useState([]);
   const [otherExpertise,    setOtherExpertise]    = useState("");
   const [country,           setCountry]           = useState("");
+  const [geoScope,          setGeoScope]          = useState("");
   const [selectedCountries, setSelectedCountries] = useState([]);
   const [bio,               setBio]               = useState("");
   const [email,             setEmail]             = useState("");
@@ -126,6 +127,7 @@ export default function Submit({ onManageProfile }) {
         branch, firstName, lastName, email, role,
         organisation: org,
         country,
+        geo_scope: geoScope || null,
         nominateLink: branch === "nominate" ? nominateLink : null,
         expertise: [...expertise.filter(e => e !== "Other"), otherExpertise ? `Other: ${otherExpertise}` : ""].filter(Boolean).join(", "),
         yearsExp,
@@ -240,6 +242,7 @@ export default function Submit({ onManageProfile }) {
               email={email} setEmail={setEmail}
               photoPreview={photoPreview} onPhotoUpload={handlePhotoUpload}
               country={country} setCountry={setCountry}
+              geoScope={geoScope} setGeoScope={setGeoScope}
               org={org} setOrg={setOrg}
               role={role} setRole={setRole}
               onBack={() => goStep(1)} onContinue={() => goStep(3)}
