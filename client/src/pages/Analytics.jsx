@@ -177,35 +177,34 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
             }
           </Geographies>
 
-          {REGION_MARKERS.map((marker) => {
-            if (marker.key !== selectedRegion) return null;
-            const count = selectedSpecialisation
-              ? filteredLeaders.filter((l) =>
-                  (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === marker.key
-                ).length
-              : regionTotals[marker.key] || 0;
-            if (!count) return null;
-            return (
-              <Annotation
-                key={marker.key}
-                subject={marker.coordinates}
-                dx={marker.dx}
-                dy={marker.dy}
-                connectorProps={{ stroke: "#F8571D", strokeWidth: 1.5, strokeLinecap: "round" }}
-              >
-                <g>
-                  <rect x="-62" y="-26" width="124" height="48" rx="10" fill="#F8571D" />
-                  {/* SVG text styles must stay inline — Tailwind cannot target SVG text elements */}
-                  <text textAnchor="middle" y="-8" style={{ fontSize: 13, fontWeight: 700, fill: "#ffffff", fontFamily: "system-ui" }}>
-                    {REGION_LABELS[marker.key]}
-                  </text>
-                  <text textAnchor="middle" y="11" style={{ fontSize: 11, fill: "#ffffff", fontFamily: "system-ui" }}>
-                    {count} Leaders
-                  </text>
-                </g>
-              </Annotation>
-            );
-          })}
+              {REGION_MARKERS.map((marker) => {
+                if (marker.key !== selectedRegion) return null;
+                const count = selectedSpecialisation
+                  ? filteredLeaders.filter((l) =>
+                      (l.region || COUNTRY_TO_REGION[l.country?.trim()]) === marker.key
+                    ).length
+                  : regionTotals[marker.key] || 0;
+                if (!count) return null;
+                // Place label on ocean, no connector line crossing the map
+                return (
+                  <Annotation
+                    key={marker.key}
+                    subject={marker.oceanCoords || marker.coordinates}
+                    connectorProps={{ stroke: "transparent", strokeWidth: 0 }}
+                  >
+                    <g>
+                      <rect x="-62" y="-26" width="124" height="48" rx="10" fill="#F8571D" />
+                      {/* SVG text styles must stay inline — Tailwind cannot target SVG text elements */}
+                      <text textAnchor="middle" y="-8" style={{ fontSize: 13, fontWeight: 700, fill: "#ffffff", fontFamily: "system-ui" }}>
+                        {REGION_LABELS[marker.key]}
+                      </text>
+                      <text textAnchor="middle" y="11" style={{ fontSize: 11, fill: "#ffffff", fontFamily: "system-ui" }}>
+                        {count} Leaders
+                      </text>
+                    </g>
+                  </Annotation>
+                );
+              })}
         </ComposableMap>
 
         {/* Clear Region button - under the map, more visible */}
