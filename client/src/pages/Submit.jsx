@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { storage } from "../firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { api } from "../api/leaders";
 import { compressImage } from "../utils/compressImage";
 import Button from "../components/Button";
 import {
@@ -86,13 +84,6 @@ export default function Submit({ onManageProfile }) {
     }
   }
 
-  async function uploadPhoto(file) {
-    const fileName = Date.now() + "-" + file.name.replace(/\s+/g, "-");
-    const storageRef = ref(storage, "profile-photos/" + fileName);
-    const snapshot = await uploadBytes(storageRef, file);
-    return getDownloadURL(snapshot.ref);
-  }
-
   function resetForm() {
     setFirstName(""); setLastName(""); setRole(""); setOrg("");
     setExpertise([]); setYearsExp(""); setSelectedCountries([]);
@@ -105,28 +96,25 @@ export default function Submit({ onManageProfile }) {
     setStatus("submitting");
     try {
       let photoUrl = "";
-      if (photo && import.meta.env.VITE_FIREBASE_API_KEY) {
-        photoUrl = await uploadPhoto(photo);
+      if (photo) {
+        photoUrl = await api.uploadPhoto(photo);
       }
-
-      const url = import.meta.env.VITE_APPS_SCRIPT_URL || "";
-      if (!url) { setTimeout(() => setStatus("submitted"), 1000); return; }
 
       const payload = {
         branch, firstName, lastName, email, role,
         organisation: org,
         country,
-        nominateLink: branch === "nominate" ? nominateLink : undefined,
+        nominateLink: branch === "nominate" ? nominateLink : null,
         expertise: [...expertise.filter(e => e !== "Other"), otherExpertise ? `Other: ${otherExpertise}` : ""].filter(Boolean).join(", "),
         yearsExp,
         countries: selectedCountries.join(", "),
-        bio, linkedin, notableText,
+        bio, linkedin,
         notableItems: notableItems.filter((item) => item.title || item.link || item.type),
         photoUrl,
       };
 
-      const r = await axios.post(url, payload, { headers: { "Content-Type": "application/json" } });
-      setStatus(r.data?.ok ? "submitted" : "error");
+      await api.submitProfile(payload);
+      setStatus("submitted");
     } catch (err) {
       console.error(err);
       setStatus("error");

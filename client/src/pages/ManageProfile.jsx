@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { MOCK_LEADERS } from "../data/mockData";
+import { api } from "../api/leaders";
 
 const INPUT_CLASS = "w-full px-[1.6rem] py-5 border-[1.5px] border-gray-300 rounded-lg text-1.5 outline-none bg-brand-blue-tint";
 const LABEL_CLASS = "block text-1.5 text-brand-dark mb-2";
@@ -33,55 +32,31 @@ export default function ManageProfile({ prefill, onBack }) {
   const [changes, setChanges] = useState("");
   const [reason, setReason] = useState("");
   const [status, setStatus] = useState("");
-  const [linkSent, setLinkSent] = useState(false);
   const [linkLoading, setLinkLoading] = useState(false);
-  const [linkError, setLinkError] = useState("");
   const [notFound, setNotFound] = useState(false);
   const [foundProfile, setFoundProfile] = useState(null);
 
-  async function requestMagicLink() {
-    if (!email) return;
+  async function lookupProfile() {
+    if (!firstName.trim() || !lastName.trim()) return;
     setLinkLoading(true);
     setLinkError("");
+    setNotFound(false);
+    setFoundProfile(null);
     try {
-      const url = import.meta.env.VITE_APPS_SCRIPT_URL || "";
-      if (!url) {
-        setLinkSent(true);
-        return;
-      }
-      const r = await axios.post(
-        url,
-        { action: "sendProfileLink", firstName, lastName, email, linkedin },
-        { headers: { "Content-Type": "application/json" } }
+      const all = await api.getLeaders("live");
+      const fn = firstName.trim().toLowerCase();
+      const ln = lastName.trim().toLowerCase();
+      const match = all.find(
+        (l) =>
+          String(l.first_name || "").toLowerCase() === fn &&
+          String(l.last_name  || "").toLowerCase() === ln
       );
-      if (r.data?.ok) setLinkSent(true);
-      else if (r.data?.error === "not_found")
-        setLinkError("We couldn't find a profile matching those details.");
-      else setLinkError("Something went wrong. Please try again.");
+      if (match) setFoundProfile(match);
+      else setNotFound(true);
     } catch {
-      setLinkError("Something went wrong. Please try again.");
+      setNotFound(true);
     } finally {
       setLinkLoading(false);
-    }
-  }
-
-  function lookupProfile() {
-    if (!firstName.trim() || !lastName.trim()) return;
-    const q = firstName.trim().toLowerCase();
-    const match = MOCK_LEADERS.find(
-      (l) =>
-        l.first_name.toLowerCase().includes(q) ||
-        l.last_name.toLowerCase().includes(q) ||
-        (l.first_name + " " + l.last_name)
-          .toLowerCase()
-          .includes(q + " " + lastName.trim().toLowerCase())
-    );
-    if (match) {
-      setFoundProfile(match);
-      setNotFound(false);
-    } else {
-      setNotFound(true);
-      setFoundProfile(null);
     }
   }
 
@@ -93,26 +68,17 @@ export default function ManageProfile({ prefill, onBack }) {
   async function submit() {
     setStatus("submitting");
     try {
-      const url = import.meta.env.VITE_APPS_SCRIPT_URL || "";
-      if (!url) {
-        setTimeout(() => setStatus("submitted"), 1000);
-        return;
-      }
-      const payload = {
-        action: "profileRequest",
+      await api.submitRequest({
         requestType,
         firstName: foundProfile?.first_name || firstName,
         lastName: foundProfile?.last_name || lastName,
         email,
         linkedin: foundProfile?.linkedin || linkedin,
-        changes: requestType === "update" ? changes : "",
-        reason: requestType === "delete" ? reason : "",
-      };
-      const r = await axios.post(url, payload, {
-        headers: { "Content-Type": "application/json" },
+        changes: requestType === "update" ? changes : null,
+        reason: requestType === "delete" ? reason : null,
+        leaderId: foundProfile?.id || null,
       });
-      if (r.data?.ok) setStatus("submitted");
-      else setStatus("error");
+      setStatus("submitted");
     } catch {
       setStatus("error");
     }
@@ -136,35 +102,6 @@ export default function ManageProfile({ prefill, onBack }) {
           <p className="text-1.3 text-gray-400">
             You'll be notified by email at {email}
           </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (linkSent) {
-    return (
-      <div className="bg-brand-cream min-h-[60vh] flex items-center justify-center p-6 font-sans">
-        <div className="text-center max-w-[420px]">
-          <div className="text-[4.8rem] mb-4">✉</div>
-          <h2 className="text-3xl font-bold text-brand-navy mb-3">
-            Check your inbox
-          </h2>
-          <p className="text-1.5 text-gray-600 leading-[1.7] mb-2">
-            We've sent your profile link to <strong>{email}</strong>.
-          </p>
-          <p className="text-1.3 text-gray-400 mb-5">
-            The link can only be used once. Check your spam folder if you don't
-            see it.
-          </p>
-          <button
-            onClick={() => {
-              setLinkSent(false);
-              setLinkError("");
-            }}
-            className="bg-transparent border-0 cursor-pointer text-1.3 text-brand-navy underline"
-          >
-            Try again with a different email
-          </button>
         </div>
       </div>
     );
@@ -267,10 +204,10 @@ export default function ManageProfile({ prefill, onBack }) {
                 ← BACK
               </button>
               <ContinueBtn
-                disabled={!firstName || !lastName}
+                disabled={!firstName || !lastName || linkLoading}
                 onClick={lookupProfile}
               >
-                FIND MY PROFILE →
+                {linkLoading ? "SEARCHING..." : "FIND MY PROFILE →"}
               </ContinueBtn>
             </div>
 
@@ -302,24 +239,6 @@ export default function ManageProfile({ prefill, onBack }) {
               </div>
             )}
 
-            {foundProfile && (
-              <div className="mt-4 text-center">
-                <button
-                  onClick={requestMagicLink}
-                  disabled={linkLoading || !email}
-                  className={`bg-transparent border-0 cursor-pointer text-1.3 text-brand-navy underline transition-opacity ${
-                    !email || linkLoading ? "opacity-40" : "opacity-100"
-                  }`}
-                >
-                  {linkLoading
-                    ? "Sending..."
-                    : "Or send my profile to this email instead →"}
-                </button>
-                {linkError && (
-                  <p className="text-1.3 text-red-500 mt-1.5">{linkError}</p>
-                )}
-              </div>
-            )}
           </div>
         )}
 

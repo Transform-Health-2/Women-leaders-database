@@ -1,0 +1,17 @@
+{
+  "name": "transformhealthdatabase",
+  "version": "1.0.0",
+  "description": "A project to increase visibility, representation, and engagement of women leaders across leadership, policy, and technical spaces in digital health.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.3",
+    "pg": "^8.20.0",
+    "ws": "^8.20.0"
+  }
+}

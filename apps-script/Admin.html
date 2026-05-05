@@ -47,12 +47,18 @@
         var html = '<h4>Pending submissions</h4>';
         if(!rows || rows.length === 0) html += '<div>No pending submissions</div>';
         else{
-          html += '<table><thead><tr><th>Name</th><th>Role / Org</th><th>Bio</th><th>Actions</th></tr></thead><tbody>';
+          html += '<table><thead><tr><th>Name</th><th>Type</th><th>Role / Org</th><th>Bio / Nomination link</th><th>Actions</th></tr></thead><tbody>';
           rows.forEach(function(r){
+            var isNomination = (r.branch === 'nominate');
+            var typeLabel = isNomination ? '<span style="background:#f59e0b;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px">Nomination</span>' : '<span style="background:#3b82f6;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px">Self</span>';
+            var bioCell = isNomination
+              ? (r.nominate_link ? '<a href="' + r.nominate_link + '" target="_blank" style="word-break:break-all">' + r.nominate_link + '</a>' : '<em>No link provided</em>')
+              : '<span style="max-width:420px;word-break:break-word">' + (r.bio||'') + '</span>';
             html += '<tr>';
             html += '<td>' + (r.first_name || '') + ' ' + (r.last_name||'') + '<br><small>' + (r.editor_email||'') + '</small></td>';
+            html += '<td>' + typeLabel + '</td>';
             html += '<td>' + (r.role||'') + '<br><small>' + (r.organisation||'') + '</small></td>';
-            html += '<td style="max-width:420px;word-break:break-word">' + (r.bio||'') + '</td>';
+            html += '<td style="max-width:420px">' + bioCell + '</td>';
             html += '<td><button class="btn btn-approve" onclick="approve(\''+r.id+'\')">Approve</button> <button class="btn btn-reject" onclick="reject(\''+r.id+'\')">Reject</button></td>';
             html += '</tr>';
           });

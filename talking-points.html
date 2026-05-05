@@ -32,8 +32,34 @@
     .nav-todo { color: #F8571D; }
     .nav-challenges { color: #18181b; }
     .nav-journey { color: #7C3AED; }
+    .nav-migration { color: #0891b2; }
     .nav-test { color: #166534; }
     .nav-live { color: #0A66C2; }
+
+    .step-block {
+      background: #fff; border-radius: 12px;
+      border: 1px solid #e5e7eb; padding: 18px 22px; margin-bottom: 12px;
+      display: grid; grid-template-columns: 2rem 1fr; gap: 12px; align-items: start;
+    }
+    .step-num {
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: #0891b2; color: #fff;
+      font-size: 0.85rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-body h3 { font-size: 0.95rem; font-weight: 700; color: #18181b; margin-bottom: 4px; }
+    .step-body p { font-size: 0.875rem; color: #444; line-height: 1.55; margin-bottom: 0; }
+    .step-body ul { padding-left: 16px; margin-top: 6px; }
+    .step-body li { font-size: 0.875rem; color: #444; line-height: 1.55; margin-bottom: 3px; }
+    .effort { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 2px 7px; border-radius: 99px; background: #e0f2fe; color: #0369a1; margin-left: 8px; vertical-align: middle; }
+
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin-bottom: 14px; }
+    .compare-table th { text-align: left; padding: 8px 12px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 2px solid #e5e7eb; }
+    .compare-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; color: #444; }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table td:first-child { color: #6b7280; }
+    .gone { color: #9ca3af; text-decoration: line-through; }
+    .win { color: #059669; font-weight: 600; }
 
     /* MAIN AREA */
     .main { flex: 1; overflow-y: auto; padding: 24px; }
@@ -93,7 +119,8 @@
       if (el) el.classList.add('active');
       var navLink = document.querySelector('nav a[data-section="' + id + '"]');
       if (navLink) navLink.classList.add('active');
-      document.querySelector('.main').scrollTop = 0;
+      var main = document.querySelector('.main');
+      if (main) main.scrollTop = 0;
     }
     document.addEventListener("DOMContentLoaded", function() {
       showSection('built');
@@ -109,6 +136,7 @@
     <a href="#" class="nav-todo" data-section="todo" onclick="showSection('todo'); return false;">What's Still to Do</a>
     <a href="#" class="nav-challenges" data-section="challenges" onclick="showSection('challenges'); return false;">Open Challenges</a>
     <a href="#" class="nav-journey" data-section="journey" onclick="showSection('journey'); return false;">User Journey</a>
+    <a href="#" class="nav-migration" data-section="migration" onclick="showSection('migration'); return false;">→ Supabase</a>
     <a href="testing-sheet.html" class="nav-test">📋 Testing Sheet</a>
     <a href="https://docs.google.com/spreadsheets/d/1ElqmE1NDvhSNrGPPcTU67g_ndKxsZs68FRn04yus4C0/edit" target="_blank" class="nav-live">📈 Live Sheet</a>
   </nav>
@@ -157,9 +185,12 @@
           <li>"Other" specialisation + 5 selection limit</li>
           <li>Bio character limit: 300–500 characters</li>
           <li>Countries of operation field (multi-select country picker)</li>
-          <li>Profile photo MANDATORY (5MB cap, client-side validation)</li>
-          <li>Image compression before upload</li>
+          <li>Profile photo UI — mandatory field, 5MB cap, client-side compression</li>
+          <li>All text fields submit to Sheets correctly</li>
         </ul>
+        <p style="margin-top:8px; font-size:0.8rem; color:#166534; background:#dcfce7; border-radius:6px; padding:6px 10px;">
+          ✓ Photo upload now working — Supabase Storage wired
+        </p>
       </div>
 
       <div class="card">
@@ -178,7 +209,7 @@
         <ul>
           <li>LinkedIn-based identity lookup</li>
           <li>Update or delete request flow</li>
-          <li>Magic link sent via email</li>
+          <li>Update/delete requests submitted directly to Supabase requests table</li>
         </ul>
       </div>
 
@@ -190,6 +221,7 @@
           <li>Expanded view: role, org, countries, years exp, expertise, bio, email</li>
           <li>Approve / reject / send edit-link actions</li>
           <li>Separate route, locked from public UI</li>
+          <li>Supabase Auth wired — <em>(currently open for testing, auth will be required before launch)</em></li>
         </ul>
       </div>
 
@@ -197,13 +229,16 @@
         <span class="tag done">Done</span>
         <h3>Backend / Integrations</h3>
         <ul>
-          <li>Google Sheets integration via Apps Script</li>
-          <li>API layer uses correct Apps Script POST format</li>
-          <li>bulkSeed endpoint for admin-only bulk data import</li>
-          <li>Magic link emails via Apps Script MailApp</li>
-          <li>Firebase Storage for profile photos</li>
+          <li>Supabase PostgreSQL as database — 82 leaders live in Supabase</li>
+          <li>Supabase Storage wired for photo uploads (profile-photos bucket)</li>
+          <li>Supabase Auth wired for admin login (test mode bypassed, code ready)</li>
+          <li>Supabase requests table for update/delete requests</li>
           <li>GitHub Pages deployment (CI/CD) with env secrets injected</li>
+          <li>Apps Script retained as legacy nomination email tool only</li>
         </ul>
+        <p style="margin-top:8px; font-size:0.8rem; color:#166534; background:#dcfce7; border-radius:6px; padding:6px 10px;">
+          ✓ 82 leaders live in Supabase. Photo storage, auth, and requests all wired. Firebase never implemented — now irrelevant.
+        </p>
       </div>
 
       <footer>Transform Health · Internal use only · Updated May 2026</footer>
@@ -253,21 +288,27 @@
       </div>
 
       <div class="card">
-        <span class="tag todo">To do</span>
-        <h3>Apps Script redeploy</h3>
-        <p>Client-side API calls are now correctly formatted. Still need to open Apps Script → Deploy → Manage deployments → Edit → "New version" to publish latest Code.gs changes.</p>
+        <span class="tag done">Done</span>
+        <h3>Photo storage — Live</h3>
+        <p>Supabase Storage wired. Photos upload on submission for the first time. Stored in <code>profile-photos</code> bucket; URL written to leader row on approval.</p>
       </div>
 
       <div class="card">
-        <span class="tag caution">Caution</span>
-        <h3>Admin authentication</h3>
-        <p>Admin console uses a simple password gate. Consider Firebase Auth or a more robust auth layer before wider rollout.</p>
+        <span class="tag todo">Before launch</span>
+        <h3>Re-enable admin auth gate</h3>
+        <p>Admin is currently open for testing — no login screen shown. Supabase Auth code is written and ready. One-line change to re-enable the login gate before going live.</p>
       </div>
 
       <div class="card">
-        <span class="tag caution">Caution</span>
-        <h3>Photo moderation</h3>
-        <p>Uploaded photos go straight to Firebase Storage. An admin review step before photos go live is recommended.</p>
+        <span class="tag todo">Before launch</span>
+        <h3>Create admin user</h3>
+        <p>Add an email/password user in the Supabase Auth dashboard before re-enabling the login gate. Manual step — no code changes needed.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag todo">Before launch</span>
+        <h3>Update GitHub Actions CI secrets</h3>
+        <p>Add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> to GitHub Actions secrets. Remove <code>VITE_APPS_SCRIPT_URL</code> and any Firebase vars that are no longer needed.</p>
       </div>
 
       <footer>Transform Health · Internal use only · Updated May 2026</footer>
@@ -281,20 +322,27 @@
       </header>
 
       <div class="challenge-block">
-        <h3><span style="font-size:1.1rem">🔗</span> LinkedIn URL scraping — why it won't work</h3>
-        <p>The current Manage Profile flow uses a LinkedIn URL as an identity token to look up who is requesting a profile change. The intent was to also <strong>auto-fill profile data by scraping the LinkedIn page</strong> — saving leaders from re-entering their role, organisation, and photo.</p>
-        <p><strong>The hard reality:</strong> LinkedIn aggressively blocks all automated scraping. Their terms of service prohibit it, they serve login walls to headless browsers, they rotate bot-detection fingerprinting, and they have taken legal action against scrapers (hiQ v. LinkedIn, 2022). Any scraper breaks within days of being built and puts the project at legal risk.</p>
-        <p><strong>Practical alternatives:</strong> (1) Ask users to paste their LinkedIn URL as a vanity identifier only — no scraping, just a hyperlink. (2) Use the <strong>LinkedIn API</strong> (requires partner approval, significant overhead). (3) Let users fill the form themselves — which is what the current Submit flow already does well.</p>
+        <h3><span style="font-size:1.1rem">🔗</span> LinkedIn — our deliberate approach</h3>
+        <p>LinkedIn has been progressively locking down its platform since 2015. The Profile API was removed from most partners by 2022. In 2023–2024 they doubled down on blocking automated tools and updated their Terms of Service to explicitly prohibit automated data collection. The <em>hiQ v. LinkedIn</em> case (2022) was remanded, leaving the legal status of scraping unresolved and high-risk. Any scraper built today breaks within days.</p>
+        <p><strong>Our position — form-first, not scrape-first.</strong> We treat LinkedIn as a vanity identifier and hyperlink only. The leader fills in their own data through our structured form. This is not a workaround — it is the better approach:</p>
+        <ul style="padding-left:18px; margin-top:6px; margin-bottom:8px;">
+          <li style="font-size:0.875rem; color:#444; margin-bottom:4px;"><strong>Consent-backed data.</strong> Every field was submitted with explicit consent. LinkedIn profile data carries no such consent and creates GDPR/privacy exposure.</li>
+          <li style="font-size:0.875rem; color:#444; margin-bottom:4px;"><strong>Structured and clean.</strong> Our form produces structured fields (expertise tags, years of experience, countries of operation) that LinkedIn free-text bios never would.</li>
+          <li style="font-size:0.875rem; color:#444; margin-bottom:4px;"><strong>Platform-independent.</strong> If LinkedIn changes again (as Twitter/X did for researchers in 2023), our data is ours. We own the database.</li>
+          <li style="font-size:0.875rem; color:#444; margin-bottom:4px;"><strong>Magic link self-service.</strong> Leaders can update their own profile without admin involvement via a one-time email link — no LinkedIn dependency required.</li>
+        </ul>
+        <p><strong>Forward looking:</strong> As professional networks fragment, having a self-sovereign database of consented, structured leader profiles is a strategic asset. We may explore <strong>ORCID</strong> (open researcher identity) or <strong>Open Badges</strong> as verifiable credential layers in a later version — both are open standards that LinkedIn cannot block.</p>
       </div>
 
       <div class="challenge-block">
-        <h3><span style="font-size:1.1rem">⚠️</span> Firebase Storage for photo uploads — proceed with caution</h3>
-        <p>Firebase Storage is already wired up and working for photo uploads in the Submit flow. It's convenient, but there are real risks to understand before going to production.</p>
-        <div class="two-col" style="margin-top:12px;">
-          <div><p><strong>Cost exposure</strong><br/>Firebase Storage bills per GB stored and per GB downloaded. If the directory grows to hundreds of profiles and gets traffic, costs can spike unexpectedly — especially with no CDN caching layer in front.</p></div>
-          <div><p><strong>No moderation gate</strong><br/>Anyone who submits the form can upload any image. Without an admin review step, inappropriate or oversized files go straight into the bucket and are publicly readable.</p></div>
-          <div><p><strong>Security rules</strong><br/>The default Firebase Storage rules are often left open during dev. Before launch, rules must restrict writes to authenticated users only and enforce file-type and size limits.</p></div>
-          <div><p><strong>Recommendation</strong><br/>Keep Firebase for now but: (1) add file-type + 2 MB size validation client-side (compression util exists), (2) add admin approval before a photo URL is written to the profile record, (3) set a monthly budget alert in the Firebase console.</p></div>
+        <h3><span style="font-size:1.1rem">📸</span> Photo storage — the unresolved piece</h3>
+        <p>Photo upload is the one feature the submit form collects but cannot complete. The UI enforces a mandatory photo, compresses it client-side, and is ready to upload — but there is no storage backend configured. Firebase was the plan; it never got implemented.</p>
+        <p><strong>Why Supabase Storage is the right resolution:</strong></p>
+        <div class="two-col">
+          <div><p><strong>No separate service</strong><br/>Supabase Storage lives in the same project as the database and auth. One dashboard, one set of credentials, one billing account.</p></div>
+          <div><p><strong>Row Level Security applies to files too</strong><br/>Storage policies can mirror database policies — public read, authenticated write — without separate Firebase security rule files.</p></div>
+          <div><p><strong>No cold-start cost surprises</strong><br/>Supabase free tier includes 1GB storage and 2GB bandwidth. Predictable until the directory scales significantly.</p></div>
+          <div><p><strong>Moderation gate built in</strong><br/>Because photo URL is only written to the <code>leaders</code> row on admin approval, no unmoderated image ever goes public.</p></div>
         </div>
       </div>
 
@@ -332,7 +380,7 @@
           <li><strong>Basic Info</strong> — first name, last name, <strong>email (private, not public)</strong>, profile photo <strong>(MANDATORY, 5MB cap, compressed)</strong>, country of residence, org, role</li>
           <li><strong>Profile Details</strong> — years of experience (pill selector), up to 5 expertise tags, "Other" with free-text, countries of operation (multi-select), bio (300–500 chars enforced)</li>
           <li><strong>Links & Achievements</strong> — LinkedIn URL, up to 3 notable items (title, link, type)</li>
-          <li>Hits <strong>Submit Profile</strong> → photo uploads to Firebase Storage, full payload POSTs to Apps Script → row written to Submissions sheet with <code>status: pending</code></li>
+          <li>Hits <strong>Submit Profile</strong> → payload written directly to Supabase <code>leaders</code> table via anon insert with <code>status: pending</code> · photo uploads to Supabase Storage <code>profile-photos</code> bucket</li>
           <li>Sees a thank-you screen: "profile under review, 3–5 business days"</li>
         </ul>
       </div>
@@ -362,19 +410,13 @@
             <li><strong>Update path:</strong> Picks "Update profile" → free-text box describing what to change → submits → <code>profileRequest</code> saved to Requests sheet, status <code>pending</code></li>
             <li><strong>Delete path:</strong> Picks "Remove profile" → optional reason field → submits → same profileRequest row, <code>request_type: delete</code></li>
           </ul>
-          <li><strong>Magic link alternative (faster):</strong></li>
-          <ul>
-            <li>On the identify step, after profile is found, there's also <strong>"Or send my profile to this email instead →"</strong></li>
-            <li>Triggers <code>sendProfileLink</code> → Apps Script looks up the profile, generates a one-time token, emails a magic link</li>
-            <li>User clicks link → token validated, marked used → profile snapshot returned to the FE → user lands directly in an edit view pre-filled with their current data</li>
-          </ul>
         </ul>
       </div>
 
       <div class="card">
         <span class="tag done">Admin</span>
         <h3>Admin</h3>
-        <p>Navigates to the <strong>Admin</strong> console (separate route, not in public nav):</p>
+        <p>Navigates to the <strong>Admin</strong> console (separate route, not in public nav). <em style="color:#b45309;">Currently in test mode — no login required. Auth will be re-enabled before launch.</em></p>
         <ul>
           <li><strong>Pending Submissions</strong> tab — all self-submitted profiles awaiting review. Searchable + filterable by country, expertise, sort order. Expand any row to see full bio, profile details, <strong>email (private)</strong>, LinkedIn. <strong>Approve</strong> → sets <code>status: live</code> → appears in public directory. <strong>Reject</strong> → sets <code>status: rejected</code>.</li>
           <li><strong>Nominated</strong> tab — nomination-only submissions (just a LinkedIn URL). Expand to see nominee details and a pre-built outreach message. Copy message to clipboard → reach out manually. Approve or reject once the person has been contacted and confirmed.</li>
@@ -394,7 +436,7 @@
 
         <div class="card" style="border-left: 4px solid #24588A;">
           <h3 style="font-size: 0.9rem; color: #24588A;">① Submit Form</h3>
-          <p>Submit form → Firebase (photo) + Apps Script (profile row, <code>status: pending</code>)</p>
+          <p>Submit form → Supabase (profile row, <code>status: pending</code>) · photo now uploads to Supabase Storage <code>profile-photos</code> bucket</p>
         </div>
 
         <div style="text-align: center; font-size: 1.2rem; color: #9ca3af;">↓</div>
@@ -409,8 +451,8 @@
 
         <div class="card" style="border-left: 4px solid #7C3AED;">
           <h3 style="font-size: 0.9rem; color: #7C3AED;">③ Leader Requests Update</h3>
-          <p>Leader requests update → Requests sheet (<code>pending</code>)<br/>
-          Admin sends magic link → one-time token emailed</p>
+          <p>Leader submits update/delete request directly to Supabase <code>requests</code> table (<code>status: pending</code>)<br/>
+          Admin reviews and acts on requests in the Admin console</p>
         </div>
 
         <div style="text-align: center; font-size: 1.2rem; color: #9ca3af;">↓</div>
@@ -426,6 +468,230 @@
           <h3 style="font-size: 0.9rem; color: #059669;">⑤ Admin Approves Again</h3>
           <p>Admin approves again → goes live in Directory</p>
         </div>
+      </div>
+
+      <footer>Transform Health · Internal use only · Updated May 2026</footer>
+    </section>
+
+    <!-- SUPABASE MIGRATION -->
+    <section id="migration">
+      <header>
+        <h1>→ Supabase: Completing the Stack</h1>
+        <p>The current stack hit its limits before photo storage was even live. Supabase finishes the job. · May 2026</p>
+      </header>
+
+      <div style="background:#dcfce7; border:1px solid #86efac; border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:0.9rem; font-weight:600; color:#166534;">
+        ✓ Migration complete — 82 leaders live in Supabase · May 2026
+      </div>
+
+      <!-- WHY -->
+      <h2>Where we are and why this is the right move</h2>
+      <div class="challenge-block" style="margin-bottom:20px;">
+        <p>We built fast with Google Sheets + Apps Script and got 81 leaders into a working directory. Then we hit a wall: Firebase Storage never got off the ground, Apps Script requires a manual redeploy every time we change a line of backend code, there's no real admin login, and the magic link system is entirely hand-rolled. We are not migrating from a complete stack — we are completing it for the first time.</p>
+        <p style="margin-top:8px;"><strong>Supabase is the single platform that closes every open gap.</strong></p>
+        <table class="compare-table" style="margin-top:12px;">
+          <thead>
+            <tr>
+              <th>Pain point today</th>
+              <th>With Supabase</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Every Code.gs change needs a manual "New version" redeploy on Google's side</td>
+              <td class="win">No deploy step — schema and functions update instantly</td>
+            </tr>
+            <tr>
+              <td>Admin login button is literally disabled — no real auth exists</td>
+              <td class="win">Supabase Auth gives proper email/password login in &lt;1 hour</td>
+            </tr>
+            <tr>
+              <td>Magic link flow built from scratch — token, Requests sheet, MailApp, mark-used logic</td>
+              <td class="win"><code>supabase.auth.signInWithOtp({ email })</code> — one line, production-grade</td>
+            </tr>
+            <tr>
+              <td>Reads all 81+ records to filter by status (no server-side query)</td>
+              <td class="win">SQL: <code>SELECT * FROM leaders WHERE status = 'live'</code> with an index</td>
+            </tr>
+            <tr>
+              <td>Firebase Storage + Apps Script + Google Sheets = 3 separate services</td>
+              <td class="win">Database + storage + auth + edge functions in one platform</td>
+            </tr>
+            <tr>
+              <td><code>expertise</code>, <code>countries</code>, <code>notableItems</code> stored as comma strings / JSON blobs in cells</td>
+              <td class="win">Proper columns, <code>text[]</code> arrays, or a related table with full query support</td>
+            </tr>
+            <tr>
+              <td>Admin must hit Refresh to see new submissions</td>
+              <td class="win">Supabase Realtime — new submissions appear in the queue live</td>
+            </tr>
+            <tr>
+              <td>Apps Script 6-minute execution limit and daily quota</td>
+              <td class="win">No execution limits on database queries</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- WHAT STAYS THE SAME -->
+      <h2>What stays the same</h2>
+      <div class="card" style="margin-bottom:20px;">
+        <ul>
+          <li>The entire React frontend — all pages, components, and UI</li>
+          <li>GitHub Pages deployment (or optionally move to Vercel for cleaner env var handling)</li>
+          <li>The submit form, admin console, analytics page, and directory — no UX changes</li>
+          <li>The 81 leaders — migrated via a one-time script, no data loss</li>
+        </ul>
+      </div>
+
+      <!-- WHAT'S RESOLVED -->
+      <h2>What Supabase resolves</h2>
+      <div class="card" style="margin-bottom:20px;">
+        <table class="compare-table">
+          <thead>
+            <tr><th>Current state</th><th>Supabase</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="gone">Google Sheets (database)</td><td>Supabase PostgreSQL — <code>leaders</code> + <code>requests</code> tables with proper schema</td></tr>
+            <tr><td class="gone">Apps Script API layer — manual redeploy every change</td><td>Supabase auto-generated REST API — no deploy step, ever</td></tr>
+            <tr><td style="color:#991b1b; font-weight:600;">Photo storage — not implemented</td><td class="win">Supabase Storage — first working photo upload, built-in</td></tr>
+            <tr><td style="color:#991b1b; font-weight:600;">Admin login — button disabled, no auth</td><td class="win">Supabase Auth — proper email/password login, first time</td></tr>
+            <tr><td class="gone">Hand-rolled magic link tokens in Requests sheet</td><td>Supabase Auth OTP — one function call, production-grade</td></tr>
+            <tr><td class="gone">Hardcoded ADMIN_PASSWORD in Script Properties</td><td>Supabase Auth session management — no secrets in env vars</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SCHEMA -->
+      <h2>New schema</h2>
+      <div class="card" style="margin-bottom:20px; font-size:0.875rem;">
+        <h3 style="margin-bottom:8px;">leaders</h3>
+        <pre style="background:#f8f8f8; border-radius:8px; padding:12px; font-size:0.78rem; overflow-x:auto; line-height:1.6; color:#374151;">id              uuid  primary key
+created_at      timestamptz
+branch          text  ('self' | 'nominate')
+first_name      text
+last_name       text
+role            text
+organisation    text
+bio             text
+linkedin        text
+photo_url       text
+status          text  ('pending' | 'live' | 'rejected')
+editor_email    text
+country         text
+nominate_link   text
+expertise       text[]   -- proper array, no more comma strings
+years_experience text
+countries       text[]   -- countries of operation
+notable_items   jsonb    -- [{title, link, type}]
+internal_note   text</pre>
+        <h3 style="margin-bottom:8px; margin-top:14px;">requests</h3>
+        <pre style="background:#f8f8f8; border-radius:8px; padding:12px; font-size:0.78rem; overflow-x:auto; line-height:1.6; color:#374151;">id              uuid  primary key
+created_at      timestamptz
+request_type    text  ('update' | 'delete')
+first_name      text
+last_name       text
+email           text
+linkedin        text
+changes         text
+reason          text
+status          text  ('pending' | 'approved' | 'dismissed')
+leader_id       uuid  references leaders(id)</pre>
+      </div>
+
+      <!-- MIGRATION STEPS -->
+      <h2>Migration steps</h2>
+
+      <div class="step-block">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Set up Supabase project <span class="effort">~1 hour</span> <span class="tag done" style="margin-left:8px; vertical-align:middle;">✓ Done</span></h3>
+          <ul>
+            <li>Create project at supabase.com (free tier)</li>
+            <li>Run schema SQL to create <code>leaders</code> and <code>requests</code> tables</li>
+            <li>Create a Storage bucket: <code>profile-photos</code> (public read, auth-gated write)</li>
+            <li>Enable Row Level Security — <code>leaders</code> readable by everyone, writeable by auth only</li>
+            <li>Add <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> to <code>.env</code> and GitHub Actions secrets</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Migrate the 81 leaders <span class="effort">~2 hours</span> <span class="tag done" style="margin-left:8px; vertical-align:middle;">✓ Done</span></h3>
+          <ul>
+            <li>Export current Sheet as CSV / use the existing bulkSeed data</li>
+            <li>Write a one-time Node script: read CSV → transform field names → <code>supabase.from('leaders').insert(rows)</code></li>
+            <li>Parse comma-separated <code>expertise</code> and <code>countries</code> strings into proper arrays on import</li>
+            <li>Verify row count and spot-check 5–10 records in the Supabase Table Editor</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Swap the API layer + wire photo storage for the first time <span class="effort">~1 day</span> <span class="tag done" style="margin-left:8px; vertical-align:middle;">✓ Done</span></h3>
+          <ul>
+            <li>Install <code>@supabase/supabase-js</code>, initialise client in <code>src/supabase.js</code></li>
+            <li>Replace every function in <code>api/leaders.js</code> with Supabase client calls — <code>getLeaders</code>, <code>submitProfile</code>, <code>approveRequest</code>, <code>rejectRequest</code>, <code>getRequests</code>, <code>approveDeleteRequest</code></li>
+            <li>Wire photo upload in <code>Submit.jsx</code> to <code>supabase.storage.from('profile-photos').upload()</code> — this is the first time photos will actually save anywhere</li>
+            <li>Remove the <code>VITE_FIREBASE_API_KEY</code> guard in <code>Submit.jsx</code> — upload runs unconditionally now</li>
+            <li>Delete <code>firebase.js</code> and remove Firebase dependencies from <code>package.json</code></li>
+            <li>Delete <code>apps-script/Code.gs</code> and <code>apps-script/Admin.html</code> — no longer needed</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Wire Supabase Auth for admin + magic links <span class="effort">~half day</span> <span class="tag done" style="margin-left:8px; vertical-align:middle;">✓ Done</span></h3>
+          <ul>
+            <li>Enable Email provider in Supabase Auth dashboard</li>
+            <li>Add admin login screen — <code>supabase.auth.signInWithPassword({ email, password })</code></li>
+            <li>Replace hand-rolled magic link flow in <code>ManageProfile.jsx</code> with <code>supabase.auth.signInWithOtp({ email })</code> — token generation, email sending, and one-time validation all handled by Supabase</li>
+            <li>Protect the admin route: check <code>supabase.auth.getSession()</code> on mount, redirect to login if no session</li>
+            <li>Remove <code>ADMIN_PASSWORD</code> Script Property reference — no longer exists</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step-block">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Test + cut over <span class="effort">~half day</span> <span class="tag done" style="margin-left:8px; vertical-align:middle;">✓ Done</span></h3>
+          <ul>
+            <li>Run full submit → approve → directory flow end-to-end</li>
+            <li>Test magic link (request → email → edit → re-submit → approve)</li>
+            <li>Test admin login, approve, reject, delete request</li>
+            <li>Remove <code>VITE_APPS_SCRIPT_URL</code> and Firebase env vars from <code>.env</code> and GitHub secrets</li>
+            <li>Deploy to GitHub Pages — verify CI passes with new env vars</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TOTAL EFFORT -->
+      <div class="card" style="border-left: 4px solid #059669; margin-bottom:20px;">
+        <h3 style="color:#059669;">Completed — 2 focused days</h3>
+        <p style="margin-top:6px;">This was not a migration from a working stack — it was completing the stack for the first time. The directory now has working photo uploads, real admin login (bypassed for testing), a proper PostgreSQL database, and all blocked items resolved in one move. 82 leaders live in Supabase. RLS verified. CI secrets pending update.</p>
+      </div>
+
+      <!-- LINKEDIN + IDENTITY — FORWARD LOOKING -->
+      <h2>Identity strategy — beyond LinkedIn</h2>
+      <div class="challenge-block">
+        <h3><span style="font-size:1.1rem">🔭</span> Forward-thinking approach to professional identity</h3>
+        <p>LinkedIn's API restrictions are getting tighter, not looser. Since 2022 they have removed profile access from most partners, blocked the majority of OAuth scopes, and updated their ToS to explicitly ban automated data collection. Treating LinkedIn as anything more than a hyperlink is a liability.</p>
+        <p><strong>Our current position is already the right one.</strong> LinkedIn URL = a public link to verify who someone is. Nothing more. All structured data lives in our own database, submitted with explicit consent.</p>
+        <p><strong>What we can build toward:</strong></p>
+        <ul style="padding-left:18px; margin-top:6px; margin-bottom:8px;">
+          <li style="font-size:0.875rem; color:#444; margin-bottom:5px;"><strong>ORCID integration.</strong> ORCID is an open, non-profit researcher identity standard used by 20M+ researchers globally. It has a real API, no scraping needed, and is explicitly designed for exactly this kind of directory. Worth exploring as an optional "verify via ORCID" button for leaders with academic or research backgrounds.</li>
+          <li style="font-size:0.875rem; color:#444; margin-bottom:5px;"><strong>Open Badges / Verifiable Credentials.</strong> Emerging W3C standard. Leaders could carry a "Transform Health Verified" credential in a digital wallet, portable across platforms — not locked to LinkedIn at all.</li>
+          <li style="font-size:0.875rem; color:#444; margin-bottom:5px;"><strong>Email-as-identity.</strong> The magic link pattern we already have is effectively passwordless, self-sovereign identity. When Supabase Auth handles this, it becomes production-grade with no extra work.</li>
+          <li style="font-size:0.875rem; color:#444; margin-bottom:5px;"><strong>Our data is our moat.</strong> A database of 81 (and growing) consented, structured, verified leader profiles is something LinkedIn cannot replicate — it is curated, purposeful, and consent-backed. That is the asset. LinkedIn is just a link.</li>
+        </ul>
+        <p><strong>Summary:</strong> Supabase migration + email OTP auth puts us in a position where professional identity is handled cleanly, without any dependency on platforms we do not control.</p>
       </div>
 
       <footer>Transform Health · Internal use only · Updated May 2026</footer>

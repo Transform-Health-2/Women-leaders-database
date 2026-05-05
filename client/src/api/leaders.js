@@ -1,31 +1,126 @@
-import axios from "axios";
-import { MOCK_LEADERS } from "../data/mockData";
-
-const BASE_URL = import.meta.env.VITE_APPS_SCRIPT_URL || "";
+import { supabase } from "../supabase";
 
 export const api = {
-  getLeaders: (status = "live") =>
-    BASE_URL
-      ? axios.get(`${BASE_URL}?api=entries&status=${status}`).then((r) => r.data || [])
-      : Promise.resolve(status === "live" ? MOCK_LEADERS : []),
+  getLeaders: async (status = "live") => {
+    const { data, error } = await supabase
+      .from("leaders")
+      .select("*")
+      .eq("status", status);
+    if (error) throw error;
+    return data || [];
+  },
 
-  submitProfile: (data) =>
-    axios.post(BASE_URL, data),
+  submitProfile: async (formData) => {
+    const payload = {
+      id: crypto.randomUUID(),
+      branch: formData.branch || "self",
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      role: formData.role || null,
+      organisation: formData.organisation || null,
+      bio: formData.bio || null,
+      linkedin: formData.linkedin || null,
+      photo_url: formData.photoUrl || null,
+      status: "pending",
+      editor_email: formData.email || null,
+      country: formData.country || null,
+      nominate_link: formData.nominateLink || null,
+      expertise: formData.expertise
+        ? formData.expertise.split(", ").filter(Boolean)
+        : [],
+      years_experience: formData.yearsExp || null,
+      countries: formData.countries
+        ? formData.countries.split(", ").filter(Boolean)
+        : [],
+      notable_items: formData.notableItems?.length ? formData.notableItems : null,
+    };
+    const { error } = await supabase.from("leaders").insert([payload]);
+    if (error) throw error;
+    return { ok: true };
+  },
 
-  getProfileByToken: (token) =>
-    axios.get(`${BASE_URL}?api=profile&token=${token}`).then((r) => r.data),
+  submitRequest: async (data) => {
+    const { error } = await supabase.from("requests").insert([{
+      id: crypto.randomUUID(),
+      request_type: data.requestType,
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email || null,
+      linkedin: data.linkedin || null,
+      changes: data.changes || null,
+      reason: data.reason || null,
+      status: "pending",
+      leader_id: data.leaderId || null,
+    }]);
+    if (error) throw error;
+    return { ok: true };
+  },
 
-  requestManage: (data) =>
-    axios.post(BASE_URL, { action: "sendProfileLink", ...data }),
+  getRequests: async () => {
+    const { data, error } = await supabase
+      .from("requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
 
-  getRequests: () =>
-    BASE_URL
-      ? axios.get(`${BASE_URL}?api=requests`).then((r) => r.data || [])
-      : Promise.resolve([]),
+  approveRequest: async (id) => {
+    const { error } = await supabase
+      .from("leaders")
+      .update({ status: "live" })
+      .eq("id", id);
+    if (error) throw error;
+    return { ok: true };
+  },
 
-  approveRequest: (id) =>
-    axios.post(BASE_URL, { action: "approve", id }),
+  rejectRequest: async (id) => {
+    const { error } = await supabase
+      .from("leaders")
+      .update({ status: "rejected" })
+      .eq("id", id);
+    if (error) throw error;
+    return { ok: true };
+  },
 
-  rejectRequest: (id) =>
-    axios.post(BASE_URL, { action: "reject", id }),
+  approveDeleteRequest: async (requestId) => {
+    const { data: req, error: reqErr } = await supabase
+      .from("requests")
+      .select("*")
+      .eq("id", requestId)
+      .single();
+    if (reqErr) throw reqErr;
+
+    const { data: leaders } = await supabase
+      .from("leaders")
+      .select("id")
+      .ilike("first_name", req.first_name)
+      .ilike("last_name", req.last_name)
+      .eq("status", "live")
+      .limit(1);
+
+    const updates = [];
+    if (leaders?.length) {
+      updates.push(
+        supabase.from("leaders").update({ status: "rejected" }).eq("id", leaders[0].id)
+      );
+    }
+    updates.push(
+      supabase.from("requests").update({ status: "approved" }).eq("id", requestId)
+    );
+    await Promise.all(updates);
+    return { ok: true };
+  },
+
+  uploadPhoto: async (file) => {
+    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+    const { data, error } = await supabase.storage
+      .from("profile-photos")
+      .upload(fileName, file, { upsert: false });
+    if (error) throw error;
+    const { data: { publicUrl } } = supabase.storage
+      .from("profile-photos")
+      .getPublicUrl(data.path);
+    return publicUrl;
+  },
 };

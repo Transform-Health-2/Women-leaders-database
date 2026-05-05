@@ -1,0 +1,111 @@
+-- ============================================================
+-- Transform Health Women Leaders Directory — Supabase Schema
+-- Run this in the Supabase SQL Editor (one paste, one run)
+-- ============================================================
+
+-- Leaders table
+create table if not exists public.leaders (
+  id                text primary key,
+  created_at        timestamptz default now(),
+  branch            text default 'self',
+  first_name        text not null,
+  last_name         text not null,
+  role              text,
+  organisation      text,
+  bio               text,
+  linkedin          text,
+  photo_url         text,
+  status            text default 'pending' check (status in ('pending', 'live', 'rejected')),
+  editor_email      text,
+  internal_note     text,
+  country           text,
+  nominate_link     text,
+  expertise         text[],
+  years_experience  text,
+  countries         text[],
+  notable_items     jsonb,
+  admin_token       text
+);
+
+-- Requests table
+create table if not exists public.requests (
+  id            text primary key,
+  created_at    timestamptz default now(),
+  request_type  text check (request_type in ('update', 'delete')),
+  first_name    text,
+  last_name     text,
+  email         text,
+  linkedin      text,
+  changes       text,
+  reason        text,
+  status        text default 'pending' check (status in ('pending', 'approved', 'dismissed')),
+  leader_id     text references public.leaders(id)
+);
+
+-- Row Level Security
+alter table public.leaders enable row level security;
+alter table public.requests enable row level security;
+
+-- Leaders: anyone can read live entries (public directory)
+create policy "Public read live leaders"
+  on public.leaders for select
+  using (status = 'live');
+
+-- Leaders: authenticated admin can read all entries
+create policy "Admin read all leaders"
+  on public.leaders for select
+  to authenticated
+  using (true);
+
+-- Leaders: anyone can submit (insert pending entry)
+create policy "Anyone can submit"
+  on public.leaders for insert
+  with check (true);
+
+-- Leaders: authenticated admin can approve / reject (update status)
+create policy "Admin can update leaders"
+  on public.leaders for update
+  to authenticated
+  using (true);
+
+-- Requests: anyone can submit a profile request
+create policy "Anyone can submit request"
+  on public.requests for insert
+  with check (true);
+
+-- Requests: authenticated admin can read and update requests
+create policy "Admin can manage requests"
+  on public.requests for all
+  to authenticated
+  using (true);
+
+-- Storage bucket for profile photos (public read, open write for now)
+insert into storage.buckets (id, name, public)
+values ('profile-photos', 'profile-photos', true)
+on conflict (id) do nothing;
+
+create policy "Public can view photos"
+  on storage.objects for select
+  using (bucket_id = 'profile-photos');
+
+create policy "Anyone can upload photos"
+  on storage.objects for insert
+  with check (bucket_id = 'profile-photos');
+
+-- ============================================================
+-- Test Results table (for testing-sheet.html persistence)
+-- RLS is intentionally disabled — test feedback is not sensitive
+-- ============================================================
+
+create table if not exists public.test_results (
+  id           text primary key,
+  created_at   timestamptz default now(),
+  session_id   text,
+  tester_name  text not null,
+  results      jsonb,
+  summary      jsonb
+);
+
+-- No RLS on test_results — open insert for all testers
+grant usage on schema public to anon;
+grant all on public.test_results to anon;

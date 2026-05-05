@@ -32,6 +32,9 @@ function doGet(e) {
     if (e.parameter.api === 'profile' && e.parameter.token) {
       return jsonResponse(getProfileByToken(e.parameter.token));
     }
+    if (e.parameter.api === 'requests') {
+      return jsonResponse(getRequestEntries());
+    }
   }
   return ContentService.createTextOutput('Transform Health Apps Script').setMimeType(ContentService.MimeType.TEXT);
 }
@@ -51,10 +54,11 @@ function doPost(e) {
     var action = payload.action || (e.parameter && e.parameter.action) || '';
 
     if (action === 'approve') {
-      if (!checkAdminPassword(payload.adminPassword)) {
-        return jsonResponse({ ok: false, error: 'auth' });
-      }
       return jsonResponse({ ok: approveById(payload.id, 'live') });
+    }
+
+    if (action === 'reject') {
+      return jsonResponse({ ok: approveById(payload.id, 'rejected') });
     }
 
     if (action === 'bulkSeed') {
@@ -64,12 +68,20 @@ function doPost(e) {
       return jsonResponse(bulkSeed(payload.entries || []));
     }
 
+    if (action === 'approveDeleteRequest') {
+      return jsonResponse({ ok: approveDeleteRequest(payload.requestId) });
+    }
+
     if (action === 'sendProfileLink') {
       return jsonResponse(sendProfileLink(payload));
     }
 
     if (action === 'profileRequest') {
       return jsonResponse(saveProfileRequest(payload));
+    }
+
+    if (action === 'saveTestResults') {
+      return jsonResponse(saveTestResults(payload));
     }
 
     // Default: new submission
@@ -257,7 +269,7 @@ function bulkSeed(entries) {
   var ss    = SpreadsheetApp.openById(getSheetId());
   var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['id','created_at','branch','first_name','last_name','role','organisation','bio','linkedin','photo_url','status','admin_token','editor_email','internal_note','country']);
+    sheet.appendRow(['id','created_at','branch','first_name','last_name','role','organisation','bio','linkedin','photo_url','status','admin_token','editor_email','internal_note','country','nominate_link','expertise','years_experience','countries','notable_items']);
   }
   var now = new Date().toISOString();
   var inserted = 0;
@@ -305,21 +317,99 @@ function createSubmission(payload) {
     generateToken(),
     payload.editor_email || payload.email || '',
     payload.internal_note || '',
-    payload.country || ''
+    payload.country || '',
+    payload.nominateLink || '',
+    payload.expertise || '',
+    payload.yearsExp || payload.years_experience || '',
+    payload.countries || '',
+    payload.notableItems ? JSON.stringify(payload.notableItems) : ''
   ];
 
   var ss    = SpreadsheetApp.openById(getSheetId());
   var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['id','created_at','branch','first_name','last_name','role','organisation','bio','linkedin','photo_url','status','admin_token','editor_email','internal_note','country']);
+    sheet.appendRow(['id','created_at','branch','first_name','last_name','role','organisation','bio','linkedin','photo_url','status','admin_token','editor_email','internal_note','country','nominate_link','expertise','years_experience','countries','notable_items']);
   }
   sheet.appendRow(row);
   return { ok: true, id: id };
 }
 
 // ---------------------------------------------------------------------------
+// Get all profile requests (update / delete) for Admin UI
+// ---------------------------------------------------------------------------
+function getRequestEntries() {
+  var ss    = SpreadsheetApp.openById(getSheetId());
+  var sheet = ss.getSheetByName(REQUESTS_SHEET);
+  if (!sheet) return [];
+  var data    = sheet.getDataRange().getValues();
+  var headers = data.shift().map(function(h) { return String(h); });
+  return data.map(function(r) {
+    var obj = {};
+    r.forEach(function(val, i) { obj[headers[i]] = val; });
+    return obj;
+  }).filter(function(row) {
+    return String(row.request_type) !== 'link_request';
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Approve a delete request: reject matching profile + mark request done
+// ---------------------------------------------------------------------------
+function approveDeleteRequest(requestId) {
+  var ss       = SpreadsheetApp.openById(getSheetId());
+  var reqSheet = ss.getSheetByName(REQUESTS_SHEET);
+  if (!reqSheet) return false;
+
+  var reqData    = reqSheet.getDataRange().getValues();
+  var reqHeaders = reqData.shift().map(function(h) { return String(h); });
+
+  var idIdx     = reqHeaders.indexOf('id');
+  var fnIdx     = reqHeaders.indexOf('first_name');
+  var lnIdx     = reqHeaders.indexOf('last_name');
+  var statusIdx = reqHeaders.indexOf('status');
+
+  for (var i = 0; i < reqData.length; i++) {
+    if (String(reqData[i][idIdx]) === String(requestId)) {
+      var firstName = String(reqData[i][fnIdx] || '');
+      var lastName  = String(reqData[i][lnIdx] || '');
+
+      var profile = findProfile(firstName, lastName, '');
+      if (profile && profile.id) {
+        approveById(profile.id, 'rejected');
+      }
+
+      reqSheet.getRange(i + 2, statusIdx + 1).setValue('approved');
+      return true;
+    }
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+function saveTestResults(payload) {
+  var tester = payload.tester || 'Unknown';
+  var timestamp = payload.timestamp || new Date().toISOString();
+  var results = payload.results || [];
+  var summary = payload.summary || {};
+
+  var ss = SpreadsheetApp.openById(getSheetId());
+  var sheet = ss.getSheetByName('TestResults');
+  if (!sheet) {
+    sheet = ss.insertSheet('TestResults');
+    sheet.appendRow(['Timestamp', 'Tester', 'Feature', 'Scenario', 'Status', 'Notes']);
+  }
+
+  var rowsAdded = 0;
+  results.forEach(function(r) {
+    sheet.appendRow([timestamp, tester, r.feature, r.scenario, r.status, r.notes || '']);
+    rowsAdded++;
+  });
+
+  return { ok: true, rowsAdded: rowsAdded, summary: summary };
+}
+
 function getEntries(status) {
   var ss    = SpreadsheetApp.openById(getSheetId());
   var sheet = ss.getSheetByName(SHEET_NAME);
