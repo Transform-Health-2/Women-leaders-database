@@ -26,6 +26,7 @@ module.exports = {
           parchment:     "#f7f3ec",
           "pink-light":  "#fff0f6",
           "blue-light":  "#f0f7ff",
+          "blue-tint":  "#e6f0ff",
           "red-light":   "#fff5f5",
           "blue-bright": "#00AAFF",
           "blue-border": "#d1d9ec",
