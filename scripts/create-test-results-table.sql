@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS test_results (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   tester_name text,
   section text,
-  feature text,
   scenario text,
   priority text,
   status text,

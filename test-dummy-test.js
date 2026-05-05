@@ -49,7 +49,6 @@ async function runTest() {
     [{
       tester_name: "Test User (OpenCode)",
       section: "Directory",
-      feature: "Dummy Test Feature",
       scenario: "Verify test results save to Supabase and display in Admin",
       priority: "important",
       status: "pass",
