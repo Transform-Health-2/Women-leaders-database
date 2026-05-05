@@ -439,104 +439,108 @@ export default function Admin({ onGoToDirectory }) {
         </aside>
 
         <main className="flex-1 flex flex-col overflow-hidden">
-          {/* Page header + stats */}
-          <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">
-                  {sidebarData.find((s) => s.id === activeTab)?.label}
-                </h2>
-                <p className="text-lg text-gray-600 mt-1">
-                  Review and manage member submissions, profile requests, and published entries.
-                </p>
-              </div>
-              <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-brand-yellow-border">
-                  <div className="text-[1.2rem] uppercase tracking-wider text-accent-amber">Pending</div>
-                  <div className="text-xl font-semibold text-accent-amber">{totalPendingCount}</div>
+          {/* Page header + stats - hidden for Tests tab */}
+          {activeTab !== "tests" && (
+            <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">
+                    {sidebarData.find((s) => s.id === activeTab)?.label}
+                  </h2>
+                  <p className="text-lg text-gray-600 mt-1">
+                    Review and manage member submissions, profile requests, and published entries.
+                  </p>
                 </div>
-                <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-green-300">
-                  <div className="text-[1.2rem] uppercase tracking-wider text-green-600">Live</div>
-                  <div className="text-xl font-semibold text-green-600">{liveCount}</div>
-                </div>
-                <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-red-300">
-                  <div className="text-[1.2rem] uppercase tracking-wider text-red-600">Rejected</div>
-                  <div className="text-xl font-semibold text-red-600">{rejectedCount}</div>
+                <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
+                  <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-brand-yellow-border">
+                    <div className="text-[1.2rem] uppercase tracking-wider text-accent-amber">Pending</div>
+                    <div className="text-xl font-semibold text-accent-amber">{totalPendingCount}</div>
+                  </div>
+                  <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-green-300">
+                    <div className="text-[1.2rem] uppercase tracking-wider text-green-600">Live</div>
+                    <div className="text-xl font-semibold text-green-600">{liveCount}</div>
+                  </div>
+                  <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-red-300">
+                    <div className="text-[1.2rem] uppercase tracking-wider text-red-600">Rejected</div>
+                    <div className="text-xl font-semibold text-red-600">{rejectedCount}</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Filter bar */}
-          <div className="px-8 py-4 border-b border-brand-parchment-border flex-shrink-0 bg-brand-parchment">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                <input
-                  value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); setAllPage(1); }}
-                  placeholder="Search name, org, role, expertise"
-                  className="min-w-[220px] rounded-lg border border-gray-300 px-4 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
-                />
-                {(activeTab === "pending" || activeTab === "all") && (
-                  <select
-                    value={filterCountry}
-                    onChange={(e) => { setFilterCountry(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
-                  >
-                    <option value="">All countries</option>
-                    {countries.map((country) => <option key={country} value={country}>{country}</option>)}
-                  </select>
-                )}
-                {(activeTab === "pending" || activeTab === "all") && (
-                  <select
-                    value={filterExpertise}
-                    onChange={(e) => { setFilterExpertise(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
-                  >
-                    <option value="">All expertise</option>
-                    {expertiseOptions.map((expertise) => <option key={expertise} value={expertise}>{expertise}</option>)}
-                  </select>
-                )}
+          {/* Filter bar - hidden for Tests tab */}
+          {activeTab !== "tests" && (
+            <div className="px-8 py-4 border-b border-brand-parchment-border flex-shrink-0 bg-brand-parchment">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                  <input
+                    value={searchQuery}
+                    onChange={(e) => { setSearchQuery(e.target.value); setAllPage(1); }}
+                    placeholder="Search name, org, role, expertise"
+                    className="min-w-[220px] rounded-lg border border-gray-300 px-4 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                  />
+                  {(activeTab === "pending" || activeTab === "all") && (
+                    <select
+                      value={filterCountry}
+                      onChange={(e) => { setFilterCountry(e.target.value); setAllPage(1); }}
+                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                    >
+                      <option value="">All countries</option>
+                      {countries.map((country) => <option key={country} value={country}>{country}</option>)}
+                    </select>
+                  )}
+                  {(activeTab === "pending" || activeTab === "all") && (
+                    <select
+                      value={filterExpertise}
+                      onChange={(e) => { setFilterExpertise(e.target.value); setAllPage(1); }}
+                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                    >
+                      <option value="">All expertise</option>
+                      {expertiseOptions.map((expertise) => <option key={expertise} value={expertise}>{expertise}</option>)}
+                    </select>
+                  )}
 
-                {activeTab === "all" && (
-                  <select
-                    value={filterClicks}
-                    onChange={(e) => { setFilterClicks(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
-                  >
-                    <option value="">All click counts</option>
-                    <option value="high">🔥 Most clicked (high)</option>
-                    <option value="low">📉 Least clicked (low)</option>
-                  </select>
-                )}
-                {activeTab === "pending" && (
-                  <select
-                    value={pendingSort}
-                    onChange={(e) => setPendingSort(e.target.value)}
-                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
-                  >
-                    <option value="name_az">Name A → Z</option>
-                    <option value="name_za">Name Z → A</option>
-                    <option value="date_new">Newest first</option>
-                    <option value="date_old">Oldest first</option>
-                    <option value="expertise">Expertise A → Z</option>
-                  </select>
-                )}
+                  {activeTab === "all" && (
+                    <select
+                      value={filterClicks}
+                      onChange={(e) => { setFilterClicks(e.target.value); setAllPage(1); }}
+                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                    >
+                      <option value="">All click counts</option>
+                      <option value="high">🔥 Most clicked (high)</option>
+                      <option value="low">📉 Least clicked (low)</option>
+                    </select>
+                  )}
+                  {activeTab === "pending" && (
+                    <select
+                      value={pendingSort}
+                      onChange={(e) => setPendingSort(e.target.value)}
+                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                    >
+                      <option value="name_az">Name A → Z</option>
+                      <option value="name_za">Name Z → A</option>
+                      <option value="date_new">Newest first</option>
+                      <option value="date_old">Oldest first</option>
+                      <option value="expertise">Expertise A → Z</option>
+                    </select>
+                  )}
+                </div>
+                <div className="text-[1.4rem] font-medium text-brand-navy">
+                  {activeTab === "pending"   ? `${filteredPending.length} of ${pendingCount} self-submitted`
+                  : activeTab === "nominated" ? `${nominatedCount} nominated`
+                  : activeTab === "all"       ? `${filteredAll.length} of ${allCount} total entries`
+                  : activeTab === "requests"  ? `${updateRequests.length} update · ${deleteRequests.length} delete`
+                  : `${requestsCount} pending requests`}
+                </div>
               </div>
-              <div className="text-[1.4rem] font-medium text-brand-navy">
-                {activeTab === "pending"   ? `${filteredPending.length} of ${pendingCount} self-submitted`
-                : activeTab === "nominated" ? `${nominatedCount} nominated`
-                : activeTab === "all"       ? `${filteredAll.length} of ${allCount} total entries`
-                : activeTab === "requests"  ? `${updateRequests.length} update · ${deleteRequests.length} delete`
-                : `${requestsCount} pending requests`}
-              </div>
+              {actionMessage && (
+                <div className="mt-4 rounded-lg px-4 py-3 text-lg border border-brand-green-border bg-green-50 text-green-800">
+                  {actionMessage}
+                </div>
+              )}
             </div>
-            {actionMessage && (
-              <div className="mt-4 rounded-lg px-4 py-3 text-lg border border-brand-green-border bg-green-50 text-green-800">
-                {actionMessage}
-              </div>
-            )}
-          </div>
+          )}
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-8 py-6">
