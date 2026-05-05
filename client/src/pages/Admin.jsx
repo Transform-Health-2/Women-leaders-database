@@ -77,6 +77,7 @@ export default function Admin({ onGoToDirectory }) {
   const [searchQuery,      setSearchQuery]      = useState("");
   const [filterCountry,    setFilterCountry]    = useState("");
   const [filterExpertise,  setFilterExpertise]  = useState("");
+  const [filterClicks,    setFilterClicks]    = useState(""); // "", "high", "low", "least"
   const [sortOrder,        setSortOrder]        = useState("az");
   const [expandedId,       setExpandedId]       = useState(null);
   const [expandedAllId,    setExpandedAllId]    = useState(null);
@@ -314,14 +315,34 @@ export default function Admin({ onGoToDirectory }) {
     const query = searchQuery.trim().toLowerCase();
     const results = all.filter((item) => {
       const text = [item.first_name, item.last_name, item.role, item.organisation, item.editor_email, item.expertise, item.country].filter(Boolean).join(" ").toLowerCase();
-      return !query || text.includes(query);
+      if (query && !text.includes(query)) return false;
+      if (filterCountry && item.country !== filterCountry) return false;
+      // Expertise filter
+      if (filterExpertise) {
+        const tags = toTags(item.expertise);
+        if (!tags.includes(filterExpertise)) return false;
+      }
+      // LinkedIn clicks filter
+      if (filterClicks === "high") {
+        if ((item.linkedin_clicks || 0) < 1) return false;
+      } else if (filterClicks === "low") {
+        if ((item.linkedin_clicks || 0) > 0) return false;
+      }
+      return true;
     });
     return results.slice().sort((a, b) => {
+      // Sort by clicks first if clicks filter is active
+      if (filterClicks === "high") {
+        return (b.linkedin_clicks || 0) - (a.linkedin_clicks || 0);
+      }
+      if (filterClicks === "low") {
+        return (a.linkedin_clicks || 0) - (b.linkedin_clicks || 0);
+      }
       const l = `${a.last_name} ${a.first_name}`.toLowerCase();
       const r = `${b.last_name} ${b.first_name}`.toLowerCase();
       return sortOrder === "za" ? (r < l ? -1 : r > l ? 1 : 0) : (l < r ? -1 : l > r ? 1 : 0);
     });
-  }, [all, searchQuery, sortOrder]);
+  }, [all, searchQuery, filterCountry, filterExpertise, filterClicks, sortOrder]);
 
   const sidebarData = [
     { ...SIDEBAR_ITEMS[0], count: pendingCount   },
@@ -460,6 +481,18 @@ export default function Admin({ onGoToDirectory }) {
                   >
                     <option value="">All expertise</option>
                     {expertiseOptions.map((expertise) => <option key={expertise} value={expertise}>{expertise}</option>)}
+                  </select>
+                )}
+
+                {activeTab === "all" && (
+                  <select
+                    value={filterClicks}
+                    onChange={(e) => { setFilterClicks(e.target.value); setAllPage(1); }}
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                  >
+                    <option value="">All click counts</option>
+                    <option value="high">🔥 Most clicked (high)</option>
+                    <option value="low">📉 Least clicked (low)</option>
                   </select>
                 )}
                 {activeTab === "pending" && (
