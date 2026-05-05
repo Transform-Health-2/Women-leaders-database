@@ -120,7 +120,7 @@ function Meta() {
 /** Tags — up to 3 expertise chips, with overflow count. */
 function Tags() {
   const { leader: l } = useCard();
-  const tags = (l.expertise || "").split(/,\s*/).filter(Boolean);
+  const tags = (Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/)).filter(Boolean);
   if (!tags.length) return null;
   return (
     <div className="flex flex-wrap gap-1 justify-center mb-4">

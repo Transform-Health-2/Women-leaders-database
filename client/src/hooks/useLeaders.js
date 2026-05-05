@@ -42,7 +42,10 @@ export function useLeaders({
       );
     }
 
-    if (expertise) result = result.filter((l) => (l.expertise || "").includes(expertise));
+    if (expertise) result = result.filter((l) => {
+      const tags = Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/);
+      return tags.some((t) => t.toLowerCase().includes(expertise.toLowerCase()));
+    });
     if (country)   result = result.filter((l) => l.country === country);
     if (continent) result = result.filter((l) => COUNTRY_TO_CONTINENT[l.country] === continent);
 

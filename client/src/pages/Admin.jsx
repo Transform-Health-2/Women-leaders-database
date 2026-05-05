@@ -1,72 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
 
-const MOCK_REQUESTS = [
-  {
-    id: "req_1",
-    request_type: "update",
-    first_name: "Jane",
-    last_name: "Doe",
-    email: "jane@example.com",
-    linkedin: "https://linkedin.com/in/janedoe",
-    changes: "New role: Chief Digital Officer at WHO. Please also update my bio.",
-    reason: "",
-    submitted_at: "2026-04-28",
-    status: "pending",
-    link_sent: false,
-  },
-  {
-    id: "req_2",
-    request_type: "update",
-    first_name: "Amina",
-    last_name: "Khan",
-    email: "amina@example.com",
-    linkedin: "https://linkedin.com/in/aminakhan",
-    changes: "Please update my expertise to include AI & automation.",
-    reason: "",
-    submitted_at: "2026-04-29",
-    status: "pending",
-    link_sent: false,
-  },
-  {
-    id: "req_3",
-    request_type: "delete",
-    first_name: "Maria",
-    last_name: "Santos",
-    email: "maria@example.com",
-    linkedin: "",
-    changes: "",
-    reason: "No longer in this role.",
-    submitted_at: "2026-04-29",
-    status: "pending",
-  },
-  {
-    id: "req_4",
-    request_type: "delete",
-    first_name: "Grace",
-    last_name: "Omondi",
-    email: "grace@example.com",
-    linkedin: "https://linkedin.com/in/graceomondi",
-    changes: "",
-    reason: "Preferring not to be listed publicly.",
-    submitted_at: "2026-04-30",
-    status: "pending",
-  },
-  {
-    id: "req_5",
-    request_type: "update",
-    first_name: "Fatima",
-    last_name: "Al-Hassan",
-    email: "fatima@example.com",
-    linkedin: "https://linkedin.com/in/fatimaalhassan",
-    changes: "Updated organisation and role.",
-    reason: "",
-    submitted_at: "2026-04-27",
-    status: "pending",
-    link_sent: true,
-  },
-];
-
 const SIDEBAR_ITEMS = [
   { id: "pending",   label: "Pending Submissions", icon: "inbox"     },
   { id: "nominated", label: "Nominated",            icon: "user-plus" },
@@ -122,10 +56,17 @@ function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
 }
 
+// expertise is stored as text[] in Supabase — normalise to array for all comparisons
+function toTags(expertise) {
+  if (!expertise) return [];
+  if (Array.isArray(expertise)) return expertise.filter(Boolean);
+  return expertise.split(/,\s*/).filter(Boolean);
+}
+
 export default function Admin({ onGoToDirectory }) {
   const [pending,          setPending]          = useState([]);
   const [all,              setAll]              = useState([]);
-  const [requests,         setRequests]         = useState(MOCK_REQUESTS);
+  const [requests,         setRequests]         = useState([]);
   const [loading,          setLoading]          = useState(true);
   const [activeTab,        setActiveTab]        = useState("pending");
   const [requestSubTab,    setRequestSubTab]    = useState("updates");
@@ -145,19 +86,21 @@ export default function Admin({ onGoToDirectory }) {
   const [copiedId,         setCopiedId]         = useState(null);
   const [showConfirm,      setShowConfirm]      = useState(null);
   const [pendingSort,      setPendingSort]      = useState("name_az");
-    const PAGE_SIZE = 15;
+  const PAGE_SIZE = 15;
 
   useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     setLoading(true);
     try {
-      const [pending, all] = await Promise.all([
+      const [pending, all, reqs] = await Promise.all([
         api.getLeaders("pending"),
         api.getLeaders("live"),
+        api.getRequests(),
       ]);
       setPending(pending || []);
       setAll(all || []);
+      if (reqs?.length) setRequests(reqs);
     } catch (e) {
       console.error("Failed to load admin data:", e);
     } finally {
@@ -285,13 +228,29 @@ export default function Admin({ onGoToDirectory }) {
   async function executeBulkDelete() {
     setActionMessage("");
     try {
-      await Promise.all(selectedDeletes.map((id) => api.approveRequest(id)));
+      await Promise.all(selectedDeletes.map((id) => api.approveDeleteRequest(id)));
       setRequests((current) => current.map((r) => selectedDeletes.includes(r.id) ? { ...r, status: "approved" } : r));
       setActionMessage(`${selectedDeletes.length} deletion request(s) approved.`);
       setSelectedDeletes([]);
     } catch (e) {
       console.error(e);
       setActionMessage("Unable to complete bulk deletion. Please try again.");
+    }
+  }
+
+  async function handleApproveSingleDelete(req) {
+    setActionId(req.id);
+    setActionMessage("");
+    try {
+      await api.approveDeleteRequest(req.id);
+      setRequests((current) => current.map((r) => r.id === req.id ? { ...r, status: "approved" } : r));
+      setActionMessage(`Profile for ${req.first_name} ${req.last_name} removed from directory.`);
+      setSelectedRequest(null);
+    } catch (e) {
+      console.error(e);
+      setActionMessage("Unable to complete deletion. Please try again.");
+    } finally {
+      setActionId(null);
     }
   }
 
@@ -321,7 +280,7 @@ export default function Admin({ onGoToDirectory }) {
 
   const expertiseOptions = useMemo(() => {
     const set = new Set();
-    [...pending, ...all].forEach((item) => { (item.expertise || "").split(/,\s*/).filter(Boolean).forEach((tag) => set.add(tag)); });
+    [...pending, ...all].forEach((item) => { toTags(item.expertise).forEach((tag) => set.add(tag)); });
     return Array.from(set).sort();
   }, [pending, all]);
 
@@ -332,7 +291,7 @@ export default function Admin({ onGoToDirectory }) {
       if (query && !text.includes(query)) return false;
       if (filterCountry && item.country !== filterCountry) return false;
       if (filterExpertise) {
-        const tags = (item.expertise || "").split(/,\s*/).map((tag) => tag.toLowerCase());
+        const tags = toTags(item.expertise).map((tag) => tag.toLowerCase());
         if (!tags.includes(filterExpertise.toLowerCase())) return false;
       }
       return true;
@@ -342,7 +301,7 @@ export default function Admin({ onGoToDirectory }) {
       if (pendingSort === "name_za") { const l = `${a.last_name} ${a.first_name}`.toLowerCase(); const r = `${b.last_name} ${b.first_name}`.toLowerCase(); return r < l ? -1 : r > l ? 1 : 0; }
       if (pendingSort === "date_new") { const aD = a.submitted_at || a.created_at || ""; const bD = b.submitted_at || b.created_at || ""; return bD.localeCompare(aD); }
       if (pendingSort === "date_old") { const aD = a.submitted_at || a.created_at || ""; const bD = b.submitted_at || b.created_at || ""; return aD.localeCompare(bD); }
-      if (pendingSort === "expertise") { const aE = (a.expertise || "").toLowerCase(); const bE = (b.expertise || "").toLowerCase(); return aE < bE ? -1 : aE > bE ? 1 : 0; }
+      if (pendingSort === "expertise") { const aE = toTags(a.expertise).join(", ").toLowerCase(); const bE = toTags(b.expertise).join(", ").toLowerCase(); return aE < bE ? -1 : aE > bE ? 1 : 0; }
       return 0;
     });
   }, [pending, searchQuery, filterCountry, filterExpertise, pendingSort]);
@@ -382,9 +341,7 @@ export default function Admin({ onGoToDirectory }) {
             <div className="text-xl font-semibold text-gray-900">Admin Console</div>
           </div>
           <div className="flex justify-end">
-            <button disabled className="rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-[1.4rem] font-medium text-gray-500 cursor-not-allowed">
-              Login
-            </button>
+            <span className="text-[1.3rem] text-gray-400 italic">Test mode — no login required</span>
           </div>
         </div>
       </header>
@@ -764,10 +721,11 @@ export default function Admin({ onGoToDirectory }) {
                                 </div>
                                 <div className="flex items-center gap-3">
                                   <button
-                                    onClick={() => { setRequests(requests.map(r => r.id === req.id ? { ...r, status: "approved" } : r)); setSelectedRequest(null); }}
-                                    className="px-4 py-2 text-[1.4rem] font-medium rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors"
+                                    onClick={() => handleApproveSingleDelete(req)}
+                                    disabled={actionId === req.id}
+                                    className="px-4 py-2 text-[1.4rem] font-medium rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
                                   >
-                                    Approve deletion
+                                    {actionId === req.id ? "..." : "Approve deletion"}
                                   </button>
                                   <button
                                     onClick={() => { setRequests(requests.map(r => r.id === req.id ? { ...r, status: "dismissed" } : r)); setSelectedRequest(null); }}
@@ -858,7 +816,7 @@ export default function Admin({ onGoToDirectory }) {
                                     <div><span className="text-brand-navy font-semibold">Country: </span>{item.country || "—"}</div>
                                     <div><span className="text-brand-navy font-semibold">Countries of operation: </span>{item.selectedCountries || "—"}</div>
                                     <div><span className="text-brand-navy font-semibold">Years of experience: </span>{item.yearsExp || "—"}</div>
-                                    <div><span className="text-brand-navy font-semibold">Expertise: </span>{item.expertise || "—"}</div>
+                                    <div><span className="text-brand-navy font-semibold">Expertise: </span>{toTags(item.expertise).join(", ") || "—"}</div>
                                   </div>
                                 </div>
                               <div className="rounded-lg p-4 bg-brand-parchment border border-brand-pink-border">
@@ -1211,7 +1169,7 @@ export default function Admin({ onGoToDirectory }) {
             Women Leaders in Digital Health Database — Admin console
           </div>
           <div className="text-[1.3rem] text-gray-500">
-            Admin access will require login in the next iteration.
+            Test mode — auth will be required before launch
           </div>
         </div>
       </footer>
