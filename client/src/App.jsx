@@ -221,7 +221,7 @@ function App() {
 
         {showManageModal && (
           <div
-            className="fixed inset-0 z-[100] flex items-end bg-black/40"
+            className="fixed inset-0 z-[1100] flex items-end bg-black/40"
             onClick={closeManageModal}
           >
             <div
