@@ -1,0 +1,177 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]: Transform Health · Testing Sheet
+    - generic [ref=e4]:
+      - link "← Talking Points" [ref=e5] [cursor=pointer]:
+        - /url: talking-points.html
+      - link "🔗 Live App" [ref=e6] [cursor=pointer]:
+        - /url: https://tich-labs.github.io/transform-health-directory/
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - heading "Functional Testing Checklist" [level=1] [ref=e10]
+        - paragraph [ref=e11]: Click any row to expand step-by-step instructions · Results auto-save to your browser
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: Your Name *
+          - textbox "Your Name *" [ref=e15]:
+            - /placeholder: Enter your name…
+        - button "Save Now" [ref=e16] [cursor=pointer]
+        - button "Export CSV" [ref=e17] [cursor=pointer]
+        - button "Reset" [ref=e18] [cursor=pointer]
+    - generic [ref=e21]: Auto-saves when you mark a test
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]: Overall progress — 0% complete
+        - generic [ref=e25]: 32 total
+      - generic [ref=e27]:
+        - generic [ref=e28]: 0 passed
+        - generic [ref=e29]: 0 failed
+        - generic [ref=e30]: 32 pending
+  - generic [ref=e31]:
+    - button "★ Start Here About this testing sheet & how to use it Click to hide ✕" [expanded] [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]:
+        - generic [ref=e34]: ★ Start Here
+        - generic [ref=e35]: About this testing sheet & how to use it
+      - generic [ref=e36]:
+        - generic [ref=e37]: Click to hide
+        - generic [ref=e38]: ✕
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - generic [ref=e41]: What you're testing
+        - generic [ref=e42]: Transform Health Women Leaders Database
+        - generic [ref=e43]:
+          - text: A public directory of women leaders in digital health, built for Transform Health. The platform lets users browse profiles, submit their own profile or nominate someone, manage existing profiles, and view analytics. Admins review and approve submissions through a private console.
+          - link "→ Open the live app" [ref=e44] [cursor=pointer]:
+            - /url: https://tich-labs.github.io/transform-health-directory/
+      - generic [ref=e45]:
+        - generic [ref=e46]: Testing environment
+        - generic [ref=e47]: Live Supabase — Test Mode
+        - generic [ref=e48]:
+          - text: You are testing against the
+          - strong [ref=e49]: real Supabase database
+          - text: . Any profiles or nominations you submit during testing will appear in the admin queue.
+          - strong [ref=e50]: Admin access
+          - text: is open — no login is required. Navigate to the Admin tab directly from the nav bar.
+          - text: Use clearly fake names like
+          - emphasis [ref=e51]: "\"Test Tester\""
+          - text: for any submissions so they can be easily identified and cleaned up afterwards.
+      - generic [ref=e52]:
+        - generic [ref=e53]: Priority guide
+        - generic [ref=e54]: What each dot means
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - strong [ref=e58]: Critical
+            - text: — Must work before launch. A fail here is a blocker.
+          - generic [ref=e59]:
+            - strong [ref=e61]: Important
+            - text: — Should work. Document it if broken but not a hard stop.
+          - generic [ref=e62]:
+            - strong [ref=e64]: Nice to have
+            - text: — Good to confirm but lowest priority.
+      - generic [ref=e65]:
+        - generic [ref=e66]: How to use this sheet
+        - generic [ref=e67]: Step through section by section
+        - generic [ref=e68]:
+          - strong [ref=e69]: 1. Enter your name
+          - text: at the top — results are saved against it.
+          - strong [ref=e70]: 2. Work through each tab
+          - text: in order. The tab bar shows your pass/total count per section.
+          - strong [ref=e71]: 3. Click any test row
+          - text: to expand the step-by-step instructions for that scenario.
+          - strong [ref=e72]: 4. Set the status
+          - text: to Pass, Fail, or leave as Pending.
+          - strong [ref=e73]: 5. Add notes
+          - text: in the text box — include anything unexpected, error messages, or observations.
+          - text: Results
+          - strong [ref=e74]: auto-save
+          - text: to your browser and to Supabase when you enter your name. Use Export CSV to share results.
+      - generic [ref=e75]:
+        - generic [ref=e76]: Sections covered
+        - generic [ref=e77]: 6 sections · 31 test cases
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - generic [ref=e80]: "1"
+            - text: Setup Check — Supabase connection & admin access
+          - generic [ref=e81]:
+            - generic [ref=e82]: "2"
+            - text: Directory — Search, filters, profile modal, privacy
+          - generic [ref=e83]:
+            - generic [ref=e84]: "3"
+            - text: Analytics — Map, region & specialisation filters
+          - generic [ref=e85]:
+            - generic [ref=e86]: "4"
+            - text: Submit & Nominate — Full form flow, validation, photo
+          - generic [ref=e87]:
+            - generic [ref=e88]: "5"
+            - text: Manage Profile — Lookup, update & delete requests
+          - generic [ref=e89]:
+            - generic [ref=e90]: "6"
+            - text: Admin Console — Approve, reject, profile requests
+  - generic [ref=e91]:
+    - button "Setup Check 0/2" [ref=e92] [cursor=pointer]:
+      - text: Setup Check
+      - generic [ref=e93]: 0/2
+    - button "Directory 0/7" [ref=e94] [cursor=pointer]:
+      - text: Directory
+      - generic [ref=e95]: 0/7
+    - button "Analytics 0/4" [ref=e96] [cursor=pointer]:
+      - text: Analytics
+      - generic [ref=e97]: 0/4
+    - button "Submit & Nominate 0/8" [ref=e98] [cursor=pointer]:
+      - text: Submit & Nominate
+      - generic [ref=e99]: 0/8
+    - button "Manage Profile 0/4" [ref=e100] [cursor=pointer]:
+      - text: Manage Profile
+      - generic [ref=e101]: 0/4
+    - button "Admin Console 0/7" [ref=e102] [cursor=pointer]:
+      - text: Admin Console
+      - generic [ref=e103]: 0/7
+  - generic [ref=e104]:
+    - generic [ref=e105]:
+      - generic [ref=e106]:
+        - generic [ref=e107]: Section 1 of 6
+        - generic [ref=e108]: Setup Check
+        - generic [ref=e109]: 2 test cases · 0 passed · 0 failed · 2 pending
+      - button "Next section →" [ref=e111] [cursor=pointer]
+    - table [ref=e112]:
+      - rowgroup [ref=e113]:
+        - row "Priority Test Scenario (click row for how-to steps) Status Notes / Feedback" [ref=e114]:
+          - columnheader "Priority" [ref=e115]
+          - columnheader "Test Scenario (click row for how-to steps)" [ref=e116]
+          - columnheader "Status" [ref=e117]
+          - columnheader "Notes / Feedback" [ref=e118]
+      - rowgroup [ref=e119]:
+        - row "Critical critical Site loads from Supabase ↕ click row for how-to steps ⏳ Pending" [ref=e120] [cursor=pointer]:
+          - cell "Critical critical" [ref=e121]:
+            - generic "Critical" [ref=e122]
+            - text: critical
+          - cell "Site loads from Supabase ↕ click row for how-to steps" [ref=e123]:
+            - generic [ref=e124]: Site loads from Supabase
+            - generic [ref=e125]: ↕ click row for how-to steps
+          - cell "⏳ Pending" [ref=e126]:
+            - combobox [ref=e127]:
+              - option "⏳ Pending" [selected]
+              - option "✅ Pass"
+              - option "❌ Fail"
+          - cell [ref=e128]:
+            - textbox "Add notes or feedback…" [ref=e129]
+        - row "Critical critical Admin tab accessible (test mode) ↕ click row for how-to steps ⏳ Pending" [ref=e130] [cursor=pointer]:
+          - cell "Critical critical" [ref=e131]:
+            - generic "Critical" [ref=e132]
+            - text: critical
+          - cell "Admin tab accessible (test mode) ↕ click row for how-to steps" [ref=e133]:
+            - generic [ref=e134]: Admin tab accessible (test mode)
+            - generic [ref=e135]: ↕ click row for how-to steps
+          - cell "⏳ Pending" [ref=e136]:
+            - combobox [ref=e137]:
+              - option "⏳ Pending" [selected]
+              - option "✅ Pass"
+              - option "❌ Fail"
+          - cell [ref=e138]:
+            - textbox "Add notes or feedback…" [ref=e139]
+    - generic [ref=e140]:
+      - generic [ref=e141]: Section 1 of 6 · Setup Check
+      - generic [ref=e142]:
+        - button "← Previous" [ref=e143] [cursor=pointer]
+        - button "Next →" [ref=e144] [cursor=pointer]

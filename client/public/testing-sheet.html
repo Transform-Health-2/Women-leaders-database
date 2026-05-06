@@ -433,7 +433,49 @@
         currentSectionIndex = parseInt(savedSection, 10) || 0;
       }
 
+      // Auto-fill tester name from localStorage
+      const savedTesterName = localStorage.getItem("th-tester-name");
+      if (savedTesterName) {
+        document.getElementById("tester-name").value = savedTesterName;
+      }
+
       renderAll();
+    }
+
+    async function loadTesterResults(name) {
+      if (!name.trim() || !supabaseClient) return;
+      setDot("loading");
+      document.getElementById("save-text").textContent = "Loading previous results…";
+      try {
+        const { data, error } = await supabaseClient.from("test_results").select("*").eq("tester_name", name);
+        if (error) throw error;
+        if (data && data.length > 0) {
+          // Map Supabase results back into the local results array
+          results = DEFAULT_RESULTS.map(def => {
+            const saved = data.find(d => d.scenario === def.scenario);
+            return saved ? { ...def, status: saved.status, notes: saved.notes } : { ...def };
+          });
+          persist();
+          renderAll();
+          setDot("saved");
+          document.getElementById("save-text").textContent = `Loaded ${data.length} previous results from ${name} ✓`;
+        } else {
+          setDot("");
+          document.getElementById("save-text").textContent = "Starting fresh — no previous results found";
+        }
+      } catch (err) {
+        setDot("error");
+        document.getElementById("save-text").textContent = "Failed to load previous results";
+        console.warn("Load failed", err);
+      }
+    }
+
+    function onTesterNameChange() {
+      const name = document.getElementById("tester-name").value.trim();
+      if (name) {
+        localStorage.setItem("th-tester-name", name);
+        loadTesterResults(name);
+      }
     }
 
     function persist() {
@@ -621,7 +663,7 @@
     <div class="hero-right" style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
       <div class="tester-input-wrap">
         <label for="tester-name">Your Name *</label>
-        <input type="text" id="tester-name" placeholder="Enter your name…" oninput="debouncedSave();" />
+        <input type="text" id="tester-name" placeholder="Enter your name…" oninput="onTesterNameChange();" />
       </div>
       <button class="btn btn-primary" onclick="saveToSupabase()">Save Now</button>
       <button class="btn btn-ghost"   onclick="exportToCSV()">Export CSV</button>
@@ -767,8 +809,7 @@
   <div class="section-nav-bottom">
     <span class="nav-info" id="bottom-nav-info"></span>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-ghost" onclick="prevSection()">← Previous</button>
-      <button class="btn btn-orange" onclick="nextSection()">Next →</button>
+      <button class="w-full inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-[1.4rem] font-medium text-gray-600 bg-white hover:bg-gray-50 hover:text-brand-navy transition-colors" onclick="window.open('./ADMIN_USER_MANUAL.html', '_blank')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>User Manual</button>
     </div>
   </div>
 

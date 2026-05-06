@@ -493,7 +493,7 @@
         <h3>Admin</h3>
         <p>Navigates to the <strong>Admin</strong> console (separate route, not in public nav). <em style="color:#b45309;">Currently in test mode — no login required. Auth will be re-enabled before launch.</em></p>
         <ul>
-          <li><strong>Pending Submissions</strong> tab — all self-submitted profiles awaiting review. Searchable + filterable by country, expertise, sort order. Expand any row to see full bio, profile details, <strong>email (private)</strong>, LinkedIn. <strong>Approve</strong> → sets <code>status: live</code> → appears in public directory. <strong>Reject</strong> → sets <code>status: rejected</code>.</li>
+          <li><strong>Pending Submissions</strong> tab — all self-submitted profiles awaiting review. Searchable + filterable by country, expertise, sort order. Expand any row to see full bio, profile details, <strong>email (private)</strong>, LinkedIn. <strong>Approve</strong> → sets <code>status: live</code> → appears in public directory. <strong>Reject</strong> → sets <code>status: rejected</code>. Rows flagged with <strong>⚠ Possible duplicate</strong> badge if name matches an existing live leader.</li>
           <li><strong>Nominated</strong> tab — nomination-only submissions (just a LinkedIn URL). Expand to see nominee details and a pre-built outreach message. Copy message to clipboard → reach out manually. Approve or reject once the person has been contacted and confirmed.</li>
           <li><strong>Profile Requests</strong> tab — update and delete requests from existing leaders.</li>
           <ul>
@@ -501,8 +501,10 @@
             <li><strong>Deletes</strong> sub-tab — leader wants to be removed; admin checks boxes and approves → profile set to <code>rejected</code> and removed from public directory</li>
           </ul>
           <li><strong>All Entries</strong> tab — full table of every record (live, pending, rejected) with search, sort, pagination, expandable detail rows.</li>
-          <li><strong>NEW: LinkedIn Clicks column</strong> — shows click count for each leader. Filter by <strong>"Most clicked"</strong> (high engagement) or <strong>"Least clicked"</strong> (low engagement) to identify underperforming profiles.</li>
-          <li><strong>NEW: Expertise filter</strong> — filter All Entries by any expertise tag (e.g. "Digital Health Policy").</li>
+          <li><strong>LinkedIn Clicks column</strong> — shows click count for each leader. Filter by <strong>"Most clicked"</strong> or <strong>"Least clicked"</strong>.</li>
+          <li><strong>Expertise filter</strong> — filter All Entries by any expertise tag.</li>
+          <li><strong>Test Results</strong> tab — live dashboard of QA submissions from the testing sheet (pass/fail/pending summary, grouped by tester and section).</li>
+          <li><strong>User Manual</strong> — accessible via button in the sidebar footer above "View directory". TOC-driven single-section view (no long scroll); covers all tabs, workflows, duplicate detection, status reference, and pre-launch checklist. Source: <code>client/src/pages/AdminManual.jsx</code> + <code>docs/admin-manual.md</code>.</li>
           <li>Summary stats (Pending / Live / Rejected counts) always visible at the top.</li>
         </ul>
       </div>

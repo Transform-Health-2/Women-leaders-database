@@ -6,7 +6,8 @@ A project to increase visibility, representation, and engagement of women leader
 
 - **`client/`** — React + Vite frontend application
 - **`scripts/`** — One-time migration and utility scripts (includes `create-test-results-table.sql`)
-- **`testing-sheet.html`** — Standalone testing checklist (in `client/public/`, bundled with build)
+- **`docs/`** — Internal documentation (`admin-manual.md`)
+- **`client/public/testing-sheet.html`** — Standalone QA testing checklist (bundled with build)
 - **`.github/workflows/`** — GitHub Actions for automatic deployment to GitHub Pages
 
 ---
@@ -157,19 +158,27 @@ client/src/
 ├── main.jsx             # Entry point
 ├── supabase.js          # Supabase client initialization
 ├── api/
-│   └── leaders.js       # All Supabase calls: getLeaders, submitProfile, approveRequest, getTestResults, etc.
+│   └── leaders.js       # All Supabase calls: getLeaders, submitProfile, approveRequest,
+│                        # checkDuplicateName, getTestResults, etc.
 ├── components/
+│   ├── LeaderCard.jsx   # Profile card (expertise tags title-cased)
 │   ├── SiteHeader.jsx   # Top header bar
 │   └── SiteFooter.jsx   # Footer
 ├── pages/
 │   ├── Database.jsx     # Public directory with search/filter
-│   ├── Submit.jsx       # Multi-step submission form with geo scope + photo uploads to Supabase Storage
-│   ├── SubmitSteps.jsx   # Step components: Branch, Consent, BasicInfo (geo scope), ProfileDetails, Links
+│   ├── Submit.jsx       # Multi-step form — centered max-w-[1000px], off-canvas illustration,
+│                        # duplicate name check on blur
+│   ├── SubmitSteps.jsx  # Step components: Branch, Consent, BasicInfo (country mandatory),
+│                        # ProfileDetails (geo scope here), Links
 │   ├── ManageProfile.jsx # Update/remove profile flow (requests written to Supabase)
 │   ├── Analytics.jsx    # Statistics and world map
-│   └── Admin.jsx        # Admin console with Test Results tab (Supabase Auth wired, bypassed for test mode)
+│   ├── Admin.jsx        # Admin console — duplicate flag, User Manual button in sidebar footer
+│   └── AdminManual.jsx  # TOC-driven single-section user manual (no long scroll)
 └── utils/
     └── compressImage.js # Client-side image compression
+
+docs/
+└── admin-manual.md      # Markdown source for the admin user manual
 ```
 
 ---

@@ -412,31 +412,31 @@ export default function Admin({ onGoToDirectory }) {
 
   return (
     <div className="flex flex-col h-screen bg-brand-sand overflow-hidden">
-      <header className="border-b border-gray-200 bg-brand-parchment shadow-sm flex-shrink-0">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center gap-4 px-8 py-5">
-          <div className="flex items-center gap-4 justify-start">
-            <div className="w-11 h-11 rounded-full bg-brand-navy flex items-center justify-center text-white text-[1.4rem] font-bold">T</div>
-            <div>
-              <div className="text-xl font-semibold text-gray-900">Transform Health</div>
-              <div className="text-[1.2rem] text-gray-600">Women Leaders in Digital Health Database</div>
-            </div>
+      <header className="border-b-4 border-brand-pink bg-white shadow-md flex-shrink-0">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-center gap-4 px-8 py-4">
+          <div className="flex items-center gap-4">
+            <img
+              src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/main_logo.svg"
+              alt="Transform Health"
+              className="h-12 block"
+            />
           </div>
           <div className="text-center">
-            <div className="text-xl font-semibold text-gray-900">Admin Console</div>
+            <div className="text-xl font-bold text-brand-navy">Admin Console</div>
           </div>
           <div className="flex justify-end">
-            <span className="text-[1.3rem] text-gray-400 italic">Test mode — no login required</span>
+            <span className="text-[1.3rem] text-brand-navy font-semibold italic">Test mode</span>
           </div>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-80 min-w-[24rem] border-r border-gray-200 bg-brand-parchment shadow-sm flex flex-col flex-shrink-0">
-          <div className="px-6 py-5 border-b border-gray-200 border-t-[4px] border-t-brand-navy">
+        <aside className="w-80 min-w-[24rem] border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col flex-shrink-0">
+          <div className="px-6 py-5 border-b-2 border-brand-pink">
             <div className="flex items-center justify-center">
               <button
                 onClick={handleRefresh}
-                className="inline-flex items-center justify-center rounded-md border border-brand-navy px-3 py-2 text-[1.4rem] font-medium text-brand-navy bg-brand-parchment hover:bg-brand-navy hover:text-white transition-colors"
+                className="inline-flex items-center justify-center rounded-lg border-2 border-brand-yellow px-3 py-2 text-[1.4rem] font-bold text-brand-yellow bg-transparent hover:bg-brand-pink hover:text-white transition-colors"
               >
                 Refresh ↻
               </button>
@@ -447,7 +447,7 @@ export default function Admin({ onGoToDirectory }) {
             {sidebarData.map((item) => {
               // Divider row
               if (item.id === "divider") {
-                return <hr key="divider" className="my-2 border-t border-gray-200" />;
+                return <hr key="divider" className="my-2 border-t border-brand-pink border-opacity-30" />;
               }
 
               const Icon = ICONS[item.icon];
@@ -456,19 +456,19 @@ export default function Admin({ onGoToDirectory }) {
                 <button
                   key={item.id}
                   onClick={() => handleTabChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-lg font-medium transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-lg font-bold transition-colors ${
                     isActive
-                      ? "bg-brand-blue-tint text-brand-navy border border-brand-blue-border"
-                      : "bg-transparent text-gray-500 border border-transparent hover:bg-gray-50"
+                      ? "bg-brand-pink text-white border border-brand-pink"
+                      : "bg-transparent text-white border border-transparent hover:bg-brand-pink hover:bg-opacity-20"
                   }`}
                 >
-                  <span className={isActive ? "text-brand-navy" : "text-gray-400"}>
+                  <span className={isActive ? "text-white" : "text-brand-yellow"}>
                     <Icon />
                   </span>
                   <span className="flex-1 text-left">{item.label}</span>
                   {item.count !== undefined && (
-                    <span className={`text-[1.4rem] font-semibold px-2 py-0.5 rounded-full ${
-                      isActive ? "bg-brand-navy text-white" : "bg-gray-200 text-gray-500"
+                    <span className={`text-[1.4rem] font-bold px-2 py-0.5 rounded-lg ${
+                      isActive ? "bg-white text-brand-navy" : "bg-brand-yellow text-brand-navy"
                     }`}>
                       {item.count}
                     </span>
@@ -509,17 +509,17 @@ export default function Admin({ onGoToDirectory }) {
                   </p>
                 </div>
                 <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                  <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-brand-yellow-border">
-                    <div className="text-[1.2rem] uppercase tracking-wider text-accent-amber">Pending</div>
-                    <div className="text-xl font-semibold text-accent-amber">{totalPendingCount}</div>
+                  <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange">
+                  <div className="text-[1.2rem] font-bold uppercase tracking-wider text-white">Pending</div>
+                    <div className="text-2xl font-bold text-white">{totalPendingCount}</div>
                   </div>
-                  <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-green-300">
-                    <div className="text-[1.2rem] uppercase tracking-wider text-green-600">Live</div>
-                    <div className="text-xl font-semibold text-green-600">{liveCount}</div>
+                  <div className="bg-green-500 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-green-600">
+                    <div className="text-[1.2rem] font-bold uppercase tracking-wider text-white">Live</div>
+                    <div className="text-2xl font-bold text-white">{liveCount}</div>
                   </div>
-                  <div className="bg-brand-parchment rounded-xl px-[1.6rem] py-[1.2rem] border border-red-300">
-                    <div className="text-[1.2rem] uppercase tracking-wider text-red-600">Rejected</div>
-                    <div className="text-xl font-semibold text-red-600">{rejectedCount}</div>
+                  <div className="bg-red-600 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-red-700">
+                    <div className="text-[1.2rem] font-bold uppercase tracking-wider text-white">Rejected</div>
+                    <div className="text-2xl font-bold text-white">{rejectedCount}</div>
                   </div>
                 </div>
               </div>
@@ -528,20 +528,20 @@ export default function Admin({ onGoToDirectory }) {
 
           {/* Filter bar - hidden for Tests tab */}
           {activeTab !== "tests" && activeTab !== "manual" && (
-            <div className="px-8 py-4 border-b border-brand-parchment-border flex-shrink-0 bg-brand-parchment">
+            <div className="px-8 py-4 border-b-2 border-brand-navy flex-shrink-0 bg-white">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
                   <input
                     value={searchQuery}
                     onChange={(e) => { setSearchQuery(e.target.value); setAllPage(1); }}
                     placeholder="Search name, org, role, expertise"
-                    className="min-w-[220px] rounded-lg border border-gray-300 px-4 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                    className="min-w-[220px] rounded-lg border-2 border-gray-400 px-4 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
                   />
                   {(activeTab === "pending" || activeTab === "all") && (
                     <select
                       value={filterCountry}
                       onChange={(e) => { setFilterCountry(e.target.value); setAllPage(1); }}
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
                     >
                       <option value="">All countries</option>
                       {countries.map((country) => <option key={country} value={country}>{country}</option>)}
@@ -551,7 +551,7 @@ export default function Admin({ onGoToDirectory }) {
                     <select
                       value={filterExpertise}
                       onChange={(e) => { setFilterExpertise(e.target.value); setAllPage(1); }}
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
                     >
                       <option value="">All expertise</option>
                       {expertiseOptions.map((expertise) => <option key={expertise} value={expertise}>{expertise}</option>)}
@@ -562,7 +562,7 @@ export default function Admin({ onGoToDirectory }) {
                     <select
                       value={filterClicks}
                       onChange={(e) => { setFilterClicks(e.target.value); setAllPage(1); }}
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
                     >
                       <option value="">All click counts</option>
                       <option value="high">🔥 Most clicked (high)</option>
@@ -573,7 +573,7 @@ export default function Admin({ onGoToDirectory }) {
                     <select
                       value={pendingSort}
                       onChange={(e) => setPendingSort(e.target.value)}
-                      className="rounded-lg border border-gray-300 px-3 py-2 text-lg shadow-sm focus:outline-none bg-brand-blue-tint"
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
                     >
                       <option value="name_az">Name A → Z</option>
                       <option value="name_za">Name Z → A</option>
@@ -583,7 +583,7 @@ export default function Admin({ onGoToDirectory }) {
                     </select>
                   )}
                 </div>
-                <div className="text-[1.4rem] font-medium text-brand-navy">
+                <div className="text-[1.4rem] font-bold text-brand-navy">
                   {activeTab === "pending"   ? `${filteredPending.length} of ${pendingCount} self-submitted`
                   : activeTab === "nominated" ? `${nominatedCount} nominated`
                   : activeTab === "all"       ? `${filteredAll.length} of ${allCount} total entries`
@@ -600,20 +600,20 @@ export default function Admin({ onGoToDirectory }) {
           )}
 
           {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto px-8 py-6">
+          <div className="flex-1 overflow-y-auto px-8 py-6 bg-white">
             {loading ? (
               <div className="text-center py-12 text-xl text-brand-navy">Loading...</div>
 
             ) : activeTab === "requests" ? (
-              <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-white">
+              <div className="rounded-lg overflow-hidden border-2 border-brand-navy bg-white">
                 {/* Sub-tab bar */}
-                <div className="flex border-b border-brand-warm-border bg-brand-parchment">
+                <div className="flex border-b-2 border-brand-navy bg-brand-navy">
                   <button
                     onClick={() => setRequestSubTab("updates")}
-                    className={`flex-1 px-5 py-3 text-lg font-semibold transition-colors ${
+                    className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
                       requestSubTab === "updates"
-                        ? "bg-white text-brand-navy border-b-[3px] border-brand-navy"
-                        : "bg-transparent text-gray-500 border-b-[3px] border-transparent"
+                        ? "bg-white text-brand-navy border-b-[4px] border-brand-pink"
+                        : "bg-transparent text-white border-b-[4px] border-transparent hover:bg-brand-pink hover:bg-opacity-20"
                     }`}
                   >
                     Updates
@@ -633,7 +633,7 @@ export default function Admin({ onGoToDirectory }) {
                   >
                     Deletes
                     <span className={`ml-2 text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
-                      requestSubTab === "deletes" ? "bg-red-50 text-red-600" : "bg-gray-200 text-gray-500"
+                      requestSubTab === "deletes" ? "bg-red-600 text-white" : "bg-gray-300 text-gray-700"
                     }`}>
                       {deleteRequests.length}
                     </span>
@@ -649,8 +649,8 @@ export default function Admin({ onGoToDirectory }) {
                       </div>
                     ) : (
                       <>
-                        <div className="flex items-center justify-between px-5 py-3 border-b bg-amber-50 border-amber-200">
-                          <div className="text-[1.4rem] font-semibold text-amber-600">
+                        <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
+                          <div className="text-[1.4rem] font-bold text-white">
                             {updateRequests.length} update request(s) — send self-service links
                           </div>
                         </div>
@@ -711,7 +711,7 @@ export default function Admin({ onGoToDirectory }) {
                                     <button
                                       onClick={() => handleSendUpdateLink(req)}
                                       disabled={actionId === req.id}
-                                      className={`px-5 py-2.5 text-[1.5rem] font-medium rounded-full transition-colors disabled:opacity-50 ${
+                                      className={`px-5 py-2.5 text-[1.5rem] font-medium rounded-lg transition-colors disabled:opacity-50 ${
                                         linkSent
                                           ? "bg-brand-blue-tint text-brand-navy border-[1.5px] border-brand-blue-border hover:bg-blue-50"
                                           : "bg-brand-navy text-white hover:bg-brand-navy-hover"
@@ -721,7 +721,7 @@ export default function Admin({ onGoToDirectory }) {
                                     </button>
                                     <button
                                       onClick={() => { setRequests(requests.map(r => r.id === req.id ? { ...r, status: "dismissed" } : r)); setSelectedRequest(null); }}
-                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-full border-[1.5px] border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
+                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
                                     >
                                       Dismiss
                                     </button>
@@ -759,7 +759,7 @@ export default function Admin({ onGoToDirectory }) {
                         {selectedDeletes.length > 0 && (
                           <button
                             onClick={handleBulkDelete}
-                            className="px-4 py-2 text-[1.4rem] font-semibold rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors"
+                            className="px-4 py-2 text-[1.4rem] font-semibold rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
                           >
                             Approve {selectedDeletes.length} deletion(s)
                           </button>
@@ -835,13 +835,13 @@ export default function Admin({ onGoToDirectory }) {
                                   <button
                                     onClick={() => handleApproveSingleDelete(req)}
                                     disabled={actionId === req.id}
-                                    className="px-4 py-2 text-[1.4rem] font-medium rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+                                    className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
                                   >
                                     {actionId === req.id ? "..." : "Approve deletion"}
                                   </button>
                                   <button
                                     onClick={() => { setRequests(requests.map(r => r.id === req.id ? { ...r, status: "dismissed" } : r)); setSelectedRequest(null); }}
-                                    className="px-4 py-2 text-[1.4rem] font-medium rounded-full border-[1.5px] border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
+                                    className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
                                   >
                                     Dismiss
                                   </button>
@@ -905,7 +905,7 @@ export default function Admin({ onGoToDirectory }) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={e => e.stopPropagation()}
-                                className="text-[1.2rem] font-medium px-2.5 py-1 rounded-full bg-brand-blue-tint text-brand-navy hover:bg-blue-50 transition-colors"
+                                className="text-[1.2rem] font-medium px-2.5 py-1 rounded-lg bg-brand-blue-tint text-brand-navy hover:bg-blue-50 transition-colors"
                               >
                                 LinkedIn ↗
                               </a>
@@ -944,14 +944,14 @@ export default function Admin({ onGoToDirectory }) {
                               <button
                                 onClick={() => handleAction(item.id, "approve")}
                                 disabled={actionId === item.id}
-                                className="px-4 py-2 text-[1.4rem] font-medium rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                                className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
                               >
                                 {actionId === item.id ? "..." : "Approve"}
                               </button>
                               <button
                                 onClick={() => handleAction(item.id, "reject")}
                                 disabled={actionId === item.id}
-                                className="px-4 py-2 text-[1.4rem] font-medium rounded-full border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                               >
                                 Reject
                               </button>
@@ -978,9 +978,9 @@ export default function Admin({ onGoToDirectory }) {
               ) : (
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
                   {/* Inbox header */}
-                  <div className="flex items-center justify-between px-5 py-3 border-b bg-amber-50 border-amber-200">
+                  <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
                     <div className="flex items-center gap-3">
-                      <div className="text-[1.4rem] font-semibold text-amber-600">
+                      <div className="text-[1.4rem] font-bold text-white">
                         {filteredPending.length} pending review
                       </div>
                       {selectedPending.length > 0 && (
@@ -1002,13 +1002,13 @@ export default function Admin({ onGoToDirectory }) {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleBulkPending("approve")}
-                          className="px-3 py-1.5 text-[1.3rem] font-semibold rounded-full bg-green-600 text-white transition-colors"
+                          className="px-3 py-1.5 text-[1.3rem] font-semibold rounded-lg bg-green-600 text-white transition-colors"
                         >
                           Approve {selectedPending.length}
                         </button>
                         <button
                           onClick={() => handleBulkPending("reject")}
-                          className="px-3 py-1.5 text-[1.3rem] font-semibold rounded-full bg-red-600 text-white transition-colors"
+                          className="px-3 py-1.5 text-[1.3rem] font-semibold rounded-lg bg-red-600 text-white transition-colors"
                         >
                           Reject {selectedPending.length}
                         </button>
@@ -1074,14 +1074,14 @@ export default function Admin({ onGoToDirectory }) {
                                 <button
                                   onClick={() => handleAction(item.id, "approve")}
                                   disabled={actionId === item.id}
-                                  className="px-4 py-2 text-[1.4rem] font-medium rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                                  className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
                                 >
                                   {actionId === item.id ? "..." : "Approve"}
                                 </button>
                                 <button
                                   onClick={() => handleAction(item.id, "reject")}
                                   disabled={actionId === item.id}
-                                  className="px-4 py-2 text-[1.4rem] font-medium rounded-full border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                  className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                                 >
                                   Reject
                                 </button>
@@ -1151,10 +1151,10 @@ export default function Admin({ onGoToDirectory }) {
               <>
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
                   <table className="w-full">
-                      <thead className="border-b border-brand-blue-border bg-brand-blue-tint">
+                      <thead className="border-b-2 border-brand-navy bg-brand-navy">
                         <tr>
                           {["Name", "Role", "Organisation", "LinkedIn Clicks", "Status"].map((h) => (
-                            <th key={h} className="text-left text-[1.4rem] font-semibold uppercase tracking-wider px-5 py-3 text-brand-navy">{h}</th>
+                            <th key={h} className="text-left text-[1.4rem] font-bold uppercase tracking-wider px-5 py-3 text-white">{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -1177,12 +1177,12 @@ export default function Admin({ onGoToDirectory }) {
                               <td className="px-5 py-3.5 text-lg text-gray-600">{item.organisation}</td>
                               <td className="px-5 py-3.5 text-lg text-gray-600 text-center">{item.linkedin_clicks || 0}</td>
                               <td className="px-5 py-3.5">
-                                <span className={`text-[1.2rem] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                                <span className={`text-[1.2rem] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${
                                   item.status === "live"
-                                    ? "bg-green-100 text-green-600"
+                                    ? "bg-green-600 text-white"
                                     : item.status === "pending"
-                                    ? "bg-amber-50 text-amber-600"
-                                    : "bg-red-50 text-red-600"
+                                    ? "bg-yellow-500 text-white"
+                                    : "bg-red-600 text-white"
                                 }`}>
                                   {item.status}
                                 </span>
@@ -1264,9 +1264,9 @@ export default function Admin({ onGoToDirectory }) {
                 const SECTION_ORDER = ["setup", "dir", "analytics", "submit", "manage", "admin"];
 
                 const statusBadge = (status) => {
-                  const cls = status === "pass" ? "bg-green-100 text-green-700" :
-                              status === "fail" ? "bg-red-100 text-red-700" :
-                              "bg-amber-50 text-amber-700";
+                  const cls = status === "pass" ? "bg-green-600 text-white" :
+                              status === "fail" ? "bg-red-600 text-white" :
+                              "bg-yellow-500 text-white";
                   const label = status === "pass" ? "Pass" : status === "fail" ? "Fail" : "Pending";
                   return <span className={`text-[1.2rem] font-bold px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
                 };
@@ -1312,7 +1312,7 @@ export default function Admin({ onGoToDirectory }) {
                     <div className="px-8 py-6 border-b border-brand-warm-border">
                       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                         <div>
-                          <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">Test Results</h2>
+                          <h2 className="text-3xl font-bold text-brand-navy tracking-heading">Test Results</h2>
                           <p className="text-lg text-gray-600 mt-1">
                             {hasFilters
                               ? `${filteredResults.length} matching test case${filteredResults.length !== 1 ? "s" : ""} across ${testerNames.length} tester${testerNames.length !== 1 ? "s" : ""}`
@@ -1433,9 +1433,9 @@ export default function Admin({ onGoToDirectory }) {
                                 </div>
                               </div>
                               <div className="flex gap-2 flex-shrink-0">
-                                <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700">{pass} pass</span>
+                                <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-lg bg-green-600 text-white">{pass} pass</span>
                                 {fail > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-700">{fail} fail</span>}
-                                {pending > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">{pending} pending</span>}
+                                {pending > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-lg bg-yellow-500 text-white">{pending} pending</span>}
                               </div>
                               <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6l4 4 4-4"/></svg>
                             </button>
@@ -1480,7 +1480,7 @@ export default function Admin({ onGoToDirectory }) {
                                           <thead className="bg-white border-b border-gray-100">
                                             <tr>
                                               {["Scenario", "Priority", "Status", "Notes"].map(h => (
-                                                <th key={h} className="text-left text-[1.1rem] font-semibold uppercase tracking-wider px-6 py-2.5 text-gray-400">{h}</th>
+                                                <th key={h} className="text-left text-[1.1rem] font-bold uppercase tracking-wider px-6 py-2.5 text-gray-800">{h}</th>
                                               ))}
                                             </tr>
                                           </thead>
