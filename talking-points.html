@@ -249,43 +249,71 @@
     <section id="todo">
       <header>
         <h1>What's Still to Do</h1>
-        <p>Pending items · Working on these now — should be done by end of day</p>
+        <p>Pending items · Last updated May 6, 2026</p>
       </header>
 
-       <div class="card">
-         <span class="tag done">Done</span>
-         <h3>Admin — Test Results tab</h3>
-         <p>New "Test Results" tab added to Admin sidebar (below divider). Shows pass/fail/pending summary cards and full test results table (tester, section, feature, scenario, priority, status, notes, date) fetched live from Supabase <code>test_results</code> table.</p>
-       </div>
+      <!-- STATUS SUMMARY -->
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%); border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px;">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: #166534; margin-bottom: 12px;">✅ Completed This Session</h3>
+        <ul style="padding-left: 20px; color: #166534; font-size: 0.875rem; line-height: 1.6;">
+          <li>Admin — Test Results tab with pass/fail summary cards and full results table</li>
+          <li>Testing Sheet — Testing Notes section moved to top for visibility</li>
+          <li>Admin Sidebar — Reordered with Test Results tab</li>
+          <li>Admin UI — White header with Transform Health logo, improved text contrast, bold brand colors</li>
+          <li><strong>Create test_results table in Supabase</strong> ✓</li>
+          <li>LinkedIn click tracking — live in Admin "All Entries" table</li>
+        </ul>
+      </div>
 
-       <div class="card">
-         <span class="tag done">Done</span>
-         <h3>Testing Sheet — Testing Notes at top</h3>
-         <p>"Testing Notes" section moved to the top of the testing sheet for better visibility. Status dropdown (Pass/Fail/Pending) now opens correctly without expanding the row.</p>
-       </div>
+      <div style="background: linear-gradient(135deg, #fef9c3 0%, #fefce8 100%); border: 1px solid #fde047; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: #854d0e; margin-bottom: 12px;">⏳ Pending Work</h3>
+        <ul style="padding-left: 20px; color: #854d0e; font-size: 0.875rem; line-height: 1.6;">
+          <li><strong>Country-level map drilldown</strong> — Currently only region-level selection; clicking a country to filter leaders is not yet built</li>
+          <li><strong>Production SMTP emails</strong> — Magic links currently use Apps Script MailApp. Needs SendGrid or Mailgun for scale</li>
+          <li><strong>Click-through analytics (GA4 / Plausible)</strong> — Track page views, searches, and filter usage</li>
+        </ul>
+      </div>
 
-       <div class="card">
-         <span class="tag done">Done</span>
-         <h3>Admin Sidebar — Reordered</h3>
-         <p>Sidebar now ordered: All Entries → Pending Submissions → Profile Requests → Nominated → divider → Test Results. Testing link moved to nav bar next to Admin (opens in new tab).</p>
-       </div>
-
-       <div class="card">
-         <span class="tag todo">Action needed</span>
-         <h3>Create test_results table in Supabase</h3>
-         <p>SQL script at <code>scripts/create-test-results-table.sql</code>. Run in Supabase SQL Editor to enable test result saving from the testing sheet and display in Admin console.</p>
-       </div>
-
-       <div class="card">
-         <span class="tag todo">To do</span>
-         <h3>Country-level map drilldown</h3>
-         <p>Currently only region-level selection; clicking a country to filter leaders is not yet built.</p>
-       </div>
+      <!-- DETAILED COMPLETED ITEMS -->
+      <h2 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #059669; margin-bottom: 16px; margin-top: 28px;">Recent Completions</h2>
 
       <div class="card">
         <span class="tag done">Done</span>
-        <h3>LinkedIn click tracking — LIVE</h3>
-        <p>✅ <code>linkedin_clicks</code> column added to DB. Click count tracked when icons are clicked in LeaderCard + ProfileModal. "LinkedIn Clicks" column visible in Admin "All Entries" table. Filter by Most/Least clicked.</p>
+        <h3>Admin — Test Results tab</h3>
+        <p>New "Test Results" tab added to Admin sidebar (below divider). Shows pass/fail/pending summary cards and full test results table (tester, section, feature, scenario, priority, status, notes, date) fetched live from Supabase <code>test_results</code> table.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Testing Sheet — Testing Notes at top</h3>
+        <p>"Testing Notes" section moved to the top of the testing sheet for better visibility. Status dropdown (Pass/Fail/Pending) now opens correctly without expanding the row.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Admin Sidebar — Reordered</h3>
+        <p>Sidebar now ordered: All Entries → Pending Submissions → Profile Requests → Nominated → divider → Test Results. Testing link moved to nav bar next to Admin (opens in new tab).</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Create test_results table in Supabase</h3>
+        <p>✓ SQL script <code>scripts/create-test-results-table.sql</code> executed in Supabase SQL Editor. Test result saving from testing sheet and Admin console display now fully functional.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag done">Done</span>
+        <h3>Admin UI — Professional header & sidebar styling</h3>
+        <p>Header now displays Transform Health logo on white background. Sidebar text is legible (white on navy). Bold brand colors applied: orange for pending, green for live, red for rejected status indicators. Tables styled with professional navy headers.</p>
+      </div>
+
+      <!-- PENDING ITEMS -->
+      <h2 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9a3412; margin-bottom: 16px; margin-top: 28px;">Next Priority</h2>
+
+      <div class="card">
+        <span class="tag todo">To do</span>
+        <h3>Country-level map drilldown</h3>
+        <p>Currently only region-level selection; clicking a country to filter leaders is not yet built on the Analytics page.</p>
       </div>
 
       <div class="card">
