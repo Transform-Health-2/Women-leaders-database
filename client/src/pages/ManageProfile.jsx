@@ -47,14 +47,37 @@ export default function ManageProfile({ prefill, onBack }) {
       const all = await api.getLeaders("live");
       const fn = firstName.trim().toLowerCase();
       const ln = lastName.trim().toLowerCase();
-      const match = all.find(
+      const linkedinUrl = linkedin.trim().toLowerCase();
+      
+      // Primary: exact name match
+      let match = all.find(
         (l) =>
           String(l.first_name || "").toLowerCase() === fn &&
           String(l.last_name  || "").toLowerCase() === ln
       );
+      
+      // Fallback 1: LinkedIn URL match
+      if (!match && linkedinUrl) {
+        match = all.find(
+          (l) => String(l.linkedin || "").toLowerCase().includes(linkedinUrl.replace(/\/$/, ""))
+        );
+      }
+      
+      // Fallback 2: Partial name match (first name + last name contains search term)
+      if (!match) {
+        match = all.find(
+          (l) =>
+            (String(l.first_name || "").toLowerCase().includes(fn) ||
+             String(l.last_name || "").toLowerCase().includes(ln)) &&
+            (String(l.first_name || "").toLowerCase().includes(fn.split(" ")[0]) ||
+             String(l.last_name || "").toLowerCase().includes(ln.split(" ")[0]))
+        );
+      }
+      
       if (match) setFoundProfile(match);
       else setNotFound(true);
-    } catch {
+    } catch (err) {
+      console.error("Profile lookup error:", err);
       setNotFound(true);
     } finally {
       setLinkLoading(false);
@@ -100,9 +123,13 @@ export default function ManageProfile({ prefill, onBack }) {
               ? "Your removal request has been sent. The admin team will process it shortly."
               : "Your update request has been sent. The admin team will review and apply the changes shortly."}
           </p>
-          <p className="text-1.3 text-gray-400">
+          <p className="text-1.3 text-gray-400 mb-6">
             You'll be notified by email at {email}
           </p>
+          <div className="bg-brand-blue-tint border-l-4 border-brand-navy rounded-lg px-4 py-3 text-left">
+            <p className="text-1.2 text-brand-navy font-semibold mb-1">Admin note:</p>
+            <p className="text-1.2 text-gray-600">The admin console may need to be refreshed to see this request under "Profile Requests".</p>
+          </div>
         </div>
       </div>
     );

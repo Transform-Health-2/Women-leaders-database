@@ -40,7 +40,7 @@ export const api = {
   },
 
   submitRequest: async (data) => {
-    const { error } = await supabase.from("requests").insert([{
+    const payload = {
       id: crypto.randomUUID(),
       request_type: data.requestType,
       first_name: data.firstName,
@@ -51,8 +51,14 @@ export const api = {
       reason: data.reason || null,
       status: "pending",
       leader_id: data.leaderId || null,
-    }]);
-    if (error) throw error;
+    };
+    console.log("Submitting request:", payload);
+    const { error, data: result } = await supabase.from("requests").insert([payload]);
+    if (error) {
+      console.error("Request submission error:", error);
+      throw error;
+    }
+    console.log("Request saved successfully:", result);
     return { ok: true };
   },
 
