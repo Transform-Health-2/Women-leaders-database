@@ -33,6 +33,7 @@ export default function ManageProfile({ prefill, onBack }) {
   const [reason, setReason] = useState("");
   const [status, setStatus] = useState("");
   const [linkLoading, setLinkLoading] = useState(false);
+  const [linkError, setLinkError] = useState("");
   const [notFound, setNotFound] = useState(false);
   const [foundProfile, setFoundProfile] = useState(null);
 

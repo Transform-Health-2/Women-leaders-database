@@ -104,6 +104,7 @@ export default function Admin({ onGoToDirectory }) {
   const [expandedId,       setExpandedId]       = useState(null);
   const [expandedAllId,    setExpandedAllId]    = useState(null);
   const [actionMessage,    setActionMessage]    = useState("");
+  const [actionIsError,    setActionIsError]    = useState(false);
   const [allPage,          setAllPage]          = useState(1);
   const [selectedRequest,  setSelectedRequest]  = useState(null);
   const [expandedNominee,  setExpandedNominee]  = useState(null);
@@ -143,6 +144,7 @@ export default function Admin({ onGoToDirectory }) {
   async function confirmAction(id, action) {
     setActionId(id);
     setActionMessage("");
+    setActionIsError(false);
     try {
       if (action === "approve") await api.approveRequest(id);
       else await api.rejectRequest(id);
@@ -156,6 +158,7 @@ export default function Admin({ onGoToDirectory }) {
       setExpandedId(null); setExpandedAllId(null); setExpandedNominee(null);
     } catch (e) {
       console.error(e);
+      setActionIsError(true);
       setActionMessage("Unable to complete action. Please try again.");
     } finally {
       setActionId(null);
@@ -201,6 +204,7 @@ export default function Admin({ onGoToDirectory }) {
   async function handleSendUpdateLink(req) {
     setActionId(req.id);
     setActionMessage("");
+    setActionIsError(false);
     try {
       await api.requestManage({ firstName: req.first_name, lastName: req.last_name, email: req.email, linkedin: req.linkedin });
       setRequests((current) => current.map((r) => (r.id === req.id ? { ...r, link_sent: true } : r)));
@@ -222,13 +226,15 @@ export default function Admin({ onGoToDirectory }) {
       confirmLabel: "Delete",
       onConfirm: async () => {
         setShowConfirm(null);
+        setActionIsError(false);
         try {
           await api.deleteLeader(id);
           setAll((prev) => prev.filter((l) => l.id !== id));
           setExpandedAllId(null);
           setActionMessage("Entry permanently deleted.");
         } catch (e) {
-          setActionMessage("Error deleting entry: " + e.message);
+          setActionIsError(true);
+          setActionMessage("Delete failed — run the missing RLS policy in Supabase (see scripts/add-delete-policy.sql).");
         }
       },
     });
@@ -280,6 +286,7 @@ export default function Admin({ onGoToDirectory }) {
 
   async function executeBulkDelete() {
     setActionMessage("");
+    setActionIsError(false);
     try {
       await Promise.all(selectedDeletes.map((id) => api.approveDeleteRequest(id)));
       setRequests((current) => current.map((r) => selectedDeletes.includes(r.id) ? { ...r, status: "approved" } : r));
@@ -287,6 +294,7 @@ export default function Admin({ onGoToDirectory }) {
       setSelectedDeletes([]);
     } catch (e) {
       console.error(e);
+      setActionIsError(true);
       setActionMessage("Unable to complete bulk deletion. Please try again.");
     }
   }
@@ -294,6 +302,7 @@ export default function Admin({ onGoToDirectory }) {
   async function handleApproveSingleDelete(req) {
     setActionId(req.id);
     setActionMessage("");
+    setActionIsError(false);
     try {
       await api.approveDeleteRequest(req.id);
       setRequests((current) => current.map((r) => r.id === req.id ? { ...r, status: "approved" } : r));
@@ -301,6 +310,7 @@ export default function Admin({ onGoToDirectory }) {
       setSelectedRequest(null);
     } catch (e) {
       console.error(e);
+      setActionIsError(true);
       setActionMessage("Unable to complete deletion. Please try again.");
     } finally {
       setActionId(null);
@@ -592,7 +602,7 @@ export default function Admin({ onGoToDirectory }) {
                 </div>
               </div>
               {actionMessage && (
-                <div className="mt-4 rounded-lg px-4 py-3 text-lg border border-brand-green-border bg-green-50 text-green-800">
+                <div className={`mt-4 rounded-lg px-4 py-3 text-lg border ${actionIsError ? "border-red-300 bg-red-50 text-red-800" : "border-brand-green-border bg-green-50 text-green-800"}`}>
                   {actionMessage}
                 </div>
               )}
@@ -1190,7 +1200,7 @@ export default function Admin({ onGoToDirectory }) {
                             </tr>
                             {isExpanded && (
                               <tr>
-                                <td colSpan="4" className="px-5 py-4 bg-brand-parchment">
+                                <td colSpan="5" className="px-5 py-4 bg-brand-parchment">
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
                                       <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">Entry details</div>

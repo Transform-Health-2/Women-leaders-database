@@ -308,9 +308,12 @@
         <ul style="padding-left: 20px; color: #166534; font-size: 0.875rem; line-height: 1.6;">
           <li>Admin — Test Results tab with live pass/fail dashboard</li>
           <li>Admin UI — White header with logo, improved sidebar contrast, bold brand colors</li>
+          <li>Admin — Enhanced error handling with colored feedback (success/error states)</li>
           <li>Testing Sheet — tester persistence via localStorage, results load/save to Supabase</li>
           <li>Create test_results table in Supabase ✓</li>
           <li>LinkedIn click tracking — live in Admin "All Entries" table</li>
+          <li>Manage Profile — Error state handling and improved UX feedback</li>
+          <li><strong>Talking Points & Docs</strong> — Streamlined structure, reduced redundancy, improved UX (sticky nav, keyboard navigation, smooth scrolling)</li>
         </ul>
       </div>
 
@@ -318,7 +321,7 @@
         <h3 style="font-size: 0.95rem; font-weight: 700; color: #92400e; margin-bottom: 12px;">📋 Before Launch (3 items)</h3>
         <ul style="padding-left: 20px; color: #92400e; font-size: 0.875rem; line-height: 1.6;">
           <li><strong>Update GitHub Actions CI secrets</strong> ✓ — Added VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to repo secrets. Removed legacy VITE_APPS_SCRIPT_URL and Firebase vars.</li>
-          <li><strong>Re-enable admin auth gate</strong> — Currently test mode. Supabase Auth code ready. One-line change to re-enable login before launch.</li>
+          <li><strong>Re-enable admin auth gate</strong> — Currently test mode. Supabase Auth code ready. One-line change to re-enable login before launch. Also need to apply <code>scripts/add-delete-policy.sql</code> to enable Admin delete functionality in production.</li>
           <li><strong>Create admin user</strong> — Add email/password user in Supabase Auth dashboard before enabling gate.</li>
         </ul>
       </div>
@@ -331,8 +334,6 @@
           <li><strong>Click-through analytics</strong> — Add GA4 or Plausible to track searches, filters, and directory engagement</li>
         </ul>
       </div>
-
-      <h2 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #059669; margin-bottom: 16px; margin-top: 28px;">Feature Completions</h2>
 
       <h2 style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #059669; margin-bottom: 16px; margin-top: 28px;">Feature Completions</h2>
 
@@ -381,7 +382,7 @@
       <div class="card">
         <span class="tag done">Done</span>
         <h3>Backend & Infrastructure</h3>
-        <p>82 leaders live in Supabase. PostgreSQL database, Storage for photos, Auth for admin login. GitHub Pages deployment with CI/CD and env secrets. Apps Script retained as legacy nomination email tool only.</p>
+        <p>82 leaders live in Supabase. PostgreSQL database, Storage for photos, Auth for admin login. GitHub Pages deployment with CI/CD and env secrets. Apps Script retained as legacy nomination email tool only. <strong>RLS delete policy:</strong> Test-mode script at <code>scripts/add-delete-policy.sql</code> enables Admin delete functionality (will be replaced with authenticated admin policy before launch).</p>
       </div>
 
       <footer>Transform Health · Internal use only · Updated May 2026</footer>

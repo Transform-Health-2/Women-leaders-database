@@ -179,4 +179,10 @@ export const api = {
     if (error) throw error;
     return { ok: true };
   },
+
+  // Placeholder — no email backend yet; admin manually copies the manage URL
+  requestManage: async ({ firstName, lastName, email, linkedin }) => {
+    console.info("requestManage (test mode):", { firstName, lastName, email, linkedin });
+    return { ok: true };
+  },
 };

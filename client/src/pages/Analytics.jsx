@@ -346,7 +346,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
         <ProfileModal
           leader={selectedProfile}
           onClose={() => setSelectedProfile(null)}
-          onManageProfile={onManageProfile}
+          onManage={onManageProfile}
         />
       )}
 
