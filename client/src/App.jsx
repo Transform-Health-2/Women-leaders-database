@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, startTransition } from "react";
+import React, { useState, useEffect, lazy, Suspense, startTransition } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const Database = lazy(() => import("./pages/Database"));
 const Submit = lazy(() => import("./pages/Submit"));
@@ -10,24 +10,42 @@ import SiteFooter from "./components/SiteFooter";
 
 const queryClient = new QueryClient();
 
+const VALID_ROUTES = ["database", "analytics", "submit", "admin"];
+
+function parseHash() {
+  // Accept #database, #/database, /database — always returns clean slug
+  const raw = window.location.hash.replace(/^#\/?/, "").toLowerCase().split("?")[0];
+  return VALID_ROUTES.includes(raw) ? raw : "database";
+}
+
 const NAV_ITEMS = [
   { id: "database", label: "Database", display: "DATABASE" },
   { id: "analytics", label: "Analytics", display: "ANALYTICS" },
   { id: "submit", label: "Submit", display: "SUBMIT PROFILE" },
-  { id: "admin", label: "Admin", display: "ADMIN" },
 ];
 
 function App() {
-  const [route, setRoute] = useState(() => {
-    const hash = window.location.hash.replace("#", "");
-    const valid = ["database", "analytics", "submit", "admin"];
-    return valid.includes(hash) ? hash : "database";
-  });
+  const [route, setRoute] = useState(parseHash);
   const [managePrefill, setManagePrefill] = useState(null);
   const [showManageModal, setShowManageModal] = useState(false);
   const [chromeHidden, setChromeHidden] = useState(
     () => localStorage.getItem("th-chrome-hidden") === "true"
   );
+
+  // Keep URL in sync when route changes programmatically
+  function navigate(to) {
+    window.location.hash = to;
+    setRoute(to);
+  }
+
+  // Sync state when user hits back/forward or types in URL bar
+  useEffect(() => {
+    function onHashChange() {
+      setRoute(parseHash());
+    }
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   function toggleChrome() {
     setChromeHidden((prev) => {
@@ -154,12 +172,12 @@ function App() {
           <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-3 sm:pt-6 pb-0 flex justify-between items-end overflow-x-auto">
             {/* Main tabs */}
             <div className="flex gap-1 sm:gap-6 items-end" role="tablist">
-              {NAV_ITEMS.filter((item) => item.id !== "admin").map((item) => {
+              {NAV_ITEMS.map((item) => {
                 const active = route === item.id;
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setRoute(item.id)}
+                    onClick={() => navigate(item.id)}
                     role="tab"
                     aria-selected={active}
                     className={`font-['Montserrat'] font-medium text-[1.3rem] sm:text-[2rem] tracking-[0.03em] px-3 sm:px-8 h-[3.6rem] sm:h-[4.4rem] whitespace-nowrap cursor-pointer ${
@@ -185,13 +203,12 @@ function App() {
             >
               Testing
             </a>
-            <a
-              href="#admin"
-              onClick={(e) => { e.preventDefault(); window.open(window.location.pathname + "#admin", "_blank"); }}
+            <button
+              onClick={() => navigate("admin")}
               className="font-['Montserrat'] font-medium text-[1.2rem] tracking-[0.08em] uppercase px-3.5 py-1.5 mb-1.5 cursor-pointer rounded flex-shrink-0 text-brand-dark border border-gray-500 bg-transparent"
             >
               Admin
-            </a>
+            </button>
           </div>
         </nav>
       )}
@@ -207,17 +224,17 @@ function App() {
           {route === "analytics" && (
             <Analytics
               onManageProfile={openManageModal}
-              onGoToDirectory={() => setRoute("database")}
+              onGoToDirectory={() => navigate("database")}
             />
           )}
           {route === "submit" && (
             <Submit
               onManageProfile={openManageModal}
-              onGoToDirectory={() => setRoute("database")}
+              onGoToDirectory={() => navigate("database")}
             />
           )}
           {route === "admin" && (
-            <Admin onGoToDirectory={() => setRoute("database")} />
+            <Admin onGoToDirectory={() => navigate("database")} />
           )}
         </Suspense>
 
