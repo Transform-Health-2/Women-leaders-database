@@ -94,16 +94,17 @@ export default function ManageProfile({ prefill, onBack }) {
     try {
       await api.submitRequest({
         requestType,
-        firstName: foundProfile?.first_name || firstName,
-        lastName: foundProfile?.last_name || lastName,
-        email,
-        linkedin: foundProfile?.linkedin || linkedin,
-        changes: requestType === "update" ? changes : null,
-        reason: requestType === "delete" ? reason : null,
+        firstName: (foundProfile?.first_name || firstName).trim(),
+        lastName: (foundProfile?.last_name || lastName).trim(),
+        email: email.trim(),
+        linkedin: (foundProfile?.linkedin || linkedin).trim(),
+        changes: requestType === "update" ? changes.trim() : null,
+        reason: requestType === "delete" ? reason.trim() : null,
         leaderId: foundProfile?.id || null,
       });
       setStatus("submitted");
-    } catch {
+    } catch (err) {
+      console.error("Submit error:", err);
       setStatus("error");
     }
   }

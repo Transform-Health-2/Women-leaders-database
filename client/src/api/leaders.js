@@ -59,6 +59,19 @@ export const api = {
       throw error;
     }
     console.log("Request saved successfully:", result);
+    
+    // Verify it was saved by fetching it back
+    const { data: verify, error: verifyErr } = await supabase
+      .from("requests")
+      .select("*")
+      .eq("id", payload.id)
+      .single();
+    if (verifyErr) {
+      console.warn("Could not verify saved request:", verifyErr);
+    } else {
+      console.log("✓ Request verified in database:", verify);
+    }
+    
     return { ok: true };
   },
 
