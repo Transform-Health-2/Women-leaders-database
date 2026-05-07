@@ -146,7 +146,18 @@ Open `http://localhost:5173`.
 - [ ] Re-enable admin auth gate — one-line change in `client/src/pages/Admin.jsx` (currently bypassed for testing)
 - [ ] Create admin user in Supabase Auth dashboard (email/password)
 - [ ] Update GitHub Actions CI secrets: add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`, remove `VITE_APPS_SCRIPT_URL` and Firebase vars
-- [ ] Update production SMTP — "Send update link" admin action still uses Apps Script MailApp for sending emails to leaders
+- [ ] Set up Supabase Function for email sending:
+
+  **Supabase Dashboard → Database → Functions**
+  1. Create a new function named `send-email`
+  2. Copy the code from `supabase/functions/send-email/index.ts`
+  3. Deploy: `supabase functions deploy send-email`
+  4. Set secrets (Dashboard → Settings → Functions → Secrets):
+     - `SMTP_FROM`: Your from address (e.g. `noreply@transformhealthcoalition.org`)
+     - `SENDGRID_API_KEY`: Your SendGrid API key (or use SMTP_* below)
+     - OR set SMTP vars: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`
+
+- [ ] Verify: "Send update link" in Admin → Profile Requests now sends real emails via the Function
 
 ---
 

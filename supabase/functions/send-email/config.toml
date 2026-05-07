@@ -1,0 +1,5 @@
+# Supabase Function config for send-email
+# Deploys with: supabase functions deploy send-email
+
+[functions.send-email]
+verify_jwt = false  # Called from anon key (frontend)

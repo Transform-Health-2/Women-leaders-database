@@ -210,19 +210,26 @@ export const api = {
     return { ok: true };
   },
 
-  // Send a magic link for the leader to manage their profile
-  // Uses Supabase Auth OTP (magic link) + SMTP if configured
+  // Send a magic link email via Supabase Function (send-email)
+  // Fallbacks to a manual URL if the function fails
   requestManage: async ({ firstName, lastName, email, linkedin }) => {
     try {
-      // Generate a magic link using Supabase Auth (sends email if SMTP is set up)
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          data: { firstName, lastName },
-          // Custom redirect URL — leader lands on Submit page with a token
-          emailRedirectTo: `${window.location.origin}?manage=${btoa(JSON.stringify({ firstName, lastName, email }))}`,
-        },
+      const manageUrl = `${window.location.origin}?manage=${btoa(JSON.stringify({ firstName, lastName, email, linkedin }))}`;
+      const html = `
+        <div style="font-family: sans-serif; max-width:600px; margin:0 auto;">
+          <h2>Update your Transform Health profile</h2>
+          <p>Hi ${firstName},</p>
+          <p>Click the link below to update or remove your profile in the Transform Health Women Leaders Directory:</p>
+          <p><a href="${manageUrl}" style="display:inline-block; padding:12px 24px; background:#24588A; color:#fff; text-decoration:none; border-radius:6px;">Manage my profile</a></p>
+          <p>Or copy this link: <code>${manageUrl}</code></p>
+          <p><em>This link expires in 24 hours.</em></p>
+        </div>
+      `;
+
+      const { error } = await supabase.functions.invoke("send-email", {
+        body: { to: email, subject: "Update your Transform Health profile", html },
       });
+
       if (error) throw error;
       return { ok: true, message: "Magic link sent to " + email };
     } catch (err) {
