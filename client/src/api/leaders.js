@@ -77,6 +77,15 @@ export const api = {
     return { ok: true };
   },
 
+  dismissRequest: async (id) => {
+    const { error } = await supabase
+      .from("requests")
+      .update({ status: "dismissed" })
+      .eq("id", id);
+    if (error) throw error;
+    return { ok: true };
+  },
+
   getRequests: async () => {
     const { data, error } = await supabase
       .from("requests")
@@ -201,9 +210,27 @@ export const api = {
     return { ok: true };
   },
 
-  // Placeholder — no email backend yet; admin manually copies the manage URL
+  // Send a magic link for the leader to manage their profile
+  // Uses Supabase Auth OTP (magic link) + SMTP if configured
   requestManage: async ({ firstName, lastName, email, linkedin }) => {
-    console.info("requestManage (test mode):", { firstName, lastName, email, linkedin });
-    return { ok: true };
+    try {
+      // Generate a magic link using Supabase Auth (sends email if SMTP is set up)
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          data: { firstName, lastName },
+          // Custom redirect URL — leader lands on Submit page with a token
+          emailRedirectTo: `${window.location.origin}?manage=${btoa(JSON.stringify({ firstName, lastName, email }))}`,
+        },
+      });
+      if (error) throw error;
+      return { ok: true, message: "Magic link sent to " + email };
+    } catch (err) {
+      console.error("requestManage failed:", err);
+      // Fallback: return a URL the admin can copy manually
+      const token = btoa(JSON.stringify({ firstName, lastName, email, linkedin }));
+      const url = `${window.location.origin}?manage=${token}`;
+      return { ok: false, url, message: "Email not sent — copy this URL: " + url };
+    }
   },
 };
