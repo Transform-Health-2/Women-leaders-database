@@ -2,11 +2,16 @@ import { supabase } from "../supabase";
 
 export const api = {
   getLeaders: async (status = "live") => {
-    let query = supabase.from("leaders").select(`
-      id, first_name, last_name, role, organisation, bio, linkedin, photo_url,
-      status, editor_email, internal_note, country, nominate_link, expertise,
-      years_experience, countries, notable_items, admin_token, created_at
-    `);
+    const isAdmin = status === "all";
+    const cols = isAdmin
+      ? `id, first_name, last_name, role, organisation, bio, linkedin, photo_url,
+         status, branch, editor_email, leader_email, nominator_name, internal_note,
+         country, geo_scope, nominate_link, expertise, years_experience, countries,
+         notable_items, admin_token, created_at`
+      : `id, first_name, last_name, role, organisation, bio, linkedin, photo_url,
+         status, editor_email, internal_note, country, nominate_link, expertise,
+         years_experience, countries, notable_items, created_at`;
+    let query = supabase.from("leaders").select(cols);
     if (status && status !== "all") query = query.eq("status", status);
     const { data, error } = await query;
     if (error) throw error;
@@ -27,8 +32,9 @@ export const api = {
       status: "pending",
       editor_email: formData.editorEmail || null,   // Person who submitted (could be different from leader)
       leader_email: formData.email || null,           // Leader's own email (NOT visible in public)
-      nominator_name: formData.nominatorName || null,
+      nominator_name: formData.branch === "nominate" ? (formData.nominatorName || null) : null,
       country: formData.country || null,
+      geo_scope: formData.geo_scope || null,
       nominate_link: formData.nominateLink || null,
       expertise: formData.expertise
         ? formData.expertise.split(", ").filter(Boolean)

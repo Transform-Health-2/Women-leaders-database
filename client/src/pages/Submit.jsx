@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+const DRAFT_KEY = "submit_profile_draft";
+function loadDraft() {
+  try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "null") || {}; }
+  catch { return {}; }
+}
 import { api } from "../api/leaders";
 import { compressImage } from "../utils/compressImage";
 import Button from "../components/Button";
@@ -13,34 +19,48 @@ import {
 const STEP_LABELS = ["Start", "Consent", "Basic Info", "Profile", "Links"];
 
 export default function Submit({ onManageProfile }) {
-  const [step,              setStep]              = useState(0);
-  const [branch,            setBranch]            = useState("self");
-  const [nominateLink,      setNominateLink]      = useState("");
-  const [nominatorName,     setNominatorName]     = useState("");
-  const [nominatorEmail,    setNominatorEmail]    = useState("");
-  const [nomineeFirstName,  setNomineeFirstName]  = useState("");
-  const [nomineeLastName,   setNomineeLastName]   = useState("");
-  const [consent,           setConsent]           = useState(null);
-  const [firstName,         setFirstName]         = useState("");
-  const [lastName,          setLastName]          = useState("");
-  const [role,              setRole]              = useState("");
-  const [org,               setOrg]               = useState("");
-  const [expertise,         setExpertise]         = useState([]);
-  const [otherExpertise,    setOtherExpertise]    = useState("");
-  const [country,           setCountry]           = useState("");
-  const [geoScope,          setGeoScope]          = useState("");
-  const [selectedCountries, setSelectedCountries] = useState([]);
-  const [bio,               setBio]               = useState("");
-  const [email,             setEmail]             = useState("");
-  const [linkedin,          setLinkedin]          = useState("");
+  const d = loadDraft();
+  const [step,              setStep]              = useState(d.step ?? 0);
+  const [branch,            setBranch]            = useState(d.branch || "self");
+  const [nominateLink,      setNominateLink]      = useState(d.nominateLink || "");
+  const [nominatorName,     setNominatorName]     = useState(d.nominatorName || "");
+  const [nominatorEmail,    setNominatorEmail]    = useState(d.nominatorEmail || "");
+  const [nomineeFirstName,  setNomineeFirstName]  = useState(d.nomineeFirstName || "");
+  const [nomineeLastName,   setNomineeLastName]   = useState(d.nomineeLastName || "");
+  const [consent,           setConsent]           = useState(d.consent ?? null);
+  const [firstName,         setFirstName]         = useState(d.firstName || "");
+  const [lastName,          setLastName]          = useState(d.lastName || "");
+  const [role,              setRole]              = useState(d.role || "");
+  const [org,               setOrg]               = useState(d.org || "");
+  const [expertise,         setExpertise]         = useState(d.expertise || []);
+  const [otherExpertise,    setOtherExpertise]    = useState(d.otherExpertise || "");
+  const [country,           setCountry]           = useState(d.country || "");
+  const [geoScope,          setGeoScope]          = useState(d.geoScope || "");
+  const [selectedCountries, setSelectedCountries] = useState(d.selectedCountries || []);
+  const [bio,               setBio]               = useState(d.bio || "");
+  const [email,             setEmail]             = useState(d.email || "");
+  const [linkedin,          setLinkedin]          = useState(d.linkedin || "");
   const [notableText,       setNotableText]       = useState("");
-  const [notableItems,      setNotableItems]      = useState([]);
+  const [notableItems,      setNotableItems]      = useState(d.notableItems || []);
   const [photo,             setPhoto]             = useState(null);
   const [photoPreview,      setPhotoPreview]      = useState(null);
-  const [yearsExp,          setYearsExp]          = useState("");
+  const [yearsExp,          setYearsExp]          = useState(d.yearsExp || "");
   const [status,            setStatus]            = useState("");
   const [showNoConsentModal, setShowNoConsentModal] = useState(false);
   const [duplicateWarning,  setDuplicateWarning]  = useState(null);
+
+  // Persist draft to localStorage (excludes photo/photoPreview — not serialisable)
+  useEffect(() => {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      step, branch, nominateLink, nominatorName, nominatorEmail,
+      nomineeFirstName, nomineeLastName, consent, firstName, lastName,
+      role, org, expertise, otherExpertise, country, geoScope,
+      selectedCountries, bio, email, linkedin, notableItems, yearsExp,
+    }));
+  }, [step, branch, nominateLink, nominatorName, nominatorEmail,
+      nomineeFirstName, nomineeLastName, consent, firstName, lastName,
+      role, org, expertise, otherExpertise, country, geoScope,
+      selectedCountries, bio, email, linkedin, notableItems, yearsExp]);
 
   const charCount = bio.length;
 
@@ -77,8 +97,11 @@ export default function Submit({ onManageProfile }) {
   }
 
   function handleConsent() {
-    if (consent === "no") setShowNoConsentModal(true);
-    else if (consent === "yes") goStep(2);
+    if (consent === "yes") goStep(2);
+  }
+
+  function handleNoConsent() {
+    setShowNoConsentModal(true);
   }
 
   function toggleExpertise(tag) {
@@ -116,10 +139,15 @@ export default function Submit({ onManageProfile }) {
   }
 
   function resetForm() {
+    localStorage.removeItem(DRAFT_KEY);
     setFirstName(""); setLastName(""); setRole(""); setOrg("");
     setExpertise([]); setYearsExp(""); setSelectedCountries([]);
     setBio(""); setLinkedin(""); setPhoto(null);
     setPhotoPreview(null); setConsent(null);
+    setBranch("self"); setNominateLink(""); setNominatorName("");
+    setNominatorEmail(""); setNomineeFirstName(""); setNomineeLastName("");
+    setCountry(""); setGeoScope(""); setOtherExpertise("");
+    setNotableItems([]);
     setStep(0); setStatus("");
   }
 
@@ -146,6 +174,7 @@ export default function Submit({ onManageProfile }) {
       };
 
       await api.submitProfile(payload);
+      localStorage.removeItem(DRAFT_KEY);
       setStatus("submitted");
     } catch (err) {
       console.error(err);
@@ -154,8 +183,8 @@ export default function Submit({ onManageProfile }) {
   }
 
   const step3Invalid =
-    !yearsExp || expertise.length === 0 || selectedCountries.length === 0 ||
-    !bio || charCount < 300 || charCount > 500 || !photo;
+    !yearsExp || expertise.length === 0 ||
+    !bio || charCount < 300 || charCount > 500;
 
   if (status === "submitted") {
     return (
@@ -241,6 +270,7 @@ export default function Submit({ onManageProfile }) {
             <Step1Consent
               consent={consent} setConsent={setConsent}
               onBack={() => goStep(0)} onContinue={handleConsent}
+              onNoConsent={handleNoConsent}
             />
           )}
           {step === 2 && (

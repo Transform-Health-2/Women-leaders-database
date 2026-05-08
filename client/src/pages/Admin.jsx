@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
 import AdminManual from "./AdminManual";
+import AdminFixes from "./AdminFixes";
 
 const SIDEBAR_ITEMS = [
   { id: "all",       label: "All Entries",           icon: "list"      },
@@ -9,6 +10,7 @@ const SIDEBAR_ITEMS = [
   { id: "nominated", label: "Nominated",            icon: "user-plus" },
   { id: "divider",   label: "",                     icon: "divider"   },
   { id: "tests",     label: "Test Results",          icon: "test"      },
+  { id: "fixes",     label: "Test Fixes",            icon: "fixes"     },
 ];
 
 function InboxIcon() {
@@ -62,6 +64,16 @@ function TestIcon() {
   );
 }
 
+function FixesIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+      <rect x="9" y="3" width="6" height="4" rx="1" />
+      <path d="M9 14l2 2 4-4" />
+    </svg>
+  );
+}
+
 function ManualIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -71,7 +83,7 @@ function ManualIcon() {
   );
 }
 
-const ICONS = { inbox: InboxIcon, mail: MailIcon, list: ListIcon, "user-plus": UserPlusIcon, test: TestIcon, manual: ManualIcon };
+const ICONS = { inbox: InboxIcon, mail: MailIcon, list: ListIcon, "user-plus": UserPlusIcon, test: TestIcon, fixes: FixesIcon, manual: ManualIcon };
 
 function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
@@ -119,18 +131,16 @@ export default function Admin({ onGoToDirectory }) {
   const PAGE_SIZE = 15;
 
   useEffect(() => {
-    // Load data on mount
     loadData();
+    loadActiveTabData();
 
-    // Auto-refresh every 30 seconds
     const interval = setInterval(() => {
-      loadData();
+      loadActiveTabData();
     }, 30000);
 
-    // Refresh when tab comes into focus
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        loadData();
+        loadActiveTabData();
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -140,6 +150,10 @@ export default function Admin({ onGoToDirectory }) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  useEffect(() => {
+    loadActiveTabData();
+  }, [activeTab]);
 
   async function loadData() {
     setLoading(true);
@@ -159,6 +173,25 @@ export default function Admin({ onGoToDirectory }) {
       console.error("Failed to load admin data:", e);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadActiveTabData() {
+    try {
+      if (activeTab === "all" || activeTab === "pending" || activeTab === "nominated") {
+        const allLeaders = await api.getLeaders("all") || [];
+        setAll(allLeaders);
+        setPending(allLeaders.filter(l => l.status === "pending" && l.branch !== "nominate"));
+        setNominated(allLeaders.filter(l => l.status === "pending" && l.branch === "nominate"));
+      } else if (activeTab === "requests") {
+        const reqs = await api.getRequests();
+        if (reqs?.length) setRequests(reqs);
+      } else if (activeTab === "tests") {
+        const tests = await api.getTestResults();
+        if (tests?.length) setTestResults(tests);
+      }
+    } catch (e) {
+      console.error("Failed to load tab data:", e);
     }
   }
 
@@ -398,6 +431,8 @@ export default function Admin({ onGoToDirectory }) {
     setRequestSubTab("updates");
     setSelectedDeletes([]); setSelectedPending([]);
     setExpandedId(null); setExpandedAllId(null); setExpandedNominee(null);
+    setExpandedTester(null); setExpandedTestSection(null);
+    setTestFilterTester(""); setTestFilterStatus(""); setTestFilterSearch("");
     setAllPage(1); setSearchQuery(""); setFilterCountry(""); setFilterExpertise("");
   };
 
@@ -427,7 +462,7 @@ export default function Admin({ onGoToDirectory }) {
   const liveNames = useMemo(() => {
     const set = new Set();
     all.filter(l => l.status === "live").forEach(l => {
-      set.add(`${l.first_name?.toLowerCase()} ${l.last_name?.toLowerCase()}`);
+      set.add(`${l.first_name?.trim()?.toLowerCase() ?? ""} ${l.last_name?.trim()?.toLowerCase() ?? ""}`);
     });
     return set;
   }, [all]);
@@ -487,13 +522,18 @@ export default function Admin({ onGoToDirectory }) {
     });
   }, [all, searchQuery, filterCountry, filterExpertise, filterClicks, sortOrder]);
 
+  const pendingBadgeCount = (activeTab === "pending" && (searchQuery.trim() || filterCountry || filterExpertise))
+    ? filteredPending.length
+    : pending.length;
+
   const sidebarData = [
-    { ...SIDEBAR_ITEMS[0], count: allCount       },
-    { ...SIDEBAR_ITEMS[1], count: pendingCount   },
+    { ...SIDEBAR_ITEMS[0], count: allCount          },
+    { ...SIDEBAR_ITEMS[1], count: pendingBadgeCount },
     { ...SIDEBAR_ITEMS[2], count: requestsCount  },
     { ...SIDEBAR_ITEMS[3], count: nominatedCount },
     SIDEBAR_ITEMS[4],  // divider (no count)
     { ...SIDEBAR_ITEMS[5], count: testResults.length },
+    { ...SIDEBAR_ITEMS[6], count: 15 },  // 15 fixed items
   ];
 
   return (
@@ -552,6 +592,13 @@ export default function Admin({ onGoToDirectory }) {
                     <Icon />
                   </span>
                   <span className="flex-1 text-left">{item.label}</span>
+                  {(item.id === "tests" || item.id === "fixes") && (
+                    <span className={`text-[1rem] font-bold px-1.5 py-0.5 rounded tracking-wider ${
+                      isActive ? "bg-amber-200 text-amber-800" : "bg-amber-400/80 text-amber-900"
+                    }`}>
+                      DEV
+                    </span>
+                  )}
                   {item.count !== undefined && (
                     <span className={`text-[1.4rem] font-bold px-2 py-0.5 rounded-lg ${
                       isActive ? "bg-white text-brand-navy" : "bg-brand-yellow text-brand-navy"
@@ -583,7 +630,7 @@ export default function Admin({ onGoToDirectory }) {
 
         <main className="flex-1 flex flex-col overflow-hidden">
           {/* Page header + stats - hidden for Tests tab */}
-          {activeTab !== "tests" && activeTab !== "manual" && (
+          {activeTab !== "tests" && activeTab !== "manual" && activeTab !== "fixes" && (
             <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
               <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
@@ -613,7 +660,7 @@ export default function Admin({ onGoToDirectory }) {
           )}
 
           {/* Filter bar - hidden for Tests tab */}
-          {activeTab !== "tests" && activeTab !== "manual" && (
+          {activeTab !== "tests" && activeTab !== "manual" && activeTab !== "fixes" && (
             <div className="px-8 py-4 border-b-2 border-brand-navy flex-shrink-0 bg-white">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -1105,7 +1152,7 @@ export default function Admin({ onGoToDirectory }) {
                   {filteredPending.map((item) => {
                     const isExpanded = expandedId === item.id;
                     const isChecked  = selectedPending.includes(item.id);
-                    const isDuplicate = liveNames.has(`${item.first_name?.toLowerCase()} ${item.last_name?.toLowerCase()}`);
+                    const isDuplicate = liveNames.has(`${item.first_name?.trim()?.toLowerCase() ?? ""} ${item.last_name?.trim()?.toLowerCase() ?? ""}`);
                     return (
                       <div key={item.id}>
                         <div
@@ -1188,7 +1235,16 @@ export default function Admin({ onGoToDirectory }) {
                                   <div><span className="text-brand-navy font-semibold">Experience: </span>{item.yearsExp || item.years_experience || "—"}</div>
                                   <div><span className="text-brand-navy font-semibold">Geo scope: </span>{item.geoScope || item.geo_scope || "—"}</div>
                                   <div><span className="text-brand-navy font-semibold">Countries: </span>{item.selectedCountries || item.countries || "—"}</div>
-                                  <div><span className="text-brand-navy font-semibold">Expertise: </span>{item.expertise || "—"}</div>
+                                  <div className="md:col-span-2">
+                                    <span className="text-brand-navy font-semibold">Expertise: </span>
+                                    {toTags(item.expertise).length > 0 ? (
+                                      <div className="flex flex-wrap gap-1.5 mt-1">
+                                        {toTags(item.expertise).map((tag, i) => (
+                                          <span key={i} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
+                                        ))}
+                                      </div>
+                                    ) : "—"}
+                                  </div>
                                   <div><span className="text-brand-navy font-semibold">Branch: </span>{item.branch || "self"}</div>
                                 </div>
                               </div>
@@ -1282,7 +1338,16 @@ export default function Admin({ onGoToDirectory }) {
                                       <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">Entry details</div>
                                       <div className="space-y-2 text-[1.5rem] text-brand-dark-blue">
                                         <div><span className="text-brand-navy font-semibold">Country: </span>{item.country || "—"}</div>
-                                        <div><span className="text-brand-navy font-semibold">Expertise: </span>{item.expertise || "—"}</div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">Expertise: </span>
+                                          {toTags(item.expertise).length > 0 ? (
+                                            <div className="flex flex-wrap gap-1.5 mt-1">
+                                              {toTags(item.expertise).map((tag, i) => (
+                                                <span key={i} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
+                                              ))}
+                                            </div>
+                                          ) : "—"}
+                                        </div>
                                         <div><span className="text-brand-navy font-semibold">LinkedIn: </span>{item.linkedin ? <a href={item.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline text-brand-navy">{item.linkedin}</a> : '—'}</div>
                                         <div><span className="text-brand-navy font-semibold">Editor: </span>{item.editor_email || item.editorEmail || '—'}</div>
                                         <div><span className="text-brand-navy font-semibold">Leader email: </span>{item.leader_email || '—'}</div>
@@ -1611,6 +1676,8 @@ export default function Admin({ onGoToDirectory }) {
                   </>
                 );
               })()
+            : activeTab === "fixes"
+            ? <AdminFixes />
             : activeTab === "manual"
             ? <AdminManual />
             : null}

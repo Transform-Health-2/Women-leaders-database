@@ -22,7 +22,7 @@ export default function Button({
 }) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors cursor-pointer ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors ${props.disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"} ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       {...props}
     >
       {children}

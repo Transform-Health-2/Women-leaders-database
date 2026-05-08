@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useLeaders } from "../hooks/useLeaders";
-import { COUNTRY_TO_CONTINENT } from "../utils/countries";
+import { COUNTRY_TO_CONTINENT, ALL_COUNTRIES } from "../utils/countries";
 import LeaderCard from "../components/LeaderCard";
 import ProfileModal from "../components/ProfileModal";
 
@@ -23,8 +23,6 @@ const EXPERTISE_OPTIONS = [
 ];
 
 const CONTINENTS = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
-const ALL_COUNTRIES = Object.keys(COUNTRY_TO_CONTINENT).sort();
-
 const INITIAL_VISIBLE  = 6;
 const EXPANDED_VISIBLE = 9;
 const PAGE_SIZE        = 9;

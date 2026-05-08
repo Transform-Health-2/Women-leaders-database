@@ -73,6 +73,13 @@
     .save-dot.saving { background: #3b82f6; }
     .save-dot.error { background: #ef4444; }
     #save-text { color: #6b7280; }
+    .tester-badge {
+      display: none; align-items: center; gap: 6px;
+      background: #1E3A5F; color: #fff; font-size: 1.3rem; font-weight: 700;
+      padding: 6px 12px 6px 10px; border-radius: 20px; white-space: nowrap;
+    }
+    .tester-badge.visible { display: inline-flex; }
+    .tester-badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
 
     /* Progress bar */
     .progress-wrap { margin-top: 14px; }
@@ -91,6 +98,8 @@
       padding: 0 24px; display: flex; gap: 2px; overflow-x: auto;
       position: sticky; top: 0; z-index: 50;
     }
+    .tab-bar-left { display: flex; gap: 2px; overflow-x: auto; flex: 1; }
+    .tab-bar-right { display: flex; align-items: center; flex-shrink: 0; padding-left: 8px; }
     .tab-btn {
       padding: 14px 16px 12px; border: none; background: transparent;
       cursor: pointer; font-size: 1.4rem; font-weight: 600; color: #6b7280;
@@ -103,6 +112,13 @@
       font-size: 1.1rem; font-weight: 700; padding: 2px 7px;
       border-radius: 99px; min-width: 32px; text-align: center;
     }
+    .tab-tester-badge {
+      display: none; align-items: center; gap: 5px;
+      font-size: 1.2rem; font-weight: 700; color: #1E3A5F;
+      padding: 4px 10px; border-radius: 20px; background: #e8f0fe; white-space: nowrap;
+    }
+    .tab-tester-badge.visible { display: inline-flex; }
+    .tab-tester-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
     .badge-pending { background: #f1f5f9; color: #64748b; }
     .badge-pass    { background: #dcfce7; color: #166534; }
     .badge-fail    { background: #fee2e2; color: #991b1b; }
@@ -447,6 +463,7 @@
       const savedTesterName = localStorage.getItem("th-tester-name");
       if (savedTesterName) {
         document.getElementById("tester-name").value = savedTesterName;
+        updateTesterBadge(savedTesterName);
       }
 
       renderAll();
@@ -455,7 +472,7 @@
     async function loadTesterResults(name) {
       if (!name.trim() || !supabaseClient) return;
       setDot("loading");
-      document.getElementById("save-text").textContent = "Loading previous results…";
+      document.getElementById("save-text").textContent = "Searching for your previous results…";
       try {
         const { data, error } = await supabaseClient.from("test_results").select("*").eq("tester_name", name);
         if (error) throw error;
@@ -468,20 +485,32 @@
           persist();
           renderAll();
           setDot("saved");
-          document.getElementById("save-text").textContent = `Loaded ${data.length} previous results from ${name} ✓`;
+          document.getElementById("save-text").textContent = `✓ Welcome back, ${name}! Loaded ${data.length} previous result${data.length === 1 ? "" : "s"}.`;
         } else {
           setDot("");
-          document.getElementById("save-text").textContent = "Starting fresh — no previous results found";
+          document.getElementById("save-text").textContent = `✗ No previous results found for "${name}". Starting fresh.`;
         }
       } catch (err) {
         setDot("error");
-        document.getElementById("save-text").textContent = "Failed to load previous results";
+        document.getElementById("save-text").textContent = "Failed to load previous results — check your connection";
         console.warn("Load failed", err);
+      }
+    }
+
+    function updateTesterBadge(name) {
+      const badge = document.getElementById("tester-badge");
+      const label = document.getElementById("tester-badge-name");
+      if (name) {
+        label.textContent = name;
+        badge.classList.add("visible");
+      } else {
+        badge.classList.remove("visible");
       }
     }
 
     function onTesterNameChange() {
       const name = document.getElementById("tester-name").value.trim();
+      updateTesterBadge(name);
       if (name) {
         localStorage.setItem("th-tester-name", name);
         loadTesterResults(name);
@@ -517,8 +546,11 @@
     function clearSaved() {
       if (!confirm("Clear all saved results? This cannot be undone.")) return;
       localStorage.removeItem("th-test-results-v2");
+      localStorage.removeItem("th-tester-name");
       results = DEFAULT_RESULTS.map(d => ({ ...d }));
       expandedRow = null;
+      document.getElementById("tester-name").value = "";
+      updateTesterBadge("");
       renderAll();
     }
 
@@ -541,7 +573,7 @@
 
     function renderTabs() {
       const sections = getActiveSections();
-      document.getElementById("tabs").innerHTML = sections.map((sec, i) => {
+      document.getElementById("tab-bar-left").innerHTML = sections.map((sec, i) => {
         const st = sectionStats(sec.id);
         const done = st.pass + st.fail;
         let badgeClass = done === 0 ? "badge-pending" : st.fail > 0 ? "badge-fail" : done === st.total ? "badge-pass" : "badge-wip";
@@ -550,6 +582,13 @@
           <span class="tab-badge ${badgeClass}">${st.pass}/${st.total}</span>
         </button>`;
       }).join("");
+      const name = document.getElementById("tester-name").value.trim();
+      const right = document.getElementById("tab-bar-right");
+      if (name) {
+        right.innerHTML = `<span class="tab-tester-badge visible"><span class="tab-tester-dot"></span>${name}</span>`;
+      } else {
+        right.innerHTML = "";
+      }
     }
 
     function renderSectionHeader() {
@@ -684,6 +723,10 @@
   <div class="save-status-row" style="margin-bottom:12px;">
     <span class="save-dot" id="save-dot"></span>
     <span id="save-text"></span>
+    <span class="tester-badge" id="tester-badge">
+      <span class="tester-badge-dot"></span>
+      Testing as: <span id="tester-badge-name"></span>
+    </span>
   </div>
 
   <!-- Overall progress -->
@@ -794,7 +837,10 @@
 </div>
 
 <!-- TAB BAR -->
-<div class="tab-bar" id="tabs"></div>
+<div class="tab-bar" id="tabs">
+  <div class="tab-bar-left" id="tab-bar-left"></div>
+  <div class="tab-bar-right" id="tab-bar-right"></div>
+</div>
 
 <!-- CONTENT -->
 <div class="content">

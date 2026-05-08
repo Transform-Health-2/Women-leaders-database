@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "../components/Button";
 import { Input, Textarea, Select } from "../components/Input";
+import { ALL_COUNTRIES } from "../utils/countries";
 
 export const EXPERTISE_TAGS = [
   "AI & Automation",
@@ -22,14 +23,10 @@ export const EXPERTISE_TAGS = [
   "Other",
 ];
 
-export const COUNTRIES = [
-  "Kenya", "Nigeria", "South Africa", "Tanzania", "Uganda", "Ghana",
-  "Ethiopia", "Rwanda", "Senegal", "India", "Brazil", "Malaysia",
-  "United States", "United Kingdom", "France", "Switzerland", "Germany",
-  "Australia", "Japan", "China",
-];
+export const COUNTRIES = ALL_COUNTRIES;
 
 export const GEO_SCOPES = [
+  { value: "Global",    label: "Global" },
   { value: "Africa",    label: "Africa" },
   { value: "Americas",  label: "Americas" },
   { value: "Asia",      label: "Asia" },
@@ -40,7 +37,7 @@ export const GEO_SCOPES = [
 
 // Shared class overrides to match the submit form's visual design
 const F_INPUT = "bg-brand-blue-tint text-lg py-5 px-[1.6rem]";
-const LABEL_CLASS = "block text-lg text-brand-dark mb-2";
+const LABEL_CLASS = "block text-1.4 text-brand-dark mb-2";
 const BACK_CLS   = "font-bold tracking-[0.06em] text-1.4 text-gray-900 hover:no-underline";
 const CONT_CLS   = "font-bold tracking-[0.06em] text-1.4";
 
@@ -205,7 +202,7 @@ export function Step0Branch({
 }
 
 // ─── Step 1: Consent ─────────────────────────────────────────────────────────
-export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
+export function Step1Consent({ consent, setConsent, onBack, onContinue, onNoConsent }) {
   return (
     <div>
       <h2 className="text-4xl font-bold text-brand-navy mb-4 tracking-heading">
@@ -245,7 +242,7 @@ export function Step1Consent({ consent, setConsent, onBack, onContinue }) {
         </button>
 
         <button
-          onClick={() => setConsent("no")}
+          onClick={() => { setConsent("no"); onNoConsent(); }}
           className={`flex items-center gap-4 px-8 py-6 rounded-lg text-left cursor-pointer border-2 ${
             consent === "no" ? "border-red-600 bg-brand-red-light" : "border-gray-200 bg-gray-50"
           }`}
@@ -309,7 +306,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
 
         <div className="mb-5">
           <label className={LABEL_CLASS}>Profile photo *</label>
-        <label className="flex flex-col items-center justify-center bg-brand-blue-tint border-[1.5px] border-brand-blue-border rounded-xl py-[5.2rem] px-[2.4rem] cursor-pointer w-full">
+        <label className={`flex flex-col items-center justify-center bg-brand-blue-tint border-[1.5px] rounded-xl py-[5.2rem] px-[2.4rem] cursor-pointer w-full ${!photoPreview ? "border-brand-blue-border" : "border-green-400"}`}>
           {photoPreview ? (
             <img src={photoPreview} alt="Preview" className="w-[80px] h-[80px] rounded-full object-cover mb-3" />
           ) : (
@@ -351,7 +348,7 @@ export function Step2BasicInfo({ firstName, setFirstName, lastName, setLastName,
 
       <div className="flex justify-between items-center pt-5">
         <Button variant="ghost" size="sm" className={BACK_CLS} onClick={onBack}>← BACK</Button>
-        <Button variant="ghost" size="sm" className={CONT_CLS} disabled={!firstName || !lastName || !email || !country} onClick={onContinue}>CONTINUE →</Button>
+        <Button variant="ghost" size="sm" className={CONT_CLS} disabled={!firstName || !lastName || !email || !country || !photoPreview} onClick={onContinue}>CONTINUE →</Button>
       </div>
     </div>
   );

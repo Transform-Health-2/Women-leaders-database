@@ -17,10 +17,12 @@ create table if not exists public.leaders (
   photo_url         text,
   status            text default 'pending' check (status in ('pending', 'live', 'rejected')),
   editor_email      text,                -- email of person who submitted (visible to admin)
-  leader_email      text,                -- leader's own email (NOT visible in public directory)
+  leader_email      text,                -- leader's own email (NOT visible in public directory) — migration: add-leader-email-column.sql
+  nominator_name    text,                -- name of nominator (nominate branch only) — migration: add-nominator-name-column.sql
   internal_note     text,
   country           text,
   nominate_link     text,
+  geo_scope         text,                -- geographical scope — migration: add-geo-scope-column.sql
   expertise         text[],
   years_experience  text,
   countries         text[],
