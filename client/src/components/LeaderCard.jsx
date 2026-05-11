@@ -76,11 +76,11 @@ function Avatar() {
               e.stopPropagation();
               import("../api/leaders").then(({ api }) => api.trackLinkedInClick(l.id));
             }}
-            className="absolute bottom-1 right-[-2px] text-[#0A66C2] hover:opacity-70 transition-opacity"
+            className="absolute bottom-0 right-0 w-[22px] h-[22px] rounded-[4px] bg-[#0A66C2] flex items-center justify-center hover:bg-[#004182] transition-colors shadow-sm"
             aria-label="LinkedIn profile"
             title="Open LinkedIn profile"
           >
-            <LinkedInIcon />
+            <LinkedInIcon className="text-white" />
           </a>
         )}
       </div>
