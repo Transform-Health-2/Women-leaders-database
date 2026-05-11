@@ -76,7 +76,7 @@ function Avatar() {
               e.stopPropagation();
               import("../api/leaders").then(({ api }) => api.trackLinkedInClick(l.id));
             }}
-            className="absolute bottom-0 right-0 w-[22px] h-[22px] rounded-[4px] bg-[#0A66C2] flex items-center justify-center hover:bg-[#004182] transition-colors shadow-sm"
+            className="absolute bottom-0 right-0 w-[22px] h-[22px] block hover:opacity-80 transition-opacity"
             aria-label="LinkedIn profile"
             title="Open LinkedIn profile"
           >
