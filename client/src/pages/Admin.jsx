@@ -1240,7 +1240,7 @@ export default function Admin({ onGoToDirectory }) {
                                     {toTags(item.expertise).length > 0 ? (
                                       <div className="flex flex-wrap gap-1.5 mt-1">
                                         {toTags(item.expertise).map((tag, i) => (
-                                          <span key={i} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
+                                          <span key={i} title={tag} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
                                         ))}
                                       </div>
                                     ) : "—"}
@@ -1343,7 +1343,7 @@ export default function Admin({ onGoToDirectory }) {
                                           {toTags(item.expertise).length > 0 ? (
                                             <div className="flex flex-wrap gap-1.5 mt-1">
                                               {toTags(item.expertise).map((tag, i) => (
-                                                <span key={i} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
+                                                <span key={i} title={tag} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
                                               ))}
                                             </div>
                                           ) : "—"}

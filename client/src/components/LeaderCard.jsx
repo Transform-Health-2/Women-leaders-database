@@ -128,7 +128,7 @@ function Tags() {
   return (
     <div className="flex flex-wrap gap-1 justify-center mb-4">
       {tags.slice(0, 3).map((tag) => (
-        <span key={tag} className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border">
+        <span key={tag} title={tag} className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border truncate max-w-[130px]">
           {tag.replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
       ))}
