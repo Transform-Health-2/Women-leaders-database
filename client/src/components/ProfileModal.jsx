@@ -158,7 +158,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
               {expertiseTags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[1.3rem] font-medium bg-brand-blue-light text-brand-navy px-3 py-1.5 rounded-full border border-brand-blue-border"
+                  className="text-[1.3rem] font-medium bg-brand-blue-tint text-brand-navy px-3 py-1.5 rounded-full border border-brand-blue-border"
                 >
                   {tag}
                 </span>

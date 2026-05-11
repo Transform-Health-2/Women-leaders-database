@@ -120,7 +120,7 @@ function Meta() {
   );
 }
 
-/** Tags — up to 3 expertise chips, with overflow count. */
+/** Tags — up to 3 expertise pills, with overflow count. */
 function Tags() {
   const { leader: l } = useCard();
   const tags = (Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/)).filter(Boolean);
@@ -128,12 +128,12 @@ function Tags() {
   return (
     <div className="flex flex-wrap gap-1 justify-center mb-4">
       {tags.slice(0, 3).map((tag) => (
-        <span key={tag} className="text-[1.2rem] text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full">
+        <span key={tag} className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border">
           {tag.replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
       ))}
       {tags.length > 3 && (
-        <span className="text-[1.2rem] text-gray-500">+{tags.length - 3}</span>
+        <span className="text-[1.2rem] text-brand-navy font-medium">+{tags.length - 3}</span>
       )}
     </div>
   );

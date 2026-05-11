@@ -314,9 +314,14 @@ export default function ManageProfile({ prefill, onBack }) {
                       </p>
                     )}
                     {foundProfile.expertise && (
-                      <p className="text-1.3 text-gray-600">
-                        <strong>Expertise:</strong> {foundProfile.expertise}
-                      </p>
+                      <div className="mt-2">
+                        <span className="text-1.3 text-gray-600 font-semibold">Expertise: </span>
+                        <div className="inline-flex flex-wrap gap-1.5 mt-1">
+                          {(Array.isArray(foundProfile.expertise) ? foundProfile.expertise : String(foundProfile.expertise).split(/,\s*/)).filter(Boolean).map(tag => (
+                            <span key={tag} className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
