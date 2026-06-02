@@ -132,7 +132,6 @@ const SECTIONS = [
           </Li>
           <Li>Manage nominated profiles and send personalised outreach</Li>
           <Li>Browse and audit the full database</Li>
-          <Li>Monitor QA test results from the testing team</Li>
         </Ul>
         <P>
           The sidebar shows live counts next to each tab so you always know what
@@ -392,98 +391,6 @@ const SECTIONS = [
     ),
   },
   {
-    id: "test-results",
-    label: "Test Results",
-    content: (
-      <>
-        <P>
-          A live dashboard of QA submissions from the testing sheet. Used during
-          pre-launch testing sprints.
-        </P>
-        <Ul>
-          <Li>Pass / Fail / Pending summary counts at the top</Li>
-          <Li>
-            One card per tester with a colour-coded pass rate progress bar
-          </Li>
-          <Li>
-            Expand each tester → results by section (Directory, Analytics,
-            Submit, Admin, etc.)
-          </Li>
-          <Li>
-            Expand each section → individual test cases with scenario, priority,
-            status, and notes
-          </Li>
-          <Li>Fail rows are tinted red for quick scanning</Li>
-        </Ul>
-        <Img
-          src="screenshots/admin-manual/08-test-results.png"
-          caption="Test Results dashboard with per-tester cards and pass/fail summary"
-        />
-        <P>
-          Results are saved to both the browser's local storage and the
-          database. Returning testers can continue where they left off — the
-          testing sheet loads and merges previous results automatically. The
-          database uses upsert (insert or update) based on tester name +
-          scenario, so re-running a scenario updates its existing row rather
-          than creating a duplicate.
-        </P>
-        <H3>Managing results</H3>
-        <Ul>
-          <Li>
-            <strong>Delete a single result</strong> — click the{" "}
-            <strong>✕</strong> button on any row to permanently remove that test
-            case
-          </Li>
-          <Li>
-            <strong>Clear a tester's results</strong> — click the{" "}
-            <strong>✕ clear</strong> button on a tester's card to remove all of
-            their results at once
-          </Li>
-          <Li>Both actions show a confirmation dialog before deleting</Li>
-        </Ul>
-        <H3>Filters</H3>
-        <Ul>
-          <Li>Filter by tester name</Li>
-          <Li>Filter by status (Pass / Fail / Pending)</Li>
-          <Li>Search by scenario or notes text</Li>
-        </Ul>
-        <Tip>
-          Results are submitted via the <strong>Testing Sheet</strong> (linked
-          in the nav bar). Testers fill in scenarios and save — the data appears
-          here automatically.
-        </Tip>
-      </>
-    ),
-  },
-  {
-    id: "test-fixes",
-    label: "Test Fixes",
-    content: (
-      <>
-        <P>
-          A reference checklist of 21 known bug items identified during
-          pre-launch QA testing. All items have been fixed and verified in the
-          codebase.
-        </P>
-        <Ul>
-          <Li>An ID and description of the issue</Li>
-          <Li>A priority level (Critical / Important / Nice-to-have)</Li>
-          <Li>File references for where the fix was applied</Li>
-          <Li>A green ✓ status indicator confirming the fix is in place</Li>
-        </Ul>
-        <P>
-          These are hardcoded reference items (not database-driven) — use this
-          tab to cross-reference what was addressed before re-testing via the{" "}
-          <strong>Testing Sheet</strong>.
-        </P>
-        <Img
-          src="screenshots/admin-manual/09-test-fixes.png"
-          caption="Test Fixes checklist with IDs, priorities, and fix status"
-        />
-      </>
-    ),
-  },
-  {
     id: "email-setup",
     label: "Email Setup",
     content: (
@@ -736,20 +643,9 @@ const SECTIONS = [
             standalone internal tool.
           </Li>
           <Li>
-            <strong>Returning testers</strong> can continue where they left off
-            — the testing sheet saves progress to both local storage and
-            Supabase. Re-entering their name loads and merges previous results
-            automatically.
-          </Li>
-          <Li>
             <strong>Live auto-refresh:</strong> Data refreshes every 30 seconds
             while the tab is visible. It also refreshes when the tab regains
             focus.
-          </Li>
-          <Li>
-            <strong>DEV badge:</strong> Test Results and Test Fixes tabs show a{" "}
-            <Code>DEV</Code> badge in the sidebar — these are internal tools
-            used during pre-launch testing and may be restricted in production.
           </Li>
           <Li>
             <strong>Photo review:</strong> Profile photos are not displayed in
@@ -791,15 +687,6 @@ const SECTIONS = [
             <Code>Admin test mode: update leaders</Code>,{" "}
             <Code>Admin test mode: update requests</Code>
           </CheckItem>
-          <span className="flex items-start gap-3 mb-2 opacity-60">
-            <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 border-green-500 bg-green-500 text-white flex items-center justify-center text-[1.4rem] font-bold">
-              ✓
-            </span>
-            <span className="text-[1.5rem] text-gray-700 leading-[1.7]">
-              Run <Code>scripts/create-test-results-table.sql</Code> on
-              production — done
-            </span>
-          </span>
         </ul>
         <Note>
           The SMTP function lives at <Code>supabase/functions/send-email/</Code>
