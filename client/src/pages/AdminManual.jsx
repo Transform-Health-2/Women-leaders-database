@@ -113,11 +113,378 @@ function Img({ src, caption }) {
   );
 }
 
+// ── Documentation Hub Link Cards ─────────────────────────────────────────────
+function DocCard({ title, description, link, icon }) {
+  return (
+    <a
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block p-4 rounded-lg border border-gray-300 bg-white hover:bg-blue-50 hover:border-brand-navy transition-all cursor-pointer group"
+    >
+      <div className="flex items-start gap-3">
+        <span className="text-2xl flex-shrink-0 mt-1">{icon}</span>
+        <div className="flex-1">
+          <h4 className="text-[1.5rem] font-semibold text-brand-navy group-hover:underline mb-1">
+            {title}
+          </h4>
+          <p className="text-[1.4rem] text-gray-600 leading-[1.5]">
+            {description}
+          </p>
+        </div>
+      </div>
+    </a>
+  );
+}
+
 // ── Section content definitions ──────────────────────────────────────────────
+// Organized by workflow: Quick Start → Understand Product → Daily Tasks → Advanced → Setup → Help
+
+  // ────────────────────────────────────────────────────────────────────────
+  // 🚀 SECTION GROUP: GETTING STARTED
+  // ────────────────────────────────────────────────────────────────────────
+
 const SECTIONS = [
   {
+    id: "quick-start-hub",
+    label: "🚀 Quick Start Hub",
+    content: (
+      <>
+        <P>
+          Quick access to all documentation. Find answers, understand the product, and learn best practices.
+        </P>
+        <H3>Core Resources for Admins</H3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <DocCard
+            icon="🎯"
+            title="Data Quality Standards"
+            description="Profile approval criteria, field requirements, and what makes a publishable profile."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/05-data-quality-standards.md"
+          />
+          <DocCard
+            icon="❓"
+            title="Admin FAQ"
+            description="Answers to common admin questions about workflows, approvals, and troubleshooting."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/04-faq.md#for-everyone"
+          />
+        </div>
+
+        <H3>Understand the Product</H3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <DocCard
+            icon="🚀"
+            title="Product Overview"
+            description="Mission, features, user roles, and business strategy. Read this first to understand the big picture."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/01-product-overview.md"
+          />
+          <DocCard
+            icon="📋"
+            title="Documentation Index"
+            description="Master navigation hub for all documentation organized by audience and task."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/00-documentation-index.md"
+          />
+        </div>
+
+        <H3>For Context: User Guides</H3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <DocCard
+            icon="👩‍💼"
+            title="Submit Profile Guide"
+            description="Understand how leaders submit profiles — helps you review with empathy and catch issues early."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/02-submit-profile-guide.md"
+          />
+          <DocCard
+            icon="🤝"
+            title="Nominator Guide"
+            description="How people nominate leaders — understand the nomination workflow and what to expect."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/03-nominator-guide.md"
+          />
+        </div>
+
+        <H3>Legal & Privacy</H3>
+        <div className="grid grid-cols-1 gap-4 mb-6">
+          <DocCard
+            icon="🔒"
+            title="Privacy Policy & Data Handling"
+            description="GDPR/CCPA compliance, data retention, user rights. Reference when handling sensitive data."
+            link="https://github.com/Tich-Labs/transform-health-directory/blob/main/docs/06-privacy-policy.md"
+          />
+        </div>
+
+        <Tip>
+          <strong>Pro tip:</strong> Bookmark the Data Quality Standards — you'll reference it often when reviewing profiles. The FAQ section has common admin questions.
+        </Tip>
+      </>
+    ),
+  },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // ⭐ SECTION GROUP: DAILY ADMIN TASKS
+  // ────────────────────────────────────────────────────────────────────────
+
+  {
+    id: "approval-quick-ref",
+    label: "✓ Approval Quick Reference",
+    content: (
+      <>
+        <P>
+          Use this checklist when reviewing profiles. A profile is ready to approve when all required fields are present and meet quality standards.
+        </P>
+
+        <H3>Pre-Approval Checklist</H3>
+        <P className="font-semibold text-brand-navy mb-3">
+          Check all of these before clicking Approve:
+        </P>
+        <ul className="list-none ml-0 mb-6 space-y-2">
+          <CheckItem>
+            <strong>Name:</strong> Real name, proper spelling, no titles
+          </CheckItem>
+          <CheckItem>
+            <strong>Email:</strong> Valid email format, reasonable (not obviously fake)
+          </CheckItem>
+          <CheckItem>
+            <strong>Role:</strong> Specific job title (not vague like "Manager")
+          </CheckItem>
+          <CheckItem>
+            <strong>Organization:</strong> Recognizable, verifiable name
+          </CheckItem>
+          <CheckItem>
+            <strong>Expertise:</strong> 2-5 tags selected, relevant to digital health
+          </CheckItem>
+          <CheckItem>
+            <strong>Bio:</strong> 2-5 sentences, specific, shows impact (not just "I love digital health")
+          </CheckItem>
+          <CheckItem>
+            <strong>Country & Scope:</strong> Valid country + reasonable geographic scope (Local/National/Regional/Global)
+          </CheckItem>
+          <CheckItem>
+            <strong>Digital Health Link:</strong> Profile clearly relates to digital health (not just general healthcare)
+          </CheckItem>
+        </ul>
+
+        <H3>Common Rejection Reasons</H3>
+        <Table
+          headers={["Reason", "What to do", "How to respond"]}
+          rows={[
+            [
+              "Missing required fields",
+              "Check if bio, expertise, or country is empty",
+              "Send back to submitter for completion",
+            ],
+            [
+              "Bio too vague",
+              "Bio doesn't show specifics or impact (e.g., 'I work in health')",
+              "Request more specific, evidence-based bio with examples",
+            ],
+            [
+              "Role not actually a leader",
+              "Entry-level or unclear role",
+              "Ask for clarification or suggest they reapply later",
+            ],
+            [
+              "Not digital health",
+              "Traditional healthcare with no tech/innovation component",
+              "Politely decline — check mission criteria",
+            ],
+            [
+              "Possible duplicate",
+              "Name matches existing live leader",
+              "Compare emails & LinkedIn — approve one, reject other",
+            ],
+            [
+              "Unverifiable",
+              "Role/org claims don't match LinkedIn or web search",
+              "Ask to add LinkedIn link or provide verification",
+            ],
+            [
+              "Spam or suspicious",
+              "Nonsensical profile or promotional content",
+              "Reject immediately and flag",
+            ],
+          ]}
+        />
+
+        <H3>Red Flags During Review</H3>
+        <Ul>
+          <Li>
+            <strong>Bio includes marketing language:</strong> "Disruptive," "Revolutionary," "Game-changing" without specifics
+          </Li>
+          <Li>
+            <strong>Expertise doesn't match role:</strong> Selected tags unrelated to their job description
+          </Li>
+          <Li>
+            <strong>Years of experience doesn't match role:</strong> Senior title but claims 1 year experience (or vice versa)
+          </Li>
+          <Li>
+            <strong>LinkedIn link doesn't work or points to wrong person:</strong> Verify the name matches
+          </Li>
+          <Li>
+            <strong>Email is suspicious:</strong> Generic domains (test@test.test) or temporary email services
+          </Li>
+          <Li>
+            <strong>Photo doesn't look professional:</strong> But this alone isn't grounds to reject
+          </Li>
+        </Ul>
+
+        <Tip>
+          <strong>When in doubt:</strong> Reach out to the submitter with questions rather than rejecting. Most submissions are just incomplete, not problematic.
+        </Tip>
+      </>
+    ),
+  },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // ❓ SECTION GROUP: HELP & TROUBLESHOOTING
+  // ────────────────────────────────────────────────────────────────────────
+
+  {
+    id: "admin-faq",
+    label: "❓ Admin FAQ & Troubleshooting",
+    content: (
+      <>
+        <P>Answers to common admin questions about workflows and operations.</P>
+
+        <H3>How long should approval take?</H3>
+        <P>
+          <strong>Goal:</strong> 5–7 business days. This gives time to review thoroughly without
+          creating a backlog. If you fall behind, process in batches using bulk approve.
+        </P>
+
+        <H3>What do I do if I see a duplicate badge?</H3>
+        <P>
+          Check the name carefully. Two different people can share the same name. Compare:
+        </P>
+        <Ul>
+          <Li>Email address (primary differentiator)</Li>
+          <Li>Organization</Li>
+          <Li>LinkedIn profile if provided</Li>
+          <Li>Bio details (location, expertise, experience)</Li>
+        </Ul>
+        <P>
+          If genuinely the same person: approve the newest, reject the old one. If different people: approve both.
+        </P>
+
+        <H3>Can I verify LinkedIn directly from the admin console?</H3>
+        <P>
+          No, you'll need to click the link and open LinkedIn in a new tab. Always do this for profiles with red flags — it takes 30 seconds and catches a lot of issues.
+        </P>
+
+        <H3>What if I accidentally approve/reject something?</H3>
+        <P>
+          There's no undo button. If you reject by mistake, the submitter can resubmit. If you approve incorrectly, go to <Code>All Entries</Code>, find the profile, and use the <strong>Delete</strong> button to remove it (hard delete), then ask the team to re-review.
+        </P>
+
+        <H3>How do I know if a profile is spam?</H3>
+        <P>
+          Typical spam signs:
+        </P>
+        <Ul>
+          <Li>Nonsensical name or gibberish text</Li>
+          <Li>Promotional/marketing language throughout</Li>
+          <Li>Same name/email submitted multiple times</Li>
+          <Li>Email is obviously fake (no@no.com, test@test.test)</Li>
+          <Li>Bio is a copy-paste from another source</Li>
+        </Ul>
+        <P>
+          When in doubt, ask the team before rejecting. Most submissions are legitimate.
+        </P>
+
+        <H3>What's the difference between "Reject" and "Delete"?</H3>
+        <Table
+          headers={["Action", "What happens", "Can they resubmit?"]}
+          rows={[
+            [
+              "<strong>Reject</strong>",
+              "Status changes to 'rejected'. Profile hidden from public. Submitter notified.",
+              "Yes — they can resubmit with corrections",
+            ],
+            [
+              "<strong>Delete</strong>",
+              "Hard delete — record permanently removed from database. Submitter NOT notified.",
+              "No — they'd need to submit fresh (looks like a new entry)",
+            ],
+          ]}
+        />
+        <P>
+          Use <strong>Reject</strong> for most denials. Use <strong>Delete</strong> only for spam or corrections.
+        </P>
+
+        <H3>How do I send an update link to a leader?</H3>
+        <P>
+          Go to <strong>Profile Requests → Updates</strong>, expand the row, and click{" "}
+          <strong>Send update link</strong>. The system emails them a magic link (no password needed). When they submit, it appears as a new pending entry for your review.
+        </P>
+
+        <H3>What if the email never sent?</H3>
+        <P>
+          Check that SMTP is configured (email secrets in Supabase). If configured correctly:
+        </P>
+        <Ul>
+          <Li>Ask the leader to check spam folder</Li>
+          <Li>Wait 24 hours and retry</Li>
+          <Li>Ask the technical team to check Supabase Function logs</Li>
+        </Ul>
+
+        <H3>Can I bulk-approve/reject?</H3>
+        <P>
+          Yes! In <strong>All Entries</strong>:
+        </P>
+        <Ol>
+          <Li>Check the boxes on pending rows (or use "Select all")</Li>
+          <Li>A bulk action bar appears above the table</Li>
+          <Li>
+            Click <strong>Approve N</strong> or <strong>Reject N</strong>
+          </Li>
+          <Li>One confirmation covers all selected</Li>
+        </Ol>
+        <P>This is great for processing a backlog of similar submissions.</P>
+
+        <H3>How do I reach out to a nominee to encourage them to expand their profile?</H3>
+        <P>
+          Go to <strong>Nominated</strong>, expand the row. You'll see:
+        </P>
+        <Ul>
+          <Li>Nominator's name and email (who nominated them)</Li>
+          <Li>Nominee's name and LinkedIn link (if provided)</Li>
+        </Ul>
+        <P>
+          You can send them a personal message via LinkedIn or email introducing the directory and encouraging them to add a full bio/photo.
+        </P>
+
+        <H3>What does "Possible duplicate" actually mean?</H3>
+        <P>
+          It means their name matches an existing live leader exactly (first + last name, case-insensitive). It doesn't mean they're definitely a duplicate — just that you should check before approving.
+        </P>
+
+        <H3>Do I need to read every profile in detail?</H3>
+        <P>
+          Yes, especially bio. Skim everything to catch:
+        </P>
+        <Ul>
+          <Li>Spelling/grammar issues</Li>
+          <Li>Vague or marketing language</Li>
+          <Li>Claims that don't match their role</Li>
+          <Li>Technical issues (broken LinkedIn link, weird formatting)</Li>
+        </Ul>
+        <P>
+          You're the gate-keeper of quality. Spend 2-3 minutes per profile to get it right.
+        </P>
+
+        <H3>Can leaders delete their own profiles?</H3>
+        <P>
+          Yes. They go to their profile in the public directory and click <strong>Manage Your Profile → Request Deletion</strong>. This sends a request to you in <strong>Profile Requests → Deletes</strong>. You approve and they're removed.
+        </P>
+
+        <H3>What if a profile has no photo?</H3>
+        <P>
+          That's fine — photos are optional. You can approve a profile without one. However, profiles WITH photos get 2-3x more clicks, so encourage it in rejection reasons if you're asking for changes.
+        </P>
+      </>
+    ),
+  },
+  {
     id: "overview",
-    label: "Overview",
+    label: "📋 Overview",
     content: (
       <>
         <P>
@@ -152,7 +519,7 @@ const SECTIONS = [
   },
   {
     id: "dashboard-stats",
-    label: "Dashboard Stats",
+    label: "📊 Dashboard Stats",
     content: (
       <>
         <P>
@@ -180,7 +547,7 @@ const SECTIONS = [
   },
   {
     id: "all-entries",
-    label: "All Entries",
+    label: "📝 All Entries",
     content: (
       <>
         <P>
@@ -269,7 +636,7 @@ const SECTIONS = [
   },
   {
     id: "profile-requests",
-    label: "Profile Requests",
+    label: "✉️ Profile Requests",
     content: (
       <>
         <P>
@@ -361,7 +728,7 @@ const SECTIONS = [
   },
   {
     id: "nominated",
-    label: "Nominated",
+    label: "🤝 Nominated Leaders",
     content: (
       <>
         <P>
@@ -390,9 +757,14 @@ const SECTIONS = [
       </>
     ),
   },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // ⚙️ SECTION GROUP: ADVANCED WORKFLOWS & SETUP
+  // ────────────────────────────────────────────────────────────────────────
+
   {
     id: "email-setup",
-    label: "Email Setup",
+    label: "📧 Email & Magic Links",
     content: (
       <>
         <P>
@@ -464,7 +836,7 @@ const SECTIONS = [
   },
   {
     id: "common-workflows",
-    label: "Common Workflows",
+    label: "⚙️ Common Workflows",
     content: (
       <>
         <H3>Publishing a new leader</H3>
@@ -545,7 +917,7 @@ const SECTIONS = [
   },
   {
     id: "duplicate-detection",
-    label: "Duplicate Detection",
+    label: "🔄 Duplicate Detection",
     content: (
       <>
         <P>The platform has two layers of duplicate protection:</P>
@@ -585,9 +957,14 @@ const SECTIONS = [
       </>
     ),
   },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // 📚 SECTION GROUP: REFERENCE & CHECKLISTS
+  // ────────────────────────────────────────────────────────────────────────
+
   {
     id: "status-reference",
-    label: "Status Reference",
+    label: "📍 Status Reference",
     content: (
       <>
         <Table
@@ -607,7 +984,7 @@ const SECTIONS = [
   },
   {
     id: "tips-notes",
-    label: "Tips & Notes",
+    label: "💡 Pro Tips & Notes",
     content: (
       <>
         <Ul>
@@ -658,7 +1035,7 @@ const SECTIONS = [
   },
   {
     id: "pre-launch-checklist",
-    label: "Pre-Launch Checklist",
+    label: "✅ Pre-Launch Checklist",
     content: (
       <>
         <P>
@@ -698,10 +1075,301 @@ const SECTIONS = [
       </>
     ),
   },
+
+  // ────────────────────────────────────────────────────────────────────────
+  // 👥 SECTION GROUP: UNDERSTANDING THE USERS & PRODUCT
+  // ────────────────────────────────────────────────────────────────────────
+
+  {
+    id: "directory-features",
+    label: "📖 Directory Features",
+    content: (
+      <>
+        <P>
+          The public directory is where users discover and browse women leaders. Understanding the user experience helps you approve profiles that work well in the directory.
+        </P>
+
+        <H3>How the Directory Works</H3>
+        <P>
+          Users land on the directory homepage and can:
+        </P>
+        <Ul>
+          <Li><strong>Search:</strong> By name, organization, role, expertise, country, or bio text</Li>
+          <Li><strong>Filter by Continent:</strong> Africa, Asia, Europe, North America, South America, Oceania</Li>
+          <Li><strong>Filter by Country:</strong> Dependent on continent selection</Li>
+          <Li><strong>Filter by Expertise:</strong> AI, Digital health, Health financing, Health systems strengthening, mHealth, Telemedicine, Research, and others</Li>
+          <Li><strong>Sort:</strong> By relevance, newest, or most clicks on LinkedIn</Li>
+        </Ul>
+
+        <H3>Profile Card Display</H3>
+        <P>
+          Each leader appears as a card showing:
+        </P>
+        <Table
+          headers={["Field", "What users see"]}
+          rows={[
+            ["Name", "Full name in readable format"],
+            ["Role", "Job title (e.g., 'Digital Health Director')"],
+            ["Organization", "Company/institution name"],
+            ["Expertise Tags", "Blue pills showing their areas of expertise"],
+            ["Bio Preview", "First 2-3 sentences of their bio"],
+            ["Profile Photo", "Headshot (if uploaded and approved)"],
+            ["LinkedIn Button", "Icon that links to their LinkedIn profile"],
+          ]}
+        />
+        <Img
+          src="screenshots/admin-manual/08-directory-cards.png"
+          caption="Public directory showing leader profile cards with search filters"
+        />
+        <Tip>
+          <strong>Pro tip:</strong> Visit the public directory yourself to see what users experience. Browse profiles, use filters, and test search — this gives you the user perspective when reviewing approvals.
+        </Tip>
+
+        <H3>What Makes a Good Directory Profile</H3>
+        <P>
+          When reviewing submissions, keep the user experience in mind:
+        </P>
+        <Ul>
+          <Li><strong>Clear role:</strong> Users scan directory cards quickly — job titles must be specific (not 'Senior Manager' alone)</Li>
+          <Li><strong>Relevant expertise:</strong> 2-5 tags that match actual experience — users filter by these</Li>
+          <Li><strong>Compelling bio:</strong> First 2 sentences matter most (they show in card preview) — must hook interest</Li>
+          <Li><strong>Photo quality:</strong> Professional headshot is important — consider photo when approving</Li>
+          <Li><strong>Geographic metadata:</strong> Correct country + reasonable scope (Local/National/Regional/Global) improves discovery</Li>
+        </Ul>
+
+        <Tip>
+          When you see a vague bio ("I work in health tech"), imagine it on a directory card. Is it compelling enough to click? If not, ask the submitter to improve it before approval.
+        </Tip>
+
+        <H3>LinkedIn Clicks Metric</H3>
+        <P>
+          The directory tracks how often each profile's LinkedIn link is clicked. This metric appears in the admin console's "All Entries" tab under the LinkedIn Clicks column. You can filter by "Most Clicked" to see which profiles generate the most engagement.
+        </P>
+        <Note>
+          High LinkedIn clicks indicate profiles that are discoverable and interesting to directory users — useful for identifying successful profiles to use as examples when coaching other submitters on bio quality.
+        </Note>
+      </>
+    ),
+  },
+  {
+    id: "analytics-dashboard",
+    label: "📊 Analytics Dashboard",
+    content: (
+      <>
+        <P>
+          The Analytics page provides insights into directory usage, geographic coverage, and expertise distribution. This is useful for understanding who is in your directory and where gaps might exist.
+        </P>
+
+        <H3>Key Analytics Views</H3>
+        <Table
+          headers={["View", "What it shows", "Useful for"]}
+          rows={[
+            ["Map Visualization", "World map with leaders highlighted by region. Click regions to drill down.", "Understanding geographic coverage and identifying underrepresented areas"],
+            ["Regional Breakdown", "Bar chart showing expertise distribution for selected region", "Seeing expertise gaps in specific regions (e.g., Africa has few AI specialists)"],
+            ["Total Stats", "Total leader count and total organizations represented", "High-level directory growth tracking"],
+            ["Expertise Distribution", "All expertise tags ranked by frequency across directory", "Understanding which skills are most common (helps guide recruitment)"],
+          ]}
+        />
+        <Img
+          src="screenshots/admin-manual/09-analytics-dashboard.png"
+          caption="Analytics dashboard with world map, regional breakdown, and expertise distribution charts"
+        />
+
+        <H3>How to Use Analytics</H3>
+        <Ol>
+          <Li>
+            <strong>Regional Review:</strong> Click each continent to see expertise breakdown. Are there gaps? This helps identify recruitment targets.
+          </Li>
+          <Li>
+            <strong>Trend Tracking:</strong> Monitor total leader count over time to measure growth.
+          </Li>
+          <Li>
+            <strong>Expertise Balance:</strong> If "AI" is 40% of all expertise tags, you may be skewed toward tech. Consider recruiting more health systems or policy experts.
+          </Li>
+          <Li>
+            <strong>Organization Diversity:</strong> Compare total leaders vs. total organizations. If 80 leaders work for 40 orgs, many orgs are overrepresented.
+          </Li>
+        </Ol>
+
+        <H3>What Analytics Can't Show</H3>
+        <Ul>
+          <Li>Individual profile quality (analytics only show count, not content review)</Li>
+          <Li>Engagement with profiles (that's LinkedIn clicks, tracked separately in All Entries tab)</Li>
+          <Li>Duplicate profiles or inactive leaders (you review those manually)</Li>
+          <Li>Real-time data — analytics refresh when you load the page</Li>
+        </Ul>
+
+        <Tip>
+          Use analytics to identify recruitment focus areas. For example: "Asia has 30 leaders but only 5 in Health Systems Strengthening — we should target that expertise in Asia recruitment."
+        </Tip>
+      </>
+    ),
+  },
+  {
+    id: "submit-profile-flow",
+    label: "✍️ Submit Profile User Flow",
+    content: (
+      <>
+        <P>
+          Understanding how leaders submit profiles helps you anticipate common mistakes and provide better feedback during the review process.
+        </P>
+
+        <H3>Two Submission Paths</H3>
+        <Table
+          headers={["Path", "Who uses it", "How it works"]}
+          rows={[
+            [
+              "Self-Submit",
+              "Women leaders directly",
+              "6-step form: Consent → Basic Info → Profile → Links → Review → Submit",
+            ],
+            [
+              "Nomination",
+              "Anyone nominating a leader",
+              "Different form: Nominator info → Nominee name → Choice to have nominee fill out profile or auto-populate some fields",
+            ],
+          ]}
+        />
+
+        <H3>Self-Submission Steps (What Users Experience)</H3>
+        <Ol>
+          <Li>
+            <strong>Step 0 - Start:</strong> User chooses "Submit My Profile" or "Nominate Someone"
+          </Li>
+          <Li>
+            <strong>Step 1 - Consent:</strong> Agrees to privacy terms and that profile will be public
+          </Li>
+          <Li>
+            <strong>Step 2 - Basic Info:</strong> Name, email, role, organization. Email is used for follow-up if profile is rejected.
+          </Li>
+          <Li>
+            <strong>Step 3 - Profile Details:</strong> Expertise tags (checkboxes), bio, photo upload, years of experience, country, geographic scope, and country list if scope is regional/global
+          </Li>
+          <Li>
+            <strong>Step 4 - Links:</strong> LinkedIn URL (optional but encouraged), and notable achievements can be added as bullet points
+          </Li>
+          <Li>
+            <strong>Step 5 - Review:</strong> User sees full profile preview before final submission. Edit buttons appear on each section to jump back and fix issues.
+          </Li>
+          <Li>
+            <strong>Submit:</strong> Profile is created with status = "pending" and appears in your admin console
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/admin-manual/11-submit-profile-flow.png"
+          caption="Multi-step submission form showing one of the profile data entry steps"
+        />
+
+        <H3>Smart Features in the Form</H3>
+        <Ul>
+          <Li><strong>Draft Auto-Save:</strong> Form data is saved to browser LocalStorage after each step — users can close the tab and return to their draft later</Li>
+          <Li><strong>Duplicate Detection:</strong> If name matches an existing published leader, submitter sees a warning before final submission</Li>
+          <Li><strong>Photo Compression:</strong> Images are automatically resized to reduce file size, so uploads stay fast</Li>
+          <Li><strong>Expertise Customization:</strong> Pre-defined expertise list with "Other: [custom]" option for unique skills (limited to 3 words)</Li>
+          <Li><strong>Step-by-Step Progress:</strong> User sees which step they're on and can jump between steps in the Review section</Li>
+        </Ul>
+
+        <H3>Common Submission Issues (Why Profiles Get Rejected)</H3>
+        <Table
+          headers={["Issue", "Why it happens", "How to guide submitter"]}
+          rows={[
+            [
+              "Vague bio",
+              "User rushes and writes 1-2 generic sentences",
+              "Reject with feedback: 'Please provide 3-4 sentences showing your specific impact, e.g., projects led or outcomes achieved'",
+            ],
+            [
+              "Missing expertise tags",
+              "User unchecks all tags accidentally or leaves blank",
+              "Request resubmission: 'Please select at least 2 expertise areas'",
+            ],
+            [
+              "No LinkedIn link",
+              "User thinks it's optional (it is, but encouraged)",
+              "Approve but suggest adding LinkedIn in follow-up for future credibility",
+            ],
+            [
+              "Wrong country or scope",
+              "User doesn't understand 'regional' vs 'global' scope",
+              "Send back with example: 'If you work in 3 countries, select Regional and list those 3 countries'",
+            ],
+            [
+              "Professional photo issues",
+              "Low-quality, casual, or blurry photo",
+              "Reject or approve but suggest professional headshot: 'Photo must be professional headshot (shoulders up, professional attire)'",
+            ],
+          ]}
+        />
+
+        <H3>After Submission</H3>
+        <P>
+          When you approve a profile:
+        </P>
+        <Ul>
+          <Li>Status changes to "live" immediately — profile is published to the public directory</Li>
+          <Li>User does NOT receive a confirmation email (email workflow not yet enabled)</Li>
+          <Li>Profile is searchable and discoverable in the directory</Li>
+        </Ul>
+        <P>
+          When you reject a profile:
+        </P>
+        <Ul>
+          <Li>Status changes to "rejected"</Li>
+          <Li>User sees rejection reason in the Profile Requests section (if you add comments)</Li>
+          <Li>User can resubmit after making fixes</Li>
+          <Li>Currently, no rejection email is sent — consider adding one in future versions</Li>
+        </Ul>
+
+        <Tip>
+          When rejecting, always include actionable feedback in the Comments field. Users need to know exactly what to fix, not just "bio too vague" — tell them specifically what to add or improve.
+        </Tip>
+      </>
+    ),
+  },
+];
+
+// ── Category grouping for better sidebar organization ────────────────────────
+const CATEGORIES = [
+  {
+    icon: "🚀",
+    title: "Getting Started",
+    sections: ["quick-start-hub", "overview"],
+  },
+  {
+    icon: "⭐",
+    title: "Daily Admin Tasks",
+    sections: [
+      "approval-quick-ref",
+      "dashboard-stats",
+      "all-entries",
+      "profile-requests",
+      "nominated",
+    ],
+  },
+  {
+    icon: "👥",
+    title: "Understanding Users & Product",
+    sections: ["directory-features", "submit-profile-flow", "analytics-dashboard"],
+  },
+  {
+    icon: "⚙️",
+    title: "Advanced Workflows & Setup",
+    sections: ["email-setup", "common-workflows", "duplicate-detection"],
+  },
+  {
+    icon: "📚",
+    title: "Reference & Checklists",
+    sections: ["status-reference", "tips-notes", "pre-launch-checklist"],
+  },
+  {
+    icon: "❓",
+    title: "Help & Troubleshooting",
+    sections: ["admin-faq"],
+  },
 ];
 
 // ── Main component ───────────────────────────────────────────────────────────
-export default function AdminManual() {
+export default function AdminManual({ onBackToAdmin }) {
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -775,33 +1443,58 @@ body{margin:0;padding:15mm;font-family:system-ui,sans-serif;background:#fff}
           >
             {pdfLoading ? "Generating PDF…" : "Download PDF"}
           </button>
-          {SECTIONS.map((s, i) => {
-            const isActive = s.id === activeId;
-            return (
-              <button
-                key={s.id}
-                onClick={() => setActiveId(s.id)}
-                className={`text-left text-[1.3rem] px-3 py-2 rounded-lg transition-colors cursor-pointer flex items-center gap-2 ${
-                  isActive
-                    ? "bg-brand-navy text-white font-semibold"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-brand-navy"
-                }`}
-              >
-                <span
-                  className={`text-[1.3rem] flex-shrink-0 ${
-                    isActive ? "text-white/60" : "text-gray-400"
-                  }`}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                {s.label}
-              </button>
-            );
-          })}
+          <button
+            onClick={onBackToAdmin}
+            className="mx-2 mb-4 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[1.3rem] font-medium bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors cursor-pointer"
+          >
+            ← Back to Admin
+          </button>
+          {/* Render sections organized by category */}
+          {CATEGORIES.map((category, catIndex) => (
+            <div key={catIndex} className="mb-4">
+              {/* Category header */}
+              <p className="text-[1.2rem] font-bold text-brand-navy px-2 py-2 mb-2">
+                {category.icon} {category.title}
+              </p>
+              {/* Category sections */}
+              {category.sections.map((sectionId, sIdx) => {
+                const section = SECTIONS.find((s) => s.id === sectionId);
+                if (!section) return null;
+                const isActive = sectionId === activeId;
+                return (
+                  <button
+                    key={sectionId}
+                    onClick={() => setActiveId(sectionId)}
+                    className={`text-left text-[1.3rem] px-4 py-2 rounded-lg transition-colors cursor-pointer ml-2 flex items-start gap-2 w-[calc(100%-8px)] ${
+                      isActive
+                        ? "bg-brand-navy text-white font-semibold"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-brand-navy"
+                    }`}
+                  >
+                    <span className="text-[1.1rem] flex-shrink-0 mt-0.5">•</span>
+                    <span className="break-words flex-1">{section.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* Section content */}
         <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Header with back button */}
+          <div className="flex-shrink-0 flex items-center justify-between px-10 py-4 border-b border-gray-200 bg-white">
+            <button
+              onClick={onBackToAdmin}
+              className="flex items-center gap-2 text-[1.4rem] font-medium text-brand-pink hover:text-brand-navy transition-colors cursor-pointer"
+            >
+              ← Back to Admin Console
+            </button>
+            <span className="text-[1.4rem] font-semibold text-brand-navy">
+              {activeSection?.label}
+            </span>
+            <div />
+          </div>
           {/* Scrollable section body */}
           <div className="flex-1 overflow-y-auto px-10 py-8">
             {activeSection.content}

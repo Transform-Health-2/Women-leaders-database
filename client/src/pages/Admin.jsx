@@ -733,7 +733,9 @@ export default function Admin({ onGoToDirectory }) {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-80 min-w-[24rem] border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col flex-shrink-0">
+        <aside className={`w-80 min-w-[24rem] border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col flex-shrink-0 ${
+          activeTab === "manual" ? "hidden" : ""
+        }`}>
           <div className="px-6 py-5 border-b-2 border-brand-pink">
             <div className="flex items-center justify-center">
               <button
@@ -808,7 +810,7 @@ export default function Admin({ onGoToDirectory }) {
               className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-3 text-[1.6rem] font-medium text-gray-600 bg-white hover:bg-gray-50 hover:text-brand-navy transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2"
             >
               <ManualIcon />
-              User Manual
+              Documentation
             </button>
             <button
               onClick={() => onGoToDirectory?.()}
@@ -819,7 +821,9 @@ export default function Admin({ onGoToDirectory }) {
           </div>
         </aside>
 
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main className={`flex-1 flex flex-col overflow-hidden ${
+          activeTab === "manual" ? "w-full" : ""
+        }`}>
           {/* Page header + stats - hidden for Tests tab */}
           {activeTab !== "tests" &&
             activeTab !== "manual" &&
@@ -2760,7 +2764,7 @@ export default function Admin({ onGoToDirectory }) {
             ) : activeTab === "fixes" ? (
               <AdminFixes />
             ) : activeTab === "manual" ? (
-              <AdminManual />
+              <AdminManual onBackToAdmin={() => handleTabChange("all")} />
             ) : null}
           </div>
         </main>
