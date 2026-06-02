@@ -768,26 +768,56 @@ export default function AdminManual() {
 
   const downloadPdf = () => {
     setPdfLoading(true);
-    window.print();
-    setPdfLoading(false);
+
+    // Collect all compiled stylesheets (skip cross-origin)
+    let css = "";
+    for (const sheet of document.styleSheets) {
+      try {
+        if (sheet.cssRules) {
+          for (const rule of sheet.cssRules) css += rule.cssText;
+        }
+      } catch {}
+    }
+
+    // Clone the print-only container's rendered HTML
+    const printEl = document.querySelector(".print-only");
+    const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<style>${css}
+body{margin:0;padding:15mm;font-family:system-ui,sans-serif;background:#fff}
+.print-section{page-break-before:always}
+.print-section:first-of-type{page-break-before:auto}
+.print-cover{page-break-after:always;text-align:center;padding-top:80mm}
+.print-cover h1{font-size:26pt;font-weight:700;color:#1a365d;margin:0}
+.print-cover p{font-size:14pt;color:#4a5568;margin-top:8pt}
+.print-cover .date{font-size:11pt;color:#718096;margin-top:20pt}
+.print-body{font-size:11pt;line-height:1.6;color:#2d3748}
+.print-body h2{font-size:18pt;font-weight:700;color:#1a365d;border-bottom:2px solid #2b6cb0;padding-bottom:4pt;margin-bottom:10pt}
+</style></head><body>${printEl.innerHTML}</body></html>`;
+
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;left:-9999px;width:210mm;border:0";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    iframe.onload = () => {
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+          setPdfLoading(false);
+        }, 1000);
+      }, 500);
+    };
   };
 
   return (
     <>
-      <style>{`
-@media print {
-  body { margin: 0; padding: 0; }
-  .print-only { display: block !important; }
-  .no-print { display: none !important; }
-  .print-section { page-break-before: always; }
-  .print-section:first-of-type { page-break-before: auto; }
-  .print-cover { page-break-after: always; text-align: center; padding-top: 80mm; }
-  .print-cover h1 { font-size: 26pt; font-weight: 700; color: #1a365d; margin: 0; }
-  .print-cover p { font-size: 14pt; color: #4a5568; margin-top: 8pt; }
-  .print-cover .date { font-size: 11pt; color: #718096; margin-top: 20pt; }
-  .print-body { font-size: 11pt; line-height: 1.6; color: #2d3748; }
-  .print-body h2 { font-size: 18pt; font-weight: 700; color: #1a365d; border-bottom: 2px solid #2b6cb0; padding-bottom: 4pt; margin-bottom: 10pt; }
-}`}</style>
+      <style>{".print-only{display:none}"}</style>
       <div className="flex h-full overflow-hidden bg-white no-print">
         {/* TOC sidebar */}
         <nav className="flex flex-col w-[200px] xl:w-[220px] flex-shrink-0 border-r border-gray-200 bg-brand-parchment overflow-y-auto py-6 px-3 gap-0.5">
