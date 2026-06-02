@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import html2pdf from "html2pdf.js";
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 function H3({ children }) {
@@ -759,77 +760,169 @@ const SECTIONS = [
 // ── Main component ───────────────────────────────────────────────────────────
 export default function AdminManual() {
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const printRef = useRef(null);
 
   const activeIndex = SECTIONS.findIndex((s) => s.id === activeId);
   const activeSection = SECTIONS[activeIndex];
   const prev = SECTIONS[activeIndex - 1] ?? null;
   const next = SECTIONS[activeIndex + 1] ?? null;
 
+  const downloadPdf = async () => {
+    setPdfLoading(true);
+    try {
+      const opt = {
+        margin: [10, 12],
+        filename: "Transform-Health-Admin-Manual.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
+      await html2pdf().set(opt).from(printRef.current).save();
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   return (
-    <div className="flex h-full overflow-hidden bg-white">
-      {/* TOC sidebar */}
-      <nav className="flex flex-col w-[200px] xl:w-[220px] flex-shrink-0 border-r border-gray-200 bg-brand-parchment overflow-y-auto py-6 px-3 gap-0.5">
-        <p className="text-[1.3rem] uppercase tracking-widest text-gray-400 font-semibold mb-3 px-2">
-          Contents
-        </p>
-        {SECTIONS.map((s, i) => {
-          const isActive = s.id === activeId;
-          return (
-            <button
-              key={s.id}
-              onClick={() => setActiveId(s.id)}
-              className={`text-left text-[1.3rem] px-3 py-2 rounded-lg transition-colors cursor-pointer flex items-center gap-2 ${
-                isActive
-                  ? "bg-brand-navy text-white font-semibold"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-brand-navy"
-              }`}
-            >
-              <span
-                className={`text-[1.3rem] flex-shrink-0 ${
-                  isActive ? "text-white/60" : "text-gray-400"
+    <>
+      <div className="flex h-full overflow-hidden bg-white">
+        {/* TOC sidebar */}
+        <nav className="flex flex-col w-[200px] xl:w-[220px] flex-shrink-0 border-r border-gray-200 bg-brand-parchment overflow-y-auto py-6 px-3 gap-0.5">
+          <p className="text-[1.3rem] uppercase tracking-widest text-gray-400 font-semibold mb-3 px-2">
+            Contents
+          </p>
+          <button
+            onClick={downloadPdf}
+            disabled={pdfLoading}
+            className="mx-2 mb-3 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[1.3rem] font-medium bg-brand-navy text-white hover:bg-brand-navy/90 transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {pdfLoading ? "Generating PDF…" : "Download PDF"}
+          </button>
+          {SECTIONS.map((s, i) => {
+            const isActive = s.id === activeId;
+            return (
+              <button
+                key={s.id}
+                onClick={() => setActiveId(s.id)}
+                className={`text-left text-[1.3rem] px-3 py-2 rounded-lg transition-colors cursor-pointer flex items-center gap-2 ${
+                  isActive
+                    ? "bg-brand-navy text-white font-semibold"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-brand-navy"
                 }`}
               >
-                {String(i + 1).padStart(2, "0")}
+                <span
+                  className={`text-[1.3rem] flex-shrink-0 ${
+                    isActive ? "text-white/60" : "text-gray-400"
+                  }`}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {s.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Section content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Scrollable section body */}
+          <div className="flex-1 overflow-y-auto px-10 py-8">
+            {activeSection.content}
+          </div>
+
+          {/* Prev / Next navigation */}
+          <div className="flex-shrink-0 flex items-center justify-between px-10 py-4 border-t border-gray-100 bg-brand-parchment">
+            {prev ? (
+              <button
+                onClick={() => setActiveId(prev.id)}
+                className="flex items-center gap-2 text-[1.4rem] font-medium text-gray-600 hover:text-brand-navy transition-colors cursor-pointer"
+              >
+                ← {prev.label}
+              </button>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <button
+                onClick={() => setActiveId(next.id)}
+                className="flex items-center gap-2 text-[1.4rem] font-medium text-gray-600 hover:text-brand-navy transition-colors cursor-pointer"
+              >
+                {next.label} →
+              </button>
+            ) : (
+              <span className="text-[1.4rem] text-gray-400 italic">
+                End of manual
               </span>
-              {s.label}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* Section content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Scrollable section body */}
-        <div className="flex-1 overflow-y-auto px-10 py-8">
-          {activeSection.content}
-        </div>
-
-        {/* Prev / Next navigation */}
-        <div className="flex-shrink-0 flex items-center justify-between px-10 py-4 border-t border-gray-100 bg-brand-parchment">
-          {prev ? (
-            <button
-              onClick={() => setActiveId(prev.id)}
-              className="flex items-center gap-2 text-[1.4rem] font-medium text-gray-600 hover:text-brand-navy transition-colors cursor-pointer"
-            >
-              ← {prev.label}
-            </button>
-          ) : (
-            <span />
-          )}
-          {next ? (
-            <button
-              onClick={() => setActiveId(next.id)}
-              className="flex items-center gap-2 text-[1.4rem] font-medium text-gray-600 hover:text-brand-navy transition-colors cursor-pointer"
-            >
-              {next.label} →
-            </button>
-          ) : (
-            <span className="text-[1.4rem] text-gray-400 italic">
-              End of manual
-            </span>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Hidden print container — renders all sections for PDF export */}
+      <div
+        ref={printRef}
+        className="fixed left-[-9999px] top-0 w-[210mm] bg-white p-[15mm]"
+        style={{ fontFamily: "system-ui, sans-serif" }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "30mm",
+            paddingTop: "40mm",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "26pt",
+              fontWeight: 700,
+              color: "#1a365d",
+              margin: 0,
+            }}
+          >
+            Admin Console User Manual
+          </h1>
+          <p style={{ fontSize: "14pt", color: "#4a5568", marginTop: "8pt" }}>
+            Transform Health — Women Leaders in Digital Health Database
+          </p>
+          <p style={{ fontSize: "11pt", color: "#718096", marginTop: "20pt" }}>
+            Generated{" "}
+            {new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+
+        {SECTIONS.map((s, i) => (
+          <div
+            key={s.id}
+            style={{
+              marginBottom: "15mm",
+              pageBreakBefore: i > 0 ? "always" : "auto",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18pt",
+                fontWeight: 700,
+                color: "#1a365d",
+                borderBottom: "2px solid #2b6cb0",
+                paddingBottom: "4pt",
+                marginBottom: "10pt",
+              }}
+            >
+              {String(i + 1).padStart(2, "0")}. {s.label}
+            </h2>
+            <div
+              style={{ fontSize: "11pt", lineHeight: 1.6, color: "#2d3748" }}
+            >
+              {s.content}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

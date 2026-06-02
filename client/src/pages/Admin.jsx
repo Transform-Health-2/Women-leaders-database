@@ -1490,7 +1490,10 @@ export default function Admin({ onGoToDirectory }) {
                                         try {
                                           await api.dismissRequest(req.id);
                                         } catch (e) {
-                                          console.error("Failed to dismiss request:", e);
+                                          console.error(
+                                            "Failed to dismiss request:",
+                                            e
+                                          );
                                         }
                                         setRequests(
                                           requests.map((r) =>
@@ -1709,7 +1712,10 @@ export default function Admin({ onGoToDirectory }) {
                                       try {
                                         await api.dismissRequest(req.id);
                                       } catch (e) {
-                                        console.error("Failed to dismiss request:", e);
+                                        console.error(
+                                          "Failed to dismiss request:",
+                                          e
+                                        );
                                       }
                                       setRequests(
                                         requests.map((r) =>
