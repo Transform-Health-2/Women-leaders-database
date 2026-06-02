@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import html2pdf from "html2pdf.js";
+import React, { useState } from "react";
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 function H3({ children }) {
@@ -761,32 +760,35 @@ const SECTIONS = [
 export default function AdminManual() {
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const printRef = useRef(null);
 
   const activeIndex = SECTIONS.findIndex((s) => s.id === activeId);
   const activeSection = SECTIONS[activeIndex];
   const prev = SECTIONS[activeIndex - 1] ?? null;
   const next = SECTIONS[activeIndex + 1] ?? null;
 
-  const downloadPdf = async () => {
+  const downloadPdf = () => {
     setPdfLoading(true);
-    try {
-      const opt = {
-        margin: [10, 12],
-        filename: "Transform-Health-Admin-Manual.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
-      await html2pdf().set(opt).from(printRef.current).save();
-    } finally {
-      setPdfLoading(false);
-    }
+    window.print();
+    setPdfLoading(false);
   };
 
   return (
     <>
-      <div className="flex h-full overflow-hidden bg-white">
+      <style>{`
+@media print {
+  body { margin: 0; padding: 0; }
+  .print-only { display: block !important; }
+  .no-print { display: none !important; }
+  .print-section { page-break-before: always; }
+  .print-section:first-of-type { page-break-before: auto; }
+  .print-cover { page-break-after: always; text-align: center; padding-top: 80mm; }
+  .print-cover h1 { font-size: 26pt; font-weight: 700; color: #1a365d; margin: 0; }
+  .print-cover p { font-size: 14pt; color: #4a5568; margin-top: 8pt; }
+  .print-cover .date { font-size: 11pt; color: #718096; margin-top: 20pt; }
+  .print-body { font-size: 11pt; line-height: 1.6; color: #2d3748; }
+  .print-body h2 { font-size: 18pt; font-weight: 700; color: #1a365d; border-bottom: 2px solid #2b6cb0; padding-bottom: 4pt; margin-bottom: 10pt; }
+}`}</style>
+      <div className="flex h-full overflow-hidden bg-white no-print">
         {/* TOC sidebar */}
         <nav className="flex flex-col w-[200px] xl:w-[220px] flex-shrink-0 border-r border-gray-200 bg-brand-parchment overflow-y-auto py-6 px-3 gap-0.5">
           <p className="text-[1.3rem] uppercase tracking-widest text-gray-400 font-semibold mb-3 px-2">
@@ -859,33 +861,19 @@ export default function AdminManual() {
         </div>
       </div>
 
-      {/* Hidden print container — renders all sections for PDF export */}
+      {/* Print-only container — rendered when user chooses Save as PDF */}
       <div
-        ref={printRef}
-        className="fixed left-[-9999px] top-0 w-[210mm] bg-white p-[15mm]"
-        style={{ fontFamily: "system-ui, sans-serif" }}
+        className="print-only"
+        style={{
+          display: "none",
+          fontFamily: "system-ui, sans-serif",
+          background: "#fff",
+        }}
       >
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "30mm",
-            paddingTop: "40mm",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "26pt",
-              fontWeight: 700,
-              color: "#1a365d",
-              margin: 0,
-            }}
-          >
-            Admin Console User Manual
-          </h1>
-          <p style={{ fontSize: "14pt", color: "#4a5568", marginTop: "8pt" }}>
-            Transform Health — Women Leaders in Digital Health Database
-          </p>
-          <p style={{ fontSize: "11pt", color: "#718096", marginTop: "20pt" }}>
+        <div className="print-cover">
+          <h1>Admin Console User Manual</h1>
+          <p>Transform Health — Women Leaders in Digital Health Database</p>
+          <p className="date">
             Generated{" "}
             {new Date().toLocaleDateString("en-US", {
               year: "numeric",
@@ -896,30 +884,11 @@ export default function AdminManual() {
         </div>
 
         {SECTIONS.map((s, i) => (
-          <div
-            key={s.id}
-            style={{
-              marginBottom: "15mm",
-              pageBreakBefore: i > 0 ? "always" : "auto",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "18pt",
-                fontWeight: 700,
-                color: "#1a365d",
-                borderBottom: "2px solid #2b6cb0",
-                paddingBottom: "4pt",
-                marginBottom: "10pt",
-              }}
-            >
+          <div key={s.id} className="print-section">
+            <h2>
               {String(i + 1).padStart(2, "0")}. {s.label}
             </h2>
-            <div
-              style={{ fontSize: "11pt", lineHeight: 1.6, color: "#2d3748" }}
-            >
-              {s.content}
-            </div>
+            <div className="print-body">{s.content}</div>
           </div>
         ))}
       </div>
