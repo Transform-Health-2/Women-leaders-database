@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 
 const DRAFT_KEY = "submit_profile_draft";
 function loadDraft() {
-  try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "null") || {}; }
-  catch { return {}; }
+  try {
+    return JSON.parse(localStorage.getItem(DRAFT_KEY) || "null") || {};
+  } catch {
+    return {};
+  }
 }
 import { api } from "../api/leaders";
 import { compressImage } from "../utils/compressImage";
@@ -14,53 +17,109 @@ import {
   Step2BasicInfo,
   Step3ProfileDetails,
   Step4Links,
+  Step5Review,
 } from "./SubmitSteps";
 
-const STEP_LABELS = ["Start", "Consent", "Basic Info", "Profile", "Links"];
+const STEP_LABELS = [
+  "Start",
+  "Consent",
+  "Basic Info",
+  "Profile",
+  "Links",
+  "Review",
+];
 
 export default function Submit({ onManageProfile }) {
   const d = loadDraft();
-  const [step,              setStep]              = useState(d.step ?? 0);
-  const [branch,            setBranch]            = useState(d.branch || "self");
-  const [nominateLink,      setNominateLink]      = useState(d.nominateLink || "");
-  const [nominatorName,     setNominatorName]     = useState(d.nominatorName || "");
-  const [nominatorEmail,    setNominatorEmail]    = useState(d.nominatorEmail || "");
-  const [nomineeFirstName,  setNomineeFirstName]  = useState(d.nomineeFirstName || "");
-  const [nomineeLastName,   setNomineeLastName]   = useState(d.nomineeLastName || "");
-  const [consent,           setConsent]           = useState(d.consent ?? null);
-  const [firstName,         setFirstName]         = useState(d.firstName || "");
-  const [lastName,          setLastName]          = useState(d.lastName || "");
-  const [role,              setRole]              = useState(d.role || "");
-  const [org,               setOrg]               = useState(d.org || "");
-  const [expertise,         setExpertise]         = useState(d.expertise || []);
-  const [otherExpertise,    setOtherExpertise]    = useState(d.otherExpertise || "");
-  const [country,           setCountry]           = useState(d.country || "");
-  const [geoScope,          setGeoScope]          = useState(d.geoScope || "");
-  const [selectedCountries, setSelectedCountries] = useState(d.selectedCountries || []);
-  const [bio,               setBio]               = useState(d.bio || "");
-  const [email,             setEmail]             = useState(d.email || "");
-  const [linkedin,          setLinkedin]          = useState(d.linkedin || "");
-  const [notableText,       setNotableText]       = useState("");
-  const [notableItems,      setNotableItems]      = useState(d.notableItems || []);
-  const [photo,             setPhoto]             = useState(null);
-  const [photoPreview,      setPhotoPreview]      = useState(null);
-  const [yearsExp,          setYearsExp]          = useState(d.yearsExp || "");
-  const [status,            setStatus]            = useState("");
+  const [step, setStep] = useState(d.step ?? 0);
+  const [branch, setBranch] = useState(d.branch || "self");
+  const [nominateLink, setNominateLink] = useState(d.nominateLink || "");
+  const [nominatorName, setNominatorName] = useState(d.nominatorName || "");
+  const [nominatorEmail, setNominatorEmail] = useState(d.nominatorEmail || "");
+  const [nomineeFirstName, setNomineeFirstName] = useState(
+    d.nomineeFirstName || ""
+  );
+  const [nomineeLastName, setNomineeLastName] = useState(
+    d.nomineeLastName || ""
+  );
+  const [consent, setConsent] = useState(d.consent ?? null);
+  const [firstName, setFirstName] = useState(d.firstName || "");
+  const [lastName, setLastName] = useState(d.lastName || "");
+  const [role, setRole] = useState(d.role || "");
+  const [org, setOrg] = useState(d.org || "");
+  const [expertise, setExpertise] = useState(d.expertise || []);
+  const [otherExpertise, setOtherExpertise] = useState(d.otherExpertise || "");
+  const [country, setCountry] = useState(d.country || "");
+  const [geoScope, setGeoScope] = useState(d.geoScope || "");
+  const [selectedCountries, setSelectedCountries] = useState(
+    d.selectedCountries || []
+  );
+  const [bio, setBio] = useState(d.bio || "");
+  const [email, setEmail] = useState(d.email || "");
+  const [linkedin, setLinkedin] = useState(d.linkedin || "");
+  const [notableText, setNotableText] = useState("");
+  const [notableItems, setNotableItems] = useState(d.notableItems || []);
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [yearsExp, setYearsExp] = useState(d.yearsExp || "");
+  const [status, setStatus] = useState("");
   const [showNoConsentModal, setShowNoConsentModal] = useState(false);
-  const [duplicateWarning,  setDuplicateWarning]  = useState(null);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [returnStep, setReturnStep] = useState(null);
 
   // Persist draft to localStorage (excludes photo/photoPreview — not serialisable)
   useEffect(() => {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({
-      step, branch, nominateLink, nominatorName, nominatorEmail,
-      nomineeFirstName, nomineeLastName, consent, firstName, lastName,
-      role, org, expertise, otherExpertise, country, geoScope,
-      selectedCountries, bio, email, linkedin, notableItems, yearsExp,
-    }));
-  }, [step, branch, nominateLink, nominatorName, nominatorEmail,
-      nomineeFirstName, nomineeLastName, consent, firstName, lastName,
-      role, org, expertise, otherExpertise, country, geoScope,
-      selectedCountries, bio, email, linkedin, notableItems, yearsExp]);
+    localStorage.setItem(
+      DRAFT_KEY,
+      JSON.stringify({
+        step,
+        branch,
+        nominateLink,
+        nominatorName,
+        nominatorEmail,
+        nomineeFirstName,
+        nomineeLastName,
+        consent,
+        firstName,
+        lastName,
+        role,
+        org,
+        expertise,
+        otherExpertise,
+        country,
+        geoScope,
+        selectedCountries,
+        bio,
+        email,
+        linkedin,
+        notableItems,
+        yearsExp,
+      })
+    );
+  }, [
+    step,
+    branch,
+    nominateLink,
+    nominatorName,
+    nominatorEmail,
+    nomineeFirstName,
+    nomineeLastName,
+    consent,
+    firstName,
+    lastName,
+    role,
+    org,
+    expertise,
+    otherExpertise,
+    country,
+    geoScope,
+    selectedCountries,
+    bio,
+    email,
+    linkedin,
+    notableItems,
+    yearsExp,
+  ]);
 
   const charCount = bio.length;
 
@@ -71,10 +130,15 @@ export default function Submit({ onManageProfile }) {
     setDuplicateWarning(matches.length > 0 ? matches[0] : null);
   }
 
-  function goStep(n) { if (n >= 0 && n <= 5) setStep(n); }
+  function goStep(n) {
+    if (n >= 0 && n <= 6) setStep(n);
+  }
 
   function handleStep0Continue() {
-    if (branch === "nominate") { submitNomination(); return; }
+    if (branch === "nominate") {
+      submitNomination();
+      return;
+    }
     goStep(1);
   }
 
@@ -114,14 +178,19 @@ export default function Submit({ onManageProfile }) {
   }, [showNoConsentModal]);
 
   function toggleExpertise(tag) {
-    if (expertise.includes(tag)) setExpertise(expertise.filter((e) => e !== tag));
+    if (expertise.includes(tag))
+      setExpertise(expertise.filter((e) => e !== tag));
     else if (expertise.length < 5) setExpertise([...expertise, tag]);
   }
 
-  function bioCharWarning() { return charCount > 0 && (charCount < 300 || charCount > 500); }
+  function bioCharWarning() {
+    return charCount > 0 && (charCount < 300 || charCount > 500);
+  }
 
   function updateNotableItem(index, field, value) {
-    setNotableItems((cur) => cur.map((item, i) => i === index ? { ...item, [field]: value } : item));
+    setNotableItems((cur) =>
+      cur.map((item, i) => (i === index ? { ...item, [field]: value } : item))
+    );
   }
 
   function addNotableItem() {
@@ -149,15 +218,30 @@ export default function Submit({ onManageProfile }) {
 
   function resetForm() {
     localStorage.removeItem(DRAFT_KEY);
-    setFirstName(""); setLastName(""); setRole(""); setOrg("");
-    setExpertise([]); setYearsExp(""); setSelectedCountries([]);
-    setBio(""); setLinkedin(""); setPhoto(null);
-    setPhotoPreview(null); setConsent(null);
-    setBranch("self"); setNominateLink(""); setNominatorName("");
-    setNominatorEmail(""); setNomineeFirstName(""); setNomineeLastName("");
-    setCountry(""); setGeoScope(""); setOtherExpertise("");
+    setFirstName("");
+    setLastName("");
+    setRole("");
+    setOrg("");
+    setExpertise([]);
+    setYearsExp("");
+    setSelectedCountries([]);
+    setBio("");
+    setLinkedin("");
+    setPhoto(null);
+    setPhotoPreview(null);
+    setConsent(null);
+    setBranch("self");
+    setNominateLink("");
+    setNominatorName("");
+    setNominatorEmail("");
+    setNomineeFirstName("");
+    setNomineeLastName("");
+    setCountry("");
+    setGeoScope("");
+    setOtherExpertise("");
     setNotableItems([]);
-    setStep(0); setStatus("");
+    setStep(0);
+    setStatus("");
   }
 
   async function submit() {
@@ -169,16 +253,28 @@ export default function Submit({ onManageProfile }) {
       }
 
       const payload = {
-        branch, firstName, lastName, email, role,
+        branch,
+        firstName,
+        lastName,
+        email,
+        role,
         organisation: org,
         country,
         geo_scope: geoScope || null,
         nominateLink: branch === "nominate" ? nominateLink : null,
-        expertise: [...expertise.filter(e => e !== "Other"), otherExpertise ? `Other: ${otherExpertise}` : ""].filter(Boolean).join(", "),
+        expertise: [
+          ...expertise.filter((e) => e !== "Other"),
+          otherExpertise ? `Other: ${otherExpertise}` : "",
+        ]
+          .filter(Boolean)
+          .join(", "),
         yearsExp,
         countries: selectedCountries.join(", "),
-        bio, linkedin,
-        notableItems: notableItems.filter((item) => item.title || item.link || item.type),
+        bio,
+        linkedin,
+        notableItems: notableItems.filter(
+          (item) => item.title || item.link || item.type
+        ),
         photoUrl,
       };
 
@@ -192,8 +288,11 @@ export default function Submit({ onManageProfile }) {
   }
 
   const step3Invalid =
-    !yearsExp || expertise.length === 0 ||
-    !bio || charCount < 300 || charCount > 500;
+    !yearsExp ||
+    expertise.length === 0 ||
+    !bio ||
+    charCount < 300 ||
+    charCount > 500;
 
   if (status === "submitted") {
     return (
@@ -214,14 +313,27 @@ export default function Submit({ onManageProfile }) {
 
           <div className="flex flex-col gap-4 mb-12">
             {[
-              { title: "Profile under review", body: "The Transform Health team reviews all submissions before they go live. This typically takes 3–5 business days." },
-              { title: "Once approved",        body: "Your full profile card will appear in the public directory at transformhealthcoalition.org/leaders" },
+              {
+                title: "Profile under review",
+                body: "The Transform Health team reviews all submissions before they go live. This typically takes 3–5 business days.",
+              },
+              {
+                title: "Once approved",
+                body: "Your full profile card will appear in the public directory at transformhealthcoalition.org/leaders",
+              },
             ].map(({ title, body }) => (
-              <div key={title} className="bg-gray-50 border border-gray-200 rounded-xl px-11 py-9 flex gap-5 items-start">
+              <div
+                key={title}
+                className="bg-gray-50 border border-gray-200 rounded-xl px-11 py-9 flex gap-5 items-start"
+              >
                 <div className="w-9 h-9 rounded-full border-[3px] border-brand-navy border-t-transparent flex-shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold text-[1.8rem] text-brand-dark mb-2">{title}</div>
-                  <p className="text-1.6 text-gray-600 leading-[1.7] m-0">{body}</p>
+                  <div className="font-bold text-[1.8rem] text-brand-dark mb-2">
+                    {title}
+                  </div>
+                  <p className="text-1.6 text-gray-600 leading-[1.7] m-0">
+                    {body}
+                  </p>
                 </div>
               </div>
             ))}
@@ -229,7 +341,12 @@ export default function Submit({ onManageProfile }) {
         </div>
 
         <div className="flex justify-end items-center max-w-[600px] mx-auto px-4 sm:px-[2.4rem] py-8 border-t border-gray-200">
-          <Button variant="ghost" size="sm" className="font-bold tracking-[0.06em] uppercase" onClick={resetForm}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="font-bold tracking-[0.06em] uppercase"
+            onClick={resetForm}
+          >
             SUBMIT ANOTHER PROFILE →
           </Button>
         </div>
@@ -241,118 +358,211 @@ export default function Submit({ onManageProfile }) {
     <div className="bg-brand-sand overflow-x-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-6">
         <div className="max-w-[1000px] mx-auto">
+          {/* Progress bar (steps 1–5) */}
+          {step >= 1 && step <= 5 && (
+            <div className="mb-6">
+              <div className="flex items-center gap-2">
+                {[0, 1, 2, 3, 4, 5].map((s) => (
+                  <React.Fragment key={s}>
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-1.4 font-medium ${
+                        s <= step
+                          ? "bg-gray-800 text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {s < step ? "✓" : s + 1}
+                    </div>
+                    <div
+                      className={`flex-1 h-0.5 ${
+                        s < step ? "bg-gray-800" : "bg-gray-200"
+                      } ${s === 5 ? "hidden" : ""}`}
+                    />
+                  </React.Fragment>
+                ))}
+              </div>
+              <div className="flex justify-between mt-2 text-[1rem] sm:text-1.2 text-gray-600">
+                {STEP_LABELS.map((label, i) => (
+                  <span key={i}>{label}</span>
+                ))}
+              </div>
+            </div>
+          )}
 
-        {/* Progress bar (steps 1–4) */}
-        {step >= 1 && step <= 4 && (
-          <div className="mb-6">
-            <div className="flex items-center gap-2">
-              {[0, 1, 2, 3, 4].map((s) => (
-                <React.Fragment key={s}>
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-1.4 font-medium ${s <= step ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-600"}`}>
-                    {s < step ? "✓" : s + 1}
-                  </div>
-                  <div className={`flex-1 h-0.5 ${s < step ? "bg-gray-800" : "bg-gray-200"} ${s === 4 ? "hidden" : ""}`} />
-                </React.Fragment>
-              ))}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 items-start">
+            <div className="min-w-0 max-w-[640px]">
+              {step === 0 && (
+                <Step0Branch
+                  branch={branch}
+                  setBranch={setBranch}
+                  nominateLink={nominateLink}
+                  setNominateLink={setNominateLink}
+                  nominatorName={nominatorName}
+                  setNominatorName={setNominatorName}
+                  nominatorEmail={nominatorEmail}
+                  setNominatorEmail={setNominatorEmail}
+                  nomineeFirstName={nomineeFirstName}
+                  setNomineeFirstName={setNomineeFirstName}
+                  nomineeLastName={nomineeLastName}
+                  setNomineeLastName={setNomineeLastName}
+                  onContinue={handleStep0Continue}
+                  onManageProfile={onManageProfile}
+                />
+              )}
+              {step === 1 && (
+                <Step1Consent
+                  consent={consent}
+                  setConsent={setConsent}
+                  onBack={() => goStep(0)}
+                  onContinue={handleConsent}
+                  onNoConsent={handleNoConsent}
+                />
+              )}
+              {step === 2 && (
+                <Step2BasicInfo
+                  firstName={firstName}
+                  setFirstName={setFirstName}
+                  lastName={lastName}
+                  setLastName={setLastName}
+                  email={email}
+                  setEmail={setEmail}
+                  photoPreview={photoPreview}
+                  onPhotoUpload={handlePhotoUpload}
+                  country={country}
+                  setCountry={setCountry}
+                  geoScope={geoScope}
+                  org={org}
+                  setOrg={setOrg}
+                  role={role}
+                  setRole={setRole}
+                  duplicateWarning={duplicateWarning}
+                  onNameBlur={checkDuplicate}
+                  onBack={() => {
+                    setReturnStep(null);
+                    goStep(1);
+                  }}
+                  onContinue={() => {
+                    const t = returnStep || 3;
+                    setReturnStep(null);
+                    goStep(t);
+                  }}
+                />
+              )}
+              {step === 3 && (
+                <Step3ProfileDetails
+                  yearsExp={yearsExp}
+                  setYearsExp={setYearsExp}
+                  expertise={expertise}
+                  toggleExpertise={toggleExpertise}
+                  otherExpertise={otherExpertise}
+                  setOtherExpertise={setOtherExpertise}
+                  selectedCountries={selectedCountries}
+                  setSelectedCountries={setSelectedCountries}
+                  geoScope={geoScope}
+                  setGeoScope={setGeoScope}
+                  bio={bio}
+                  setBio={setBio}
+                  charCount={charCount}
+                  bioCharWarning={bioCharWarning}
+                  onBack={() => {
+                    setReturnStep(null);
+                    goStep(2);
+                  }}
+                  onContinue={() => {
+                    const t = returnStep || 4;
+                    setReturnStep(null);
+                    goStep(t);
+                  }}
+                  nextDisabled={step === 3 && step3Invalid}
+                />
+              )}
+              {step === 4 && (
+                <Step4Links
+                  linkedin={linkedin}
+                  setLinkedin={setLinkedin}
+                  notableItems={notableItems}
+                  addNotableItem={addNotableItem}
+                  removeNotableItem={removeNotableItem}
+                  updateNotableItem={updateNotableItem}
+                  onBack={() => {
+                    setReturnStep(null);
+                    goStep(3);
+                  }}
+                  onContinue={() => {
+                    const t = returnStep || 5;
+                    setReturnStep(null);
+                    goStep(t);
+                  }}
+                />
+              )}
+              {step === 5 && (
+                <Step5Review
+                  firstName={firstName}
+                  lastName={lastName}
+                  photoPreview={photoPreview}
+                  country={country}
+                  org={org}
+                  role={role}
+                  expertise={expertise}
+                  otherExpertise={otherExpertise}
+                  yearsExp={yearsExp}
+                  selectedCountries={selectedCountries}
+                  bio={bio}
+                  linkedin={linkedin}
+                  notableItems={notableItems}
+                  status={status}
+                  onBack={() => goStep(4)}
+                  goStep={goStep}
+                  setReturnStep={setReturnStep}
+                  onSubmit={submit}
+                />
+              )}
             </div>
-            <div className="flex justify-between mt-2 text-[1rem] sm:text-1.2 text-gray-600">
-              {STEP_LABELS.map((label, i) => <span key={i}>{label}</span>)}
-            </div>
+
+            {step >= 0 && step <= 4 && (
+              <div className="hidden lg:flex flex-col items-end justify-center sticky top-8 self-stretch py-8">
+                <img
+                  src="./illustrations/card-top-texture-0.png"
+                  alt=""
+                  className="w-[380px] max-w-none h-auto ml-[40px] mr-[-144px] opacity-60"
+                />
+              </div>
+            )}
           </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-10 items-start">
-        <div className="min-w-0 max-w-[640px]">
-          {step === 0 && (
-            <Step0Branch
-              branch={branch} setBranch={setBranch}
-              nominateLink={nominateLink} setNominateLink={setNominateLink}
-              nominatorName={nominatorName} setNominatorName={setNominatorName}
-              nominatorEmail={nominatorEmail} setNominatorEmail={setNominatorEmail}
-              nomineeFirstName={nomineeFirstName} setNomineeFirstName={setNomineeFirstName}
-              nomineeLastName={nomineeLastName} setNomineeLastName={setNomineeLastName}
-              onContinue={handleStep0Continue}
-              onManageProfile={onManageProfile}
-            />
-          )}
-          {step === 1 && (
-            <Step1Consent
-              consent={consent} setConsent={setConsent}
-              onBack={() => goStep(0)} onContinue={handleConsent}
-              onNoConsent={handleNoConsent}
-            />
-          )}
-          {step === 2 && (
-            <Step2BasicInfo
-              firstName={firstName} setFirstName={setFirstName}
-              lastName={lastName} setLastName={setLastName}
-              email={email} setEmail={setEmail}
-              photoPreview={photoPreview} onPhotoUpload={handlePhotoUpload}
-              country={country} setCountry={setCountry}
-              geoScope={geoScope}
-              org={org} setOrg={setOrg}
-              role={role} setRole={setRole}
-              duplicateWarning={duplicateWarning}
-              onNameBlur={checkDuplicate}
-              onBack={() => goStep(1)} onContinue={() => goStep(3)}
-            />
-          )}
-          {step === 3 && (
-            <Step3ProfileDetails
-              yearsExp={yearsExp} setYearsExp={setYearsExp}
-              expertise={expertise} toggleExpertise={toggleExpertise}
-              otherExpertise={otherExpertise} setOtherExpertise={setOtherExpertise}
-              selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries}
-              geoScope={geoScope} setGeoScope={setGeoScope}
-              bio={bio} setBio={setBio}
-              charCount={charCount} bioCharWarning={bioCharWarning}
-              onBack={() => goStep(2)} onContinue={() => goStep(4)}
-              nextDisabled={step === 3 && step3Invalid}
-            />
-          )}
-          {step === 4 && (
-            <Step4Links
-              linkedin={linkedin} setLinkedin={setLinkedin}
-              notableItems={notableItems}
-              addNotableItem={addNotableItem}
-              removeNotableItem={removeNotableItem}
-              updateNotableItem={updateNotableItem}
-              status={status}
-              onBack={() => goStep(3)} onSubmit={submit}
-            />
-          )}
         </div>
-
-        {step >= 0 && step <= 4 && (
-          <div className="hidden lg:flex flex-col items-end justify-center sticky top-8 self-stretch py-8">
-            <img
-              src="./illustrations/card-top-texture-0.png"
-              alt=""
-              className="w-[380px] max-w-none h-auto ml-[40px] mr-[-144px] opacity-60"
-            />
-          </div>
-        )}
-      </div>
-        </div>{/* max-w-[1000px] */}
+        {/* max-w-[1000px] */}
       </div>
 
       {showNoConsentModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/[0.45]">
           <div className="bg-white rounded-2xl p-10 text-center max-w-md w-full shadow-xl font-sans">
-            <img src="./illustrations/thank-you.png" alt="" className="w-[90px] h-[90px] object-contain mx-auto mb-8 block" />
+            <img
+              src="./illustrations/thank-you.png"
+              alt=""
+              className="w-[90px] h-[90px] object-contain mx-auto mb-8 block"
+            />
             <h2 className="text-2.4 font-bold text-brand-navy mb-4 tracking-heading">
               Thank you for your time
             </h2>
             <div className="flex flex-col gap-[10px] mb-8">
-              <p className="text-1.6 text-dark leading-[1.7] m-0">We cannot proceed without your consent.</p>
-              <p className="text-1.6 text-dark leading-[1.7] m-0">You are welcome to return and submit your profile anytime.</p>
+              <p className="text-1.6 text-dark leading-[1.7] m-0">
+                We cannot proceed without your consent.
+              </p>
+              <p className="text-1.6 text-dark leading-[1.7] m-0">
+                You are welcome to return and submit your profile anytime.
+              </p>
             </div>
-            <p className="text-[1.3rem] text-gray-400 mb-4">Returning to start in 4 seconds…</p>
+            <p className="text-[1.3rem] text-gray-400 mb-4">
+              Returning to start in 4 seconds…
+            </p>
             <Button
               variant="ghost"
               size="sm"
               className="font-semibold tracking-[0.05em] uppercase text-brand-dark hover:text-brand-dark hover:no-underline"
-              onClick={() => { setShowNoConsentModal(false); goStep(0); }}
+              onClick={() => {
+                setShowNoConsentModal(false);
+                goStep(0);
+              }}
             >
               ← BACK TO START NOW
             </Button>

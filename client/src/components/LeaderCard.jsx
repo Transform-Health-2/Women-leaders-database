@@ -25,7 +25,9 @@ function Shell({ leader, onSelect, className = "", children }) {
     <CardCtx.Provider value={{ leader, onSelect }}>
       <div
         onClick={onSelect ? () => onSelect(leader) : undefined}
-        className={`relative rounded-xl overflow-hidden border border-gray-200 shadow-sm transition-shadow ${onSelect ? "cursor-pointer hover:shadow-lg" : ""} ${className}`}
+        className={`relative rounded-xl overflow-hidden border border-gray-200 shadow-sm transition-shadow ${
+          onSelect ? "cursor-pointer hover:shadow-lg" : ""
+        } ${className}`}
       >
         {children}
       </div>
@@ -74,7 +76,9 @@ function Avatar() {
             rel="noopener noreferrer"
             onClick={(e) => {
               e.stopPropagation();
-              import("../api/leaders").then(({ api }) => api.trackLinkedInClick(l.id));
+              import("../api/leaders").then(({ api }) =>
+                api.trackLinkedInClick(l.id)
+              );
             }}
             className="absolute bottom-0 right-0 w-[22px] h-[22px] block hover:opacity-80 transition-opacity"
             aria-label="LinkedIn profile"
@@ -94,9 +98,7 @@ function Avatar() {
  */
 function Body({ children }) {
   return (
-    <div className="bg-white flex flex-col pt-[52px] px-5 pb-5">
-      {children}
-    </div>
+    <div className="bg-white flex flex-col pt-[52px] px-5 pb-5">{children}</div>
   );
 }
 
@@ -123,17 +125,25 @@ function Meta() {
 /** Tags — up to 3 expertise pills, with overflow count. */
 function Tags() {
   const { leader: l } = useCard();
-  const tags = (Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/)).filter(Boolean);
+  const tags = (
+    Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/)
+  ).filter(Boolean);
   if (!tags.length) return null;
   return (
     <div className="flex flex-wrap gap-1 justify-center mb-4">
       {tags.slice(0, 3).map((tag) => (
-        <span key={tag} title={tag} className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border truncate max-w-[130px]">
+        <span
+          key={tag}
+          title={tag}
+          className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border truncate max-w-[130px]"
+        >
           {tag.replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
       ))}
       {tags.length > 3 && (
-        <span className="text-[1.2rem] text-brand-navy font-medium">+{tags.length - 3}</span>
+        <span className="text-[1.2rem] text-brand-navy font-medium">
+          +{tags.length - 3}
+        </span>
       )}
     </div>
   );
@@ -156,7 +166,14 @@ function Footer() {
       )}
       <button
         type="button"
-        onClick={onSelect ? (e) => { e.stopPropagation(); onSelect(l); } : undefined}
+        onClick={
+          onSelect
+            ? (e) => {
+                e.stopPropagation();
+                onSelect(l);
+              }
+            : undefined
+        }
         className="inline-flex items-center justify-center w-[134px] h-[40px] bg-brand-pink rounded-[20px] text-white text-[1.3rem] font-medium flex-shrink-0"
       >
         Read more →
@@ -196,10 +213,10 @@ export default function LeaderCard({ leader, onSelect }) {
   );
 }
 
-LeaderCard.Shell  = Shell;
+LeaderCard.Shell = Shell;
 LeaderCard.Header = Header;
 LeaderCard.Avatar = Avatar;
-LeaderCard.Body   = Body;
-LeaderCard.Meta   = Meta;
-LeaderCard.Tags   = Tags;
+LeaderCard.Body = Body;
+LeaderCard.Meta = Meta;
+LeaderCard.Tags = Tags;
 LeaderCard.Footer = Footer;

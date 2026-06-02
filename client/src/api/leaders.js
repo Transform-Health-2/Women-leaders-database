@@ -30,9 +30,10 @@ export const api = {
       linkedin: formData.linkedin || null,
       photo_url: formData.photoUrl || null,
       status: "pending",
-      editor_email: formData.editorEmail || null,   // Person who submitted (could be different from leader)
-      leader_email: formData.email || null,           // Leader's own email (NOT visible in public)
-      nominator_name: formData.branch === "nominate" ? (formData.nominatorName || null) : null,
+      editor_email: formData.editorEmail || null, // Person who submitted (could be different from leader)
+      leader_email: formData.email || null, // Leader's own email (NOT visible in public)
+      nominator_name:
+        formData.branch === "nominate" ? formData.nominatorName || null : null,
       country: formData.country || null,
       geo_scope: formData.geo_scope || null,
       nominate_link: formData.nominateLink || null,
@@ -43,7 +44,9 @@ export const api = {
       countries: formData.countries
         ? formData.countries.split(", ").filter(Boolean)
         : [],
-      notable_items: formData.notableItems?.length ? formData.notableItems : null,
+      notable_items: formData.notableItems?.length
+        ? formData.notableItems
+        : null,
     };
     const { error } = await supabase.from("leaders").insert([payload]);
     if (error) throw error;
@@ -63,14 +66,13 @@ export const api = {
       status: "pending",
       leader_id: data.leaderId || null,
     };
-    console.log("Submitting request:", payload);
-    const { error, data: result } = await supabase.from("requests").insert([payload]);
+    const { error, data: result } = await supabase
+      .from("requests")
+      .insert([payload]);
     if (error) {
       console.error("Request submission error:", error);
       throw error;
     }
-    console.log("✓ Request saved successfully to Supabase");
-    
     // Verify by fetching recent requests
     const { data: recent, error: verifyErr } = await supabase
       .from("requests")
@@ -78,13 +80,11 @@ export const api = {
       .eq("email", payload.email)
       .order("created_at", { ascending: false })
       .limit(1);
-    
+
     if (verifyErr) {
       console.warn("Could not verify saved request:", verifyErr);
-    } else if (recent && recent.length > 0) {
-      console.log("✓ Request verified in database - found latest request for email:", recent[0]);
     }
-    
+
     return { ok: true };
   },
 
@@ -143,11 +143,17 @@ export const api = {
     const updates = [];
     if (leaders?.length) {
       updates.push(
-        supabase.from("leaders").update({ status: "rejected" }).eq("id", leaders[0].id)
+        supabase
+          .from("leaders")
+          .update({ status: "rejected" })
+          .eq("id", leaders[0].id)
       );
     }
     updates.push(
-      supabase.from("requests").update({ status: "approved" }).eq("id", requestId)
+      supabase
+        .from("requests")
+        .update({ status: "approved" })
+        .eq("id", requestId)
     );
     await Promise.all(updates);
     return { ok: true };
@@ -159,15 +165,18 @@ export const api = {
       .from("profile-photos")
       .upload(fileName, file, { upsert: false });
     if (error) throw error;
-    const { data: { publicUrl } } = supabase.storage
-      .from("profile-photos")
-      .getPublicUrl(data.path);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("profile-photos").getPublicUrl(data.path);
     return publicUrl;
   },
 
   trackLinkedInClick: async (leaderId) => {
     // First try to increment via RPC (if set up)
-    const { error: rpcError } = await supabase.rpc("increment_linkedin_clicks", { leader_id: leaderId });
+    const { error: rpcError } = await supabase.rpc(
+      "increment_linkedin_clicks",
+      { leader_id: leaderId }
+    );
     if (!rpcError) return { ok: true };
 
     // Fallback: get current count and update
@@ -176,23 +185,26 @@ export const api = {
       .select("linkedin_clicks")
       .eq("id", leaderId)
       .single();
-    
+
     if (fetchError) {
-      console.warn("linkedin_clicks column may not exist yet:", fetchError.message);
+      console.warn(
+        "linkedin_clicks column may not exist yet:",
+        fetchError.message
+      );
       return { ok: false, error: "column_not_found" };
     }
-    
+
     const current = data?.linkedin_clicks || 0;
     const { error: updateError } = await supabase
       .from("leaders")
       .update({ linkedin_clicks: current + 1 })
       .eq("id", leaderId);
-      
+
     if (updateError) {
       console.warn("Failed to update linkedin_clicks:", updateError.message);
       return { ok: false, error: updateError.message };
     }
-    
+
     return { ok: true };
   },
 
@@ -211,7 +223,9 @@ export const api = {
     if (email) {
       const { data } = await supabase
         .from("leaders")
-        .select("id, first_name, last_name, role, organisation, linkedin, photo_url, bio, expertise, notable_items, country")
+        .select(
+          "id, first_name, last_name, role, organisation, linkedin, photo_url, bio, expertise, notable_items, country"
+        )
         .eq("status", "live")
         .ilike("first_name", firstName.trim())
         .ilike("last_name", lastName.trim())
@@ -223,7 +237,9 @@ export const api = {
     // Fallback: name-only match
     const { data } = await supabase
       .from("leaders")
-      .select("id, first_name, last_name, role, organisation, linkedin, photo_url, bio, expertise, notable_items, country")
+      .select(
+        "id, first_name, last_name, role, organisation, linkedin, photo_url, bio, expertise, notable_items, country"
+      )
       .eq("status", "live")
       .ilike("first_name", firstName.trim())
       .ilike("last_name", lastName.trim())
@@ -233,10 +249,13 @@ export const api = {
 
     const fn = firstName.trim().toLowerCase();
     const ln = lastName.trim().toLowerCase();
-    return data.find(l =>
-      String(l.first_name || "").toLowerCase() === fn &&
-      String(l.last_name || "").toLowerCase() === ln
-    ) || data[0];
+    return (
+      data.find(
+        (l) =>
+          String(l.first_name || "").toLowerCase() === fn &&
+          String(l.last_name || "").toLowerCase() === ln
+      ) || data[0]
+    );
   },
 
   getTestResults: async () => {
@@ -261,7 +280,10 @@ export const api = {
   },
 
   deleteTestResultsForTester: async (testerName) => {
-    const { error } = await supabase.from("test_results").delete().eq("tester_name", testerName);
+    const { error } = await supabase
+      .from("test_results")
+      .delete()
+      .eq("tester_name", testerName);
     if (error) throw error;
     return { ok: true };
   },
@@ -276,12 +298,14 @@ export const api = {
         .select("leader_email, first_name, last_name")
         .eq("id", leaderId)
         .single();
-      
+
       if (fetchErr || !leader?.leader_email) {
         throw new Error("Leader email not found");
       }
 
-      const manageUrl = `${window.location.origin}?manage=${btoa(JSON.stringify({ leaderId, firstName, lastName, linkedin }))}`;
+      const manageUrl = `${window.location.origin}?manage=${btoa(
+        JSON.stringify({ leaderId, firstName, lastName, linkedin })
+      )}`;
       const html = `
         <div style="font-family: sans-serif; max-width:600px; margin:0 auto;">
           <h2>Update your Transform Health profile</h2>
@@ -294,7 +318,11 @@ export const api = {
       `;
 
       const { error } = await supabase.functions.invoke("send-email", {
-        body: { to: leader.leader_email, subject: "Update your Transform Health profile", html },
+        body: {
+          to: leader.leader_email,
+          subject: "Update your Transform Health profile",
+          html,
+        },
       });
 
       if (error) throw error;
@@ -302,9 +330,15 @@ export const api = {
     } catch (err) {
       console.error("requestManage failed:", err);
       // Fallback: return a URL the admin can copy manually
-      const token = btoa(JSON.stringify({ leaderId, firstName, lastName, linkedin }));
+      const token = btoa(
+        JSON.stringify({ leaderId, firstName, lastName, linkedin })
+      );
       const url = `${window.location.origin}?manage=${token}`;
-      return { ok: false, url, message: "Email not sent — copy this URL: " + url };
+      return {
+        ok: false,
+        url,
+        message: "Email not sent — copy this URL: " + url,
+      };
     }
   },
 };

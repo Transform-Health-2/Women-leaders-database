@@ -30,7 +30,8 @@ export default function SiteFooter() {
       </div>
 
       <div className="bg-brand-navy-dark text-white text-1.4 font-light py-4 text-center">
-        Copyright © {new Date().getFullYear()} Transform Health. All Rights Reserved.
+        Copyright © {new Date().getFullYear()} Transform Health. All Rights
+        Reserved.
       </div>
     </footer>
   );

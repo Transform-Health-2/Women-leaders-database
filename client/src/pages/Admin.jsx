@@ -4,17 +4,26 @@ import AdminManual from "./AdminManual";
 import AdminFixes from "./AdminFixes";
 
 const SIDEBAR_ITEMS = [
-  { id: "all",       label: "All Entries",      icon: "list"      },
-  { id: "requests",  label: "Profile Requests",  icon: "mail"      },
-  { id: "nominated", label: "Nominated",         icon: "user-plus" },
-  { id: "divider",   label: "",                  icon: "divider"   },
-  { id: "tests",     label: "Test Results",       icon: "test"      },
-  { id: "fixes",     label: "Test Fixes",         icon: "fixes"     },
+  { id: "all", label: "All Entries", icon: "list" },
+  { id: "requests", label: "Profile Requests", icon: "mail" },
+  { id: "nominated", label: "Nominated", icon: "user-plus" },
+  { id: "divider", label: "", icon: "divider" },
+  { id: "tests", label: "Test Results", icon: "test" },
+  { id: "fixes", label: "Test Fixes", icon: "fixes" },
 ];
 
 function InboxIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M22 12h-6l-2 3h-4l-2-3H2" />
       <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
     </svg>
@@ -23,7 +32,16 @@ function InboxIcon() {
 
 function MailIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <rect x="2" y="4" width="20" height="16" rx="2" />
       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
@@ -32,7 +50,16 @@ function MailIcon() {
 
 function ListIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <line x1="8" y1="6" x2="21" y2="6" />
       <line x1="8" y1="12" x2="21" y2="12" />
       <line x1="8" y1="18" x2="21" y2="18" />
@@ -45,7 +72,16 @@ function ListIcon() {
 
 function UserPlusIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
       <circle cx="9" cy="7" r="4" />
       <line x1="19" y1="8" x2="19" y2="14" />
@@ -56,7 +92,16 @@ function UserPlusIcon() {
 
 function TestIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M9 11l3 3L22 4" />
       <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
     </svg>
@@ -65,7 +110,16 @@ function TestIcon() {
 
 function FixesIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
       <rect x="9" y="3" width="6" height="4" rx="1" />
       <path d="M9 14l2 2 4-4" />
@@ -75,14 +129,31 @@ function FixesIcon() {
 
 function ManualIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
     </svg>
   );
 }
 
-const ICONS = { inbox: InboxIcon, mail: MailIcon, list: ListIcon, "user-plus": UserPlusIcon, test: TestIcon, fixes: FixesIcon, manual: ManualIcon };
+const ICONS = {
+  inbox: InboxIcon,
+  mail: MailIcon,
+  list: ListIcon,
+  "user-plus": UserPlusIcon,
+  test: TestIcon,
+  fixes: FixesIcon,
+  manual: ManualIcon,
+};
 
 function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
@@ -96,32 +167,33 @@ function toTags(expertise) {
 }
 
 export default function Admin({ onGoToDirectory }) {
-  const [pending,          setPending]          = useState([]);
-  const [nominated,        setNominated]        = useState([]);
-  const [all,              setAll]              = useState([]);
-  const [requests,         setRequests]         = useState([]);
-  const [testResults,      setTestResults]      = useState([]);
-  const [loading,          setLoading]          = useState(true);
-  const [activeTab,        setActiveTab]        = useState("all");
-  const [requestSubTab,    setRequestSubTab]    = useState("updates");
-  const [selectedDeletes,  setSelectedDeletes]  = useState([]);
-  const [selectedAll,      setSelectedAll]      = useState([]);
-  const [actionId,         setActionId]         = useState(null);
-  const [searchQuery,      setSearchQuery]      = useState("");
-  const [filterCountry,    setFilterCountry]    = useState("");
-  const [filterExpertise,  setFilterExpertise]  = useState("");
-  const [filterClicks,    setFilterClicks]    = useState(""); // "", "high", "low", "least"
-  const [sortOrder,        setSortOrder]        = useState("az");
-  const [expandedId,       setExpandedId]       = useState(null);
-  const [expandedAllId,    setExpandedAllId]    = useState(null);
-  const [actionMessage,    setActionMessage]    = useState("");
-  const [actionIsError,    setActionIsError]    = useState(false);
-  const [allPage,          setAllPage]          = useState(1);
-  const [selectedRequest,  setSelectedRequest]  = useState(null);
-  const [expandedNominee,  setExpandedNominee]  = useState(null);
-  const [copiedId,         setCopiedId]         = useState(null);
-  const [showConfirm,      setShowConfirm]      = useState(null);
-  const [expandedTester,   setExpandedTester]   = useState(null);
+  const [pending, setPending] = useState([]);
+  const [nominated, setNominated] = useState([]);
+  const [all, setAll] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [testResults, setTestResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
+  const [requestSubTab, setRequestSubTab] = useState("new");
+  const [selectedDeletes, setSelectedDeletes] = useState([]);
+  const [selectedAll, setSelectedAll] = useState([]);
+  const [actionId, setActionId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterCountry, setFilterCountry] = useState("");
+  const [filterExpertise, setFilterExpertise] = useState("");
+  const [filterClicks, setFilterClicks] = useState(""); // "", "high", "low", "least"
+  const [filterStatus, setFilterStatus] = useState("");
+  const [sortOrder, setSortOrder] = useState("az");
+  const [expandedId, setExpandedId] = useState(null);
+  const [expandedAllId, setExpandedAllId] = useState(null);
+  const [actionMessage, setActionMessage] = useState("");
+  const [actionIsError, setActionIsError] = useState(false);
+  const [allPage, setAllPage] = useState(1);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [expandedNominee, setExpandedNominee] = useState(null);
+  const [copiedId, setCopiedId] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(null);
+  const [expandedTester, setExpandedTester] = useState(null);
   const [expandedTestSection, setExpandedTestSection] = useState(null);
   const [testFilterTester, setTestFilterTester] = useState("");
   const [testFilterStatus, setTestFilterStatus] = useState("");
@@ -162,8 +234,12 @@ export default function Admin({ onGoToDirectory }) {
         api.getTestResults(),
       ]);
       const leaders = allLeaders || [];
-      setPending(leaders.filter(l => l.status === "pending" && l.branch !== "nominate"));
-      setNominated(leaders.filter(l => l.status === "pending" && l.branch === "nominate"));
+      setPending(
+        leaders.filter((l) => l.status === "pending" && l.branch !== "nominate")
+      );
+      setNominated(
+        leaders.filter((l) => l.status === "pending" && l.branch === "nominate")
+      );
       setAll(leaders);
       if (reqs?.length) setRequests(reqs);
       if (tests?.length) setTestResults(tests);
@@ -177,10 +253,18 @@ export default function Admin({ onGoToDirectory }) {
   async function loadActiveTabData() {
     try {
       if (activeTab === "all" || activeTab === "nominated") {
-        const allLeaders = await api.getLeaders("all") || [];
+        const allLeaders = (await api.getLeaders("all")) || [];
         setAll(allLeaders);
-        setPending(allLeaders.filter(l => l.status === "pending" && l.branch !== "nominate"));
-        setNominated(allLeaders.filter(l => l.status === "pending" && l.branch === "nominate"));
+        setPending(
+          allLeaders.filter(
+            (l) => l.status === "pending" && l.branch !== "nominate"
+          )
+        );
+        setNominated(
+          allLeaders.filter(
+            (l) => l.status === "pending" && l.branch === "nominate"
+          )
+        );
       } else if (activeTab === "requests") {
         const reqs = await api.getRequests();
         if (reqs?.length) setRequests(reqs);
@@ -202,12 +286,20 @@ export default function Admin({ onGoToDirectory }) {
       else await api.rejectRequest(id);
 
       const item = all.find((i) => i.id === id);
-      const updated = item ? { ...item, status: action === "approve" ? "live" : "rejected" } : null;
+      const updated = item
+        ? { ...item, status: action === "approve" ? "live" : "rejected" }
+        : null;
       if (updated) setAll(all.map((i) => (i.id === id ? updated : i)));
       setPending((current) => current.filter((p) => p.id !== id));
       setNominated((current) => current.filter((p) => p.id !== id));
-      setActionMessage(action === "approve" ? "Profile approved and published." : "Profile rejected and removed from pending.");
-      setExpandedId(null); setExpandedAllId(null); setExpandedNominee(null);
+      setActionMessage(
+        action === "approve"
+          ? "Profile approved and published."
+          : "Profile rejected and removed from pending."
+      );
+      setExpandedId(null);
+      setExpandedAllId(null);
+      setExpandedNominee(null);
     } catch (e) {
       console.error(e);
       setActionIsError(true);
@@ -218,12 +310,26 @@ export default function Admin({ onGoToDirectory }) {
   }
 
   function handleAction(id, action) {
-    const item = pending.find((i) => i.id === id) || nominatedList.find((i) => i.id === id);
-    const name = `${item?.first_name || ''} ${item?.last_name || ''}`.trim();
+    const item =
+      pending.find((i) => i.id === id) ||
+      nominatedList.find((i) => i.id === id);
+    const name = `${item?.first_name || ""} ${item?.last_name || ""}`.trim();
     if (action === "approve") {
-      setShowConfirm({ title: "Approve profile?", message: `${name} will be published to the public directory.`, action: "approve", confirmLabel: "Approve", onConfirm: () => confirmAction(id, action) });
+      setShowConfirm({
+        title: "Approve profile?",
+        message: `${name} will be published to the public directory.`,
+        action: "approve",
+        confirmLabel: "Approve",
+        onConfirm: () => confirmAction(id, action),
+      });
     } else {
-      setShowConfirm({ title: "Reject profile?", message: `${name} will be removed from the pending queue.`, action: "reject", confirmLabel: "Reject", onConfirm: () => confirmAction(id, action) });
+      setShowConfirm({
+        title: "Reject profile?",
+        message: `${name} will be removed from the pending queue.`,
+        action: "reject",
+        confirmLabel: "Reject",
+        onConfirm: () => confirmAction(id, action),
+      });
     }
   }
 
@@ -258,7 +364,7 @@ export default function Admin({ onGoToDirectory }) {
         try {
           await api.deleteTestResultsForTester(name);
           setTestResults((prev) => prev.filter((r) => r.tester_name !== name));
-          setExpandedTester((prev) => prev === name ? null : prev);
+          setExpandedTester((prev) => (prev === name ? null : prev));
           setActionMessage(`All results cleared for ${name}.`);
         } catch (e) {
           setActionIsError(true);
@@ -275,7 +381,11 @@ export default function Admin({ onGoToDirectory }) {
     const nominator = item.editor_email || item.editorEmail || "a colleague";
     const role = item.role || "your work";
     const org = item.organisation || "";
-    return `Hi ${name},\n\nYou've been nominated to be featured in the Transform Health Women Leaders in Digital Health Database — a global initiative to increase visibility and representation of women leaders in digital health across Africa and beyond.\n\n${org ? `We'd love to include your profile (${role} at ${org}) in the directory.\n\n` : ""}If you'd like to learn more or have your profile added, please reply to this message or visit transformhealthcoalition.org/leaders.\n\nWarm regards,\nThe Transform Health Team`;
+    return `Hi ${name},\n\nYou've been nominated to be featured in the Transform Health Women Leaders in Digital Health Database — a global initiative to increase visibility and representation of women leaders in digital health across Africa and beyond.\n\n${
+      org
+        ? `We'd love to include your profile (${role} at ${org}) in the directory.\n\n`
+        : ""
+    }If you'd like to learn more or have your profile added, please reply to this message or visit transformhealthcoalition.org/leaders.\n\nWarm regards,\nThe Transform Health Team`;
   }
 
   async function handleCopyMessage(item) {
@@ -300,26 +410,32 @@ export default function Admin({ onGoToDirectory }) {
     setActionIsError(false);
     try {
       // Use leader_email from the leaders table (admin-only field)
-      const { data: leader } = await api.getLeaders("all").then(all => 
-        ({ data: all.find(l => l.id === req.leader_id) })
-      );
-      
+      const { data: leader } = await api
+        .getLeaders("all")
+        .then((all) => ({ data: all.find((l) => l.id === req.leader_id) }));
+
       if (!leader?.leader_email) {
         throw new Error("Leader email not found");
       }
 
-      await api.requestManage({ 
-        leaderId: req.leader_id, 
-        firstName: req.first_name, 
-        lastName: req.last_name, 
-        linkedin: req.linkedin 
+      await api.requestManage({
+        leaderId: req.leader_id,
+        firstName: req.first_name,
+        lastName: req.last_name,
+        linkedin: req.linkedin,
       });
-      setRequests((current) => current.map((r) => (r.id === req.id ? { ...r, link_sent: true } : r)));
+      setRequests((current) =>
+        current.map((r) => (r.id === req.id ? { ...r, link_sent: true } : r))
+      );
       setActionMessage(`Update link sent to ${leader.leader_email}.`);
     } catch (e) {
       console.error(e);
-      setRequests((current) => current.map((r) => (r.id === req.id ? { ...r, link_sent: true } : r)));
-      setActionMessage(`Link marked as sent for ${req.first_name} ${req.last_name}.`);
+      setRequests((current) =>
+        current.map((r) => (r.id === req.id ? { ...r, link_sent: true } : r))
+      );
+      setActionMessage(
+        `Link marked as sent for ${req.first_name} ${req.last_name}.`
+      );
     } finally {
       setActionId(null);
     }
@@ -341,25 +457,35 @@ export default function Admin({ onGoToDirectory }) {
           setActionMessage("Entry permanently deleted.");
         } catch (e) {
           setActionIsError(true);
-          setActionMessage("Delete failed — run the missing RLS policy in Supabase (see scripts/add-delete-policy.sql).");
+          setActionMessage(
+            "Delete failed — run the missing RLS policy in Supabase (see scripts/add-delete-policy.sql)."
+          );
         }
       },
     });
   }
 
   function toggleDeleteSelect(id) {
-    setSelectedDeletes((current) => current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
+    setSelectedDeletes((current) =>
+      current.includes(id) ? current.filter((x) => x !== id) : [...current, id]
+    );
   }
 
   function toggleAllDeletes() {
-    const deleteRequests = requests.filter((r) => r.request_type === "delete" && r.status === "pending");
-    const allSelected = deleteRequests.every((r) => selectedDeletes.includes(r.id));
+    const deleteRequests = requests.filter(
+      (r) => r.request_type === "delete" && r.status === "pending"
+    );
+    const allSelected = deleteRequests.every((r) =>
+      selectedDeletes.includes(r.id)
+    );
     if (allSelected) setSelectedDeletes([]);
     else setSelectedDeletes(deleteRequests.map((r) => r.id));
   }
 
   function toggleAllSelect(id) {
-    setSelectedAll((current) => current.includes(id) ? current.filter((x) => x !== id) : [...current, id]);
+    setSelectedAll((current) =>
+      current.includes(id) ? current.filter((x) => x !== id) : [...current, id]
+    );
   }
 
   function toggleAllEntries() {
@@ -374,10 +500,16 @@ export default function Admin({ onGoToDirectory }) {
     const label = action === "approve" ? "Approve" : "Reject";
     setShowConfirm({
       title: `${label} ${selectedAll.length} submission(s)?`,
-      message: action === "approve" ? "These profiles will be published to the public directory." : "These profiles will be removed from the pending queue.",
+      message:
+        action === "approve"
+          ? "These profiles will be published to the public directory."
+          : "These profiles will be removed from the pending queue.",
       action,
       confirmLabel: `${label} ${selectedAll.length}`,
-      onConfirm: () => { selectedAll.forEach((id) => confirmAction(id, action)); setSelectedAll([]); },
+      onConfirm: () => {
+        selectedAll.forEach((id) => confirmAction(id, action));
+        setSelectedAll([]);
+      },
     });
   }
 
@@ -396,9 +528,17 @@ export default function Admin({ onGoToDirectory }) {
     setActionMessage("");
     setActionIsError(false);
     try {
-      await Promise.all(selectedDeletes.map((id) => api.approveDeleteRequest(id)));
-      setRequests((current) => current.map((r) => selectedDeletes.includes(r.id) ? { ...r, status: "approved" } : r));
-      setActionMessage(`${selectedDeletes.length} deletion request(s) approved.`);
+      await Promise.all(
+        selectedDeletes.map((id) => api.approveDeleteRequest(id))
+      );
+      setRequests((current) =>
+        current.map((r) =>
+          selectedDeletes.includes(r.id) ? { ...r, status: "approved" } : r
+        )
+      );
+      setActionMessage(
+        `${selectedDeletes.length} deletion request(s) approved.`
+      );
       setSelectedDeletes([]);
     } catch (e) {
       console.error(e);
@@ -413,8 +553,12 @@ export default function Admin({ onGoToDirectory }) {
     setActionIsError(false);
     try {
       await api.approveDeleteRequest(req.id);
-      setRequests((current) => current.map((r) => r.id === req.id ? { ...r, status: "approved" } : r));
-      setActionMessage(`Profile for ${req.first_name} ${req.last_name} removed from directory.`);
+      setRequests((current) =>
+        current.map((r) => (r.id === req.id ? { ...r, status: "approved" } : r))
+      );
+      setActionMessage(
+        `Profile for ${req.first_name} ${req.last_name} removed from directory.`
+      );
       setSelectedRequest(null);
     } catch (e) {
       console.error(e);
@@ -427,49 +571,85 @@ export default function Admin({ onGoToDirectory }) {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    setRequestSubTab("updates");
-    setSelectedDeletes([]); setSelectedAll([]);
-    setExpandedId(null); setExpandedAllId(null); setExpandedNominee(null);
-    setExpandedTester(null); setExpandedTestSection(null);
-    setTestFilterTester(""); setTestFilterStatus(""); setTestFilterSearch("");
-    setAllPage(1); setSearchQuery(""); setFilterCountry(""); setFilterExpertise("");
+    setRequestSubTab("new");
+    setFilterStatus("");
+    setSelectedDeletes([]);
+    setSelectedAll([]);
+    setExpandedId(null);
+    setExpandedAllId(null);
+    setExpandedNominee(null);
+    setExpandedTester(null);
+    setExpandedTestSection(null);
+    setTestFilterTester("");
+    setTestFilterStatus("");
+    setTestFilterSearch("");
+    setAllPage(1);
+    setSearchQuery("");
+    setFilterCountry("");
+    setFilterExpertise("");
   };
 
-  const pendingCount      = pending.length;
-  const nominatedList     = nominated;
-  const nominatedCount    = nominated.length;
+  const pendingCount = pending.length;
+  const nominatedList = nominated;
+  const nominatedCount = nominated.length;
   const totalPendingCount = pending.length + nominated.length;
-  const updateRequests = requests.filter((r) => r.request_type === "update" && r.status === "pending");
-  const deleteRequests = requests.filter((r) => r.request_type === "delete" && r.status === "pending");
-  const requestsCount  = requests.filter((r) => r.status === "pending").length;
-  const liveCount      = all.filter((item) => item.status === "live").length;
-  const rejectedCount  = all.filter((item) => item.status === "rejected").length;
-  const allCount       = all.length;
+  const updateRequests = requests.filter(
+    (r) => r.request_type === "update" && r.status === "pending"
+  );
+  const deleteRequests = requests.filter(
+    (r) => r.request_type === "delete" && r.status === "pending"
+  );
+  const requestsCount = requests.filter((r) => r.status === "pending").length;
+  const liveCount = all.filter((item) => item.status === "live").length;
+  const rejectedCount = all.filter((item) => item.status === "rejected").length;
+  const allCount = all.length;
 
   const countries = useMemo(() => {
     const set = new Set();
-    all.forEach((item) => { if (item.country) set.add(item.country); });
+    all.forEach((item) => {
+      if (item.country) set.add(item.country);
+    });
     return Array.from(set).sort();
   }, [all]);
 
   const expertiseOptions = useMemo(() => {
     const set = new Set();
-    all.forEach((item) => { toTags(item.expertise).forEach((tag) => set.add(tag)); });
+    all.forEach((item) => {
+      toTags(item.expertise).forEach((tag) => set.add(tag));
+    });
     return Array.from(set).sort();
   }, [all]);
 
   const liveNames = useMemo(() => {
     const set = new Set();
-    all.filter(l => l.status === "live").forEach(l => {
-      set.add(`${l.first_name?.trim()?.toLowerCase() ?? ""} ${l.last_name?.trim()?.toLowerCase() ?? ""}`);
-    });
+    all
+      .filter((l) => l.status === "live")
+      .forEach((l) => {
+        set.add(
+          `${l.first_name?.trim()?.toLowerCase() ?? ""} ${
+            l.last_name?.trim()?.toLowerCase() ?? ""
+          }`
+        );
+      });
     return set;
   }, [all]);
 
   const filteredAll = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     const results = all.filter((item) => {
-      const text = [item.first_name, item.last_name, item.role, item.organisation, item.editor_email, item.leader_email, item.expertise, item.country].filter(Boolean).join(" ").toLowerCase();
+      const text = [
+        item.first_name,
+        item.last_name,
+        item.role,
+        item.organisation,
+        item.editor_email,
+        item.leader_email,
+        item.expertise,
+        item.country,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
       if (query && !text.includes(query)) return false;
       if (filterCountry && item.country !== filterCountry) return false;
       // Expertise filter
@@ -483,6 +663,8 @@ export default function Admin({ onGoToDirectory }) {
       } else if (filterClicks === "low") {
         if ((item.linkedin_clicks || 0) > 0) return false;
       }
+      // Status filter
+      if (filterStatus && item.status !== filterStatus) return false;
       return true;
     });
     return results.slice().sort((a, b) => {
@@ -495,17 +677,35 @@ export default function Admin({ onGoToDirectory }) {
       }
       const l = `${a.last_name} ${a.first_name}`.toLowerCase();
       const r = `${b.last_name} ${b.first_name}`.toLowerCase();
-      return sortOrder === "za" ? (r < l ? -1 : r > l ? 1 : 0) : (l < r ? -1 : l > r ? 1 : 0);
+      return sortOrder === "za"
+        ? r < l
+          ? -1
+          : r > l
+          ? 1
+          : 0
+        : l < r
+        ? -1
+        : l > r
+        ? 1
+        : 0;
     });
-  }, [all, searchQuery, filterCountry, filterExpertise, filterClicks, sortOrder]);
+  }, [
+    all,
+    searchQuery,
+    filterCountry,
+    filterExpertise,
+    filterClicks,
+    filterStatus,
+    sortOrder,
+  ]);
 
   const sidebarData = [
-    { ...SIDEBAR_ITEMS[0], count: allCount     },
+    { ...SIDEBAR_ITEMS[0], count: allCount },
     { ...SIDEBAR_ITEMS[1], count: requestsCount },
     { ...SIDEBAR_ITEMS[2], count: nominatedCount },
-    SIDEBAR_ITEMS[3],  // divider (no count)
+    SIDEBAR_ITEMS[3], // divider (no count)
     { ...SIDEBAR_ITEMS[4], count: testResults.length },
-    { ...SIDEBAR_ITEMS[5], count: 15 },  // 15 fixed items
+    { ...SIDEBAR_ITEMS[5], count: 21 }, // 21 fixed items (5 Critical + 6 Important + 4 Nice-to-have + 6 Post-QA)
   ];
 
   return (
@@ -520,10 +720,14 @@ export default function Admin({ onGoToDirectory }) {
             />
           </div>
           <div className="text-center">
-            <div className="text-xl font-bold text-brand-navy">Admin Console</div>
+            <div className="text-xl font-bold text-brand-navy">
+              Admin Console
+            </div>
           </div>
           <div className="flex justify-end">
-            <span className="text-[1.3rem] text-brand-navy font-semibold italic">Test mode</span>
+            <span className="text-[1.3rem] text-brand-navy font-semibold italic">
+              Test mode
+            </span>
           </div>
         </div>
       </header>
@@ -534,7 +738,7 @@ export default function Admin({ onGoToDirectory }) {
             <div className="flex items-center justify-center">
               <button
                 onClick={handleRefresh}
-                className="inline-flex items-center justify-center rounded-lg border-2 border-brand-yellow px-3 py-2 text-[1.4rem] font-bold text-brand-yellow bg-transparent hover:bg-brand-pink hover:text-white transition-colors"
+                className="inline-flex items-center justify-center rounded-lg border-2 border-brand-yellow px-4 py-3 text-[1.6rem] font-bold text-brand-yellow bg-transparent hover:bg-brand-pink hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
               >
                 Refresh ↻
               </button>
@@ -545,7 +749,12 @@ export default function Admin({ onGoToDirectory }) {
             {sidebarData.map((item) => {
               // Divider row
               if (item.id === "divider") {
-                return <hr key="divider" className="my-2 border-t border-brand-pink border-opacity-30" />;
+                return (
+                  <hr
+                    key="divider"
+                    className="my-2 border-t border-brand-pink border-opacity-30"
+                  />
+                );
               }
 
               const Icon = ICONS[item.icon];
@@ -554,27 +763,37 @@ export default function Admin({ onGoToDirectory }) {
                 <button
                   key={item.id}
                   onClick={() => handleTabChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-lg font-bold transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-md text-xl font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 ${
                     isActive
                       ? "bg-brand-pink text-white border border-brand-pink"
                       : "bg-transparent text-white border border-transparent hover:bg-brand-pink hover:bg-opacity-20"
                   }`}
                 >
-                  <span className={isActive ? "text-white" : "text-brand-yellow"}>
+                  <span
+                    className={isActive ? "text-white" : "text-brand-yellow"}
+                  >
                     <Icon />
                   </span>
                   <span className="flex-1 text-left">{item.label}</span>
                   {(item.id === "tests" || item.id === "fixes") && (
-                    <span className={`text-[1rem] font-bold px-1.5 py-0.5 rounded tracking-wider ${
-                      isActive ? "bg-amber-200 text-amber-800" : "bg-amber-400/80 text-amber-900"
-                    }`}>
+                    <span
+                      className={`text-[1.2rem] font-bold px-2 py-1 rounded tracking-wider ${
+                        isActive
+                          ? "bg-amber-200 text-amber-800"
+                          : "bg-amber-400/80 text-amber-900"
+                      }`}
+                    >
                       DEV
                     </span>
                   )}
                   {item.count !== undefined && (
-                    <span className={`text-[1.4rem] font-bold px-2 py-0.5 rounded-lg ${
-                      isActive ? "bg-white text-brand-navy" : "bg-brand-yellow text-brand-navy"
-                    }`}>
+                    <span
+                      className={`text-[1.6rem] font-bold px-2 py-0.5 rounded-lg ${
+                        isActive
+                          ? "bg-white text-brand-navy"
+                          : "bg-brand-yellow text-brand-navy"
+                      }`}
+                    >
                       {item.count}
                     </span>
                   )}
@@ -586,14 +805,14 @@ export default function Admin({ onGoToDirectory }) {
           <div className="px-3 py-4 border-t border-gray-200 flex flex-col gap-2">
             <button
               onClick={() => setActiveTab("manual")}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-[1.4rem] font-medium text-gray-600 bg-white hover:bg-gray-50 hover:text-brand-navy transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-3 text-[1.6rem] font-medium text-gray-600 bg-white hover:bg-gray-50 hover:text-brand-navy transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2"
             >
               <ManualIcon />
               User Manual
             </button>
             <button
               onClick={() => onGoToDirectory?.()}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-brand-pink px-3 py-2 text-[1.4rem] font-medium text-brand-pink bg-brand-parchment hover:bg-brand-pink hover:text-white transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-brand-pink px-3 py-3 text-[1.6rem] font-medium text-brand-pink bg-brand-parchment hover:bg-brand-pink hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2"
             >
               View directory
             </button>
@@ -602,137 +821,532 @@ export default function Admin({ onGoToDirectory }) {
 
         <main className="flex-1 flex flex-col overflow-hidden">
           {/* Page header + stats - hidden for Tests tab */}
-          {activeTab !== "tests" && activeTab !== "manual" && activeTab !== "fixes" && (
-            <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
-              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">
-                    {sidebarData.find((s) => s.id === activeTab)?.label}
-                  </h2>
-                </div>
-                <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                  <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange">
-                  <div className="text-[1.2rem] font-bold uppercase tracking-wider text-white">Pending</div>
-                    <div className="text-2xl font-bold text-white">{totalPendingCount}</div>
+          {activeTab !== "tests" &&
+            activeTab !== "manual" &&
+            activeTab !== "fixes" && (
+              <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">
+                      {sidebarData.find((s) => s.id === activeTab)?.label}
+                    </h2>
                   </div>
-                  <div className="bg-green-500 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-green-600">
-                    <div className="text-[1.2rem] font-bold uppercase tracking-wider text-white">Live</div>
-                    <div className="text-2xl font-bold text-white">{liveCount}</div>
-                  </div>
-                  <div className="bg-red-600 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-red-700">
-                    <div className="text-[1.2rem] font-bold uppercase tracking-wider text-white">Rejected</div>
-                    <div className="text-2xl font-bold text-white">{rejectedCount}</div>
+                  <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
+                    <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange">
+                      <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
+                        Pending
+                      </div>
+                      <div className="text-2xl font-bold text-white">
+                        {totalPendingCount}
+                      </div>
+                    </div>
+                    <div className="bg-green-500 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-green-600">
+                      <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
+                        Live
+                      </div>
+                      <div className="text-2xl font-bold text-white">
+                        {liveCount}
+                      </div>
+                    </div>
+                    <div className="bg-red-600 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-red-700">
+                      <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
+                        Rejected
+                      </div>
+                      <div className="text-2xl font-bold text-white">
+                        {rejectedCount}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Filter bar - hidden for Tests tab */}
-          {activeTab !== "tests" && activeTab !== "manual" && activeTab !== "fixes" && (
-            <div className="px-8 py-4 border-b-2 border-brand-navy flex-shrink-0 bg-white">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                  <input
-                    value={searchQuery}
-                    onChange={(e) => { setSearchQuery(e.target.value); setAllPage(1); }}
-                    placeholder="Search name, org, role, expertise"
-                    className="min-w-[220px] rounded-lg border-2 border-gray-400 px-4 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
-                  />
-                  <select
-                    value={filterCountry}
-                    onChange={(e) => { setFilterCountry(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
-                  >
-                    <option value="">All countries</option>
-                    {countries.map((country) => <option key={country} value={country}>{country}</option>)}
-                  </select>
-                  <select
-                    value={filterExpertise}
-                    onChange={(e) => { setFilterExpertise(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
-                  >
-                    <option value="">All expertise</option>
-                    {expertiseOptions.map((expertise) => <option key={expertise} value={expertise}>{expertise}</option>)}
-                  </select>
-                  <select
-                    value={filterClicks}
-                    onChange={(e) => { setFilterClicks(e.target.value); setAllPage(1); }}
-                    className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus:border-brand-navy bg-white text-gray-900"
-                  >
-                    <option value="">All click counts</option>
-                    <option value="high">🔥 Most clicked (high)</option>
-                    <option value="low">📉 Least clicked (low)</option>
-                  </select>
+          {activeTab !== "tests" &&
+            activeTab !== "manual" &&
+            activeTab !== "fixes" && (
+              <div className="px-8 py-4 border-b-2 border-brand-navy flex-shrink-0 bg-white">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                    <input
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setAllPage(1);
+                      }}
+                      placeholder="Search name, org, role, expertise"
+                      className="min-w-[220px] rounded-lg border-2 border-gray-400 px-4 py-2 text-lg font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus:border-brand-navy bg-white text-gray-900"
+                    />
+                    <select
+                      value={filterCountry}
+                      onChange={(e) => {
+                        setFilterCountry(e.target.value);
+                        setAllPage(1);
+                      }}
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus:border-brand-navy bg-white text-gray-900"
+                    >
+                      <option value="">All countries</option>
+                      {countries.map((country) => (
+                        <option key={country} value={country}>
+                          {country}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={filterExpertise}
+                      onChange={(e) => {
+                        setFilterExpertise(e.target.value);
+                        setAllPage(1);
+                      }}
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus:border-brand-navy bg-white text-gray-900"
+                    >
+                      <option value="">All expertise</option>
+                      {expertiseOptions.map((expertise) => (
+                        <option key={expertise} value={expertise}>
+                          {expertise}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={filterClicks}
+                      onChange={(e) => {
+                        setFilterClicks(e.target.value);
+                        setAllPage(1);
+                      }}
+                      className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus:border-brand-navy bg-white text-gray-900"
+                    >
+                      <option value="">All click counts</option>
+                      <option value="high">🔥 Most clicked (high)</option>
+                      <option value="low">📉 Least clicked (low)</option>
+                    </select>
+                    {activeTab === "all" && (
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => {
+                          setFilterStatus(e.target.value);
+                          setAllPage(1);
+                        }}
+                        className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus:border-brand-navy bg-white text-gray-900"
+                      >
+                        <option value="">All statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="live">Live</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    )}
+                  </div>
+                  <div className="text-[1.4rem] font-bold text-brand-navy">
+                    {activeTab === "all"
+                      ? `${filteredAll.length} of ${allCount} total entries`
+                      : activeTab === "nominated"
+                      ? `${nominatedCount} nominated`
+                      : activeTab === "requests"
+                      ? `${pending.length} new · ${updateRequests.length} update · ${deleteRequests.length} delete`
+                      : `${requestsCount} pending requests`}
+                  </div>
                 </div>
-                <div className="text-[1.4rem] font-bold text-brand-navy">
-                  {activeTab === "all"       ? `${filteredAll.length} of ${allCount} total entries`
-                  : activeTab === "nominated" ? `${nominatedCount} nominated`
-                  : activeTab === "requests"  ? `${updateRequests.length} update · ${deleteRequests.length} delete`
-                  : `${requestsCount} pending requests`}
-                </div>
+                {actionMessage && (
+                  <div
+                    className={`mt-4 rounded-lg px-4 py-3 text-lg border ${
+                      actionIsError
+                        ? "border-red-300 bg-red-50 text-red-800"
+                        : "border-brand-green-border bg-green-50 text-green-800"
+                    }`}
+                  >
+                    {actionMessage}
+                  </div>
+                )}
               </div>
-              {actionMessage && (
-                <div className={`mt-4 rounded-lg px-4 py-3 text-lg border ${actionIsError ? "border-red-300 bg-red-50 text-red-800" : "border-brand-green-border bg-green-50 text-green-800"}`}>
-                  {actionMessage}
-                </div>
-              )}
-            </div>
-          )}
+            )}
 
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-8 py-6 bg-white">
             {loading ? (
-              <div className="text-center py-12 text-xl text-brand-navy">Loading...</div>
-
+              <div className="text-center py-12 text-xl text-brand-navy">
+                Loading...
+              </div>
             ) : activeTab === "requests" ? (
               <div className="rounded-lg overflow-hidden border-2 border-brand-navy bg-white">
                 {/* Sub-tab bar */}
                 <div className="flex border-b-2 border-brand-navy bg-brand-navy">
                   <button
+                    onClick={() => setRequestSubTab("new")}
+                    className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
+                      requestSubTab === "new"
+                        ? "bg-white text-green-700 border-b-[4px] border-green-500"
+                        : "bg-transparent text-white border-b-[4px] border-transparent hover:bg-white hover:bg-opacity-15"
+                    }`}
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 14 14">
+                        <circle cx="7" cy="7" r="7" fill="#22c55e" />
+                      </svg>
+                      New
+                      <span
+                        className={`text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
+                          requestSubTab === "new"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-200 text-gray-500"
+                        }`}
+                      >
+                        {pending.length}
+                      </span>
+                    </span>
+                  </button>
+                  <button
                     onClick={() => setRequestSubTab("updates")}
                     className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
                       requestSubTab === "updates"
-                        ? "bg-white text-brand-navy border-b-[4px] border-brand-pink"
-                        : "bg-transparent text-white border-b-[4px] border-transparent hover:bg-brand-pink hover:bg-opacity-20"
+                        ? "bg-white text-amber-700 border-b-[4px] border-amber-500"
+                        : "bg-transparent text-white border-b-[4px] border-transparent hover:bg-white hover:bg-opacity-15"
                     }`}
                   >
-                    Updates
-                    <span className={`ml-2 text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
-                      requestSubTab === "updates" ? "bg-brand-blue-tint text-brand-navy" : "bg-gray-200 text-gray-500"
-                    }`}>
-                      {updateRequests.length}
+                    <span className="flex items-center justify-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 14 14">
+                        <circle cx="7" cy="7" r="7" fill="#f59e0b" />
+                      </svg>
+                      Updates
+                      <span
+                        className={`text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
+                          requestSubTab === "updates"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-gray-200 text-gray-500"
+                        }`}
+                      >
+                        {updateRequests.length}
+                      </span>
                     </span>
                   </button>
                   <button
                     onClick={() => setRequestSubTab("deletes")}
-                    className={`flex-1 px-5 py-3 text-lg font-semibold transition-colors ${
+                    className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
                       requestSubTab === "deletes"
-                        ? "bg-white text-red-600 border-b-[3px] border-red-600"
-                        : "bg-transparent text-gray-500 border-b-[3px] border-transparent"
+                        ? "bg-white text-red-600 border-b-[4px] border-red-500"
+                        : "bg-transparent text-white border-b-[4px] border-transparent hover:bg-white hover:bg-opacity-15"
                     }`}
                   >
-                    Deletes
-                    <span className={`ml-2 text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
-                      requestSubTab === "deletes" ? "bg-red-600 text-white" : "bg-gray-300 text-gray-700"
-                    }`}>
-                      {deleteRequests.length}
+                    <span className="flex items-center justify-center gap-2">
+                      <svg width="14" height="14" viewBox="0 0 14 14">
+                        <circle cx="7" cy="7" r="7" fill="#ef4444" />
+                      </svg>
+                      Deletes
+                      <span
+                        className={`text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
+                          requestSubTab === "deletes"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-gray-200 text-gray-500"
+                        }`}
+                      >
+                        {deleteRequests.length}
+                      </span>
                     </span>
                   </button>
                 </div>
+
+                {requestSubTab === "new" && (
+                  <>
+                    {pending.length === 0 ? (
+                      <div className="text-center py-20">
+                        <div className="text-[4.8rem] mb-4 text-green-400">
+                          ✓
+                        </div>
+                        <div className="text-lg text-green-600">
+                          No new submissions
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
+                        <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
+                          <div className="text-[1.4rem] font-bold text-white">
+                            {pending.length} pending submission(s)
+                          </div>
+                        </div>
+                        {pending.map((item) => {
+                          const isExpanded = expandedId === item.id;
+                          return (
+                            <div key={item.id}>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                aria-expanded={isExpanded}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    setExpandedId(isExpanded ? null : item.id);
+                                  }
+                                }}
+                                className={`flex items-center px-5 cursor-pointer transition-colors min-h-[64px] border-b border-brand-warm-row-border ${
+                                  isExpanded
+                                    ? "bg-brand-warm-row"
+                                    : "bg-white hover:bg-brand-warm-bg"
+                                } ${
+                                  !isExpanded
+                                    ? "focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
+                                    : ""
+                                }`}
+                                onClick={() =>
+                                  setExpandedId(isExpanded ? null : item.id)
+                                }
+                              >
+                                <div className="flex-shrink-0 mr-4">
+                                  <div className="w-2.5 h-2.5 rounded-full bg-amber-600" />
+                                </div>
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 mr-4 bg-brand-blue-tint text-brand-navy">
+                                  {getInitials(item.first_name, item.last_name)}
+                                </div>
+                                <div className="flex-1 min-w-0 mr-4">
+                                  <div className="flex items-center gap-3">
+                                    <span className="font-semibold text-lg truncate text-brand-dark">
+                                      {item.first_name} {item.last_name}
+                                    </span>
+                                    <span className="text-[1.4rem] truncate text-gray-500">
+                                      {item.role}
+                                    </span>
+                                  </div>
+                                  <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
+                                    {item.organisation}
+                                  </div>
+                                </div>
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                  className={`text-gray-400 transition-transform ${
+                                    isExpanded ? "rotate-180" : "rotate-0"
+                                  }`}
+                                >
+                                  <path
+                                    d="M4 6l4 4 4-4"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </div>
+                              {isExpanded && (
+                                <div className="px-5 py-4 bg-brand-warm-bg border-b border-brand-warm-border">
+                                  <div className="grid gap-4 mb-4 md:grid-cols-2">
+                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                        Personal
+                                      </div>
+                                      <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Email:{" "}
+                                          </span>
+                                          {item.editor_email ||
+                                            item.email ||
+                                            "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Role:{" "}
+                                          </span>
+                                          {item.role || "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Organisation:{" "}
+                                          </span>
+                                          {item.organisation || "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Country:{" "}
+                                          </span>
+                                          {item.country || "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Experience:{" "}
+                                          </span>
+                                          {item.years_experience ||
+                                            item.yearsExp ||
+                                            "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Geo scope:{" "}
+                                          </span>
+                                          {item.geo_scope || "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Works across:{" "}
+                                          </span>
+                                          {item.countries || "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Submitted:{" "}
+                                          </span>
+                                          {item.created_at
+                                            ? new Date(
+                                                item.created_at
+                                              ).toLocaleString()
+                                            : "—"}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                        Expertise
+                                      </div>
+                                      <div className="mb-3">
+                                        {toTags(item.expertise).length > 0 ? (
+                                          <div className="flex flex-wrap gap-1.5">
+                                            {toTags(item.expertise).map(
+                                              (tag, i) => (
+                                                <span
+                                                  key={i}
+                                                  title={tag}
+                                                  className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border"
+                                                >
+                                                  {tag}
+                                                </span>
+                                              )
+                                            )}
+                                          </div>
+                                        ) : (
+                                          "—"
+                                        )}
+                                      </div>
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                        LinkedIn
+                                      </div>
+                                      <div className="mb-3 text-[1.5rem]">
+                                        {item.linkedin ? (
+                                          <a
+                                            href={item.linkedin}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="hover:underline text-brand-navy break-all"
+                                          >
+                                            {item.linkedin}
+                                          </a>
+                                        ) : (
+                                          "—"
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="grid gap-4 mb-4 md:grid-cols-2">
+                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                        Bio
+                                      </div>
+                                      <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7] break-words">
+                                        {item.bio || "—"}
+                                      </div>
+                                    </div>
+                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                        Notable items
+                                      </div>
+                                      {(() => {
+                                        const raw =
+                                          item.notable_items ||
+                                          item.notableItems;
+                                        const items = Array.isArray(raw)
+                                          ? raw
+                                          : typeof raw === "string"
+                                          ? (() => {
+                                              try {
+                                                return JSON.parse(raw);
+                                              } catch {
+                                                return [];
+                                              }
+                                            })()
+                                          : [];
+                                        return items.length > 0 ? (
+                                          <div className="flex flex-col gap-2">
+                                            {items.map((ni, i) => (
+                                              <div
+                                                key={i}
+                                                className="text-[1.5rem] text-brand-dark-blue"
+                                              >
+                                                <span className="font-semibold">
+                                                  {ni.title || "—"}
+                                                </span>
+                                                {ni.type && (
+                                                  <span className="text-gray-500">
+                                                    {" "}
+                                                    ({ni.type})
+                                                  </span>
+                                                )}
+                                                {ni.link && (
+                                                  <span>
+                                                    {" "}
+                                                    —{" "}
+                                                    <a
+                                                      href={ni.link}
+                                                      target="_blank"
+                                                      rel="noopener noreferrer"
+                                                      className="hover:underline text-brand-navy break-all"
+                                                    >
+                                                      {ni.link}
+                                                    </a>
+                                                  </span>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                        ) : (
+                                          "—"
+                                        );
+                                      })()}
+                                    </div>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() =>
+                                        handleAction(item.id, "approve")
+                                      }
+                                      disabled={actionId === item.id}
+                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                                    >
+                                      {actionId === item.id ? "..." : "Approve"}
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        handleAction(item.id, "reject")
+                                      }
+                                      disabled={actionId === item.id}
+                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                    >
+                                      Reject
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
+                )}
 
                 {requestSubTab === "updates" && (
                   <>
                     {updateRequests.length === 0 ? (
                       <div className="text-center py-20">
-                        <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                        <div className="text-lg text-green-600">No pending update requests</div>
+                        <div className="text-[4.8rem] mb-4 text-green-400">
+                          ✓
+                        </div>
+                        <div className="text-lg text-green-600">
+                          No pending update requests
+                        </div>
                       </div>
                     ) : (
                       <>
                         <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
                           <div className="text-[1.4rem] font-bold text-white">
-                            {updateRequests.length} update request(s) — send self-service links
+                            {updateRequests.length} update request(s) — send
+                            self-service links
                           </div>
                         </div>
 
@@ -742,32 +1356,76 @@ export default function Admin({ onGoToDirectory }) {
                           return (
                             <div key={req.id}>
                               <div
+                                role="button"
+                                tabIndex={0}
+                                aria-expanded={isSelected}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    setSelectedRequest(
+                                      isSelected ? null : req.id
+                                    );
+                                  }
+                                }}
                                 className={`flex items-center px-5 cursor-pointer transition-colors min-h-[64px] border-b border-brand-warm-row-border ${
-                                  isSelected ? "bg-brand-warm-row" : "bg-white hover:bg-brand-warm-bg"
+                                  isSelected
+                                    ? "bg-brand-warm-row"
+                                    : "bg-white hover:bg-brand-warm-bg"
+                                } ${
+                                  !isSelected
+                                    ? "focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
+                                    : ""
                                 }`}
-                                onClick={() => setSelectedRequest(isSelected ? null : req.id)}
+                                onClick={() =>
+                                  setSelectedRequest(isSelected ? null : req.id)
+                                }
                               >
                                 <div className="flex-shrink-0 mr-4">
-                                  <div className={`w-2.5 h-2.5 rounded-full ${linkSent ? "bg-gray-400" : "bg-amber-600"}`} />
+                                  <div
+                                    className={`w-2.5 h-2.5 rounded-full ${
+                                      linkSent ? "bg-gray-400" : "bg-amber-600"
+                                    }`}
+                                  />
                                 </div>
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 mr-4 bg-brand-blue-tint text-brand-navy">
                                   {getInitials(req.first_name, req.last_name)}
                                 </div>
                                 <div className="flex-1 min-w-0 mr-4">
                                   <div className="flex items-center gap-3">
-                                    <span className="font-semibold text-lg truncate text-brand-dark">{req.first_name} {req.last_name}</span>
-                                    <span className="text-[1.4rem] truncate text-gray-500">{req.email}</span>
+                                    <span className="font-semibold text-lg truncate text-brand-dark">
+                                      {req.first_name} {req.last_name}
+                                    </span>
+                                    <span className="text-[1.4rem] truncate text-gray-500">
+                                      {req.email}
+                                    </span>
                                   </div>
                                   <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
-                                    {req.changes?.slice(0, 80) || "Requested profile update"}
+                                    {req.changes?.slice(0, 80) ||
+                                      "Requested profile update"}
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-3 flex-shrink-0">
                                   {linkSent && (
-                                    <span className="text-[1.2rem] font-medium px-2 py-1 rounded-full bg-gray-200 text-gray-500">Link sent</span>
+                                    <span className="text-[1.3rem] font-medium px-2 py-1 rounded-full bg-gray-200 text-gray-500">
+                                      Link sent
+                                    </span>
                                   )}
-                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={`text-gray-400 transition-transform ${isSelected ? "rotate-180" : "rotate-0"}`}>
-                                    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                    className={`text-gray-400 transition-transform ${
+                                      isSelected ? "rotate-180" : "rotate-0"
+                                    }`}
+                                  >
+                                    <path
+                                      d="M4 6l4 4 4-4"
+                                      stroke="currentColor"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
                                   </svg>
                                 </div>
                               </div>
@@ -776,16 +1434,41 @@ export default function Admin({ onGoToDirectory }) {
                                 <div className="px-5 py-4 bg-brand-warm-bg border-b border-brand-warm-border">
                                   <div className="grid gap-4 md:grid-cols-2 mb-4">
                                     <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">Request details</div>
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                        Request details
+                                      </div>
                                       <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                        <div><span className="text-brand-navy font-semibold">Email: </span>{req.email}</div>
-                                        <div><span className="text-brand-navy font-semibold">LinkedIn: </span>{req.linkedin || "—"}</div>
-                                        <div><span className="text-brand-navy font-semibold">Submitted: </span>{req.created_at ? new Date(req.created_at).toLocaleString() : "—"}</div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Email:{" "}
+                                          </span>
+                                          {req.email}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            LinkedIn:{" "}
+                                          </span>
+                                          {req.linkedin || "—"}
+                                        </div>
+                                        <div>
+                                          <span className="text-brand-navy font-semibold">
+                                            Submitted:{" "}
+                                          </span>
+                                          {req.created_at
+                                            ? new Date(
+                                                req.created_at
+                                              ).toLocaleString()
+                                            : "—"}
+                                        </div>
                                       </div>
                                     </div>
                                     <div className="rounded-lg p-4 bg-white border border-amber-200">
-                                      <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-amber-600">Requested changes</div>
-                                      <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">{req.changes || "No details provided"}</div>
+                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-amber-600">
+                                        Requested changes
+                                      </div>
+                                      <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">
+                                        {req.changes || "No details provided"}
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="flex items-center gap-3">
@@ -798,10 +1481,26 @@ export default function Admin({ onGoToDirectory }) {
                                           : "bg-brand-navy text-white hover:bg-brand-navy-hover"
                                       }`}
                                     >
-                                      {linkSent ? "✓ Link sent — resend" : "Send update link via email"}
+                                      {linkSent
+                                        ? "✓ Link sent — resend"
+                                        : "Send update link via email"}
                                     </button>
                                     <button
-                                      onClick={async () => { try { await api.dismissRequest(req.id); } catch {} setRequests(requests.map(r => r.id === req.id ? { ...r, status: "dismissed" } : r)); setSelectedRequest(null); }}
+                                      onClick={async () => {
+                                        try {
+                                          await api.dismissRequest(req.id);
+                                        } catch (e) {
+                                          console.error("Failed to dismiss request:", e);
+                                        }
+                                        setRequests(
+                                          requests.map((r) =>
+                                            r.id === req.id
+                                              ? { ...r, status: "dismissed" }
+                                              : r
+                                          )
+                                        );
+                                        setSelectedRequest(null);
+                                      }}
                                       className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
                                     >
                                       Dismiss
@@ -809,7 +1508,9 @@ export default function Admin({ onGoToDirectory }) {
                                   </div>
                                   {linkSent && (
                                     <div className="mt-3 text-[1.4rem] text-gray-500 italic">
-                                      User will receive a magic link to update their own profile. Once resubmitted, it will appear as a new pending submission.
+                                      User will receive a magic link to update
+                                      their own profile. Once resubmitted, it
+                                      will appear as a new pending submission.
                                     </div>
                                   )}
                                 </div>
@@ -830,11 +1531,18 @@ export default function Admin({ onGoToDirectory }) {
                           <label className="flex items-center gap-2 cursor-pointer">
                             <input
                               type="checkbox"
-                              checked={deleteRequests.length > 0 && deleteRequests.every((r) => selectedDeletes.includes(r.id))}
+                              checked={
+                                deleteRequests.length > 0 &&
+                                deleteRequests.every((r) =>
+                                  selectedDeletes.includes(r.id)
+                                )
+                              }
                               onChange={toggleAllDeletes}
                               className="w-4 h-4 rounded"
                             />
-                            <span className="text-[1.4rem] font-medium text-red-600">Select all ({deleteRequests.length})</span>
+                            <span className="text-[1.4rem] font-medium text-red-600">
+                              Select all ({deleteRequests.length})
+                            </span>
                           </label>
                         </div>
                         {selectedDeletes.length > 0 && (
@@ -850,27 +1558,55 @@ export default function Admin({ onGoToDirectory }) {
 
                     {deleteRequests.length === 0 ? (
                       <div className="text-center py-20">
-                        <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                        <div className="text-lg text-green-600">No pending deletion requests</div>
+                        <div className="text-[4.8rem] mb-4 text-green-400">
+                          ✓
+                        </div>
+                        <div className="text-lg text-green-600">
+                          No pending deletion requests
+                        </div>
                       </div>
                     ) : (
                       deleteRequests.map((req) => {
                         const isSelected = selectedRequest === req.id;
-                        const isChecked  = selectedDeletes.includes(req.id);
+                        const isChecked = selectedDeletes.includes(req.id);
                         return (
                           <div key={req.id}>
                             <div
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isSelected}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  setSelectedRequest(
+                                    isSelected ? null : req.id
+                                  );
+                                }
+                              }}
                               className={`flex items-center px-5 cursor-pointer transition-colors min-h-[64px] border-b border-brand-warm-row-border ${
-                                isSelected ? "bg-brand-warm-row" : isChecked ? "bg-red-50" : "bg-white hover:bg-brand-warm-bg"
+                                isSelected
+                                  ? "bg-brand-warm-row"
+                                  : isChecked
+                                  ? "bg-red-50"
+                                  : "bg-white hover:bg-brand-warm-bg"
+                              } ${
+                                !isSelected
+                                  ? "focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
+                                  : ""
                               }`}
-                              onClick={() => setSelectedRequest(isSelected ? null : req.id)}
+                              onClick={() =>
+                                setSelectedRequest(isSelected ? null : req.id)
+                              }
                             >
                               <div className="flex-shrink-0 mr-3">
                                 <input
                                   type="checkbox"
                                   checked={isChecked}
-                                  onChange={(e) => { e.stopPropagation(); toggleDeleteSelect(req.id); }}
-                                  onClick={e => e.stopPropagation()}
+                                  onChange={(e) => {
+                                    e.stopPropagation();
+                                    toggleDeleteSelect(req.id);
+                                  }}
+                                  onClick={(e) => e.stopPropagation()}
                                   className="w-4 h-4 rounded cursor-pointer"
                                 />
                               </div>
@@ -882,16 +1618,35 @@ export default function Admin({ onGoToDirectory }) {
                               </div>
                               <div className="flex-1 min-w-0 mr-4">
                                 <div className="flex items-center gap-3">
-                                  <span className="font-semibold text-lg truncate text-brand-dark">{req.first_name} {req.last_name}</span>
-                                  <span className="text-[1.4rem] truncate text-gray-500">{req.email}</span>
+                                  <span className="font-semibold text-lg truncate text-brand-dark">
+                                    {req.first_name} {req.last_name}
+                                  </span>
+                                  <span className="text-[1.4rem] truncate text-gray-500">
+                                    {req.email}
+                                  </span>
                                 </div>
                                 <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
-                                  {req.reason?.slice(0, 80) || "Requested profile removal"}
+                                  {req.reason?.slice(0, 80) ||
+                                    "Requested profile removal"}
                                 </div>
                               </div>
                               <div className="flex items-center gap-3 flex-shrink-0">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={`text-gray-400 transition-transform ${isSelected ? "rotate-180" : "rotate-0"}`}>
-                                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                  className={`text-gray-400 transition-transform ${
+                                    isSelected ? "rotate-180" : "rotate-0"
+                                  }`}
+                                >
+                                  <path
+                                    d="M4 6l4 4 4-4"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
                                 </svg>
                               </div>
                             </div>
@@ -900,28 +1655,71 @@ export default function Admin({ onGoToDirectory }) {
                               <div className="px-5 py-4 bg-brand-warm-bg border-b border-brand-warm-border">
                                 <div className="grid gap-4 md:grid-cols-2 mb-4">
                                   <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                    <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">Request details</div>
+                                    <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
+                                      Request details
+                                    </div>
                                     <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                      <div><span className="text-brand-navy font-semibold">Email: </span>{req.email}</div>
-                                      <div><span className="text-brand-navy font-semibold">LinkedIn: </span>{req.linkedin || "—"}</div>
-                                      <div><span className="text-brand-navy font-semibold">Submitted: </span>{req.created_at ? new Date(req.created_at).toLocaleString() : "—"}</div>
+                                      <div>
+                                        <span className="text-brand-navy font-semibold">
+                                          Email:{" "}
+                                        </span>
+                                        {req.email}
+                                      </div>
+                                      <div>
+                                        <span className="text-brand-navy font-semibold">
+                                          LinkedIn:{" "}
+                                        </span>
+                                        {req.linkedin || "—"}
+                                      </div>
+                                      <div>
+                                        <span className="text-brand-navy font-semibold">
+                                          Submitted:{" "}
+                                        </span>
+                                        {req.created_at
+                                          ? new Date(
+                                              req.created_at
+                                            ).toLocaleString()
+                                          : "—"}
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="rounded-lg p-4 bg-white border border-red-200">
-                                    <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-2 text-red-600">Reason for removal</div>
-                                    <div className="text-[1.5rem] text-red-900 leading-[1.7]">{req.reason || "No reason provided"}</div>
+                                    <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-red-600">
+                                      Reason for removal
+                                    </div>
+                                    <div className="text-[1.5rem] text-red-900 leading-[1.7]">
+                                      {req.reason || "No reason provided"}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                   <button
-                                    onClick={() => handleApproveSingleDelete(req)}
+                                    onClick={() =>
+                                      handleApproveSingleDelete(req)
+                                    }
                                     disabled={actionId === req.id}
                                     className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
                                   >
-                                    {actionId === req.id ? "..." : "Approve deletion"}
+                                    {actionId === req.id
+                                      ? "..."
+                                      : "Approve deletion"}
                                   </button>
                                   <button
-                                    onClick={async () => { try { await api.dismissRequest(req.id); } catch {} setRequests(requests.map(r => r.id === req.id ? { ...r, status: "dismissed" } : r)); setSelectedRequest(null); }}
+                                    onClick={async () => {
+                                      try {
+                                        await api.dismissRequest(req.id);
+                                      } catch (e) {
+                                        console.error("Failed to dismiss request:", e);
+                                      }
+                                      setRequests(
+                                        requests.map((r) =>
+                                          r.id === req.id
+                                            ? { ...r, status: "dismissed" }
+                                            : r
+                                        )
+                                      );
+                                      setSelectedRequest(null);
+                                    }}
                                     className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
                                   >
                                     Dismiss
@@ -936,12 +1734,13 @@ export default function Admin({ onGoToDirectory }) {
                   </>
                 )}
               </div>
-
             ) : activeTab === "nominated" ? (
               nominatedList.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                  <div className="text-lg text-green-600">No pending nominations</div>
+                  <div className="text-lg text-green-600">
+                    No pending nominations
+                  </div>
                 </div>
               ) : (
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
@@ -949,21 +1748,38 @@ export default function Admin({ onGoToDirectory }) {
                     <div className="text-[1.4rem] font-semibold text-accent-pink">
                       {nominatedList.length} nominations to reach out to
                     </div>
-                    <div className="text-[1.2rem] text-accent-purple">
+                    <div className="text-[1.3rem] text-accent-purple">
                       Click a nominee to view details
                     </div>
                   </div>
 
                   {nominatedList.map((item) => {
                     const isExpanded = expandedNominee === item.id;
-                    const isCopied   = copiedId === item.id;
+                    const isCopied = copiedId === item.id;
                     return (
                       <div key={item.id}>
                         <div
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={isExpanded}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setExpandedNominee(isExpanded ? null : item.id);
+                            }
+                          }}
                           className={`flex items-center px-5 cursor-pointer transition-colors min-h-[64px] border-b border-brand-warm-row-border ${
-                            isExpanded ? "bg-brand-warm-row" : "bg-white hover:bg-brand-warm-bg"
+                            isExpanded
+                              ? "bg-brand-warm-row"
+                              : "bg-white hover:bg-brand-warm-bg"
+                          } ${
+                            !isExpanded
+                              ? "focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
+                              : ""
                           }`}
-                          onClick={() => setExpandedNominee(isExpanded ? null : item.id)}
+                          onClick={() =>
+                            setExpandedNominee(isExpanded ? null : item.id)
+                          }
                         >
                           <div className="flex-shrink-0 mr-4">
                             <div className="w-2.5 h-2.5 rounded-full bg-brand-pink" />
@@ -973,10 +1789,13 @@ export default function Admin({ onGoToDirectory }) {
                           </div>
                           <div className="flex-1 min-w-0 mr-4">
                             <div className="flex items-center gap-3">
-                              <span className="font-semibold text-lg truncate text-brand-dark">{item.first_name} {item.last_name}</span>
+                              <span className="font-semibold text-lg truncate text-brand-dark">
+                                {item.first_name} {item.last_name}
+                              </span>
                             </div>
                             <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
-                              Nominated by {item.nominator_name || item.editor_email || "—"}
+                              Nominated by{" "}
+                              {item.nominator_name || item.editor_email || "—"}
                             </div>
                           </div>
                           <div className="flex items-center gap-3 flex-shrink-0">
@@ -985,14 +1804,28 @@ export default function Admin({ onGoToDirectory }) {
                                 href={item.linkedin}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                onClick={e => e.stopPropagation()}
-                                className="text-[1.2rem] font-medium px-2.5 py-1 rounded-lg bg-brand-blue-tint text-brand-navy hover:bg-blue-50 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-[1.3rem] font-medium px-2.5 py-1 rounded-lg bg-brand-blue-tint text-brand-navy hover:bg-blue-50 transition-colors"
                               >
                                 LinkedIn ↗
                               </a>
                             )}
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={`text-gray-400 transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}>
-                              <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              className={`text-gray-400 transition-transform ${
+                                isExpanded ? "rotate-180" : "rotate-0"
+                              }`}
+                            >
+                              <path
+                                d="M4 6l4 4 4-4"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
                             </svg>
                           </div>
                         </div>
@@ -1001,21 +1834,51 @@ export default function Admin({ onGoToDirectory }) {
                           <div className="px-5 py-4 bg-brand-warm-bg border-b border-brand-warm-border">
                             <div className="grid gap-4 mb-4 md:grid-cols-2">
                               <div className="rounded-lg p-4 bg-brand-parchment border border-brand-pink-border">
-                                <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-accent-pink">Nominator</div>
+                                <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-accent-pink">
+                                  Nominator
+                                </div>
                                 <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                  <div><span className="text-accent-pink font-semibold">Full name: </span>{item.nominator_name || "—"}</div>
-                                  <div><span className="text-accent-pink font-semibold">Email: </span>{item.editor_email || "—"}</div>
+                                  <div>
+                                    <span className="text-accent-pink font-semibold">
+                                      Full name:{" "}
+                                    </span>
+                                    {item.nominator_name || "—"}
+                                  </div>
+                                  <div>
+                                    <span className="text-accent-pink font-semibold">
+                                      Email:{" "}
+                                    </span>
+                                    {item.editor_email || "—"}
+                                  </div>
                                 </div>
                               </div>
                               <div className="rounded-lg p-4 bg-brand-parchment border border-brand-blue-border">
-                                <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">Nominee</div>
+                                <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                  Nominee
+                                </div>
                                 <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                  <div><span className="text-brand-navy font-semibold">Full name: </span>{item.first_name} {item.last_name}</div>
                                   <div>
-                                    <span className="text-brand-navy font-semibold">Profile link: </span>
-                                    {item.nominate_link
-                                      ? <a href={item.nominate_link} target="_blank" rel="noopener noreferrer" className="hover:underline text-brand-navy break-all">{item.nominate_link}</a>
-                                      : "—"}
+                                    <span className="text-brand-navy font-semibold">
+                                      Full name:{" "}
+                                    </span>
+                                    {item.first_name} {item.last_name}
+                                  </div>
+                                  <div>
+                                    <span className="text-brand-navy font-semibold">
+                                      Profile link:{" "}
+                                    </span>
+                                    {item.nominate_link ? (
+                                      <a
+                                        href={item.nominate_link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:underline text-brand-navy break-all"
+                                      >
+                                        {item.nominate_link}
+                                      </a>
+                                    ) : (
+                                      "—"
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -1044,7 +1907,6 @@ export default function Admin({ onGoToDirectory }) {
                   })}
                 </div>
               )
-
             ) : activeTab === "all" ? (
               <>
                 <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
@@ -1057,11 +1919,15 @@ export default function Admin({ onGoToDirectory }) {
                         <label className="flex items-center gap-2 cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={filteredAll.filter((r) => r.status === "pending").every((r) => selectedAll.includes(r.id))}
+                            checked={filteredAll
+                              .filter((r) => r.status === "pending")
+                              .every((r) => selectedAll.includes(r.id))}
                             onChange={toggleAllEntries}
                             className="w-4 h-4 rounded"
                           />
-                          <span className="text-[1.3rem] font-medium text-amber-800">Select all</span>
+                          <span className="text-[1.3rem] font-medium text-amber-800">
+                            Select all
+                          </span>
                         </label>
                       </div>
                       <div className="flex gap-2">
@@ -1081,122 +1947,237 @@ export default function Admin({ onGoToDirectory }) {
                     </div>
                   )}
                   <table className="w-full">
-                      <thead className="border-b-2 border-brand-navy bg-brand-navy">
-                        <tr>
-                          <th className="w-10 px-2 py-3"></th>
-                          {["Name", "Role", "Organisation", "LinkedIn Clicks", "Status"].map((h) => (
-                            <th key={h} className="text-left text-[1.4rem] font-bold uppercase tracking-wider px-5 py-3 text-white">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
+                    <thead className="border-b-2 border-brand-navy bg-brand-navy">
+                      <tr>
+                        <th className="w-10 px-2 py-3"></th>
+                        {[
+                          "Name",
+                          "Role",
+                          "Organisation",
+                          "LinkedIn Clicks",
+                          "Status",
+                        ].map((h) => (
+                          <th
+                            key={h}
+                            className="text-left text-[1.4rem] font-bold uppercase tracking-wider px-5 py-3 text-white"
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
                     <tbody className="divide-y divide-[#f0ebe0]">
-                      {filteredAll.slice((allPage - 1) * PAGE_SIZE, allPage * PAGE_SIZE).map((item) => {
-                        const isExpanded = expandedAllId === item.id;
-                        const isPending = item.status === "pending";
-                        const isDuplicate = isPending && liveNames.has(`${item.first_name?.trim()?.toLowerCase() ?? ""} ${item.last_name?.trim()?.toLowerCase() ?? ""}`);
-                        return (
-                          <React.Fragment key={item.id}>
-                            <tr
-                              className="transition-colors cursor-pointer bg-transparent hover:bg-brand-warm-row"
-                              onClick={() => setExpandedAllId(isExpanded ? null : item.id)}
-                            >
-                              <td className="px-2 py-3.5">
-                                {isPending && (
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedAll.includes(item.id)}
-                                    onChange={(e) => { e.stopPropagation(); toggleAllSelect(item.id); }}
-                                    onClick={e => e.stopPropagation()}
-                                    className="w-4 h-4 rounded cursor-pointer"
-                                  />
-                                )}
-                              </td>
-                              <td className="px-5 py-3.5">
-                                <div className="flex items-center gap-3">
-                                  <span className="text-lg font-medium text-brand-dark">{item.first_name} {item.last_name}</span>
-                                  {isDuplicate && (
-                                    <span className="flex-shrink-0 text-[1.2rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">
-                                      ⚠ Possible duplicate
-                                    </span>
+                      {filteredAll
+                        .slice((allPage - 1) * PAGE_SIZE, allPage * PAGE_SIZE)
+                        .map((item) => {
+                          const isExpanded = expandedAllId === item.id;
+                          const isPending = item.status === "pending";
+                          const isDuplicate =
+                            isPending &&
+                            liveNames.has(
+                              `${
+                                item.first_name?.trim()?.toLowerCase() ?? ""
+                              } ${item.last_name?.trim()?.toLowerCase() ?? ""}`
+                            );
+                          return (
+                            <React.Fragment key={item.id}>
+                              <tr
+                                tabIndex={0}
+                                aria-expanded={isExpanded}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    setExpandedAllId(
+                                      isExpanded ? null : item.id
+                                    );
+                                  }
+                                }}
+                                className="transition-colors cursor-pointer bg-transparent hover:bg-brand-warm-row focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
+                                onClick={() =>
+                                  setExpandedAllId(isExpanded ? null : item.id)
+                                }
+                              >
+                                <td className="px-2 py-3.5">
+                                  {isPending && (
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedAll.includes(item.id)}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        toggleAllSelect(item.id);
+                                      }}
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="w-4 h-4 rounded cursor-pointer"
+                                    />
                                   )}
-                                  <span className="text-[1.2rem] text-gray-500">{isExpanded ? 'Hide details' : 'View details'}</span>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3.5 text-lg text-gray-600">{item.role}</td>
-                              <td className="px-5 py-3.5 text-lg text-gray-600">{item.organisation}</td>
-                              <td className="px-5 py-3.5 text-lg text-gray-600 text-center">{item.linkedin_clicks || 0}</td>
-                              <td className="px-5 py-3.5">
-                                <span className={`text-[1.2rem] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${
-                                  item.status === "live"
-                                    ? "bg-green-600 text-white"
-                                    : item.status === "pending"
-                                    ? "bg-yellow-500 text-white"
-                                    : "bg-red-600 text-white"
-                                }`}>
-                                  {item.status}
-                                </span>
-                              </td>
-                            </tr>
-                            {isExpanded && (
-                              <tr>
-                                <td colSpan="6" className="px-5 py-4 bg-brand-parchment">
-                                  <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">Entry details</div>
-                                      <div className="space-y-2 text-[1.5rem] text-brand-dark-blue">
-                                        <div><span className="text-brand-navy font-semibold">Country: </span>{item.country || "—"}</div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">Expertise: </span>
-                                          {toTags(item.expertise).length > 0 ? (
-                                            <div className="flex flex-wrap gap-1.5 mt-1">
-                                              {toTags(item.expertise).map((tag, i) => (
-                                                <span key={i} title={tag} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
-                                              ))}
-                                            </div>
-                                          ) : "—"}
-                                        </div>
-                                        <div><span className="text-brand-navy font-semibold">LinkedIn: </span>{item.linkedin ? <a href={item.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline text-brand-navy">{item.linkedin}</a> : '—'}</div>
-                                        <div><span className="text-brand-navy font-semibold">Editor: </span>{item.editor_email || item.editorEmail || '—'}</div>
-                                        <div><span className="text-brand-navy font-semibold">Leader email: </span>{item.leader_email || '—'}</div>
-                                      </div>
-                                    </div>
-                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">Summary</div>
-                                      <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">{item.bio || 'No bio available.'}</div>
-                                    </div>
-                                  </div>
-                                  <div className="mt-4 flex items-center justify-end gap-3">
-                                    {isPending && (
-                                      <>
-                                        <button
-                                          onClick={() => handleAction(item.id, "approve")}
-                                          disabled={actionId === item.id}
-                                          className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
-                                        >
-                                          {actionId === item.id ? "..." : "Approve"}
-                                        </button>
-                                        <button
-                                          onClick={() => handleAction(item.id, "reject")}
-                                          disabled={actionId === item.id}
-                                          className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                                        >
-                                          Reject
-                                        </button>
-                                      </>
+                                </td>
+                                <td className="px-5 py-3.5">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-lg font-medium text-brand-dark">
+                                      {item.first_name} {item.last_name}
+                                    </span>
+                                    {isDuplicate && (
+                                      <span className="flex-shrink-0 text-[1.3rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">
+                                        ⚠ Possible duplicate
+                                      </span>
                                     )}
-                                    <button
-                                      onClick={(e) => { e.stopPropagation(); handleDeleteLeader(item.id, `${item.first_name} ${item.last_name}`); }}
-                                      className="text-[1.3rem] font-medium text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-4 py-1.5 rounded-lg transition-colors"
-                                    >
-                                      Delete entry
-                                    </button>
+                                    <span className="text-[1.3rem] text-gray-500">
+                                      {isExpanded
+                                        ? "Hide details"
+                                        : "View details"}
+                                    </span>
                                   </div>
                                 </td>
+                                <td className="px-5 py-3.5 text-lg text-gray-600">
+                                  {item.role}
+                                </td>
+                                <td className="px-5 py-3.5 text-lg text-gray-600">
+                                  {item.organisation}
+                                </td>
+                                <td className="px-5 py-3.5 text-lg text-gray-600 text-center">
+                                  {item.linkedin_clicks || 0}
+                                </td>
+                                <td className="px-5 py-3.5">
+                                  <span
+                                    className={`text-[1.3rem] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${
+                                      item.status === "live"
+                                        ? "bg-green-600 text-white"
+                                        : item.status === "pending"
+                                        ? "bg-yellow-500 text-white"
+                                        : "bg-red-600 text-white"
+                                    }`}
+                                  >
+                                    {item.status}
+                                  </span>
+                                </td>
                               </tr>
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
+                              {isExpanded && (
+                                <tr>
+                                  <td
+                                    colSpan="6"
+                                    className="px-5 py-4 bg-brand-parchment"
+                                  >
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                      <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                        <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                          Entry details
+                                        </div>
+                                        <div className="space-y-2 text-[1.5rem] text-brand-dark-blue">
+                                          <div>
+                                            <span className="text-brand-navy font-semibold">
+                                              Country:{" "}
+                                            </span>
+                                            {item.country || "—"}
+                                          </div>
+                                          <div>
+                                            <span className="text-brand-navy font-semibold">
+                                              Expertise:{" "}
+                                            </span>
+                                            {toTags(item.expertise).length >
+                                            0 ? (
+                                              <div className="flex flex-wrap gap-1.5 mt-1">
+                                                {toTags(item.expertise).map(
+                                                  (tag, i) => (
+                                                    <span
+                                                      key={i}
+                                                      title={tag}
+                                                      className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border"
+                                                    >
+                                                      {tag}
+                                                    </span>
+                                                  )
+                                                )}
+                                              </div>
+                                            ) : (
+                                              "—"
+                                            )}
+                                          </div>
+                                          <div>
+                                            <span className="text-brand-navy font-semibold">
+                                              LinkedIn:{" "}
+                                            </span>
+                                            {item.linkedin ? (
+                                              <a
+                                                href={item.linkedin}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:underline text-brand-navy"
+                                              >
+                                                {item.linkedin}
+                                              </a>
+                                            ) : (
+                                              "—"
+                                            )}
+                                          </div>
+                                          <div>
+                                            <span className="text-brand-navy font-semibold">
+                                              Editor:{" "}
+                                            </span>
+                                            {item.editor_email ||
+                                              item.editorEmail ||
+                                              "—"}
+                                          </div>
+                                          <div>
+                                            <span className="text-brand-navy font-semibold">
+                                              Leader email:{" "}
+                                            </span>
+                                            {item.leader_email || "—"}
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                        <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                          Summary
+                                        </div>
+                                        <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">
+                                          {item.bio || "No bio available."}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="mt-4 flex items-center justify-end gap-3">
+                                      {isPending && (
+                                        <>
+                                          <button
+                                            onClick={() =>
+                                              handleAction(item.id, "approve")
+                                            }
+                                            disabled={actionId === item.id}
+                                            className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                                          >
+                                            {actionId === item.id
+                                              ? "..."
+                                              : "Approve"}
+                                          </button>
+                                          <button
+                                            onClick={() =>
+                                              handleAction(item.id, "reject")
+                                            }
+                                            disabled={actionId === item.id}
+                                            className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                          >
+                                            Reject
+                                          </button>
+                                        </>
+                                      )}
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeleteLeader(
+                                            item.id,
+                                            `${item.first_name} ${item.last_name}`
+                                          );
+                                        }}
+                                        className="text-[1.3rem] font-medium text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-4 py-1.5 rounded-lg transition-colors"
+                                      >
+                                        Delete entry
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
@@ -1210,22 +2191,34 @@ export default function Admin({ onGoToDirectory }) {
                     >
                       ← Prev
                     </button>
-                    {Array.from({ length: Math.ceil(filteredAll.length / PAGE_SIZE) }, (_, i) => (
-                      <button
-                        key={i + 1}
-                        onClick={() => setAllPage(i + 1)}
-                        className={`px-3 py-1.5 border rounded text-[1.4rem] font-medium transition-colors ${
-                          allPage === i + 1
-                            ? "bg-brand-navy text-white border-brand-navy"
-                            : "bg-brand-parchment text-brand-dark border-gray-300 hover:border-gray-400"
-                        }`}
-                      >
-                        {i + 1}
-                      </button>
-                    ))}
+                    {Array.from(
+                      { length: Math.ceil(filteredAll.length / PAGE_SIZE) },
+                      (_, i) => (
+                        <button
+                          key={i + 1}
+                          onClick={() => setAllPage(i + 1)}
+                          className={`px-3 py-1.5 border rounded text-[1.4rem] font-medium transition-colors ${
+                            allPage === i + 1
+                              ? "bg-brand-navy text-white border-brand-navy"
+                              : "bg-brand-parchment text-brand-dark border-gray-300 hover:border-gray-400"
+                          }`}
+                        >
+                          {i + 1}
+                        </button>
+                      )
+                    )}
                     <button
-                      onClick={() => setAllPage((p) => Math.min(Math.ceil(filteredAll.length / PAGE_SIZE), p + 1))}
-                      disabled={allPage === Math.ceil(filteredAll.length / PAGE_SIZE)}
+                      onClick={() =>
+                        setAllPage((p) =>
+                          Math.min(
+                            Math.ceil(filteredAll.length / PAGE_SIZE),
+                            p + 1
+                          )
+                        )
+                      }
+                      disabled={
+                        allPage === Math.ceil(filteredAll.length / PAGE_SIZE)
+                      }
                       className="px-3 py-1.5 border border-gray-300 rounded text-[1.4rem] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:border-gray-400"
                     >
                       Next →
@@ -1233,41 +2226,83 @@ export default function Admin({ onGoToDirectory }) {
                   </div>
                 )}
               </>
-            ) : activeTab === "tests" ? (() => {
+            ) : activeTab === "tests" ? (
+              (() => {
                 const SECTION_LABELS = {
-                  setup: "Setup Check", dir: "Directory", analytics: "Analytics",
-                  submit: "Submit & Nominate", manage: "Manage Profile", admin: "Admin Console",
+                  setup: "Setup Check",
+                  dir: "Directory",
+                  analytics: "Analytics",
+                  submit: "Submit & Nominate",
+                  manage: "Manage Profile",
+                  admin: "Admin Console",
                 };
-                const SECTION_ORDER = ["setup", "dir", "analytics", "submit", "manage", "admin"];
+                const SECTION_ORDER = [
+                  "setup",
+                  "dir",
+                  "analytics",
+                  "submit",
+                  "manage",
+                  "admin",
+                ];
 
                 const statusBadge = (status) => {
-                  const cls = status === "pass" ? "bg-green-600 text-white" :
-                              status === "fail" ? "bg-red-600 text-white" :
-                              "bg-yellow-500 text-white";
-                  const label = status === "pass" ? "Pass" : status === "fail" ? "Fail" : "Pending";
-                  return <span className={`text-[1.2rem] font-bold px-2.5 py-0.5 rounded-full ${cls}`}>{label}</span>;
+                  const cls =
+                    status === "pass"
+                      ? "bg-green-600 text-white"
+                      : status === "fail"
+                      ? "bg-red-600 text-white"
+                      : "bg-yellow-500 text-white";
+                  const label =
+                    status === "pass"
+                      ? "Pass"
+                      : status === "fail"
+                      ? "Fail"
+                      : "Pending";
+                  return (
+                    <span
+                      className={`text-[1.3rem] font-bold px-2.5 py-0.5 rounded-full ${cls}`}
+                    >
+                      {label}
+                    </span>
+                  );
                 };
 
                 const priorityBadge = (p) => {
-                  const cls = p === "critical" ? "bg-red-50 text-red-600" :
-                              p === "important" ? "bg-amber-50 text-amber-600" :
-                              "bg-gray-100 text-gray-500";
-                  return <span className={`text-[1.1rem] font-semibold px-2 py-0.5 rounded-full ${cls}`}>{p || "—"}</span>;
+                  const cls =
+                    p === "critical"
+                      ? "bg-red-50 text-red-600"
+                      : p === "important"
+                      ? "bg-amber-50 text-amber-600"
+                      : "bg-gray-100 text-gray-500";
+                  return (
+                    <span
+                      className={`text-[1.3rem] font-semibold px-2 py-0.5 rounded-full ${cls}`}
+                    >
+                      {p || "—"}
+                    </span>
+                  );
                 };
 
                 // Apply filters
                 const searchLower = testFilterSearch.toLowerCase();
-                const filteredResults = testResults.filter(r => {
-                  if (testFilterTester && r.tester_name !== testFilterTester) return false;
-                  if (testFilterStatus && r.status !== testFilterStatus) return false;
-                  if (searchLower && !(
-                    r.scenario?.toLowerCase().includes(searchLower) ||
-                    r.notes?.toLowerCase().includes(searchLower)
-                  )) return false;
+                const filteredResults = testResults.filter((r) => {
+                  if (testFilterTester && r.tester_name !== testFilterTester)
+                    return false;
+                  if (testFilterStatus && r.status !== testFilterStatus)
+                    return false;
+                  if (
+                    searchLower &&
+                    !(
+                      r.scenario?.toLowerCase().includes(searchLower) ||
+                      r.notes?.toLowerCase().includes(searchLower)
+                    )
+                  )
+                    return false;
                   return true;
                 });
 
-                const hasFilters = testFilterTester || testFilterStatus || testFilterSearch;
+                const hasFilters =
+                  testFilterTester || testFilterStatus || testFilterSearch;
 
                 // Group filtered rows by tester
                 const byTester = filteredResults.reduce((acc, r) => {
@@ -1277,11 +2312,21 @@ export default function Admin({ onGoToDirectory }) {
                   return acc;
                 }, {});
                 const testerNames = Object.keys(byTester).sort();
-                const allTesterNames = [...new Set(testResults.map(r => r.tester_name || "Unknown"))].sort();
+                const allTesterNames = [
+                  ...new Set(
+                    testResults.map((r) => r.tester_name || "Unknown")
+                  ),
+                ].sort();
 
-                const overallPass    = filteredResults.filter(r => r.status === "pass").length;
-                const overallFail    = filteredResults.filter(r => r.status === "fail").length;
-                const overallPending = filteredResults.filter(r => r.status === "pending").length;
+                const overallPass = filteredResults.filter(
+                  (r) => r.status === "pass"
+                ).length;
+                const overallFail = filteredResults.filter(
+                  (r) => r.status === "fail"
+                ).length;
+                const overallPending = filteredResults.filter(
+                  (r) => r.status === "pending"
+                ).length;
 
                 return (
                   <>
@@ -1289,25 +2334,45 @@ export default function Admin({ onGoToDirectory }) {
                     <div className="px-8 py-6 border-b border-brand-warm-border">
                       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                         <div>
-                          <h2 className="text-3xl font-bold text-brand-navy tracking-heading">Test Results</h2>
+                          <h2 className="text-3xl font-bold text-brand-navy tracking-heading">
+                            Test Results
+                          </h2>
                           <p className="text-lg text-gray-600 mt-1">
                             {hasFilters
-                              ? `${filteredResults.length} matching test case${filteredResults.length !== 1 ? "s" : ""} across ${testerNames.length} tester${testerNames.length !== 1 ? "s" : ""}`
-                              : `${allTesterNames.length} tester${allTesterNames.length !== 1 ? "s" : ""} · ${testResults.length} test cases recorded`}
+                              ? `${filteredResults.length} matching test case${
+                                  filteredResults.length !== 1 ? "s" : ""
+                                } across ${testerNames.length} tester${
+                                  testerNames.length !== 1 ? "s" : ""
+                                }`
+                              : `${allTesterNames.length} tester${
+                                  allTesterNames.length !== 1 ? "s" : ""
+                                } · ${testResults.length} test cases recorded`}
                           </p>
                         </div>
                         <div className="flex gap-3 flex-shrink-0">
                           <div className="bg-brand-parchment rounded-xl px-5 py-3 border border-green-200 text-center min-w-[72px]">
-                            <div className="text-[1.1rem] uppercase tracking-wider text-green-600 font-semibold">Pass</div>
-                            <div className="text-[2rem] font-bold text-green-600 leading-none mt-0.5">{overallPass}</div>
+                            <div className="text-[1.3rem] uppercase tracking-wider text-green-600 font-semibold">
+                              Pass
+                            </div>
+                            <div className="text-[2rem] font-bold text-green-600 leading-none mt-0.5">
+                              {overallPass}
+                            </div>
                           </div>
                           <div className="bg-brand-parchment rounded-xl px-5 py-3 border border-red-200 text-center min-w-[72px]">
-                            <div className="text-[1.1rem] uppercase tracking-wider text-red-600 font-semibold">Fail</div>
-                            <div className="text-[2rem] font-bold text-red-600 leading-none mt-0.5">{overallFail}</div>
+                            <div className="text-[1.3rem] uppercase tracking-wider text-red-600 font-semibold">
+                              Fail
+                            </div>
+                            <div className="text-[2rem] font-bold text-red-600 leading-none mt-0.5">
+                              {overallFail}
+                            </div>
                           </div>
                           <div className="bg-brand-parchment rounded-xl px-5 py-3 border border-amber-200 text-center min-w-[72px]">
-                            <div className="text-[1.1rem] uppercase tracking-wider text-amber-600 font-semibold">Pending</div>
-                            <div className="text-[2rem] font-bold text-amber-600 leading-none mt-0.5">{overallPending}</div>
+                            <div className="text-[1.3rem] uppercase tracking-wider text-amber-600 font-semibold">
+                              Pending
+                            </div>
+                            <div className="text-[2rem] font-bold text-amber-600 leading-none mt-0.5">
+                              {overallPending}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1317,17 +2382,21 @@ export default function Admin({ onGoToDirectory }) {
                         {/* Tester filter */}
                         <select
                           value={testFilterTester}
-                          onChange={e => setTestFilterTester(e.target.value)}
+                          onChange={(e) => setTestFilterTester(e.target.value)}
                           className="px-3 py-2 border border-gray-200 rounded-lg text-[1.4rem] text-gray-700 bg-white cursor-pointer focus:outline-none focus:border-brand-navy"
                         >
                           <option value="">All testers</option>
-                          {allTesterNames.map(n => <option key={n} value={n}>{n}</option>)}
+                          {allTesterNames.map((n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          ))}
                         </select>
 
                         {/* Status filter */}
                         <select
                           value={testFilterStatus}
-                          onChange={e => setTestFilterStatus(e.target.value)}
+                          onChange={(e) => setTestFilterStatus(e.target.value)}
                           className="px-3 py-2 border border-gray-200 rounded-lg text-[1.4rem] text-gray-700 bg-white cursor-pointer focus:outline-none focus:border-brand-navy"
                         >
                           <option value="">All statuses</option>
@@ -1341,14 +2410,18 @@ export default function Admin({ onGoToDirectory }) {
                           type="text"
                           placeholder="Search scenario or notes…"
                           value={testFilterSearch}
-                          onChange={e => setTestFilterSearch(e.target.value)}
+                          onChange={(e) => setTestFilterSearch(e.target.value)}
                           className="px-3 py-2 border border-gray-200 rounded-lg text-[1.4rem] text-gray-700 bg-white focus:outline-none focus:border-brand-navy flex-1 min-w-[200px]"
                         />
 
                         {/* Clear */}
                         {hasFilters && (
                           <button
-                            onClick={() => { setTestFilterTester(""); setTestFilterStatus(""); setTestFilterSearch(""); }}
+                            onClick={() => {
+                              setTestFilterTester("");
+                              setTestFilterStatus("");
+                              setTestFilterSearch("");
+                            }}
                             className="px-3 py-2 text-[1.3rem] font-semibold text-red-500 border border-red-200 rounded-lg bg-white hover:bg-red-50 transition-colors cursor-pointer"
                           >
                             Clear filters
@@ -1361,151 +2434,328 @@ export default function Admin({ onGoToDirectory }) {
                     <div className="flex-1 overflow-auto px-8 py-6 space-y-4">
                       {testResults.length === 0 ? (
                         <div className="text-center py-20">
-                          <div className="text-[4.8rem] mb-4 text-gray-300">📋</div>
-                          <div className="text-lg text-gray-500">No test results yet. Testers can submit via the <a href="./testing-sheet.html" target="_blank" rel="noopener noreferrer" className="text-brand-navy underline">Testing Sheet</a>.</div>
+                          <div className="text-[4.8rem] mb-4 text-gray-300">
+                            📋
+                          </div>
+                          <div className="text-lg text-gray-500">
+                            No test results yet. Testers can submit via the{" "}
+                            <a
+                              href="./testing-sheet.html"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-brand-navy underline"
+                            >
+                              Testing Sheet
+                            </a>
+                            .
+                          </div>
                         </div>
                       ) : testerNames.length === 0 ? (
                         <div className="text-center py-16">
-                          <div className="text-[3rem] mb-3 text-gray-300">🔍</div>
-                          <div className="text-lg text-gray-500">No results match your filters.</div>
-                          <button onClick={() => { setTestFilterTester(""); setTestFilterStatus(""); setTestFilterSearch(""); }} className="mt-3 text-[1.4rem] text-brand-navy underline cursor-pointer bg-transparent border-0">Clear filters</button>
-                        </div>
-                      ) : testerNames.map((name) => {
-                        const rows = byTester[name];
-                        // Counts from full (unfiltered) tester data for the summary bar
-                        const allRows = testResults.filter(r => r.tester_name === name);
-                        const pass    = allRows.filter(r => r.status === "pass").length;
-                        const fail    = allRows.filter(r => r.status === "fail").length;
-                        const pending = allRows.filter(r => r.status === "pending").length;
-                        const total   = allRows.length;
-                        const pct     = total ? Math.round((pass / total) * 100) : 0;
-                        const latest  = allRows.reduce((a, b) => new Date(a.created_at) > new Date(b.created_at) ? a : b, allRows[0]);
-                        // Auto-expand when filters are active
-                        const isOpen  = hasFilters || expandedTester === name;
-
-                        return (
-                          <div key={name} className="rounded-xl border border-brand-warm-border bg-white overflow-hidden shadow-sm">
-                            {/* Tester summary row */}
-                            <button
-                              className="w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-brand-parchment/60 transition-colors cursor-pointer"
-                              onClick={() => setExpandedTester(isOpen && !hasFilters ? null : name)}
-                            >
-                              <div className="w-9 h-9 rounded-full bg-brand-navy flex items-center justify-center text-white text-[1.3rem] font-bold flex-shrink-0">
-                                {name.charAt(0).toUpperCase()}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-[1.6rem] font-bold text-brand-navy truncate">{name}</div>
-                                <div className="text-[1.2rem] text-gray-400">
-                                  Last saved {latest?.created_at ? new Date(latest.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—"}
-                                  {hasFilters && <span className="ml-2 text-brand-orange font-semibold">{rows.length} matching</span>}
-                                </div>
-                              </div>
-                              <div className="hidden sm:flex flex-col gap-1 w-36">
-                                <div className="flex justify-between text-[1.1rem] text-gray-500">
-                                  <span>{pct}% passed</span>
-                                  <span>{pass}/{total}</span>
-                                </div>
-                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                  <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: fail > 0 ? "#ef4444" : "#22c55e" }} />
-                                </div>
-                              </div>
-                              <div className="flex gap-2 flex-shrink-0 items-center">
-                                <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-lg bg-green-600 text-white">{pass} pass</span>
-                                {fail > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-700">{fail} fail</span>}
-                                {pending > 0 && <span className="text-[1.2rem] font-bold px-2.5 py-1 rounded-lg bg-yellow-500 text-white">{pending} pending</span>}
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); handleClearTesterResults(name); }}
-                                  className="ml-2 px-2.5 py-1 text-[1.1rem] font-semibold text-red-500 border border-red-200 rounded-lg bg-white hover:bg-red-50 transition-colors cursor-pointer"
-                                  title="Clear all results for this tester"
-                                >
-                                  ✕ clear
-                                </button>
-                              </div>
-                              <svg className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6l4 4 4-4"/></svg>
-                            </button>
-
-                            {/* Expanded: sections */}
-                            {isOpen && (
-                              <div className="border-t border-brand-warm-border divide-y divide-[#f0ebe0]">
-                                {SECTION_ORDER.map((secId) => {
-                                  const secRows = rows.filter(r => r.section === secId);
-                                  if (!secRows.length) return null;
-                                  // For section header counts use unfiltered section data
-                                  const allSecRows = allRows.filter(r => r.section === secId);
-                                  const secKey = `${name}::${secId}`;
-                                  // Auto-expand sections when filters active
-                                  const secOpen = hasFilters || expandedTestSection === secKey;
-                                  const sPass = allSecRows.filter(r => r.status === "pass").length;
-                                  const sFail = allSecRows.filter(r => r.status === "fail").length;
-                                  const sPend = allSecRows.filter(r => r.status === "pending").length;
-
-                                  return (
-                                    <div key={secId}>
-                                      <button
-                                        className="w-full flex items-center gap-3 px-6 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left cursor-pointer"
-                                        onClick={() => setExpandedTestSection(secOpen && !hasFilters ? null : secKey)}
-                                      >
-                                        <span className="text-[1.4rem] font-semibold text-brand-navy flex-1">
-                                          {SECTION_LABELS[secId] || secId}
-                                          {hasFilters && secRows.length < allSecRows.length && (
-                                            <span className="ml-2 text-[1.1rem] font-normal text-brand-orange">{secRows.length} of {allSecRows.length} shown</span>
-                                          )}
-                                        </span>
-                                        <span className="flex gap-2 text-[1.1rem]">
-                                          <span className="font-bold text-green-600">{sPass} ✓</span>
-                                          {sFail > 0 && <span className="font-bold text-red-600">{sFail} ✗</span>}
-                                          {sPend > 0 && <span className="text-amber-600">{sPend} ···</span>}
-                                        </span>
-                                        <svg className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${secOpen ? "rotate-180" : ""}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6l4 4 4-4"/></svg>
-                                      </button>
-
-                                      {secOpen && (
-                                        <table className="w-full">
-                                          <thead className="bg-white border-b border-gray-100">
-                                            <tr>
-                                              {["Scenario", "Priority", "Status", "Notes", ""].map(h => (
-                                                <th key={h} className="text-left text-[1.1rem] font-bold uppercase tracking-wider px-6 py-2.5 text-gray-800">{h}</th>
-                                              ))}
-                                            </tr>
-                                          </thead>
-                                          <tbody className="divide-y divide-gray-50">
-                                            {secRows.map((r) => (
-                                              <tr key={r.id} className={`transition-colors ${r.status === "fail" ? "bg-red-50/40 hover:bg-red-50" : "hover:bg-gray-50"}`}>
-                                                <td className="px-6 py-3 text-[1.4rem] text-gray-800 max-w-[380px]">{r.scenario || "—"}</td>
-                                                <td className="px-6 py-3">{priorityBadge(r.priority)}</td>
-                                                <td className="px-6 py-3">{statusBadge(r.status)}</td>
-                                                <td className="px-6 py-3 text-[1.3rem] text-gray-600 max-w-[260px] whitespace-pre-wrap">{r.notes || <span className="text-gray-300">—</span>}</td>
-                                                <td className="px-4 py-3">
-                                                  <button
-                                                    onClick={(e) => { e.stopPropagation(); handleDeleteTestResult(r.id, r.scenario); }}
-                                                    className="text-[1.1rem] font-semibold text-red-400 hover:text-red-600 transition-colors cursor-pointer bg-transparent border-0"
-                                                    title="Delete this test result"
-                                                  >
-                                                    ✕
-                                                  </button>
-                                                </td>
-                                              </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
+                          <div className="text-[3rem] mb-3 text-gray-300">
+                            🔍
                           </div>
-                        );
-                      })}
+                          <div className="text-lg text-gray-500">
+                            No results match your filters.
+                          </div>
+                          <button
+                            onClick={() => {
+                              setTestFilterTester("");
+                              setTestFilterStatus("");
+                              setTestFilterSearch("");
+                            }}
+                            className="mt-3 text-[1.4rem] text-brand-navy underline cursor-pointer bg-transparent border-0"
+                          >
+                            Clear filters
+                          </button>
+                        </div>
+                      ) : (
+                        testerNames.map((name) => {
+                          const rows = byTester[name];
+                          // Counts from full (unfiltered) tester data for the summary bar
+                          const allRows = testResults.filter(
+                            (r) => r.tester_name === name
+                          );
+                          const pass = allRows.filter(
+                            (r) => r.status === "pass"
+                          ).length;
+                          const fail = allRows.filter(
+                            (r) => r.status === "fail"
+                          ).length;
+                          const pending = allRows.filter(
+                            (r) => r.status === "pending"
+                          ).length;
+                          const total = allRows.length;
+                          const pct = total
+                            ? Math.round((pass / total) * 100)
+                            : 0;
+                          const latest = allRows.reduce(
+                            (a, b) =>
+                              new Date(a.created_at) > new Date(b.created_at)
+                                ? a
+                                : b,
+                            allRows[0]
+                          );
+                          // Auto-expand when filters are active
+                          const isOpen = hasFilters || expandedTester === name;
+
+                          return (
+                            <div
+                              key={name}
+                              className="rounded-xl border border-brand-warm-border bg-white overflow-hidden shadow-sm"
+                            >
+                              {/* Tester summary row */}
+                              <button
+                                className="w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-brand-parchment/60 transition-colors cursor-pointer"
+                                onClick={() =>
+                                  setExpandedTester(
+                                    isOpen && !hasFilters ? null : name
+                                  )
+                                }
+                              >
+                                <div className="w-9 h-9 rounded-full bg-brand-navy flex items-center justify-center text-white text-[1.3rem] font-bold flex-shrink-0">
+                                  {name.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="text-[1.6rem] font-bold text-brand-navy truncate">
+                                    {name}
+                                  </div>
+                                  <div className="text-[1.3rem] text-gray-400">
+                                    Last saved{" "}
+                                    {latest?.created_at
+                                      ? new Date(
+                                          latest.created_at
+                                        ).toLocaleDateString(undefined, {
+                                          month: "short",
+                                          day: "numeric",
+                                          year: "numeric",
+                                        })
+                                      : "—"}
+                                    {hasFilters && (
+                                      <span className="ml-2 text-brand-orange font-semibold">
+                                        {rows.length} matching
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="hidden sm:flex flex-col gap-1 w-36">
+                                  <div className="flex justify-between text-[1.3rem] text-gray-500">
+                                    <span>{pct}% passed</span>
+                                    <span>
+                                      {pass}/{total}
+                                    </span>
+                                  </div>
+                                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full rounded-full transition-all"
+                                      style={{
+                                        width: `${pct}%`,
+                                        background:
+                                          fail > 0 ? "#ef4444" : "#22c55e",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="flex gap-2 flex-shrink-0 items-center">
+                                  <span className="text-[1.3rem] font-bold px-2.5 py-1 rounded-lg bg-green-600 text-white">
+                                    {pass} pass
+                                  </span>
+                                  {fail > 0 && (
+                                    <span className="text-[1.3rem] font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-700">
+                                      {fail} fail
+                                    </span>
+                                  )}
+                                  {pending > 0 && (
+                                    <span className="text-[1.3rem] font-bold px-2.5 py-1 rounded-lg bg-yellow-500 text-white">
+                                      {pending} pending
+                                    </span>
+                                  )}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleClearTesterResults(name);
+                                    }}
+                                    className="ml-2 px-2.5 py-1 text-[1.3rem] font-semibold text-red-500 border border-red-200 rounded-lg bg-white hover:bg-red-50 transition-colors cursor-pointer"
+                                    title="Clear all results for this tester"
+                                  >
+                                    ✕ clear
+                                  </button>
+                                </div>
+                                <svg
+                                  className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${
+                                    isOpen ? "rotate-180" : ""
+                                  }`}
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path d="M4 6l4 4 4-4" />
+                                </svg>
+                              </button>
+
+                              {/* Expanded: sections */}
+                              {isOpen && (
+                                <div className="border-t border-brand-warm-border divide-y divide-[#f0ebe0]">
+                                  {SECTION_ORDER.map((secId) => {
+                                    const secRows = rows.filter(
+                                      (r) => r.section === secId
+                                    );
+                                    if (!secRows.length) return null;
+                                    // For section header counts use unfiltered section data
+                                    const allSecRows = allRows.filter(
+                                      (r) => r.section === secId
+                                    );
+                                    const secKey = `${name}::${secId}`;
+                                    // Auto-expand sections when filters active
+                                    const secOpen =
+                                      hasFilters ||
+                                      expandedTestSection === secKey;
+                                    const sPass = allSecRows.filter(
+                                      (r) => r.status === "pass"
+                                    ).length;
+                                    const sFail = allSecRows.filter(
+                                      (r) => r.status === "fail"
+                                    ).length;
+                                    const sPend = allSecRows.filter(
+                                      (r) => r.status === "pending"
+                                    ).length;
+
+                                    return (
+                                      <div key={secId}>
+                                        <button
+                                          className="w-full flex items-center gap-3 px-6 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left cursor-pointer"
+                                          onClick={() =>
+                                            setExpandedTestSection(
+                                              secOpen && !hasFilters
+                                                ? null
+                                                : secKey
+                                            )
+                                          }
+                                        >
+                                          <span className="text-[1.4rem] font-semibold text-brand-navy flex-1">
+                                            {SECTION_LABELS[secId] || secId}
+                                            {hasFilters &&
+                                              secRows.length <
+                                                allSecRows.length && (
+                                                <span className="ml-2 text-[1.3rem] font-normal text-brand-orange">
+                                                  {secRows.length} of{" "}
+                                                  {allSecRows.length} shown
+                                                </span>
+                                              )}
+                                          </span>
+                                          <span className="flex gap-2 text-[1.3rem]">
+                                            <span className="font-bold text-green-600">
+                                              {sPass} ✓
+                                            </span>
+                                            {sFail > 0 && (
+                                              <span className="font-bold text-red-600">
+                                                {sFail} ✗
+                                              </span>
+                                            )}
+                                            {sPend > 0 && (
+                                              <span className="text-amber-600">
+                                                {sPend} ···
+                                              </span>
+                                            )}
+                                          </span>
+                                          <svg
+                                            className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${
+                                              secOpen ? "rotate-180" : ""
+                                            }`}
+                                            viewBox="0 0 16 16"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                          >
+                                            <path d="M4 6l4 4 4-4" />
+                                          </svg>
+                                        </button>
+
+                                        {secOpen && (
+                                          <table className="w-full">
+                                            <thead className="bg-white border-b border-gray-100">
+                                              <tr>
+                                                {[
+                                                  "Scenario",
+                                                  "Priority",
+                                                  "Status",
+                                                  "Notes",
+                                                  "",
+                                                ].map((h) => (
+                                                  <th
+                                                    key={h}
+                                                    className="text-left text-[1.3rem] font-bold uppercase tracking-wider px-6 py-2.5 text-gray-800"
+                                                  >
+                                                    {h}
+                                                  </th>
+                                                ))}
+                                              </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-50">
+                                              {secRows.map((r) => (
+                                                <tr
+                                                  key={r.id}
+                                                  className={`transition-colors ${
+                                                    r.status === "fail"
+                                                      ? "bg-red-50/40 hover:bg-red-50"
+                                                      : "hover:bg-gray-50"
+                                                  }`}
+                                                >
+                                                  <td className="px-6 py-3 text-[1.4rem] text-gray-800 max-w-[380px]">
+                                                    {r.scenario || "—"}
+                                                  </td>
+                                                  <td className="px-6 py-3">
+                                                    {priorityBadge(r.priority)}
+                                                  </td>
+                                                  <td className="px-6 py-3">
+                                                    {statusBadge(r.status)}
+                                                  </td>
+                                                  <td className="px-6 py-3 text-[1.3rem] text-gray-600 max-w-[260px] whitespace-pre-wrap">
+                                                    {r.notes || (
+                                                      <span className="text-gray-300">
+                                                        —
+                                                      </span>
+                                                    )}
+                                                  </td>
+                                                  <td className="px-4 py-3">
+                                                    <button
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteTestResult(
+                                                          r.id,
+                                                          r.scenario
+                                                        );
+                                                      }}
+                                                      className="text-[1.3rem] font-semibold text-red-400 hover:text-red-600 transition-colors cursor-pointer bg-transparent border-0"
+                                                      title="Delete this test result"
+                                                    >
+                                                      ✕
+                                                    </button>
+                                                  </td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
                   </>
                 );
               })()
-            : activeTab === "fixes"
-            ? <AdminFixes />
-            : activeTab === "manual"
-            ? <AdminManual />
-            : null}
+            ) : activeTab === "fixes" ? (
+              <AdminFixes />
+            ) : activeTab === "manual" ? (
+              <AdminManual />
+            ) : null}
           </div>
         </main>
       </div>
@@ -1524,11 +2774,14 @@ export default function Admin({ onGoToDirectory }) {
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/[0.45]">
           <div className="rounded-2xl px-8 py-6 shadow-xl max-w-sm mx-4 bg-white border border-brand-warm-border">
-            <div className={`text-xl font-semibold mb-2 ${
-              showConfirm.action === "reject" || showConfirm.action === "delete"
-                ? "text-red-600"
-                : "text-brand-navy"
-            }`}>
+            <div
+              className={`text-xl font-semibold mb-2 ${
+                showConfirm.action === "reject" ||
+                showConfirm.action === "delete"
+                  ? "text-red-600"
+                  : "text-brand-navy"
+              }`}
+            >
               {showConfirm.title}
             </div>
             <div className="text-[1.5rem] mb-6 text-gray-600 leading-[1.6]">
@@ -1542,9 +2795,13 @@ export default function Admin({ onGoToDirectory }) {
                 Cancel
               </button>
               <button
-                onClick={() => { setShowConfirm(null); if (showConfirm.onConfirm) showConfirm.onConfirm(); }}
+                onClick={() => {
+                  setShowConfirm(null);
+                  if (showConfirm.onConfirm) showConfirm.onConfirm();
+                }}
                 className={`px-5 py-2.5 text-[1.5rem] font-medium rounded-full text-white transition-colors ${
-                  showConfirm.action === "reject" || showConfirm.action === "delete"
+                  showConfirm.action === "reject" ||
+                  showConfirm.action === "delete"
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-brand-navy hover:bg-brand-navy-hover"
                 }`}

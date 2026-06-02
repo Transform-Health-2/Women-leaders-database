@@ -1,4 +1,10 @@
-import React, { useState, useEffect, lazy, Suspense, startTransition } from "react";
+import React, {
+  useState,
+  useEffect,
+  lazy,
+  Suspense,
+  startTransition,
+} from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const Database = lazy(() => import("./pages/Database"));
 const Submit = lazy(() => import("./pages/Submit"));
@@ -14,7 +20,10 @@ const VALID_ROUTES = ["database", "analytics", "submit", "admin"];
 
 function parseHash() {
   // Accept #database, #/database, /database — always returns clean slug
-  const raw = window.location.hash.replace(/^#\/?/, "").toLowerCase().split("?")[0];
+  const raw = window.location.hash
+    .replace(/^#\/?/, "")
+    .toLowerCase()
+    .split("?")[0];
   return VALID_ROUTES.includes(raw) ? raw : "database";
 }
 
@@ -186,7 +195,9 @@ function App() {
                         : "text-black bg-transparent"
                     }`}
                   >
-                    <span className={active ? "inline-block skew-x-[10deg]" : ""}>
+                    <span
+                      className={active ? "inline-block skew-x-[10deg]" : ""}
+                    >
                       {item.display}
                     </span>
                   </button>
@@ -213,11 +224,13 @@ function App() {
         </nav>
       )}
       <main id="main-content">
-        <Suspense fallback={
-          <div className="min-h-screen bg-brand-sand flex items-center justify-center">
-            <div className="text-gray-600 text-[1.8rem]">Loading...</div>
-          </div>
-        }>
+        <Suspense
+          fallback={
+            <div className="min-h-screen bg-brand-sand flex items-center justify-center">
+              <div className="text-gray-600 text-[1.8rem]">Loading...</div>
+            </div>
+          }
+        >
           {route === "database" && (
             <Database onManageProfile={openManageModal} />
           )}
@@ -263,29 +276,55 @@ function App() {
             </div>
           </div>
         )}
-       </main>
+      </main>
       {route !== "admin" && !chromeHidden && <SiteFooter />}
 
       {/* Chrome toggle — fixed bottom-right, always visible */}
       {route !== "admin" && (
         <button
           onClick={toggleChrome}
-          title={chromeHidden ? "Show site header & footer" : "Hide site header & footer"}
-          aria-label={chromeHidden ? "Show site header & footer" : "Hide site header & footer"}
+          title={
+            chromeHidden
+              ? "Show site header & footer"
+              : "Hide site header & footer"
+          }
+          aria-label={
+            chromeHidden
+              ? "Show site header & footer"
+              : "Hide site header & footer"
+          }
           className="fixed bottom-5 right-5 z-[9999] w-10 h-10 rounded-full bg-brand-navy text-white shadow-lg flex items-center justify-center hover:bg-brand-navy-dark transition-colors"
         >
           {chromeHidden ? (
             /* eye-open */
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
             </svg>
           ) : (
             /* eye-off */
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+              <line x1="1" y1="1" x2="23" y2="23" />
             </svg>
           )}
         </button>

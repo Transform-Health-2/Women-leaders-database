@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-const NAV_LINKS = ["Home", "About", "Our Work", "Partners", "Insights", "National Coalitions"];
+const NAV_LINKS = [
+  "Home",
+  "About",
+  "Our Work",
+  "Partners",
+  "Insights",
+  "National Coalitions",
+];
 
 export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,9 +46,21 @@ export default function SiteHeader() {
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
         >
-          <span className={`block w-6 h-[2px] bg-brand-dark transition-transform duration-200 ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`} />
-          <span className={`block w-6 h-[2px] bg-brand-dark transition-opacity duration-200 ${menuOpen ? "opacity-0" : ""}`} />
-          <span className={`block w-6 h-[2px] bg-brand-dark transition-transform duration-200 ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
+          <span
+            className={`block w-6 h-[2px] bg-brand-dark transition-transform duration-200 ${
+              menuOpen ? "translate-y-[7px] rotate-45" : ""
+            }`}
+          />
+          <span
+            className={`block w-6 h-[2px] bg-brand-dark transition-opacity duration-200 ${
+              menuOpen ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`block w-6 h-[2px] bg-brand-dark transition-transform duration-200 ${
+              menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+            }`}
+          />
         </button>
       </div>
 

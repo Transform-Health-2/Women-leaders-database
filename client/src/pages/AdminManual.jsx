@@ -2,13 +2,23 @@ import React, { useState } from "react";
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 function H3({ children }) {
-  return <h3 className="text-[1.6rem] font-semibold text-brand-dark mt-6 mb-2">{children}</h3>;
+  return (
+    <h3 className="text-[1.6rem] font-semibold text-brand-dark mt-6 mb-2">
+      {children}
+    </h3>
+  );
 }
 function P({ children }) {
-  return <p className="text-[1.5rem] text-gray-700 leading-[1.8] mb-3">{children}</p>;
+  return (
+    <p className="text-[1.5rem] text-gray-700 leading-[1.8] mb-3">{children}</p>
+  );
 }
 function Li({ children }) {
-  return <li className="text-[1.5rem] text-gray-700 leading-[1.8] mb-1">{children}</li>;
+  return (
+    <li className="text-[1.5rem] text-gray-700 leading-[1.8] mb-1">
+      {children}
+    </li>
+  );
 }
 function Ul({ children }) {
   return <ul className="list-disc list-outside ml-6 mb-4">{children}</ul>;
@@ -17,19 +27,27 @@ function Ol({ children }) {
   return <ol className="list-decimal list-outside ml-6 mb-4">{children}</ol>;
 }
 function Code({ children }) {
-  return <code className="bg-gray-100 text-brand-navy text-[1.3rem] px-1.5 py-0.5 rounded font-mono">{children}</code>;
+  return (
+    <code className="bg-gray-100 text-brand-navy text-[1.3rem] px-1.5 py-0.5 rounded font-mono">
+      {children}
+    </code>
+  );
 }
 function Note({ children }) {
   return (
     <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-lg px-5 py-3 mb-4">
-      <p className="text-[1.4rem] text-amber-800 leading-[1.7] m-0">{children}</p>
+      <p className="text-[1.4rem] text-amber-800 leading-[1.7] m-0">
+        {children}
+      </p>
     </div>
   );
 }
 function Tip({ children }) {
   return (
     <div className="bg-brand-blue-tint border-l-4 border-brand-navy rounded-r-lg px-5 py-3 mb-4">
-      <p className="text-[1.4rem] text-brand-navy leading-[1.7] m-0">{children}</p>
+      <p className="text-[1.4rem] text-brand-navy leading-[1.7] m-0">
+        {children}
+      </p>
     </div>
   );
 }
@@ -40,7 +58,12 @@ function Table({ headers, rows }) {
         <thead>
           <tr className="bg-brand-blue-tint">
             {headers.map((h) => (
-              <th key={h} className="text-left px-4 py-2 font-semibold text-brand-navy border border-gray-200">{h}</th>
+              <th
+                key={h}
+                className="text-left px-4 py-2 font-semibold text-brand-navy border border-gray-200"
+              >
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
@@ -48,7 +71,12 @@ function Table({ headers, rows }) {
           {rows.map((row, i) => (
             <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
               {row.map((cell, j) => (
-                <td key={j} className="px-4 py-2 border border-gray-200 text-gray-700 leading-[1.6]">{cell}</td>
+                <td
+                  key={j}
+                  className="px-4 py-2 border border-gray-200 text-gray-700 leading-[1.6]"
+                >
+                  {cell}
+                </td>
               ))}
             </tr>
           ))}
@@ -61,7 +89,9 @@ function CheckItem({ children }) {
   return (
     <li className="flex items-start gap-3 mb-2">
       <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 border-gray-300 bg-white" />
-      <span className="text-[1.5rem] text-gray-700 leading-[1.7]">{children}</span>
+      <span className="text-[1.5rem] text-gray-700 leading-[1.7]">
+        {children}
+      </span>
     </li>
   );
 }
@@ -73,16 +103,30 @@ const SECTIONS = [
     label: "Overview",
     content: (
       <>
-        <P>The Admin Console is the internal tool for managing the Women Leaders in Digital Health Database. From here you can:</P>
+        <P>
+          The Admin Console is the internal tool for managing the Women Leaders
+          in Digital Health Database. From here you can:
+        </P>
         <Ul>
           <Li>Review and publish new profile submissions</Li>
-          <Li>Handle update and deletion requests from leaders already in the directory</Li>
+          <Li>
+            Handle update and deletion requests from leaders already in the
+            directory
+          </Li>
           <Li>Manage nominated profiles and send personalised outreach</Li>
           <Li>Browse and audit the full database</Li>
           <Li>Monitor QA test results from the testing team</Li>
         </Ul>
-        <P>The sidebar shows live counts next to each tab so you always know what needs attention. Use the <strong>↻ Refresh</strong> button to reload the latest data from Supabase.</P>
-        <Tip><strong>Access:</strong> Click <strong>Admin</strong> in the top-right of the nav bar — it opens in a new tab. Auth gate is currently disabled for testing and will be re-enabled before launch.</Tip>
+        <P>
+          The sidebar shows live counts next to each tab so you always know what
+          needs attention. Use the <strong>↻ Refresh</strong> button to reload
+          the latest data from Supabase.
+        </P>
+        <Tip>
+          <strong>Access:</strong> Click <strong>Admin</strong> in the top-right
+          of the nav bar — it opens in a new tab. Auth gate is currently
+          disabled for testing and will be re-enabled before launch.
+        </Tip>
       </>
     ),
   },
@@ -91,7 +135,10 @@ const SECTIONS = [
     label: "Dashboard Stats",
     content: (
       <>
-        <P>Three summary cards are visible at the top of the All Entries, Profile Requests, and Nominated tabs:</P>
+        <P>
+          Three summary cards are visible at the top of the All Entries, Profile
+          Requests, and Nominated tabs:
+        </P>
         <Table
           headers={["Card", "What it shows"]}
           rows={[
@@ -100,7 +147,10 @@ const SECTIONS = [
             ["Rejected", "Profiles that have been declined or removed"],
           ]}
         />
-        <Tip>These counts update each time you refresh. Use the <strong>↻</strong> button in the sidebar header to force a reload.</Tip>
+        <Tip>
+          These counts update each time you refresh. Use the <strong>↻</strong>{" "}
+          button in the sidebar header to force a reload.
+        </Tip>
       </>
     ),
   },
@@ -109,43 +159,79 @@ const SECTIONS = [
     label: "All Entries",
     content: (
       <>
-        <P>The full database — every record regardless of status (<Code>live</Code>, <Code>pending</Code>, <Code>rejected</Code>). This is also where you review and approve pending submissions.</P>
+        <P>
+          The full database — every record regardless of status (
+          <Code>live</Code>, <Code>pending</Code>, <Code>rejected</Code>). This
+          is also where you review and approve pending submissions.
+        </P>
         <H3>Table columns</H3>
         <Table
           headers={["Column", "What it shows"]}
           rows={[
             ["Checkbox", "Appears on pending rows only — use for bulk actions"],
-            ["Name", "First and last name; shows ⚠ Possible duplicate badge if name matches an existing live leader"],
+            [
+              "Name",
+              "First and last name; shows ⚠ Possible duplicate badge if name matches an existing live leader",
+            ],
             ["Role", "Current role / title"],
             ["Organisation", "Organisation or institution"],
-            ["LinkedIn Clicks", "How many times this leader's LinkedIn link has been clicked"],
+            [
+              "LinkedIn Clicks",
+              "How many times this leader's LinkedIn link has been clicked",
+            ],
             ["Status", "live / pending / rejected (colour-coded badge)"],
           ]}
         />
         <H3>Reviewing a pending submission</H3>
         <Ol>
-          <Li>Click any row to expand it — look for the yellow <strong>pending</strong> badge to identify entries needing review</Li>
-          <Li>Read the full bio, expertise tags, years of experience, geographical scope, countries of operation, and any notable achievements</Li>
+          <Li>
+            Click any row to expand it — look for the yellow{" "}
+            <strong>pending</strong> badge to identify entries needing review
+          </Li>
+          <Li>
+            Read the full bio, expertise tags, years of experience, geographical
+            scope, countries of operation, and any notable achievements
+          </Li>
           <Li>Check the email address — it is private and never published</Li>
-          <Li>Click <strong>Approve</strong> to publish or <strong>Reject</strong> to decline</Li>
+          <Li>
+            Click <strong>Approve</strong> to publish or <strong>Reject</strong>{" "}
+            to decline
+          </Li>
           <Li>Confirm in the modal that appears</Li>
         </Ol>
         <H3>Bulk actions</H3>
         <Ol>
-          <Li>Tick checkboxes on multiple pending rows (or use <strong>Select all</strong>)</Li>
+          <Li>
+            Tick checkboxes on multiple pending rows (or use{" "}
+            <strong>Select all</strong>)
+          </Li>
           <Li>A bulk action bar appears above the table</Li>
-          <Li>Click <strong>Approve N</strong> or <strong>Reject N</strong> — a single confirmation covers all selected</Li>
+          <Li>
+            Click <strong>Approve N</strong> or <strong>Reject N</strong> — a
+            single confirmation covers all selected
+          </Li>
         </Ol>
         <H3>Filters</H3>
         <Ul>
           <Li>Search: name, org, role, expertise, email, country, or bio</Li>
+          <Li>Status: All statuses / Pending / Live / Rejected</Li>
           <Li>Country dropdown</Li>
           <Li>Expertise tag dropdown</Li>
           <Li>LinkedIn clicks: Most clicked / Least clicked</Li>
         </Ul>
         <H3>Expanding a row</H3>
-        <P>Shows full profile details. For pending entries you get <strong>Approve / Reject / Delete</strong> buttons. For live/rejected entries you get <strong>Delete</strong> only. Deletion is a hard delete — the record is permanently removed from the database.</P>
-        <Note><strong>On the duplicate badge:</strong> If you see ⚠ Possible duplicate, check whether this is genuinely the same person or a different person with the same name. The submitter was warned at submission time — you have the final call.</Note>
+        <P>
+          Shows full profile details. For pending entries you get{" "}
+          <strong>Approve / Reject / Delete</strong> buttons. For live/rejected
+          entries you get <strong>Delete</strong> only. Deletion is a hard
+          delete — the record is permanently removed from the database.
+        </P>
+        <Note>
+          <strong>On the duplicate badge:</strong> If you see ⚠ Possible
+          duplicate, check whether this is genuinely the same person or a
+          different person with the same name. The submitter was warned at
+          submission time — you have the final call.
+        </Note>
       </>
     ),
   },
@@ -154,26 +240,78 @@ const SECTIONS = [
     label: "Profile Requests",
     content: (
       <>
-        <P>Leaders already in the database who want to change or remove their profile. Two sub-tabs:</P>
+        <P>
+          New submissions, update requests, and deletion requests — organised
+          into three sub-tabs with colour-coded headers (green = New, amber =
+          Updates, red = Deletes).
+        </P>
+        <H3>New</H3>
+        <P>
+          Self-submitted profiles awaiting admin review. This is where you
+          approve or reject new leaders.
+        </P>
+        <Ol>
+          <Li>
+            Click a row to expand it — shows all fields the leader filled in
+            (personal details, expertise as pill tags, bio, notable items,
+            LinkedIn)
+          </Li>
+          <Li>Read through the full profile before deciding</Li>
+          <Li>
+            Click <strong>Approve</strong> to publish the leader to the public
+            directory, or <strong>Reject</strong> to decline
+          </Li>
+          <Li>Confirm in the modal that appears</Li>
+        </Ol>
+        <Note>
+          New submissions are the same records that appear as{" "}
+          <Code>pending</Code> in All Entries. Approving or rejecting here
+          updates them everywhere.
+        </Note>
         <H3>Updates</H3>
-        <P>Leaders requesting changes to their profile (role, bio, photo, etc.).</P>
+        <P>
+          Leaders requesting changes to their profile (role, bio, photo, etc.).
+        </P>
         <Ol>
           <Li>Expand the row to read the full change request</Li>
-          <Li>Click <strong>Send update link</strong> — emails the leader a magic link to edit their own profile</Li>
-          <Li>The row updates to show a <strong>Link sent</strong> status</Li>
-          <Li>Once the leader resubmits via the link, it reappears as a new pending entry in <strong>All Entries</strong></Li>
+          <Li>
+            Click <strong>Send update link</strong> — emails the leader a magic
+            link to edit their own profile
+          </Li>
+          <Li>
+            The row updates to show a <strong>Link sent</strong> status
+          </Li>
+          <Li>
+            Once the leader resubmits via the link, it reappears as a new
+            pending entry in the <strong>New</strong> sub-tab
+          </Li>
           <Li>Review and approve the updated version as normal</Li>
         </Ol>
-        <Note>If the request is spam or irrelevant, click <strong>Dismiss</strong> to close it without sending a link.</Note>
+        <Note>
+          If the request is spam or irrelevant, click <strong>Dismiss</strong>{" "}
+          to close it without sending a link.
+        </Note>
         <H3>Deletes</H3>
         <P>Leaders who want to be removed from the directory.</P>
         <Ol>
           <Li>Expand the row to read the reason for removal (if provided)</Li>
-          <Li>Click <strong>Approve deletion</strong> — sets status to <Code>rejected</Code> and removes them from the public directory</Li>
-          <Li>Or click <strong>Dismiss</strong> to decline the request</Li>
+          <Li>
+            Click <strong>Approve deletion</strong> — sets status to{" "}
+            <Code>rejected</Code> and removes them from the public directory
+          </Li>
+          <Li>
+            Or click <strong>Dismiss</strong> to decline the request
+          </Li>
         </Ol>
-        <P>Use <strong>Select all</strong> + <strong>Approve N deletion(s)</strong> to process multiple requests at once.</P>
-        <Note>Deletion cannot be undone from the admin console. If a leader was removed in error they must resubmit from scratch.</Note>
+        <P>
+          Use <strong>Select all</strong> +{" "}
+          <strong>Approve N deletion(s)</strong> to process multiple requests at
+          once.
+        </P>
+        <Note>
+          Deletion cannot be undone from the admin console. If a leader was
+          removed in error they must resubmit from scratch.
+        </Note>
       </>
     ),
   },
@@ -182,7 +320,10 @@ const SECTIONS = [
     label: "Nominated",
     content: (
       <>
-        <P>Profiles submitted by a third party nominating a woman leader on her behalf. These are lightweight records — no bio or photo yet.</P>
+        <P>
+          Profiles submitted by a third party nominating a woman leader on her
+          behalf. These are lightweight records — no bio or photo yet.
+        </P>
         <H3>What each row shows</H3>
         <Ul>
           <Li>Nominee name and "Nominated by [name]" credit line</Li>
@@ -190,8 +331,13 @@ const SECTIONS = [
         </Ul>
         <H3>Actions</H3>
         <Ul>
-          <Li><strong>Approve</strong> — publishes the nomination record (stub profile) with status live</Li>
-          <Li><strong>Reject</strong> — removes it from the queue</Li>
+          <Li>
+            <strong>Approve</strong> — publishes the nomination record (stub
+            profile) with status live
+          </Li>
+          <Li>
+            <strong>Reject</strong> — removes it from the queue
+          </Li>
         </Ul>
       </>
     ),
@@ -201,19 +347,45 @@ const SECTIONS = [
     label: "Test Results",
     content: (
       <>
-        <P>A live dashboard of QA submissions from the testing sheet. Used during pre-launch testing sprints.</P>
+        <P>
+          A live dashboard of QA submissions from the testing sheet. Used during
+          pre-launch testing sprints.
+        </P>
         <Ul>
           <Li>Pass / Fail / Pending summary counts at the top</Li>
-          <Li>One card per tester with a colour-coded pass rate progress bar</Li>
-          <Li>Expand each tester → results by section (Directory, Analytics, Submit, Admin, etc.)</Li>
-          <Li>Expand each section → individual test cases with scenario, priority, status, and notes</Li>
+          <Li>
+            One card per tester with a colour-coded pass rate progress bar
+          </Li>
+          <Li>
+            Expand each tester → results by section (Directory, Analytics,
+            Submit, Admin, etc.)
+          </Li>
+          <Li>
+            Expand each section → individual test cases with scenario, priority,
+            status, and notes
+          </Li>
           <Li>Fail rows are tinted red for quick scanning</Li>
         </Ul>
-        <P>Results are saved to both the browser's local storage and the database. Returning testers can continue where they left off — the testing sheet loads and merges previous results automatically. The database uses upsert (insert or update) based on tester name + scenario, so re-running a scenario updates its existing row rather than creating a duplicate.</P>
+        <P>
+          Results are saved to both the browser's local storage and the
+          database. Returning testers can continue where they left off — the
+          testing sheet loads and merges previous results automatically. The
+          database uses upsert (insert or update) based on tester name +
+          scenario, so re-running a scenario updates its existing row rather
+          than creating a duplicate.
+        </P>
         <H3>Managing results</H3>
         <Ul>
-          <Li><strong>Delete a single result</strong> — click the <strong>✕</strong> button on any row to permanently remove that test case</Li>
-          <Li><strong>Clear a tester's results</strong> — click the <strong>✕ clear</strong> button on a tester's card to remove all of their results at once</Li>
+          <Li>
+            <strong>Delete a single result</strong> — click the{" "}
+            <strong>✕</strong> button on any row to permanently remove that test
+            case
+          </Li>
+          <Li>
+            <strong>Clear a tester's results</strong> — click the{" "}
+            <strong>✕ clear</strong> button on a tester's card to remove all of
+            their results at once
+          </Li>
           <Li>Both actions show a confirmation dialog before deleting</Li>
         </Ul>
         <H3>Filters</H3>
@@ -222,7 +394,11 @@ const SECTIONS = [
           <Li>Filter by status (Pass / Fail / Pending)</Li>
           <Li>Search by scenario or notes text</Li>
         </Ul>
-        <Tip>Results are submitted via the <strong>Testing Sheet</strong> (linked in the nav bar). Testers fill in scenarios and save — the data appears here automatically.</Tip>
+        <Tip>
+          Results are submitted via the <strong>Testing Sheet</strong> (linked
+          in the nav bar). Testers fill in scenarios and save — the data appears
+          here automatically.
+        </Tip>
       </>
     ),
   },
@@ -231,14 +407,94 @@ const SECTIONS = [
     label: "Test Fixes",
     content: (
       <>
-        <P>A reference checklist of 15 known bug items identified during pre-launch QA testing. All items have been fixed and verified in the codebase.</P>
+        <P>
+          A reference checklist of 21 known bug items identified during
+          pre-launch QA testing. All items have been fixed and verified in the
+          codebase.
+        </P>
         <Ul>
           <Li>An ID and description of the issue</Li>
           <Li>A priority level (Critical / Important / Nice-to-have)</Li>
           <Li>File references for where the fix was applied</Li>
           <Li>A green ✓ status indicator confirming the fix is in place</Li>
         </Ul>
-        <P>These are hardcoded reference items (not database-driven) — use this tab to cross-reference what was addressed before re-testing via the <strong>Testing Sheet</strong>.</P>
+        <P>
+          These are hardcoded reference items (not database-driven) — use this
+          tab to cross-reference what was addressed before re-testing via the{" "}
+          <strong>Testing Sheet</strong>.
+        </P>
+      </>
+    ),
+  },
+  {
+    id: "email-setup",
+    label: "Email Setup",
+    content: (
+      <>
+        <P>
+          Magic-link emails let leaders update their own profiles with no
+          account or password. The flow uses a Supabase Edge Function (
+          <Code>send-email</Code>).
+        </P>
+        <H3>How the magic link flow works</H3>
+        <Ol>
+          <Li>Leader requests a profile update from the Manage Profile page</Li>
+          <Li>
+            Admin opens <strong>Profile Requests → Updates</strong> and clicks{" "}
+            <strong>Send update link</strong>
+          </Li>
+          <Li>The Edge Function sends an email with a unique magic link</Li>
+          <Li>Leader clicks the link → lands on a pre-filled update form</Li>
+          <Li>
+            Leader updates and submits → done. No account, no password, no login
+            needed.
+          </Li>
+        </Ol>
+        <H3>Setup: Google Workspace (Recommended)</H3>
+        <P>Ask the client to:</P>
+        <Ol>
+          <Li>
+            Log into the Workspace admin account (e.g.{" "}
+            <Code>noreply@transformhealthcoalition.org</Code>)
+          </Li>
+          <Li>
+            Go to{" "}
+            <strong>
+              Google Account → Security → 2-Step Verification → App Passwords
+            </strong>
+          </Li>
+          <Li>
+            Generate a <strong>16-character app password</strong> for{" "}
+            <strong>"Mail"</strong>
+          </Li>
+          <Li>Share the app password with the technical team</Li>
+        </Ol>
+        <P>
+          Then configure in Supabase dashboard → Settings → Functions → Secrets:
+        </P>
+        <Table
+          headers={["Secret", "Value"]}
+          rows={[
+            ["<Code>GOOGLE_SMTP_USER</Code>", "The Workspace email address"],
+            ["<Code>GOOGLE_SMTP_PASS</Code>", "The 16-character app password"],
+          ]}
+        />
+        <H3>Alternative providers</H3>
+        <Ul>
+          <Li>
+            <strong>SendGrid:</strong> Configure <Code>SENDGRID_API_KEY</Code>
+          </Li>
+          <Li>
+            <strong>Generic SMTP:</strong> Configure <Code>SMTP_HOST</Code>,{" "}
+            <Code>SMTP_PORT</Code>, <Code>SMTP_USERNAME</Code>,{" "}
+            <Code>SMTP_PASSWORD</Code>
+          </Li>
+        </Ul>
+        <Tip>
+          The <Code>send-email</Code> function tries providers in order: Google
+          Workspace → SendGrid → Generic SMTP. It is already deployed — only
+          secrets need to be configured.
+        </Tip>
       </>
     ),
   },
@@ -249,36 +505,76 @@ const SECTIONS = [
       <>
         <H3>Publishing a new leader</H3>
         <Ol>
-          <Li>Open <strong>All Entries</strong> — find pending entries by looking for the yellow <strong>pending</strong> status badge</Li>
-          <Li>Click the row to expand — read bio, check photo, verify expertise tags</Li>
-          <Li>If <strong>⚠ Possible duplicate</strong> appears, search the name to compare against other records</Li>
-          <Li>Click <strong>Approve</strong> → confirm → leader goes live instantly</Li>
-          <Li>Or use checkboxes + bulk <strong>Approve</strong> to process multiple submissions at once</Li>
+          <Li>
+            Open <strong>Profile Requests → New</strong> to see all pending
+            self-submissions in one place
+          </Li>
+          <Li>
+            Click a row to expand — full profile details shown (personal info,
+            expertise pills, bio, notable items, LinkedIn)
+          </Li>
+          <Li>
+            If the leader's name matches an existing live record, a{" "}
+            <strong>⚠ Possible duplicate</strong> badge appears — check before
+            approving
+          </Li>
+          <Li>
+            Click <strong>Approve</strong> → confirm → leader goes live
+            instantly
+          </Li>
+          <Li>
+            Or use <strong>All Entries</strong> with checkboxes + bulk{" "}
+            <strong>Approve</strong> to process multiple at once
+          </Li>
         </Ol>
         <H3>Handling a profile update request</H3>
         <Ol>
-          <Li>Open <strong>Profile Requests → Updates</strong></Li>
+          <Li>
+            Open <strong>Profile Requests → Updates</strong>
+          </Li>
           <Li>Expand the row — read what the leader wants changed</Li>
-          <Li>Click <strong>Send update link</strong> — leader receives a magic link by email</Li>
-          <Li>Once they resubmit, the updated profile appears as a new pending entry in <strong>All Entries</strong></Li>
+          <Li>
+            Click <strong>Send update link</strong> — leader receives a magic
+            link by email
+          </Li>
+          <Li>
+            Once they resubmit, the updated profile appears as a new pending
+            entry in <strong>All Entries</strong>
+          </Li>
           <Li>Approve the updated version</Li>
         </Ol>
         <H3>Removing a leader from the directory</H3>
-        <P><strong>If the leader requested removal:</strong></P>
+        <P>
+          <strong>If the leader requested removal:</strong>
+        </P>
         <Ol>
-          <Li>Open <strong>Profile Requests → Deletes</strong></Li>
-          <Li>Read the reason → click <strong>Approve deletion</strong></Li>
+          <Li>
+            Open <strong>Profile Requests → Deletes</strong>
+          </Li>
+          <Li>
+            Read the reason → click <strong>Approve deletion</strong>
+          </Li>
         </Ol>
-        <P><strong>If you need to remove without a request:</strong></P>
+        <P>
+          <strong>If you need to remove without a request:</strong>
+        </P>
         <Ol>
-          <Li>Open <strong>All Entries</strong>, find the record</Li>
-          <Li>Expand → click <strong>Delete</strong> → confirm</Li>
+          <Li>
+            Open <strong>All Entries</strong>, find the record
+          </Li>
+          <Li>
+            Expand → click <strong>Delete</strong> → confirm
+          </Li>
         </Ol>
         <H3>Reaching out to a nominee</H3>
         <Ol>
-          <Li>Open <strong>Nominated</strong>, expand the nominee's row</Li>
+          <Li>
+            Open <strong>Nominated</strong>, expand the nominee's row
+          </Li>
           <Li>Note the nominator's email and the nominee's LinkedIn profile</Li>
-          <Li>Reach out via your preferred channel (LinkedIn message or email)</Li>
+          <Li>
+            Reach out via your preferred channel (LinkedIn message or email)
+          </Li>
         </Ol>
       </>
     ),
@@ -304,11 +600,21 @@ const SECTIONS = [
             ],
           ]}
         />
-        <Note>Detection is name-based only (case-insensitive). Two different people can share the same name — always check the email address and profile link before rejecting.</Note>
+        <Note>
+          Detection is name-based only (case-insensitive). Two different people
+          can share the same name — always check the email address and profile
+          link before rejecting.
+        </Note>
         <H3>Resolving a duplicate</H3>
         <Ol>
-          <Li>In <strong>All Entries</strong>, look for the ⚠ Possible duplicate badge on pending rows</Li>
-          <Li>Open <strong>All Entries</strong> and search the name to see all records</Li>
+          <Li>
+            In <strong>All Entries</strong>, look for the ⚠ Possible duplicate
+            badge on pending rows
+          </Li>
+          <Li>
+            Open <strong>All Entries</strong> and search the name to see all
+            records
+          </Li>
           <Li>Compare email addresses and profile details</Li>
           <Li>Approve the correct record and reject the duplicate</Li>
         </Ol>
@@ -328,7 +634,10 @@ const SECTIONS = [
             [<Code>rejected</Code>, "Declined or removed", "No"],
           ]}
         />
-        <Tip>Status changes are instant — approving a record publishes it immediately. There is no scheduled publish.</Tip>
+        <Tip>
+          Status changes are instant — approving a record publishes it
+          immediately. There is no scheduled publish.
+        </Tip>
       </>
     ),
   },
@@ -338,14 +647,58 @@ const SECTIONS = [
     content: (
       <>
         <Ul>
-          <Li><strong>Refresh (↻)</strong> in the sidebar header reloads all data from Supabase — use this if you've been on the page a while.</Li>
-          <Li><strong>Action messages</strong> (green banner) confirm successful approvals, rejections, or sends. They clear automatically.</Li>
-          <Li><strong>Email addresses</strong> in expanded rows are private and never shown in the public directory.</Li>
-          <Li><strong>LinkedIn Clicks</strong> in All Entries shows engagement per profile — useful for identifying which leaders drive the most traffic.</Li>
-          <Li><strong>Expertise tags</strong> are shown as blue pill/badge chips — hover to see the full text if truncated.</Li>
-          <Li>The admin console does not show the site header or footer — it is a standalone internal tool.</Li>
-          <Li><strong>Returning testers</strong> can continue where they left off — the testing sheet saves progress to both local storage and Supabase. Re-entering their name loads and merges previous results automatically.</Li>
-          <Li><strong>Live auto-refresh:</strong> Data refreshes every 30 seconds while the tab is visible. It also refreshes when the tab regains focus.</Li>
+          <Li>
+            <strong>Refresh (↻)</strong> in the sidebar header reloads all data
+            from Supabase — use this if you've been on the page a while.
+          </Li>
+          <Li>
+            <strong>Action messages</strong> (green banner) confirm successful
+            approvals, rejections, or sends. They clear automatically.
+          </Li>
+          <Li>
+            <strong>Email addresses</strong> in expanded rows are private and
+            never shown in the public directory.
+          </Li>
+          <Li>
+            <strong>LinkedIn Clicks</strong> in All Entries shows engagement per
+            profile — useful for identifying which leaders drive the most
+            traffic.
+          </Li>
+          <Li>
+            <strong>Expertise tags</strong> are shown as blue pill/badge chips —
+            hover to see the full text if truncated.
+          </Li>
+          <Li>
+            <strong>Submission review step</strong> — self-submitters now see a
+            profile preview before final submission, with section-level Edit
+            buttons to jump back to any step. Custom expertise ("Other") is
+            limited to 3 words.
+          </Li>
+          <Li>
+            The admin console does not show the site header or footer — it is a
+            standalone internal tool.
+          </Li>
+          <Li>
+            <strong>Returning testers</strong> can continue where they left off
+            — the testing sheet saves progress to both local storage and
+            Supabase. Re-entering their name loads and merges previous results
+            automatically.
+          </Li>
+          <Li>
+            <strong>Live auto-refresh:</strong> Data refreshes every 30 seconds
+            while the tab is visible. It also refreshes when the tab regains
+            focus.
+          </Li>
+          <Li>
+            <strong>DEV badge:</strong> Test Results and Test Fixes tabs show a{" "}
+            <Code>DEV</Code> badge in the sidebar — these are internal tools
+            used during pre-launch testing and may be restricted in production.
+          </Li>
+          <Li>
+            <strong>Photo review:</strong> Profile photos are not displayed in
+            the admin expanded view. To verify a photo, check the public
+            directory after approval or inspect Supabase Storage directly.
+          </Li>
         </Ul>
       </>
     ),
@@ -355,19 +708,49 @@ const SECTIONS = [
     label: "Pre-Launch Checklist",
     content: (
       <>
-        <P>Items to complete before the platform goes live — for the technical team:</P>
+        <P>
+          Items to complete before the platform goes live — for the technical
+          team:
+        </P>
         <ul className="list-none ml-0 mb-4">
-          <CheckItem>Re-enable the admin auth gate — add auth check in <Code>Admin.jsx</Code> (currently no auth)</CheckItem>
+          <CheckItem>
+            Re-enable the admin auth gate — add auth check in{" "}
+            <Code>Admin.jsx</Code> (currently no auth)
+          </CheckItem>
           <CheckItem>Create an admin user in Supabase Auth</CheckItem>
-          <CheckItem>Configure SMTP secrets in Supabase — the <Code>send-email</Code> Edge Function is built; set <Code>GOOGLE_SMTP_USER</Code> + <Code>GOOGLE_SMTP_PASS</Code> (or <Code>SENDGRID_API_KEY</Code> / <Code>SMTP_*</Code> fallback)</CheckItem>
-          <CheckItem>Add <Code>VITE_SUPABASE_URL</Code> and <Code>VITE_SUPABASE_ANON_KEY</Code> to GitHub Actions secrets</CheckItem>
-          <CheckItem>Drop three test-mode RLS policies — <Code>Admin test mode: read all leaders</Code>, <Code>Admin test mode: update leaders</Code>, <Code>Admin test mode: update requests</Code></CheckItem>
+          <CheckItem>
+            Configure SMTP secrets in Supabase — the <Code>send-email</Code>{" "}
+            Edge Function is built; set <Code>GOOGLE_SMTP_USER</Code> +{" "}
+            <Code>GOOGLE_SMTP_PASS</Code> (or <Code>SENDGRID_API_KEY</Code> /{" "}
+            <Code>SMTP_*</Code> fallback)
+          </CheckItem>
+          <CheckItem>
+            Add <Code>VITE_SUPABASE_URL</Code> and{" "}
+            <Code>VITE_SUPABASE_ANON_KEY</Code> to GitHub Actions secrets
+          </CheckItem>
+          <CheckItem>
+            Drop three test-mode RLS policies —{" "}
+            <Code>Admin test mode: read all leaders</Code>,{" "}
+            <Code>Admin test mode: update leaders</Code>,{" "}
+            <Code>Admin test mode: update requests</Code>
+          </CheckItem>
           <span className="flex items-start gap-3 mb-2 opacity-60">
-            <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 border-green-500 bg-green-500 text-white flex items-center justify-center text-[1.2rem] font-bold">✓</span>
-            <span className="text-[1.5rem] text-gray-700 leading-[1.7]">Run <Code>scripts/create-test-results-table.sql</Code> on production — done</span>
+            <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 border-green-500 bg-green-500 text-white flex items-center justify-center text-[1.4rem] font-bold">
+              ✓
+            </span>
+            <span className="text-[1.5rem] text-gray-700 leading-[1.7]">
+              Run <Code>scripts/create-test-results-table.sql</Code> on
+              production — done
+            </span>
           </span>
         </ul>
-        <Note>The SMTP function lives at <Code>supabase/functions/send-email/</Code>. It supports Google Workspace SMTP, SendGrid, and generic SMTP fallback. Configure the relevant secrets in the Supabase dashboard before launch. The auth gate currently does not exist — it needs to be built (not just uncommented).</Note>
+        <Note>
+          The SMTP function lives at <Code>supabase/functions/send-email/</Code>
+          . It supports Google Workspace SMTP, SendGrid, and generic SMTP
+          fallback. Configure the relevant secrets in the Supabase dashboard
+          before launch. The auth gate currently does not exist — it needs to be
+          built (not just uncommented).
+        </Note>
       </>
     ),
   },
@@ -384,10 +767,9 @@ export default function AdminManual() {
 
   return (
     <div className="flex h-full overflow-hidden bg-white">
-
       {/* TOC sidebar */}
       <nav className="flex flex-col w-[200px] xl:w-[220px] flex-shrink-0 border-r border-gray-200 bg-brand-parchment overflow-y-auto py-6 px-3 gap-0.5">
-        <p className="text-[1.1rem] uppercase tracking-widest text-gray-400 font-semibold mb-3 px-2">
+        <p className="text-[1.3rem] uppercase tracking-widest text-gray-400 font-semibold mb-3 px-2">
           Contents
         </p>
         {SECTIONS.map((s, i) => {
@@ -402,7 +784,11 @@ export default function AdminManual() {
                   : "text-gray-600 hover:bg-gray-100 hover:text-brand-navy"
               }`}
             >
-              <span className={`text-[1.1rem] flex-shrink-0 ${isActive ? "text-white/60" : "text-gray-400"}`}>
+              <span
+                className={`text-[1.3rem] flex-shrink-0 ${
+                  isActive ? "text-white/60" : "text-gray-400"
+                }`}
+              >
                 {String(i + 1).padStart(2, "0")}
               </span>
               {s.label}
@@ -413,7 +799,6 @@ export default function AdminManual() {
 
       {/* Section content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-
         {/* Scrollable section body */}
         <div className="flex-1 overflow-y-auto px-10 py-8">
           {activeSection.content}
@@ -428,7 +813,9 @@ export default function AdminManual() {
             >
               ← {prev.label}
             </button>
-          ) : <span />}
+          ) : (
+            <span />
+          )}
           {next ? (
             <button
               onClick={() => setActiveId(next.id)}
@@ -437,7 +824,9 @@ export default function AdminManual() {
               {next.label} →
             </button>
           ) : (
-            <span className="text-[1.4rem] text-gray-400 italic">End of manual</span>
+            <span className="text-[1.4rem] text-gray-400 italic">
+              End of manual
+            </span>
           )}
         </div>
       </div>

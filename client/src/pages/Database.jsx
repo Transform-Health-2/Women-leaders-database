@@ -22,50 +22,87 @@ const EXPERTISE_OPTIONS = [
   "Health workforce",
 ];
 
-const CONTINENTS = ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"];
-const INITIAL_VISIBLE  = 6;
+const CONTINENTS = [
+  "Africa",
+  "Asia",
+  "Europe",
+  "North America",
+  "South America",
+  "Oceania",
+];
+const INITIAL_VISIBLE = 6;
 const EXPANDED_VISIBLE = 9;
-const PAGE_SIZE        = 9;
+const PAGE_SIZE = 9;
 
-const SELECT_CLASS = "px-[1.6rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.4rem] outline-none bg-brand-blue-tint cursor-pointer font-semibold text-brand-dark";
+const SELECT_CLASS =
+  "px-[1.6rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.4rem] outline-none bg-brand-blue-tint cursor-pointer font-semibold text-brand-dark";
 
 export default function Database({ onManageProfile }) {
-  const [search,          setSearch]          = useState("");
+  const [search, setSearch] = useState("");
   const [expertiseFilter, setExpertiseFilter] = useState("");
-  const [countryFilter,   setCountryFilter]   = useState("");
+  const [countryFilter, setCountryFilter] = useState("");
   const [continentFilter, setContinentFilter] = useState("");
-  const [sortBy,          setSortBy]          = useState("");
-  const [visibleCount,    setVisibleCount]    = useState(INITIAL_VISIBLE);
-  const [currentPage,     setCurrentPage]     = useState(1);
+  const [sortBy, setSortBy] = useState("");
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
   const { leaders, allLeaders, loading, error } = useLeaders({
     search,
     expertise: expertiseFilter,
-    country:   countryFilter,
+    country: countryFilter,
     continent: continentFilter,
-    sort:      sortBy,
+    sort: sortBy,
   });
 
-  const isFiltered = !!(search || sortBy || continentFilter || countryFilter || expertiseFilter);
+  const isFiltered = !!(
+    search ||
+    sortBy ||
+    continentFilter ||
+    countryFilter ||
+    expertiseFilter
+  );
 
   function resetFilters() {
-    setSearch(""); setSortBy(""); setContinentFilter("");
-    setCountryFilter(""); setExpertiseFilter("");
-    setVisibleCount(INITIAL_VISIBLE); setCurrentPage(1);
+    setSearch("");
+    setSortBy("");
+    setContinentFilter("");
+    setCountryFilter("");
+    setExpertiseFilter("");
+    setVisibleCount(INITIAL_VISIBLE);
+    setCurrentPage(1);
   }
 
-  function handleSearch(e)    { setSearch(e.target.value); setVisibleCount(INITIAL_VISIBLE); setCurrentPage(1); }
-  function handleSort(e)      { setSortBy(e.target.value); setVisibleCount(INITIAL_VISIBLE); setCurrentPage(1); }
-  function handleContinent(e) { setContinentFilter(e.target.value); setCountryFilter(""); setCurrentPage(1); }
-  function handleCountry(e)   { setCountryFilter(e.target.value); setCurrentPage(1); }
-  function handleExpertise(e) { setExpertiseFilter(e.target.value); setCurrentPage(1); }
+  function handleSearch(e) {
+    setSearch(e.target.value);
+    setVisibleCount(INITIAL_VISIBLE);
+    setCurrentPage(1);
+  }
+  function handleSort(e) {
+    setSortBy(e.target.value);
+    setVisibleCount(INITIAL_VISIBLE);
+    setCurrentPage(1);
+  }
+  function handleContinent(e) {
+    setContinentFilter(e.target.value);
+    setCountryFilter("");
+    setCurrentPage(1);
+  }
+  function handleCountry(e) {
+    setCountryFilter(e.target.value);
+    setCurrentPage(1);
+  }
+  function handleExpertise(e) {
+    setExpertiseFilter(e.target.value);
+    setCurrentPage(1);
+  }
 
   const visibleCountries = continentFilter
     ? ALL_COUNTRIES.filter((c) => COUNTRY_TO_CONTINENT[c] === continentFilter)
     : ALL_COUNTRIES;
 
-  const paginationActive = visibleCount >= EXPANDED_VISIBLE && leaders.length > EXPANDED_VISIBLE;
+  const paginationActive =
+    visibleCount >= EXPANDED_VISIBLE && leaders.length > EXPANDED_VISIBLE;
   const totalPages = Math.max(1, Math.ceil(leaders.length / PAGE_SIZE));
 
   const visibleItems = useMemo(() => {
@@ -97,8 +134,12 @@ export default function Database({ onManageProfile }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="text-[2rem] text-gray-700 mb-2">Couldn't load the database</div>
-          <div className="text-[1.4rem] text-gray-500">Check your connection and try again.</div>
+          <div className="text-[2rem] text-gray-700 mb-2">
+            Couldn't load the database
+          </div>
+          <div className="text-[1.4rem] text-gray-500">
+            Check your connection and try again.
+          </div>
         </div>
       </div>
     );
@@ -123,10 +164,11 @@ export default function Database({ onManageProfile }) {
               children join the outer sm:flex-row as a single line (original layout).
           */}
           <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-
             {/* ── Row 1 on mobile / flattened on desktop ── */}
             <div className="flex items-center gap-3 mb-2 sm:mb-0 sm:contents">
-              <label htmlFor="leader-search" className="sr-only">Search leaders</label>
+              <label htmlFor="leader-search" className="sr-only">
+                Search leaders
+              </label>
               <input
                 id="leader-search"
                 type="text"
@@ -144,26 +186,58 @@ export default function Database({ onManageProfile }) {
 
             {/* ── Row 2 on mobile / flattened on desktop ── */}
             <div className="flex flex-wrap items-center gap-2 sm:contents">
-              <select value={sortBy}          onChange={handleSort}      className={SELECT_CLASS + " flex-1 sm:flex-none"} aria-label="Sort leaders">
+              <select
+                value={sortBy}
+                onChange={handleSort}
+                className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                aria-label="Sort leaders"
+              >
                 <option value="">Sort by</option>
                 <option value="az">A → Z</option>
                 <option value="za">Z → A</option>
                 <option value="latest">Latest</option>
               </select>
 
-              <select value={continentFilter} onChange={handleContinent} className={SELECT_CLASS + " flex-1 sm:flex-none"} aria-label="Filter by continent">
+              <select
+                value={continentFilter}
+                onChange={handleContinent}
+                className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                aria-label="Filter by continent"
+              >
                 <option value="">Continent: All</option>
-                {CONTINENTS.map((c) => <option key={c} value={c}>{c}</option>)}
+                {CONTINENTS.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
               </select>
 
-              <select value={countryFilter}   onChange={handleCountry}   className={SELECT_CLASS + " flex-1 sm:flex-none"} aria-label="Filter by country">
+              <select
+                value={countryFilter}
+                onChange={handleCountry}
+                className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                aria-label="Filter by country"
+              >
                 <option value="">Country: All</option>
-                {visibleCountries.map((c) => <option key={c} value={c}>{c}</option>)}
+                {visibleCountries.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
               </select>
 
-              <select value={expertiseFilter} onChange={handleExpertise} className={SELECT_CLASS + " flex-1 sm:flex-none"} aria-label="Filter by expertise">
+              <select
+                value={expertiseFilter}
+                onChange={handleExpertise}
+                className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                aria-label="Filter by expertise"
+              >
                 <option value="">Expertise: All</option>
-                {EXPERTISE_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+                {EXPERTISE_OPTIONS.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
               </select>
 
               {/* Clear button: full-width on its own row on mobile, normal size on desktop */}
@@ -172,14 +246,21 @@ export default function Database({ onManageProfile }) {
                   onClick={resetFilters}
                   className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-[1.8rem] py-[1.0rem] border-[1.5px] border-red-400 rounded-[10px] bg-white text-red-400 text-[1.4rem] font-bold cursor-pointer tracking-[0.02em] flex-shrink-0"
                 >
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M12 4L4 12M4 4l8 8"/>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  >
+                    <path d="M12 4L4 12M4 4l8 8" />
                   </svg>
                   Clear filters
                 </button>
               )}
             </div>
-
           </div>
         </div>
       </div>
@@ -195,21 +276,26 @@ export default function Database({ onManageProfile }) {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {visibleItems.map((leader) => (
-                <LeaderCard key={leader.id} leader={leader} onSelect={setSelectedProfile} />
+                <LeaderCard
+                  key={leader.id}
+                  leader={leader}
+                  onSelect={setSelectedProfile}
+                />
               ))}
             </div>
 
             {/* Load more — shows before pagination kicks in */}
-            {visibleCount < EXPANDED_VISIBLE && visibleCount < leaders.length && (
-              <div className="flex justify-center mt-6">
-                <button
-                  onClick={loadMore}
-                  className="px-6 py-3 bg-brand-orange text-white rounded-lg text-[1.6rem] font-medium hover:bg-brand-orange-hover transition-colors"
-                >
-                  Load more leaders
-                </button>
-              </div>
-            )}
+            {visibleCount < EXPANDED_VISIBLE &&
+              visibleCount < leaders.length && (
+                <div className="flex justify-center mt-6">
+                  <button
+                    onClick={loadMore}
+                    className="px-6 py-3 bg-brand-orange text-white rounded-lg text-[1.6rem] font-medium hover:bg-brand-orange-hover transition-colors"
+                  >
+                    Load more leaders
+                  </button>
+                </div>
+              )}
 
             {/* Pagination — activates after "Load more" is clicked */}
             {paginationActive && (

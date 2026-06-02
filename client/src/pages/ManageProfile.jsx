@@ -1,10 +1,12 @@
- import React, { useState } from "react";
+import React, { useState } from "react";
 import { api } from "../api/leaders";
 
-const INPUT_CLASS = "w-full px-[1.6rem] py-5 border-[1.5px] border-gray-300 rounded-lg text-1.5 outline-none bg-brand-blue-tint";
+const INPUT_CLASS =
+  "w-full px-[1.6rem] py-5 border-[1.5px] border-gray-300 rounded-lg text-1.5 outline-none bg-brand-blue-tint";
 const LABEL_CLASS = "block text-1.5 text-brand-dark mb-2";
-const NAV_CLASS  = "flex justify-between items-center pt-5 mt-2";
-const BACK_CLASS = "bg-transparent border-0 cursor-pointer text-1.4 font-bold text-brand-dark inline-flex items-center gap-2 tracking-[0.06em] uppercase";
+const NAV_CLASS = "flex justify-between items-center pt-5 mt-2";
+const BACK_CLASS =
+  "bg-transparent border-0 cursor-pointer text-1.4 font-bold text-brand-dark inline-flex items-center gap-2 tracking-[0.06em] uppercase";
 
 function ContinueBtn({ disabled, onClick, children }) {
   return (
@@ -12,7 +14,9 @@ function ContinueBtn({ disabled, onClick, children }) {
       onClick={onClick}
       disabled={disabled}
       className={`bg-transparent border-0 text-1.4 font-bold tracking-[0.06em] uppercase inline-flex items-center gap-2 ${
-        disabled ? "cursor-not-allowed text-gray-300" : "cursor-pointer text-brand-orange"
+        disabled
+          ? "cursor-not-allowed text-gray-300"
+          : "cursor-pointer text-brand-orange"
       }`}
     >
       {children}
@@ -71,7 +75,7 @@ export default function ManageProfile({ prefill, onBack }) {
       setLinkError("Email address is required");
       return;
     }
-    
+
     setStatus("submitting");
     try {
       await api.submitRequest({
@@ -213,7 +217,12 @@ export default function ManageProfile({ prefill, onBack }) {
                 ← BACK
               </button>
               <ContinueBtn
-                disabled={!firstName.trim() || !lastName.trim() || !email.trim() || linkLoading}
+                disabled={
+                  !firstName.trim() ||
+                  !lastName.trim() ||
+                  !email.trim() ||
+                  linkLoading
+                }
                 onClick={lookupProfile}
               >
                 {linkLoading ? "SEARCHING..." : "FIND MY PROFILE →"}
@@ -224,8 +233,12 @@ export default function ManageProfile({ prefill, onBack }) {
               <div className="mt-6 pt-5 border-t border-gray-200">
                 {!email.trim() && (
                   <div className="border-l-4 border-red-300 bg-red-50 rounded-lg px-7 py-5 mb-5">
-                    <p className="text-1.3 text-red-600 font-semibold">⚠ Email required</p>
-                    <p className="text-1.2 text-red-500 mt-1">Please enter your email address to continue.</p>
+                    <p className="text-1.3 text-red-600 font-semibold">
+                      ⚠ Email required
+                    </p>
+                    <p className="text-1.2 text-red-500 mt-1">
+                      Please enter your email address to continue.
+                    </p>
                   </div>
                 )}
                 <p className="text-1.3 text-gray-500 mb-4 text-center">
@@ -265,7 +278,6 @@ export default function ManageProfile({ prefill, onBack }) {
                 </div>
               </div>
             )}
-
           </div>
         )}
 
@@ -315,11 +327,24 @@ export default function ManageProfile({ prefill, onBack }) {
                     )}
                     {foundProfile.expertise && (
                       <div className="mt-2">
-                        <span className="text-1.3 text-gray-600 font-semibold">Expertise: </span>
+                        <span className="text-1.3 text-gray-600 font-semibold">
+                          Expertise:{" "}
+                        </span>
                         <div className="inline-flex flex-wrap gap-1.5 mt-1">
-                          {(Array.isArray(foundProfile.expertise) ? foundProfile.expertise : String(foundProfile.expertise).split(/,\s*/)).filter(Boolean).map(tag => (
-                            <span key={tag} title={tag} className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2.5 py-0.5 rounded-full border border-brand-blue-border">{tag}</span>
-                          ))}
+                          {(Array.isArray(foundProfile.expertise)
+                            ? foundProfile.expertise
+                            : String(foundProfile.expertise).split(/,\s*/)
+                          )
+                            .filter(Boolean)
+                            .map((tag) => (
+                              <span
+                                key={tag}
+                                title={tag}
+                                className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2.5 py-0.5 rounded-full border border-brand-blue-border"
+                              >
+                                {tag}
+                              </span>
+                            ))}
                         </div>
                       </div>
                     )}
@@ -343,7 +368,10 @@ export default function ManageProfile({ prefill, onBack }) {
                   <button onClick={back} className={BACK_CLASS}>
                     ← BACK
                   </button>
-                  <ContinueBtn disabled={!changes} onClick={() => setStep("review")}>
+                  <ContinueBtn
+                    disabled={!changes}
+                    onClick={() => setStep("review")}
+                  >
                     REVIEW →
                   </ContinueBtn>
                 </div>
@@ -385,7 +413,10 @@ export default function ManageProfile({ prefill, onBack }) {
                   <button onClick={back} className={BACK_CLASS}>
                     ← BACK
                   </button>
-                  <ContinueBtn disabled={false} onClick={() => setStep("review")}>
+                  <ContinueBtn
+                    disabled={false}
+                    onClick={() => setStep("review")}
+                  >
                     REVIEW →
                   </ContinueBtn>
                 </div>
@@ -415,7 +446,9 @@ export default function ManageProfile({ prefill, onBack }) {
                 <span className="text-1.4 text-gray-500">Request type</span>
                 <span
                   className={`text-1.3 font-bold ${
-                    requestType === "delete" ? "text-red-500" : "text-brand-navy"
+                    requestType === "delete"
+                      ? "text-red-500"
+                      : "text-brand-navy"
                   }`}
                 >
                   {requestType === "delete"
@@ -458,10 +491,7 @@ export default function ManageProfile({ prefill, onBack }) {
               >
                 ← BACK
               </button>
-              <ContinueBtn
-                disabled={status === "submitting"}
-                onClick={submit}
-              >
+              <ContinueBtn disabled={status === "submitting"} onClick={submit}>
                 {status === "submitting" ? "SUBMITTING..." : "SUBMIT REQUEST →"}
               </ContinueBtn>
             </div>

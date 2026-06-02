@@ -146,31 +146,38 @@ Open `http://localhost:5173`.
 - [ ] Re-enable admin auth gate — one-line change in `client/src/pages/Admin.jsx` (currently bypassed for testing)
 - [ ] Create admin user in Supabase Auth dashboard (email/password)
 - [ ] Update GitHub Actions CI secrets: add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`, remove `VITE_APPS_SCRIPT_URL` and Firebase vars
-- [ ] Set up Supabase Function for email sending:
+- [ ] Set up email system for magic-link profile management:
 
-  **Supabase Dashboard → Database → Functions**
-  1. Create a new function named `send-email`
-  2. Copy the code from `supabase/functions/send-email/index.ts`
-  3. Deploy: `supabase functions deploy send-email`
-  4. Set secrets (Dashboard → Settings → Functions → Secrets):
+  The magic link flow lets leaders update their own profiles with no account or password:
+  1. Leader requests a profile update
+  2. Admin clicks **Send update link** in **Profile Requests → Updates**
+  3. Leader receives an email with a unique magic link
+  4. Leader clicks the link → pre-filled form → submits → done
 
-     **Option A: Google Workspace (FREE for Workspace users)**
-     - `GOOGLE_SMTP_USER`: Your Workspace email (e.g. `noreply@transformhealthcoalition.org`)
-     - `GOOGLE_SMTP_PASS`: App Password (NOT regular password)
-       - Go to Google Account → Security → 2-Step Verification → App Passwords
-       - Generate a 16-character app password
-     - Host: `smtp.gmail.com`, Port: `587`
+  **What the client needs to provide:**
 
-     **Option B: SendGrid (paid)**
-     - `SENDGRID_API_KEY`: Your SendGrid API key
+  **Option A: Google Workspace (Recommended — Free for Workspace users)**
+  The client must:
+  1. Go to their **Google Account → Security → 2-Step Verification → App Passwords**
+  2. Generate a **16-character app password** for **"Mail"**
+  3. Share the app password with you
 
-     **Option C: Generic SMTP**
-     - `SMTP_HOST`: Your SMTP host
-     - `SMTP_PORT`: Usually `587`
-     - `SMTP_USERNAME`: SMTP username
-     - `SMTP_PASSWORD`: SMTP password
+  Then configure these secrets in **Supabase Dashboard → Settings → Functions → Secrets**:
+  - `GOOGLE_SMTP_USER`: The Workspace email (e.g. `noreply@transformhealthcoalition.org`)
+  - `GOOGLE_SMTP_PASS`: The 16-character app password
 
-- [ ] Verify: "Send update link" in Admin → Profile Requests now sends real emails via the Function
+  **Option B: SendGrid (paid)**
+  - `SENDGRID_API_KEY`: Your SendGrid API key
+
+  **Option C: Generic SMTP**
+  - `SMTP_HOST`: Your SMTP host
+  - `SMTP_PORT`: Usually `587`
+  - `SMTP_USERNAME`: SMTP username
+  - `SMTP_PASSWORD`: SMTP password
+
+  The Edge Function is already deployed at `supabase/functions/send-email/`. The function tries providers in order: Google Workspace → SendGrid → Generic SMTP.
+
+- [ ] Verify: Send an update link from **Admin → Profile Requests → Updates** and confirm the leader receives the email
 
 ---
 

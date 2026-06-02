@@ -69,7 +69,17 @@ The full database — every record regardless of status (live, pending, rejected
 
 ### 2. Profile Requests
 
-Leaders who are already in the database and want to make changes. Two sub-tabs:
+Three sub-tabs with colour-coded headers — green = New submissions, amber = Update requests, red = Delete requests.
+
+#### New
+
+Self-submitted profiles awaiting admin review. This sub-tab shows all pending self-submissions (same records that appear with `pending` status in All Entries). Nomination records appear in the Nominated tab.
+
+**Workflow:**
+1. Click a row to expand — shows all fields the leader filled in (personal details, expertise as pill tags, bio, notable items, LinkedIn)
+2. Read through the full profile before deciding
+3. Click **Approve** to publish the leader to the public directory, or **Reject** to decline
+4. Confirm in the modal that appears
 
 #### Updates
 
@@ -143,7 +153,7 @@ Rows with a **Fail** status are tinted red for quick scanning. When filters are 
 
 ### 5. Test Fixes
 
-A reference checklist of 15 known bug items identified during pre-launch QA testing. All items have been fixed and verified in the codebase.
+A reference checklist of 21 known bug items identified during pre-launch QA testing. All items have been fixed and verified in the codebase.
 
 Each item shows:
 - An ID and description of the issue
@@ -152,6 +162,45 @@ Each item shows:
 - A green ✓ status indicator confirming the fix is in place
 
 These are hardcoded reference items (not database-driven) — use this tab to cross-reference what was addressed in the latest deployment before re-testing via the Testing Sheet.
+
+---
+
+### 6. Email System Setup
+
+The platform uses a Supabase Edge Function (`send-email`) to send magic-link emails so leaders can manage their own profiles (update/delete) without any account or password.
+
+**How the magic link flow works:**
+1. Leader requests a profile update from the Manage Profile page
+2. Admin opens **Profile Requests → Updates** and clicks **Send update link**
+3. The Edge Function sends an email with a unique magic link
+4. Leader clicks the link → lands on a pre-filled update form
+5. Leader updates their profile and submits → done. No account, no password, no login needed.
+
+**To set up email sending, you need the client to provide:**
+
+#### Option A: Google Workspace (Recommended — Free)
+
+1. The client logs into the Google Workspace admin account (e.g. `noreply@transformhealthcoalition.org`)
+2. Goes to **Google Account → Security → 2-Step Verification → App Passwords**
+3. Generates a 16-character app password for **"Mail"**
+4. Shares the app password with the technical team
+
+The technical team then configures these secrets in the Supabase project dashboard:
+
+| Secret | Value |
+|---|---|
+| `GOOGLE_SMTP_USER` | The Workspace email address |
+| `GOOGLE_SMTP_PASS` | The 16-character app password |
+
+#### Option B: SendGrid (Paid)
+
+Configure `SENDGRID_API_KEY` in Supabase secrets.
+
+#### Option C: Generic SMTP
+
+Configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` in Supabase secrets.
+
+> **Important:** The `send-email` Edge Function is already deployed at `supabase/functions/send-email/`. Only the secrets need to be configured in the Supabase dashboard. Once set, test by sending an update link from **Profile Requests → Updates** and verifying the leader receives the email.
 
 ---
 
@@ -229,6 +278,8 @@ The platform includes two layers of duplicate protection:
 - The **admin tab** does not show the site header/footer — it is a standalone internal tool.
 - **Returning testers** can continue where they left off — the testing sheet saves their name, current section, scroll position, and all results to local storage and Supabase. When they re-enter their name on a return visit, previous results are loaded and merged automatically.
 - **Live auto-refresh:** The console refreshes its data every 30 seconds while the tab is open and visible. It also refreshes when the tab regains focus (e.g., switching back from another tab).
+- **DEV badge:** The Test Results and Test Fixes tabs show a `DEV` badge in the sidebar — these are developer/internal tools used during pre-launch testing and may be hidden or restricted in production.
+- **Photo review:** Profile photos are not displayed in the admin expanded view during review. To verify a photo, check the public directory after approval or inspect the row in Supabase directly.
 
 ---
 

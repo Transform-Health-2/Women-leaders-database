@@ -18,13 +18,17 @@ import { COUNTRY_TO_CONTINENT } from "../utils/countries";
  *   error      — fetch error, or null
  */
 export function useLeaders({
-  search    = "",
+  search = "",
   expertise = "",
-  country   = "",
+  country = "",
   continent = "",
-  sort      = "",
+  sort = "",
 } = {}) {
-  const { data: allLeaders = [], isLoading: loading, error } = useQuery({
+  const {
+    data: allLeaders = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
     queryKey: ["leaders"],
     queryFn: () => api.getLeaders(),
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -37,20 +41,35 @@ export function useLeaders({
     if (search) {
       const q = search.toLowerCase();
       result = result.filter((l) =>
-        [l.first_name, l.last_name, l.role, l.organisation, l.bio]
-          .some((f) => (f || "").toLowerCase().includes(q))
+        [l.first_name, l.last_name, l.role, l.organisation, l.bio].some((f) =>
+          (f || "").toLowerCase().includes(q)
+        )
       );
     }
 
-    if (expertise) result = result.filter((l) => {
-      const tags = Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/);
-      return tags.some((t) => t.toLowerCase().includes(expertise.toLowerCase()));
-    });
-    if (country)   result = result.filter((l) => l.country === country);
-    if (continent) result = result.filter((l) => COUNTRY_TO_CONTINENT[l.country] === continent);
+    if (expertise)
+      result = result.filter((l) => {
+        const tags = Array.isArray(l.expertise)
+          ? l.expertise
+          : (l.expertise || "").split(/,\s*/);
+        return tags.some((t) =>
+          t.toLowerCase().includes(expertise.toLowerCase())
+        );
+      });
+    if (country) result = result.filter((l) => l.country === country);
+    if (continent)
+      result = result.filter(
+        (l) => COUNTRY_TO_CONTINENT[l.country] === continent
+      );
 
-    if (sort === "az")     return [...result].sort((a, b) => (a.first_name || "").localeCompare(b.first_name || ""));
-    if (sort === "za")     return [...result].sort((a, b) => (b.first_name || "").localeCompare(a.first_name || ""));
+    if (sort === "az")
+      return [...result].sort((a, b) =>
+        (a.first_name || "").localeCompare(b.first_name || "")
+      );
+    if (sort === "za")
+      return [...result].sort((a, b) =>
+        (b.first_name || "").localeCompare(a.first_name || "")
+      );
     if (sort === "latest") return [...result].reverse();
 
     return result;

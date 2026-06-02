@@ -37,11 +37,11 @@ export default function ProfileModal({ leader, onClose, onManage }) {
 
   if (!leader) return null;
 
-  const expertiseTags  = toTags(leader.expertise);
-  const countriesList  = toList(leader.countries || leader.selectedCountries);
-  const yearsExp       = leader.years_experience || leader.yearsExp;
-  const notableItems   = leader.notable_items || leader.notableItems || [];
-  const isFeatured     = leader.featured === true || leader.featured === "true";
+  const expertiseTags = toTags(leader.expertise);
+  const countriesList = toList(leader.countries || leader.selectedCountries);
+  const yearsExp = leader.years_experience || leader.yearsExp;
+  const notableItems = leader.notable_items || leader.notableItems || [];
+  const isFeatured = leader.featured === true || leader.featured === "true";
 
   return (
     <div
@@ -110,7 +110,9 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                   title="LinkedIn Profile"
                   className="inline-block w-[22px] h-[22px] opacity-80 hover:opacity-100 transition-opacity"
                   onClick={() => {
-                    import("../api/leaders").then(({ api }) => api.trackLinkedInClick(leader.id));
+                    import("../api/leaders").then(({ api }) =>
+                      api.trackLinkedInClick(leader.id)
+                    );
                   }}
                 >
                   <LinkedInIcon />
@@ -118,10 +120,14 @@ export default function ProfileModal({ leader, onClose, onManage }) {
               )}
             </h2>
             {leader.role && (
-              <p className="text-[1.6rem] font-semibold text-brand-dark mb-1">{leader.role}</p>
+              <p className="text-[1.6rem] font-semibold text-brand-dark mb-1">
+                {leader.role}
+              </p>
             )}
             {leader.organisation && (
-              <p className="text-[1.5rem] text-gray-600">{leader.organisation}</p>
+              <p className="text-[1.5rem] text-gray-600">
+                {leader.organisation}
+              </p>
             )}
           </div>
         </div>
@@ -131,20 +137,30 @@ export default function ProfileModal({ leader, onClose, onManage }) {
           <div className="mx-10 mb-6 bg-brand-parchment rounded-xl px-6 py-4 flex flex-wrap gap-x-8 gap-y-3 border border-brand-parchment-border">
             {leader.country && (
               <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Based in</div>
-                <div className="text-[1.4rem] text-brand-dark">{leader.country}</div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
+                  Based in
+                </div>
+                <div className="text-[1.4rem] text-brand-dark">
+                  {leader.country}
+                </div>
               </div>
             )}
             {yearsExp && (
               <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Experience</div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
+                  Experience
+                </div>
                 <div className="text-[1.4rem] text-brand-dark">{yearsExp}</div>
               </div>
             )}
             {countriesList.length > 0 && (
               <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Works across</div>
-                <div className="text-[1.4rem] text-brand-dark">{countriesList.join(", ")}</div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
+                  Works across
+                </div>
+                <div className="text-[1.4rem] text-brand-dark">
+                  {countriesList.join(", ")}
+                </div>
               </div>
             )}
           </div>
@@ -172,7 +188,9 @@ export default function ProfileModal({ leader, onClose, onManage }) {
         {leader.bio && (
           <div className="px-10 mb-6">
             <SectionLabel>About</SectionLabel>
-            <p className="text-[1.6rem] text-brand-dark leading-[1.8] break-words">{leader.bio}</p>
+            <p className="text-[1.6rem] text-brand-dark leading-[1.8] break-words">
+              {leader.bio}
+            </p>
           </div>
         )}
 
@@ -182,19 +200,33 @@ export default function ProfileModal({ leader, onClose, onManage }) {
             <SectionLabel>Publications</SectionLabel>
             <div className="flex flex-col gap-3">
               {notableItems.map((item, i) => (
-                <div key={i} className="flex gap-4 bg-brand-parchment rounded-xl px-5 py-4 border border-brand-parchment-border">
-                  <span className="text-[1.4rem] font-bold text-brand-navy flex-shrink-0 w-6">{i + 1}.</span>
+                <div
+                  key={i}
+                  className="flex gap-4 bg-brand-parchment rounded-xl px-5 py-4 border border-brand-parchment-border"
+                >
+                  <span className="text-[1.4rem] font-bold text-brand-navy flex-shrink-0 w-6">
+                    {i + 1}.
+                  </span>
                   <div>
                     <div className="text-[1.5rem] font-semibold text-brand-dark">
                       {item.link ? (
-                        <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:underline text-brand-navy">
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline text-brand-navy"
+                        >
                           {item.title}
                         </a>
                       ) : (
                         item.title
                       )}
                     </div>
-                    {item.type && <div className="text-[1.3rem] text-gray-600 mt-0.5">{item.type}</div>}
+                    {item.type && (
+                      <div className="text-[1.3rem] text-gray-600 mt-0.5">
+                        {item.type}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -204,9 +236,14 @@ export default function ProfileModal({ leader, onClose, onManage }) {
 
         {/* ── FOOTER CTA ── */}
         <div className="px-10 py-6 border-t border-brand-parchment-border">
-          <p className="text-[1.4rem] text-gray-600 mb-3 text-center">Is this your profile?</p>
+          <p className="text-[1.4rem] text-gray-600 mb-3 text-center">
+            Is this your profile?
+          </p>
           <button
-            onClick={() => { onClose(); onManage(leader); }}
+            onClick={() => {
+              onClose();
+              onManage(leader);
+            }}
             className="w-full px-6 py-3 border-2 border-brand-navy text-brand-navy text-[1.5rem] font-semibold rounded-full hover:bg-brand-navy hover:text-white transition-colors cursor-pointer"
           >
             Update or remove my profile

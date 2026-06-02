@@ -1,10 +1,11 @@
 import React from "react";
 
 const VARIANTS = {
-  primary:   "bg-brand-orange text-white hover:bg-brand-orange-hover",
-  secondary: "bg-transparent border border-gray-400 text-gray-700 hover:bg-gray-100",
-  pink:      "bg-brand-pink text-white hover:bg-pink-dark",
-  ghost:     "bg-transparent text-brand-orange hover:underline",
+  primary: "bg-brand-orange text-white hover:bg-brand-orange-hover",
+  secondary:
+    "bg-transparent border border-gray-400 text-gray-700 hover:bg-gray-100",
+  pink: "bg-brand-pink text-white hover:bg-pink-dark",
+  ghost: "bg-transparent text-brand-orange hover:underline",
 };
 
 const SIZES = {
@@ -22,7 +23,9 @@ export default function Button({
 }) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors ${props.disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"} ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors ${
+        props.disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+      } ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
       {...props}
     >
       {children}
