@@ -96,6 +96,23 @@ function CheckItem({ children }) {
   );
 }
 
+function Img({ src, caption }) {
+  return (
+    <figure className="my-6">
+      <img
+        src={src}
+        alt={caption || ""}
+        className="w-full rounded-lg border border-gray-200 shadow-sm"
+      />
+      {caption && (
+        <figcaption className="text-[1.3rem] text-gray-500 italic mt-2 text-center">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
 // ── Section content definitions ──────────────────────────────────────────────
 const SECTIONS = [
   {
@@ -127,6 +144,10 @@ const SECTIONS = [
           of the nav bar — it opens in a new tab. Auth gate is currently
           disabled for testing and will be re-enabled before launch.
         </Tip>
+        <Img
+          src="screenshots/admin-manual/01-overview.png"
+          caption="Admin console: sidebar navigation with live counts"
+        />
       </>
     ),
   },
@@ -151,6 +172,10 @@ const SECTIONS = [
           These counts update each time you refresh. Use the <strong>↻</strong>{" "}
           button in the sidebar header to force a reload.
         </Tip>
+        <Img
+          src="screenshots/admin-manual/02-dashboard-stats.png"
+          caption="Summary cards: Pending, Live, and Rejected counts"
+        />
       </>
     ),
   },
@@ -181,6 +206,10 @@ const SECTIONS = [
             ],
             ["Status", "live / pending / rejected (colour-coded badge)"],
           ]}
+        />
+        <Img
+          src="screenshots/admin-manual/03-all-entries.png"
+          caption="All Entries table with filters, status badges, and search"
         />
         <H3>Reviewing a pending submission</H3>
         <Ol>
@@ -232,6 +261,10 @@ const SECTIONS = [
           different person with the same name. The submitter was warned at
           submission time — you have the final call.
         </Note>
+        <Img
+          src="screenshots/admin-manual/10-all-entries-expanded.png"
+          caption="Expanded row showing full profile details with Approve / Reject / Delete buttons"
+        />
       </>
     ),
   },
@@ -268,6 +301,10 @@ const SECTIONS = [
           <Code>pending</Code> in All Entries. Approving or rejecting here
           updates them everywhere.
         </Note>
+        <Img
+          src="screenshots/admin-manual/04-profile-requests-new.png"
+          caption="Profile Requests > New sub-tab with pending submissions"
+        />
         <H3>Updates</H3>
         <P>
           Leaders requesting changes to their profile (role, bio, photo, etc.).
@@ -291,6 +328,10 @@ const SECTIONS = [
           If the request is spam or irrelevant, click <strong>Dismiss</strong>{" "}
           to close it without sending a link.
         </Note>
+        <Img
+          src="screenshots/admin-manual/05-profile-requests-updates.png"
+          caption="Profile Requests > Updates sub-tab with Send update link actions"
+        />
         <H3>Deletes</H3>
         <P>Leaders who want to be removed from the directory.</P>
         <Ol>
@@ -312,6 +353,10 @@ const SECTIONS = [
           Deletion cannot be undone from the admin console. If a leader was
           removed in error they must resubmit from scratch.
         </Note>
+        <Img
+          src="screenshots/admin-manual/06-profile-requests-deletes.png"
+          caption="Profile Requests > Deletes sub-tab with Approve deletion actions"
+        />
       </>
     ),
   },
@@ -339,6 +384,10 @@ const SECTIONS = [
             <strong>Reject</strong> — removes it from the queue
           </Li>
         </Ul>
+        <Img
+          src="screenshots/admin-manual/07-nominated.png"
+          caption="Nominated tab showing third-party nomination records"
+        />
       </>
     ),
   },
@@ -366,6 +415,10 @@ const SECTIONS = [
           </Li>
           <Li>Fail rows are tinted red for quick scanning</Li>
         </Ul>
+        <Img
+          src="screenshots/admin-manual/08-test-results.png"
+          caption="Test Results dashboard with per-tester cards and pass/fail summary"
+        />
         <P>
           Results are saved to both the browser's local storage and the
           database. Returning testers can continue where they left off — the
@@ -423,6 +476,10 @@ const SECTIONS = [
           tab to cross-reference what was addressed before re-testing via the{" "}
           <strong>Testing Sheet</strong>.
         </P>
+        <Img
+          src="screenshots/admin-manual/09-test-fixes.png"
+          caption="Test Fixes checklist with IDs, priorities, and fix status"
+        />
       </>
     ),
   },
