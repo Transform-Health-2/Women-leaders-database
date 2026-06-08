@@ -756,7 +756,13 @@ export default function Admin({ onGoToDirectory }) {
                 <button
                   key={item.id}
                   onClick={() => handleTabChange(item.id)}
-                  title={item.label}
+                  title={{
+                    all: "Browse and manage the full database",
+                    requests: "Review and approve new submissions",
+                    nominated: "Reach out to third-party nominations",
+                    activity: "Track self-service updates and deletions",
+                    documentation: "Guides, workflows, and admin reference",
+                  }[item.id] || item.label}
                   className={`w-full flex items-center gap-3 px-3 py-3 rounded-md text-xl font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 ${
                     isActive
                       ? "bg-brand-pink text-white border border-brand-pink"
