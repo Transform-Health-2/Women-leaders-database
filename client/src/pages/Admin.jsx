@@ -195,6 +195,9 @@ export default function Admin({ onGoToDirectory }) {
   const [sortOrder, setSortOrder] = useState("az");
   const [activityFilter, setActivityFilter] = useState("all"); // "all", "update", "delete"
   const [activitySearch, setActivitySearch] = useState("");
+  const [activityDateRange, setActivityDateRange] = useState("all"); // "all", "7", "14", "30", "custom"
+  const [activityDateFrom, setActivityDateFrom] = useState("");
+  const [activityDateTo, setActivityDateTo] = useState("");
   const [expandedId, setExpandedId] = useState(null);
   const [expandedAllId, setExpandedAllId] = useState(null);
   const [actionMessage, setActionMessage] = useState("");
@@ -528,6 +531,9 @@ export default function Admin({ onGoToDirectory }) {
     setTestFilterSearch("");
     setActivityFilter("all");
     setActivitySearch("");
+    setActivityDateRange("all");
+    setActivityDateFrom("");
+    setActivityDateTo("");
     setAllPage(1);
     setSearchQuery("");
     setFilterCountry("");
@@ -654,9 +660,34 @@ export default function Admin({ onGoToDirectory }) {
         const name = `${entry.first_name} ${entry.last_name}`.toLowerCase();
         if (!name.includes(activitySearch.toLowerCase())) return false;
       }
+      if (activityDateRange !== "all" && entry.created_at) {
+        const entryDate = new Date(entry.created_at);
+        const now = new Date();
+        if (activityDateRange === "7") {
+          const cutoff = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
+          if (entryDate < cutoff) return false;
+        } else if (activityDateRange === "14") {
+          const cutoff = new Date(now.getTime() - 14 * 24 * 3600 * 1000);
+          if (entryDate < cutoff) return false;
+        } else if (activityDateRange === "30") {
+          const cutoff = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
+          if (entryDate < cutoff) return false;
+        } else if (activityDateRange === "custom") {
+          if (activityDateFrom) {
+            const from = new Date(activityDateFrom);
+            from.setHours(0, 0, 0, 0);
+            if (entryDate < from) return false;
+          }
+          if (activityDateTo) {
+            const to = new Date(activityDateTo);
+            to.setHours(23, 59, 59, 999);
+            if (entryDate > to) return false;
+          }
+        }
+      }
       return true;
     });
-  }, [activityLog, activityFilter, activitySearch]);
+  }, [activityLog, activityFilter, activitySearch, activityDateRange, activityDateFrom, activityDateTo]);
 
   const sidebarData = [
     { ...SIDEBAR_ITEMS[0], count: allCount },
@@ -1268,7 +1299,7 @@ export default function Admin({ onGoToDirectory }) {
                     No results match the current filters
                   </div>
                   <button
-                    onClick={() => { setActivityFilter("all"); setActivitySearch(""); }}
+                    onClick={() => { setActivityFilter("all"); setActivitySearch(""); setActivityDateRange("all"); setActivityDateFrom(""); setActivityDateTo(""); }}
                     className="mt-3 text-[1.4rem] text-brand-pink font-medium hover:underline cursor-pointer"
                   >
                     Clear filters
@@ -1285,30 +1316,61 @@ export default function Admin({ onGoToDirectory }) {
                     </div>
                   </div>
                   {/* Activity filters */}
-                  <div className="flex items-center gap-4 px-5 py-3 border-b border-brand-blue-border bg-brand-sand">
-                    <select
-                      value={activityFilter}
-                      onChange={(e) => setActivityFilter(e.target.value)}
-                      className="rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] font-medium bg-white"
-                    >
-                      <option value="all">All actions</option>
-                      <option value="update">Updates only</option>
-                      <option value="delete">Deletes only</option>
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="Search by name…"
-                      value={activitySearch}
-                      onChange={(e) => setActivitySearch(e.target.value)}
-                      className="flex-1 rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] bg-white placeholder-gray-400"
-                    />
-                    {(activityFilter !== "all" || activitySearch) && (
-                      <button
-                        onClick={() => { setActivityFilter("all"); setActivitySearch(""); }}
-                        className="text-[1.3rem] text-brand-pink font-medium hover:underline"
+                  <div className="flex flex-col gap-3 px-5 py-3 border-b border-brand-blue-border bg-brand-sand">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <select
+                        value={activityFilter}
+                        onChange={(e) => setActivityFilter(e.target.value)}
+                        className="rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] font-medium bg-white"
                       >
-                        Clear
-                      </button>
+                        <option value="all">All actions</option>
+                        <option value="update">Updates</option>
+                        <option value="delete">Deletes</option>
+                      </select>
+                      <select
+                        value={activityDateRange}
+                        onChange={(e) => setActivityDateRange(e.target.value)}
+                        className="rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] font-medium bg-white"
+                      >
+                        <option value="all">All time</option>
+                        <option value="7">Last 7 days</option>
+                        <option value="14">Last 14 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="custom">Custom range…</option>
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Search by name…"
+                        value={activitySearch}
+                        onChange={(e) => setActivitySearch(e.target.value)}
+                        className="flex-1 min-w-[160px] rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] bg-white placeholder-gray-400"
+                      />
+                      {(activityFilter !== "all" || activitySearch || activityDateRange !== "all") && (
+                        <button
+                          onClick={() => { setActivityFilter("all"); setActivitySearch(""); setActivityDateRange("all"); setActivityDateFrom(""); setActivityDateTo(""); }}
+                          className="text-[1.3rem] text-brand-pink font-medium hover:underline whitespace-nowrap"
+                        >
+                          Clear all
+                        </button>
+                      )}
+                    </div>
+                    {activityDateRange === "custom" && (
+                      <div className="flex items-center gap-3">
+                        <label className="text-[1.3rem] text-gray-600 font-medium">From</label>
+                        <input
+                          type="date"
+                          value={activityDateFrom}
+                          onChange={(e) => setActivityDateFrom(e.target.value)}
+                          className="rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] bg-white"
+                        />
+                        <label className="text-[1.3rem] text-gray-600 font-medium">To</label>
+                        <input
+                          type="date"
+                          value={activityDateTo}
+                          onChange={(e) => setActivityDateTo(e.target.value)}
+                          className="rounded-lg border-2 border-gray-300 px-3 py-1.5 text-[1.3rem] bg-white"
+                        />
+                      </div>
                     )}
                   </div>
                   <div className="divide-y divide-brand-warm-row-border">
