@@ -637,7 +637,7 @@ export default function Admin({ onGoToDirectory }) {
 
   const activityLog = useMemo(() => {
     return requests
-      .filter(r => r.status === "done" && (r.request_type === "self_update" || r.request_type === "self_delete"))
+      .filter(r => r.status === "approved" && (r.request_type === "update" || r.request_type === "delete"))
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }, [requests]);
 
@@ -1256,7 +1256,7 @@ export default function Admin({ onGoToDirectory }) {
                   </div>
                   <div className="divide-y divide-brand-warm-row-border">
                     {activityLog.map((entry) => {
-                      const isDelete = entry.request_type === "self_delete";
+                      const isDelete = entry.request_type === "delete";
                       return (
                         <div
                           key={entry.id}

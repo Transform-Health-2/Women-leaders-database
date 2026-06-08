@@ -344,8 +344,8 @@ export const api = {
   logSelfService: async ({ leaderId, firstName, lastName, action, details }) => {
     const { error } = await supabase.from("requests").insert([{
       id: crypto.randomUUID(),
-      request_type: action === "delete" ? "self_delete" : "self_update",
-      status: "done",
+      request_type: action === "delete" ? "delete" : "update",
+      status: "approved",
       leader_id: leaderId,
       first_name: firstName,
       last_name: lastName,
