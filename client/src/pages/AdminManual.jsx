@@ -156,6 +156,26 @@ const SECTIONS = [
         <P>
           Quick access to all documentation. Find answers, understand the product, and learn best practices.
         </P>
+        <H3>What's New</H3>
+        <Ul>
+          <Li>
+            <strong>Activity Log</strong> — track all self-service profile updates
+            and deletions with filters by action type, date range, and name
+          </Li>
+          <Li>
+            <strong>View button</strong> — expand any row in All Entries with a
+            dedicated View / Hide button in its own column
+          </Li>
+          <Li>
+            <strong>Smarter filters</strong> — click count and status filters only
+            appear on tabs where they apply
+          </Li>
+          <Li>
+            <strong>Tooltips</strong> — hover over any sidebar tab to see its full
+            label
+          </Li>
+        </Ul>
+
         <H3>Core Resources for Admins</H3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <DocCard
@@ -501,17 +521,18 @@ const SECTIONS = [
         </P>
         <Ul>
           <Li>Review and publish new profile submissions</Li>
-          <Li>
-            Handle update and deletion requests from leaders already in the
-            directory
-          </Li>
+          <Li>Browse and audit the full database with filters and search</Li>
           <Li>Manage nominated profiles and send personalised outreach</Li>
-          <Li>Browse and audit the full database</Li>
+          <Li>
+            Monitor self-service activity — leaders update or delete their own
+            profiles via magic links; all actions appear in the{" "}
+            <strong>Activity Log</strong>
+          </Li>
         </Ul>
         <P>
           The sidebar shows live counts next to each tab so you always know what
-          needs attention. Use the <strong>↻ Refresh</strong> button to reload
-          the latest data from Supabase.
+          needs attention. Hover over any tab for a tooltip. Use the{" "}
+          <strong>↻ Refresh</strong> button to reload the latest data from Supabase.
         </P>
         <Tip>
           <strong>Access:</strong> Click <strong>Admin</strong> in the top-right
