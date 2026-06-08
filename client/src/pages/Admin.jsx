@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
+import { COUNTRY_TO_REGION, REGION_LABELS } from "../utils/countries";
 import AdminManual from "./AdminManual";
 // import AdminFixes from "./AdminFixes";
 
@@ -557,6 +558,22 @@ export default function Admin({ onGoToDirectory }) {
     return Array.from(set).sort();
   }, [all]);
 
+  const countriesByRegion = useMemo(() => {
+    const grouped = {};
+    countries.forEach((country) => {
+      const key = COUNTRY_TO_REGION[country] || "other";
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(country);
+    });
+    return Object.entries(grouped)
+      .map(([key, list]) => ({
+        key,
+        label: REGION_LABELS[key] || "Other",
+        countries: list.sort(),
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [countries]);
+
   const expertiseOptions = useMemo(() => {
     const set = new Set();
     all.forEach((item) => {
@@ -889,10 +906,14 @@ export default function Admin({ onGoToDirectory }) {
                       className="rounded-lg border-2 border-gray-400 px-3 py-2 text-lg font-medium shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus:border-brand-navy bg-white text-gray-900"
                     >
                       <option value="">All countries</option>
-                      {countries.map((country) => (
-                        <option key={country} value={country}>
-                          {country}
-                        </option>
+                      {countriesByRegion.map((region) => (
+                        <optgroup key={region.key} label={region.label}>
+                          {region.countries.map((country) => (
+                            <option key={country} value={country}>
+                              {country}
+                            </option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
                     <select
