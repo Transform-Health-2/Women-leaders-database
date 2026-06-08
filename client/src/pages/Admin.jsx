@@ -643,7 +643,7 @@ export default function Admin({ onGoToDirectory }) {
 
   const sidebarData = [
     { ...SIDEBAR_ITEMS[0], count: allCount },
-    { ...SIDEBAR_ITEMS[1], count: pending.length + requestsCount },
+    { ...SIDEBAR_ITEMS[1], count: pending.length },
     { ...SIDEBAR_ITEMS[2], count: nominatedCount },
     { ...SIDEBAR_ITEMS[3], count: activityLog.length },
     SIDEBAR_ITEMS[4], // divider (no count)
@@ -779,7 +779,7 @@ export default function Admin({ onGoToDirectory }) {
                     </h2>
                   </div>
                   <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                    <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange" title="New submissions, update requests, and deletion requests awaiting review">
+                    <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange" title="New profile submissions waiting for approval">
                       <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
                         Pending
                       </div>
@@ -889,6 +889,8 @@ export default function Admin({ onGoToDirectory }) {
                       ? `${nominatedCount} nominated`
                       : activeTab === "requests"
                       ? `${pending.length} new`
+                      : activeTab === "activity"
+                      ? `${activityLog.length} events`
                       : `${requestsCount} pending requests`}
                   </div>
                 </div>
