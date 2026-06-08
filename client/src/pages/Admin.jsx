@@ -1683,8 +1683,8 @@ export default function Admin({ onGoToDirectory }) {
                           "Role",
                           "Organisation",
                           "LinkedIn Clicks",
+                          "Details",
                           "Status",
-                          "",
                         ].map((h) => (
                           <th
                             key={h}
