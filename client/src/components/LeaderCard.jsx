@@ -1,15 +1,11 @@
 import React, { createContext, useContext } from "react";
-import { LinkedInIcon, PersonIcon, OrgIcon, LocationIcon } from "./icons";
+import { LinkedInIcon, LocationIcon } from "./icons";
 
 // ─── Context ────────────────────────────────────────────────────────
 const CardCtx = createContext(null);
 const useCard = () => useContext(CardCtx);
 
 // ─── Internal helpers ────────────────────────────────────────────────────────
-function TBC() {
-  return <span className="italic text-gray-400 text-[1.4rem]">TBC</span>;
-}
-
 function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
 }
@@ -102,7 +98,7 @@ function Body({ children }) {
   );
 }
 
-/** Meta — name, role (with person icon), org (with building icon). */
+/** Meta — name only. */
 function Meta() {
   const { leader: l } = useCard();
   return (
@@ -110,14 +106,6 @@ function Meta() {
       <div className="font-semibold text-gray-900 text-[1.6rem] leading-tight">
         {l.first_name} {l.last_name}
       </div>
-      <div className="text-[1.3rem] text-gray-700 mt-1 leading-snug flex items-center justify-center gap-1.5">
-        <PersonIcon /> <span>{l.role || <TBC />}</span>
-      </div>
-      {l.organisation && (
-        <div className="text-[1.2rem] text-gray-600 mt-0.5 flex items-center justify-center gap-1.5">
-          <OrgIcon /> <span>{l.organisation}</span>
-        </div>
-      )}
     </div>
   );
 }
@@ -137,7 +125,7 @@ function Tags() {
           title={tag}
           className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border truncate max-w-[130px]"
         >
-          {tag.replace(/\b\w/g, (c) => c.toUpperCase())}
+          {tag.replace(/^Other:\s*/i, "").replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
       ))}
       {tags.length > 3 && (

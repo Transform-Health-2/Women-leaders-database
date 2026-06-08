@@ -68,10 +68,10 @@ export function Step0Branch({
 
   return (
     <div>
-      <h2 className="text-4xl font-bold text-brand-navy mb-4 tracking-heading">
+      <h2 className="text-[2rem] sm:text-[3rem] font-bold text-brand-navy tracking-heading mb-4">
         Women Leaders in Digital Health Database
       </h2>
-      <p className="text-xl text-dark leading-[1.8] mb-6">
+      <p className="text-[1.6rem] text-gray-600 leading-relaxed mb-6">
         Transform Health is building a global database of women leaders in
         digital health to increase visibility, representation, and engagement in
         leadership, policy, and technical spaces.

@@ -148,8 +148,8 @@ export default function Database({ onManageProfile }) {
   return (
     <div>
       {/* Page title */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-6">
-        <h1 className="text-[2.2rem] sm:text-[3rem] font-bold text-brand-navy mb-[1.6rem] tracking-heading">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-8">
+        <h1 className="text-[2rem] sm:text-[3rem] font-bold text-brand-navy tracking-heading">
           Women Leaders in Digital Health Database
         </h1>
       </div>

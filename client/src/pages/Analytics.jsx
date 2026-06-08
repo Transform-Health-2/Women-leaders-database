@@ -45,6 +45,7 @@ function toTitleCase(str) {
 export default function Analytics({ onManageProfile, onGoToDirectory }) {
   const [selectedRegion, setSelectedRegion] = useState("latin_america");
   const [selectedSpecialisation, setSelectedSpecialisation] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
   const { allLeaders, loading } = useLeaders();
@@ -58,13 +59,17 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
   }, [allLeaders]);
 
   const barData = useMemo(() => {
-    const source = selectedRegion
-      ? allLeaders.filter(
-          (l) =>
-            (l.region || COUNTRY_TO_REGION[l.country?.trim()]) ===
-            selectedRegion
-        )
-      : allLeaders;
+    let source = allLeaders;
+    if (selectedRegion) {
+      source = source.filter(
+        (l) =>
+          (l.region || COUNTRY_TO_REGION[l.country?.trim()]) ===
+          selectedRegion
+      );
+    }
+    if (selectedCountry) {
+      source = source.filter((l) => l.country?.trim() === selectedCountry);
+    }
     const expertiseCounts = {};
     source.forEach((l) => {
       const tags = toTags(l.expertise);
@@ -84,7 +89,7 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
       barPct: Math.round((count / max) * 100),
       color: BAR_COLORS[i % BAR_COLORS.length],
     }));
-  }, [allLeaders, selectedRegion]);
+  }, [allLeaders, selectedRegion, selectedCountry]);
 
   // Canonical country names that have leaders in the selected region.
   // Intentionally only stores canonical names (not atlas names) so the region
@@ -164,14 +169,15 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
         !selectedSpecialisation ||
         toTags(l.expertise).some((e) => {
           const trimmed = e.trim();
-          if (selectedSpecialisation === "Other") {
+          if (selectedSpecialisation === "Other")
             return trimmed === "Other" || trimmed.startsWith("Other:");
-          }
           return trimmed === selectedSpecialisation;
         });
-      return matchRegion && matchSpec;
+      const matchCountry =
+        !selectedCountry || l.country?.trim() === selectedCountry;
+      return matchRegion && matchSpec && matchCountry;
     });
-  }, [allLeaders, selectedRegion, selectedSpecialisation]);
+  }, [allLeaders, selectedRegion, selectedSpecialisation, selectedCountry]);
 
   if (loading) {
     return (
@@ -186,10 +192,10 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-8">
         {/* Section heading */}
         <div className="mb-8">
-          <h2 className="text-[2rem] sm:text-[3rem] font-bold text-gray-900 tracking-heading">
+          <h2 className="text-[2rem] sm:text-[3rem] font-bold text-brand-navy tracking-heading">
             Key Highlights from the Database
           </h2>
-          <p className="text-1.6 text-gray-600 mt-2 leading-relaxed">
+          <p className="text-[1.6rem] text-gray-600 mt-2 leading-relaxed">
             Overview of expertise distribution, demographic representation, and
             leadership density across the network.
           </p>
@@ -215,22 +221,33 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                     const atlasName = geo.properties.name;
                     const canonicalName =
                       ATLAS_TO_CANONICAL[atlasName] || atlasName;
-                    // Double-check region membership so overseas territories (e.g. French Guiana
-                    // sharing the "France" atlas name) don't get falsely highlighted.
                     const geoRegion = COUNTRY_TO_REGION[canonicalName];
-                    const isHighlighted =
-                      highlightedCountryNames.has(canonicalName) &&
-                      (!selectedRegion || geoRegion === selectedRegion);
+                    const hasLeaders = highlightedCountryNames.has(canonicalName);
+                    const inSelectedRegion = !selectedRegion || geoRegion === selectedRegion;
+                    const isHighlighted = hasLeaders && inSelectedRegion;
+                    const isActive = selectedCountry && canonicalName === selectedCountry;
+                    const isDimmed = selectedCountry && isHighlighted && !isActive;
                     return (
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill={isHighlighted ? "#F97A1A" : "#D4D4D8"}
+                        fill={isActive ? "#F97A1A" : isDimmed ? "#FAA94A" : isHighlighted ? "#F97A1A" : "#D4D4D8"}
                         stroke="#FFFFFF"
                         strokeWidth={0.7}
+                        onClick={
+                          isHighlighted
+                            ? () => {
+                                if (selectedCountry === canonicalName) {
+                                  setSelectedCountry(null);
+                                } else {
+                                  setSelectedCountry(canonicalName);
+                                }
+                              }
+                            : undefined
+                        }
                         style={{
-                          default: { outline: "none" },
-                          hover: { outline: "none", opacity: 0.85 },
+                          default: { outline: "none", cursor: isHighlighted ? "pointer" : "default", opacity: isDimmed ? 0.45 : 1 },
+                          hover: { outline: "none", opacity: isActive ? 1 : 0.85, cursor: isHighlighted ? "pointer" : "default" },
                           pressed: { outline: "none" },
                         }}
                       />
@@ -398,10 +415,14 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
               Specialisation
             </div>
             <div className="text-[1.8rem] font-bold leading-snug mb-4 text-brand-blue">
-              {selectedRegion
-                ? `${regionTotals[selectedRegion] || 0} leaders in ${
-                    REGION_LABELS[selectedRegion]
-                  }`
+              {selectedCountry
+                ? `${filteredLeaders.length} leaders in ${selectedCountry}`
+                : selectedRegion
+                ? `${
+                    selectedSpecialisation
+                      ? specialisationTotals?.[selectedRegion] || 0
+                      : regionTotals[selectedRegion] || 0
+                  } leaders in ${REGION_LABELS[selectedRegion]}`
                 : `Based on the ${stats.total} verified profiles`}
             </div>
             <p className="text-[1.1rem] text-gray-400 mb-3">
@@ -479,12 +500,13 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
               </div>
             )}
 
-          {/* Region / Specialisation results */}
-          {(selectedRegion || selectedSpecialisation) && (
+          {/* Region / Specialisation / Country results */}
+          {(selectedRegion || selectedSpecialisation || selectedCountry) && (
             <div className="order-2 lg:col-span-5 lg:row-start-2 mt-6 lg:mt-8">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                 <h3 className="text-1.6 font-bold text-brand-navy">
                   {[
+                    selectedCountry,
                     selectedRegion && REGION_LABELS[selectedRegion],
                     selectedSpecialisation &&
                       toTitleCase(selectedSpecialisation),
@@ -496,6 +518,25 @@ export default function Analytics({ onManageProfile, onGoToDirectory }) {
                   )}
                 </h3>
                 <div className="flex items-center gap-2">
+                  {selectedCountry && (
+                    <button
+                      onClick={() => setSelectedCountry(null)}
+                      className="flex items-center gap-1 px-[1.2rem] py-[0.55rem] border-[1.5px] border-red-400 rounded-[10px] bg-white text-red-400 text-[1.2rem] font-bold cursor-pointer tracking-[0.02em]"
+                    >
+                      <svg
+                        width="11"
+                        height="11"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      >
+                        <path d="M12 4L4 12M4 4l8 8" />
+                      </svg>
+                      Clear country
+                    </button>
+                  )}
                   {selectedRegion && (
                     <button
                       onClick={() => setSelectedRegion(null)}

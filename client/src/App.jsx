@@ -85,23 +85,27 @@ function App() {
 
       {route === "database" && (
         <div className="relative bg-brand-sand font-sans">
-          <div className="relative z-10 w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center justify-center px-8 py-16 pb-40 md:flex-row md:items-end md:justify-between md:px-8 md:pt-24 md:pb-48">
-            <img
-              src="./illustrations/db1-hero.png"
-              alt=""
-              className="w-full max-w-[160px] sm:max-w-[220px] flex-shrink-0 h-auto"
-            />
-            <div className="text-center md:text-left">
+          <div className="relative z-10 w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center px-8 py-16 pb-40 md:flex-row md:items-end md:px-8 md:pt-24 md:pb-48">
+            <div className="w-20 sm:w-[220px] flex-shrink-0 flex items-center justify-center">
+              <img
+                src="./illustrations/db1-hero.png"
+                alt=""
+                className="h-auto max-w-full"
+              />
+            </div>
+            <div className="flex-1 text-left">
               <div className="font-bold uppercase text-[clamp(2.8rem,6vw,7rem)] leading-[1.1] text-brand-blue-bright tracking-heading">
                 <div>Women Leaders Bridging the Gap</div>
                 <div>in Digital Health</div>
               </div>
             </div>
-            <img
-              src="./illustrations/db2-hero.png"
-              alt=""
-              className="w-full max-w-[160px] sm:max-w-[240px] flex-shrink-0 md:mb-8 h-auto md:-translate-x-12"
-            />
+            <div className="w-20 sm:w-[220px] flex-shrink-0 flex items-center justify-center md:mb-8 md:-translate-x-12">
+              <img
+                src="./illustrations/db2-hero.png"
+                alt=""
+                className="h-auto max-w-full"
+              />
+            </div>
           </div>
           <img
             src="./illustrations/Rectangle 6709.svg"
@@ -113,13 +117,15 @@ function App() {
 
       {route === "analytics" && (
         <div className="relative bg-brand-sand font-sans">
-          <div className="relative z-10 w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center justify-center px-8 py-16 pb-40 md:flex-row md:items-end md:justify-between md:px-8 md:pt-24 md:pb-48">
-            <img
-              src="./illustrations/network2-hero.png"
-              alt=""
-              className="w-full max-w-[160px] sm:max-w-[220px] flex-shrink-0 h-auto"
-            />
-            <div className="text-center md:text-left">
+          <div className="relative z-10 w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center px-8 py-16 pb-40 md:flex-row md:items-end md:px-8 md:pt-24 md:pb-48">
+            <div className="w-20 sm:w-[220px] flex-shrink-0 flex items-center justify-center">
+              <img
+                src="./illustrations/network2-hero.png"
+                alt=""
+                className="h-auto max-w-full"
+              />
+            </div>
+            <div className="flex-1 text-left">
               <div className="font-bold uppercase text-[clamp(2.8rem,6vw,7rem)] leading-[1.1] tracking-heading">
                 <div className="text-brand-navy">Global</div>
                 <div className="text-brand-pink">Network</div>
@@ -129,11 +135,13 @@ function App() {
                 transformation
               </p>
             </div>
-            <img
-              src="./illustrations/network1-hero.png"
-              alt=""
-              className="w-full max-w-[160px] sm:max-w-[240px] flex-shrink-0 md:mb-8 h-auto md:-translate-x-12"
-            />
+            <div className="w-20 sm:w-[220px] flex-shrink-0 flex items-center justify-center md:mb-8 md:-translate-x-12">
+              <img
+                src="./illustrations/network1-hero.png"
+                alt=""
+                className="h-auto max-w-full"
+              />
+            </div>
           </div>
           <img
             src="./illustrations/Rectangle 6709.svg"
@@ -145,24 +153,28 @@ function App() {
 
       {route === "submit" && (
         <div className="relative bg-brand-sand font-sans">
-          <div className="relative z-10 w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center justify-center px-8 py-16 pb-40 md:flex-row md:items-end md:justify-between md:px-8 md:pt-24 md:pb-48">
-            <img
-              src="./illustrations/hero-left.png"
-              alt=""
-              className="w-full max-w-[160px] sm:max-w-[220px] flex-shrink-0 h-auto"
-            />
-            <div className="text-center md:text-left">
+          <div className="relative z-10 w-full max-w-[1440px] mx-auto flex flex-col gap-8 items-center px-8 py-16 pb-40 md:flex-row md:items-end md:px-8 md:pt-24 md:pb-48">
+            <div className="w-20 sm:w-[220px] flex-shrink-0 flex items-center justify-center">
+              <img
+                src="./illustrations/hero-left.png"
+                alt=""
+                className="h-auto max-w-full"
+              />
+            </div>
+            <div className="flex-1 text-left">
               <div className="font-bold uppercase text-[clamp(2.8rem,6vw,7rem)] leading-[1.1] tracking-heading">
                 <div className="text-brand-navy">Join</div>
                 <div className="text-brand-pink">The</div>
                 <div className="text-brand-pink">Database</div>
               </div>
             </div>
-            <img
-              src="./illustrations/hero-right.png"
-              alt=""
-              className="w-full max-w-[160px] sm:max-w-[240px] flex-shrink-0 md:mb-8 h-auto md:-translate-x-12"
-            />
+            <div className="w-20 sm:w-[220px] flex-shrink-0 flex items-center justify-center md:mb-8 md:-translate-x-12">
+              <img
+                src="./illustrations/hero-right.png"
+                alt=""
+                className="h-auto max-w-full"
+              />
+            </div>
           </div>
           <img
             src="./illustrations/Rectangle 6709.svg"
@@ -281,20 +293,26 @@ function App() {
 
       {/* Chrome toggle — fixed bottom-right, always visible */}
       {route !== "admin" && (
-        <button
-          onClick={toggleChrome}
-          title={
-            chromeHidden
+        <div className="fixed bottom-5 right-5 z-[9999] flex items-center gap-2 group">
+          <span className="pointer-events-none text-[1.2rem] text-white bg-brand-navy/80 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            {chromeHidden
               ? "Show site header & footer"
-              : "Hide site header & footer"
-          }
-          aria-label={
-            chromeHidden
-              ? "Show site header & footer"
-              : "Hide site header & footer"
-          }
-          className="fixed bottom-5 right-5 z-[9999] w-10 h-10 rounded-full bg-brand-navy text-white shadow-lg flex items-center justify-center hover:bg-brand-navy-dark transition-colors"
-        >
+              : "Hide site header & footer"}
+          </span>
+          <button
+            onClick={toggleChrome}
+            title={
+              chromeHidden
+                ? "Show site header & footer"
+                : "Hide site header & footer"
+            }
+            aria-label={
+              chromeHidden
+                ? "Show site header & footer"
+                : "Hide site header & footer"
+            }
+            className="w-10 h-10 rounded-full bg-brand-navy text-white shadow-lg flex items-center justify-center hover:bg-brand-navy-dark transition-colors"
+          >
           {chromeHidden ? (
             /* eye-open */
             <svg
@@ -328,6 +346,7 @@ function App() {
             </svg>
           )}
         </button>
+        </div>
       )}
     </div>
   );

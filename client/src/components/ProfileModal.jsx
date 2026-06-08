@@ -90,7 +90,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
             )}
           </div>
 
-          {/* Name + role + org */}
+          {/* Name + linkedin */}
           <div className="flex-1 min-w-0 pt-1">
             {isFeatured && (
               <span className="text-[1.1rem] font-semibold bg-brand-navy text-white px-3 py-1 rounded-full mb-3 inline-block tracking-wide">
@@ -119,16 +119,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                 </a>
               )}
             </h2>
-            {leader.role && (
-              <p className="text-[1.6rem] font-semibold text-brand-dark mb-1">
-                {leader.role}
-              </p>
-            )}
-            {leader.organisation && (
-              <p className="text-[1.5rem] text-gray-600">
-                {leader.organisation}
-              </p>
-            )}
+
           </div>
         </div>
 
@@ -177,7 +168,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
                   title={tag}
                   className="text-[1.3rem] font-medium bg-brand-blue-tint text-brand-navy px-3 py-1.5 rounded-full border border-brand-blue-border"
                 >
-                  {tag}
+                  {tag.replace(/^Other:\s*/i, "")}
                 </span>
               ))}
             </div>

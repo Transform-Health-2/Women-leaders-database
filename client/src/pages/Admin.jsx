@@ -592,7 +592,6 @@ export default function Admin({ onGoToDirectory }) {
   const pendingCount = pending.length;
   const nominatedList = nominated;
   const nominatedCount = nominated.length;
-  const totalPendingCount = pending.length + nominated.length;
   const updateRequests = requests.filter(
     (r) => r.request_type === "update" && r.status === "pending"
   );
@@ -600,6 +599,7 @@ export default function Admin({ onGoToDirectory }) {
     (r) => r.request_type === "delete" && r.status === "pending"
   );
   const requestsCount = requests.filter((r) => r.status === "pending").length;
+  const totalPendingCount = pending.length + requestsCount;
   const liveCount = all.filter((item) => item.status === "live").length;
   const rejectedCount = all.filter((item) => item.status === "rejected").length;
   const allCount = all.length;
@@ -701,7 +701,7 @@ export default function Admin({ onGoToDirectory }) {
 
   const sidebarData = [
     { ...SIDEBAR_ITEMS[0], count: allCount },
-    { ...SIDEBAR_ITEMS[1], count: requestsCount },
+    { ...SIDEBAR_ITEMS[1], count: pending.length + requestsCount },
     { ...SIDEBAR_ITEMS[2], count: nominatedCount },
     SIDEBAR_ITEMS[3], // divider (no count)
     { ...SIDEBAR_ITEMS[4], count: testResults.length },
@@ -836,7 +836,7 @@ export default function Admin({ onGoToDirectory }) {
                     </h2>
                   </div>
                   <div className="grid grid-cols-3 gap-3 text-center sm:text-right">
-                    <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange">
+                    <div className="bg-brand-orange rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-brand-orange" title="New submissions, update requests, and deletion requests awaiting review">
                       <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
                         Pending
                       </div>
@@ -844,7 +844,7 @@ export default function Admin({ onGoToDirectory }) {
                         {totalPendingCount}
                       </div>
                     </div>
-                    <div className="bg-green-500 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-green-600">
+                    <div className="bg-green-500 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-green-600" title="Approved profiles published to the public directory">
                       <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
                         Live
                       </div>
@@ -852,7 +852,7 @@ export default function Admin({ onGoToDirectory }) {
                         {liveCount}
                       </div>
                     </div>
-                    <div className="bg-red-600 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-red-700">
+                    <div className="bg-red-600 rounded-lg px-[1.6rem] py-[1.2rem] border-2 border-red-700" title="Profiles that have been declined">
                       <div className="text-[1.4rem] font-bold uppercase tracking-wider text-white">
                         Rejected
                       </div>
@@ -975,6 +975,7 @@ export default function Admin({ onGoToDirectory }) {
                 <div className="flex border-b-2 border-brand-navy bg-brand-navy">
                   <button
                     onClick={() => setRequestSubTab("new")}
+                    title="New profile submissions waiting for approval"
                     className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
                       requestSubTab === "new"
                         ? "bg-white text-green-700 border-b-[4px] border-green-500"
@@ -999,6 +1000,7 @@ export default function Admin({ onGoToDirectory }) {
                   </button>
                   <button
                     onClick={() => setRequestSubTab("updates")}
+                    title="Update requests from existing leaders"
                     className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
                       requestSubTab === "updates"
                         ? "bg-white text-amber-700 border-b-[4px] border-amber-500"
@@ -1023,6 +1025,7 @@ export default function Admin({ onGoToDirectory }) {
                   </button>
                   <button
                     onClick={() => setRequestSubTab("deletes")}
+                    title="Deletion requests from existing leaders"
                     className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
                       requestSubTab === "deletes"
                         ? "bg-white text-red-600 border-b-[4px] border-red-500"
