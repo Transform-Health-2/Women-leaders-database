@@ -167,40 +167,48 @@ These are hardcoded reference items (not database-driven) — use this tab to cr
 
 ### 6. Email System Setup
 
-The platform uses a Supabase Edge Function (`send-email`) to send magic-link emails so leaders can manage their own profiles (update/delete) without any account or password.
+The platform uses a Supabase Edge Function (`send-email`) to send magic-link emails so leaders can manage their own profiles (update/delete) without any account or password. This self-service workflow reduces administrative burden and gives leaders ownership of their profiles.
 
-**How the magic link flow works:**
-1. Leader requests a profile update from the Manage Profile page
-2. Admin opens **Profile Requests → Updates** and clicks **Send update link**
-3. The Edge Function sends an email with a unique magic link
-4. Leader clicks the link → lands on a pre-filled update form
-5. Leader updates their profile and submits → done. No account, no password, no login needed.
+**Intended user journey — self-service profile management:**
+1. A leader requests to update or delete their profile via the "Manage your profile" page
+2. The system sends a secure magic link to the email address associated with that profile
+3. The leader clicks the link and is taken directly to their profile management page
+4. They update their information or request deletion
+5. The changes are saved — no username, password, or account creation required
 
-**To set up email sending, you need the client to provide:**
+**How the admin triggers the flow:**
+1. Admin opens **Profile Requests → Updates** (or **Deletes**)
+2. Clicks **Send update link**
+3. The Edge Function sends the email with the unique magic link
+4. Leader's subsequent actions are handled automatically
 
-#### Option A: Google Workspace (Recommended — Free)
+**Recommended sender address:**
 
-1. The client logs into the Google Workspace admin account (e.g. `noreply@transformhealthcoalition.org`)
-2. Goes to **Google Account → Security → 2-Step Verification → App Passwords**
-3. Generates a 16-character app password for **"Mail"**
-4. Shares the app password with the technical team
+Use a dedicated functional email address — not an individual team member's account. This avoids issues if staff roles change and ensures the setup remains sustainable long-term.
+
+> **Preferred:** `noreply@transformhealthcoalition.org`
+
+This email is used solely for sending automated profile management links (system-generated, not actively monitored). If needed, copies or alerts can be forwarded to designated team members.
+
+**Setup steps:**
+
+The Transform Health team needs to:
+
+1. Create or designate the functional email address (e.g. `noreply@transformhealthcoalition.org`) in Google Workspace
+2. Generate an **App Password** for the account:
+   - Go to **Google Account → Security → 2-Step Verification → App Passwords**
+   - Select **"Mail"** as the app
+   - Copy the 16-character app password
+3. Share the email address and app password with the technical team
 
 The technical team then configures these secrets in the Supabase project dashboard:
 
 | Secret | Value |
 |---|---|
-| `GOOGLE_SMTP_USER` | The Workspace email address |
+| `GOOGLE_SMTP_USER` | `noreply@transformhealthcoalition.org` |
 | `GOOGLE_SMTP_PASS` | The 16-character app password |
 
-#### Option B: SendGrid (Paid)
-
-Configure `SENDGRID_API_KEY` in Supabase secrets.
-
-#### Option C: Generic SMTP
-
-Configure `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` in Supabase secrets.
-
-> **Important:** The `send-email` Edge Function is already deployed at `supabase/functions/send-email/`. Only the secrets need to be configured in the Supabase dashboard. Once set, test by sending an update link from **Profile Requests → Updates** and verifying the leader receives the email.
+> **The `send-email` Edge Function is already deployed** at `supabase/functions/send-email/`. Only the secrets above need to be configured in the Supabase project dashboard. Once set, test by sending an update link from **Profile Requests → Updates** and verifying the leader receives the email.
 
 ---
 

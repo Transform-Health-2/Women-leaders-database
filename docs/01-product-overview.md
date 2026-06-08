@@ -26,7 +26,7 @@ We do this by building and maintaining a searchable, global directory of accompl
 ### For Women Leaders
 1. **Submit Your Profile** — Share your role, expertise, bio, and professional links
 2. **Get Discovered** — Your profile appears in the public directory
-3. **Manage Your Profile** — Update your information or remove yourself anytime
+3. **Manage Your Profile** — Update your information or remove yourself anytime via a secure magic link sent to your email. No account, no password, no admin intervention needed.
 
 ### For Nominators
 1. **Nominate a Leader** — Suggest a woman leader to be added to the directory
@@ -51,7 +51,7 @@ We do this by building and maintaining a searchable, global directory of accompl
 | **Smart Search** | Find leaders by name, role, organization, expertise, or geography |
 | **Expertise Tagging** | 15+ expertise areas including AI, Digital Health Policy, Health Financing, mHealth |
 | **Geographic Filtering** | Browse by country or continent to find regional leaders |
-| **Profile Management** | Leaders can update or delete their own profile anytime (via magic link) |
+| **Profile Management** | Self-service updates and deletion via secure magic link — no account or password required |
 | **Nomination System** | Anyone can nominate a leader on their behalf (lightweight entry) |
 | **Analytics** | Interactive world map with region/country/specialisation filtering, expertise distribution chart, and leader discovery |
 | **Admin Dashboard** | Review submissions, approve/reject profiles, manage requests |
@@ -115,7 +115,7 @@ Leader visits directory
   → Submits
   → Admin reviews
   → Profile goes LIVE
-  → Leader can update/delete anytime via magic link
+  → Leader requests update/delete → secure magic link sent via email → edits without an account
 ```
 
 ### Nominate a Leader
