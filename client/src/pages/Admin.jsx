@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
-import { COUNTRY_TO_REGION, REGION_LABELS } from "../utils/countries";
+import { COUNTRY_TO_REGION, REGION_LABELS, ALL_COUNTRIES } from "../utils/countries";
 import AdminManual from "./AdminManual";
 // import AdminFixes from "./AdminFixes";
 
@@ -560,7 +560,7 @@ export default function Admin({ onGoToDirectory }) {
 
   const countriesByRegion = useMemo(() => {
     const grouped = {};
-    countries.forEach((country) => {
+    ALL_COUNTRIES.forEach((country) => {
       const key = COUNTRY_TO_REGION[country] || "other";
       if (!grouped[key]) grouped[key] = [];
       grouped[key].push(country);
@@ -572,7 +572,7 @@ export default function Admin({ onGoToDirectory }) {
         countries: list.sort(),
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [countries]);
+  }, []);
 
   const expertiseOptions = useMemo(() => {
     const set = new Set();
