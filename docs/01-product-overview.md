@@ -53,7 +53,7 @@ We do this by building and maintaining a searchable, global directory of accompl
 | **Geographic Filtering** | Browse by country or continent to find regional leaders |
 | **Profile Management** | Leaders can update or delete their own profile anytime (via magic link) |
 | **Nomination System** | Anyone can nominate a leader on their behalf (lightweight entry) |
-| **Analytics** | Track profile views, clicks, and directory growth |
+| **Analytics** | Interactive world map with region/country/specialisation filtering, expertise distribution chart, and leader discovery |
 | **Admin Dashboard** | Review submissions, approve/reject profiles, manage requests |
 
 ---
@@ -65,8 +65,8 @@ A complete **Leader Profile** includes:
 | Field | Type | Public | Required |
 |-------|------|--------|----------|
 | Name | Text | ✓ | ✓ |
-| Role / Job Title | Text | ✓ | ✓ |
-| Organization | Text | ✓ | ✓ |
+| Role / Job Title | Text | ✗ (Admin only) | ✓ |
+| Organization | Text | ✗ (Admin only) | ✓ |
 | Bio | Text | ✓ | ✓ |
 | Expertise | Tags | ✓ | ✓ |
 | Years of Experience | Number | ✓ | — |

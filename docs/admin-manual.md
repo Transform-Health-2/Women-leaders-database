@@ -280,6 +280,7 @@ The platform includes two layers of duplicate protection:
 - **Live auto-refresh:** The console refreshes its data every 30 seconds while the tab is open and visible. It also refreshes when the tab regains focus (e.g., switching back from another tab).
 - **DEV badge:** The Test Results and Test Fixes tabs show a `DEV` badge in the sidebar — these are developer/internal tools used during pre-launch testing and may be hidden or restricted in production.
 - **Photo review:** Profile photos are not displayed in the admin expanded view during review. To verify a photo, check the public directory after approval or inspect the row in Supabase directly.
+- **Chrome toggle (eye button):** A small eye toggle appears at the bottom-right of the Database, Analytics, and Submit pages. Click it to hide/show the site header, nav bar, and footer — useful when demoing how the directory would look embedded in the Transform Health website.
 
 ---
 
