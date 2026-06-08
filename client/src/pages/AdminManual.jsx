@@ -109,6 +109,9 @@ function Img({ src, caption }) {
           {caption}
         </figcaption>
       )}
+      <figcaption className="text-[1.1rem] text-amber-600 mt-1 text-center">
+        ⚠ Screenshot may not reflect latest UI — pending update
+      </figcaption>
     </figure>
   );
 }
@@ -409,10 +412,12 @@ const SECTIONS = [
           Use <strong>Reject</strong> for most denials. Use <strong>Delete</strong> only for spam or corrections.
         </P>
 
-        <H3>How do I send an update link to a leader?</H3>
+        <H3>How do leaders update their profiles?</H3>
         <P>
-          Go to <strong>Profile Requests → Updates</strong>, expand the row, and click{" "}
-          <strong>Send update link</strong>. The system emails them a magic link (no password needed). When they submit, it appears as a new pending entry for your review.
+          Leaders visit the <strong>Manage Profile</strong> page, enter their name and email,
+          and receive a magic link.  They can edit or delete their profile directly — 
+          no admin action required. Completed changes appear in the{" "}
+          <strong>Activity Log</strong> for admin visibility.
         </P>
 
         <H3>What if the email never sent?</H3>
@@ -472,7 +477,10 @@ const SECTIONS = [
 
         <H3>Can leaders delete their own profiles?</H3>
         <P>
-          Yes. They go to their profile in the public directory and click <strong>Manage Your Profile → Request Deletion</strong>. This sends a request to you in <strong>Profile Requests → Deletes</strong>. You approve and they're removed.
+          Yes. They visit the <strong>Manage Profile</strong> page, enter their
+          name and email, and choose to delete their profile via a magic link.
+          No admin action is required — completed deletions appear in the{" "}
+          <strong>Activity Log</strong>.
         </P>
 
         <H3>What if a profile has no photo?</H3>
@@ -673,55 +681,25 @@ const SECTIONS = [
         />
         <H3>Updates</H3>
         <P>
-          Leaders requesting changes to their profile (role, bio, photo, etc.).
+          Leaders can now update their own profiles directly via the{" "}
+          <strong>Manage Profile</strong> page with a magic link — no admin
+          action required. Completed updates are logged in the{" "}
+          <strong>Activity Log</strong> tab for admin visibility.
         </P>
-        <Ol>
-          <Li>Expand the row to read the full change request</Li>
-          <Li>
-            Click <strong>Send update link</strong> — emails the leader a magic
-            link to edit their own profile
-          </Li>
-          <Li>
-            The row updates to show a <strong>Link sent</strong> status
-          </Li>
-          <Li>
-            Once the leader resubmits via the link, it reappears as a new
-            pending entry in the <strong>New</strong> sub-tab
-          </Li>
-          <Li>Review and approve the updated version as normal</Li>
-        </Ol>
-        <Note>
-          If the request is spam or irrelevant, click <strong>Dismiss</strong>{" "}
-          to close it without sending a link.
-        </Note>
         <Img
           src="screenshots/admin-manual/05-profile-requests-updates.png"
-          caption="Profile Requests > Updates sub-tab with Send update link actions"
+          caption="Profile Requests > Updates sub-tab (self-service — no admin action needed)"
         />
         <H3>Deletes</H3>
-        <P>Leaders who want to be removed from the directory.</P>
-        <Ol>
-          <Li>Expand the row to read the reason for removal (if provided)</Li>
-          <Li>
-            Click <strong>Approve deletion</strong> — sets status to{" "}
-            <Code>rejected</Code> and removes them from the public directory
-          </Li>
-          <Li>
-            Or click <strong>Dismiss</strong> to decline the request
-          </Li>
-        </Ol>
         <P>
-          Use <strong>Select all</strong> +{" "}
-          <strong>Approve N deletion(s)</strong> to process multiple requests at
-          once.
+          Leaders can remove themselves from the directory via the{" "}
+          <strong>Manage Profile</strong> page with a magic link — no admin
+          action required. Completed deletions are logged in the{" "}
+          <strong>Activity Log</strong> tab for admin visibility.
         </P>
-        <Note>
-          Deletion cannot be undone from the admin console. If a leader was
-          removed in error they must resubmit from scratch.
-        </Note>
         <Img
           src="screenshots/admin-manual/06-profile-requests-deletes.png"
-          caption="Profile Requests > Deletes sub-tab with Approve deletion actions"
+          caption="Profile Requests > Deletes sub-tab (self-service — no admin action needed)"
         />
       </>
     ),
@@ -774,16 +752,22 @@ const SECTIONS = [
         </P>
         <H3>How the magic link flow works</H3>
         <Ol>
-          <Li>Leader requests a profile update from the Manage Profile page</Li>
           <Li>
-            Admin opens <strong>Profile Requests → Updates</strong> and clicks{" "}
-            <strong>Send update link</strong>
+            Leader visits the <strong>Manage Profile</strong> page and enters their
+            name and email
           </Li>
-          <Li>The Edge Function sends an email with a unique magic link</Li>
+          <Li>
+            The system matches their profile by email and sends a magic link
+            directly — no admin action required
+          </Li>
           <Li>Leader clicks the link → lands on a pre-filled update form</Li>
           <Li>
-            Leader updates and submits → done. No account, no password, no login
-            needed.
+            Leader can edit their details or delete their profile — all
+            self-service, no account, no password, no login needed
+          </Li>
+          <Li>
+            Completed actions appear in the{" "}
+            <strong>Activity Log</strong> tab for admin visibility
           </Li>
         </Ol>
         <H3>Setup: Google Workspace (Recommended)</H3>
@@ -863,36 +847,15 @@ const SECTIONS = [
             <strong>Approve</strong> to process multiple at once
           </Li>
         </Ol>
-        <H3>Handling a profile update request</H3>
-        <Ol>
-          <Li>
-            Open <strong>Profile Requests → Updates</strong>
-          </Li>
-          <Li>Expand the row — read what the leader wants changed</Li>
-          <Li>
-            Click <strong>Send update link</strong> — leader receives a magic
-            link by email
-          </Li>
-          <Li>
-            Once they resubmit, the updated profile appears as a new pending
-            entry in <strong>All Entries</strong>
-          </Li>
-          <Li>Approve the updated version</Li>
-        </Ol>
-        <H3>Removing a leader from the directory</H3>
+        <H3>Profile updates and deletions</H3>
         <P>
-          <strong>If the leader requested removal:</strong>
+          Leaders manage their own profiles via the{" "}
+          <strong>Manage Profile</strong> page using a magic link — no admin
+          action is required for updates or deletions. All completed actions are
+          recorded in the <strong>Activity Log</strong> tab.
         </P>
-        <Ol>
-          <Li>
-            Open <strong>Profile Requests → Deletes</strong>
-          </Li>
-          <Li>
-            Read the reason → click <strong>Approve deletion</strong>
-          </Li>
-        </Ol>
         <P>
-          <strong>If you need to remove without a request:</strong>
+          <strong>If you need to remove a leader manually:</strong>
         </P>
         <Ol>
           <Li>
