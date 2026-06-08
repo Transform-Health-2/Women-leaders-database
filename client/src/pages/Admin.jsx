@@ -1684,6 +1684,7 @@ export default function Admin({ onGoToDirectory }) {
                           "Organisation",
                           "LinkedIn Clicks",
                           "Status",
+                          "",
                         ].map((h) => (
                           <th
                             key={h}
@@ -1749,11 +1750,6 @@ export default function Admin({ onGoToDirectory }) {
                                         ⚠ Possible duplicate
                                       </span>
                                     )}
-                                    <span className="text-[1.3rem] text-gray-500">
-                                      {isExpanded
-                                        ? "Hide details"
-                                        : "View details"}
-                                    </span>
                                   </div>
                                 </td>
                                 <td className="px-5 py-3.5 text-lg text-gray-600">
@@ -1764,6 +1760,17 @@ export default function Admin({ onGoToDirectory }) {
                                 </td>
                                 <td className="px-5 py-3.5 text-lg text-gray-600 text-center">
                                   {item.linkedin_clicks || 0}
+                                </td>
+                                <td className="px-2 py-3.5 text-center">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setExpandedAllId(isExpanded ? null : item.id);
+                                    }}
+                                    className="text-[1.2rem] font-medium px-3 py-1.5 rounded-lg transition-colors bg-brand-blue-tint text-brand-navy border border-brand-blue-border hover:bg-blue-100 cursor-pointer"
+                                  >
+                                    {isExpanded ? "Hide" : "Details"}
+                                  </button>
                                 </td>
                                 <td className="px-5 py-3.5">
                                   <span
