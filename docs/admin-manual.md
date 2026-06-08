@@ -195,18 +195,26 @@ This email is used solely for sending automated profile management links (system
 The Transform Health team needs to:
 
 1. Create or designate the functional email address (e.g. `noreply@transformhealthcoalition.org`) in Google Workspace
-2. Generate an **App Password** for the account:
-   - Go to **Google Account → Security → 2-Step Verification → App Passwords**
-   - Select **"Mail"** as the app
-   - Copy the 16-character app password
-3. Share the email address and app password with the technical team
 
-The technical team then configures these secrets in the Supabase project dashboard:
+2. **Recommended (production):** Enable 2-Step Verification on the account, then generate an App Password:
+   - Go to **Google Account → Security → 2-Step Verification** → turn it on
+   - Then go to **Google Account → Security → App Passwords**
+   - Select **"Mail"** as the app and **"Other"** (name it "Supabase SMTP")
+   - Copy the 16-character app password
+   - Share it with the technical team as `GOOGLE_SMTP_PASS`
+   
+   An App Password is more secure than using the account password directly, and won't break if the account password is changed later.
+
+3. **Interim (current):** Since 2-Step Verification is not yet enabled, the account password is used directly for SMTP auth. The technical team has configured `GOOGLE_SMTP_PASS` with the account password.
+
+The technical team configures these secrets in the Supabase project dashboard (**Project Settings → Edge Functions → Secrets**):
 
 | Secret | Value |
 |---|---|
 | `GOOGLE_SMTP_USER` | `noreply@transformhealthcoalition.org` |
-| `GOOGLE_SMTP_PASS` | The 16-character app password |
+| `GOOGLE_SMTP_PASS` | Account password or App Password (see above) |
+
+> **Recommendation:** Enable 2-Step Verification and switch to an App Password before launch. This is more secure and avoids disruption if the account password is ever changed. The SMTP config in Supabase only needs to be updated once when switching.
 
 > **The `send-email` Edge Function is already deployed** at `supabase/functions/send-email/`. Only the secrets above need to be configured in the Supabase project dashboard. Once set, test by sending an update link from **Profile Requests → Updates** and verifying the leader receives the email.
 
