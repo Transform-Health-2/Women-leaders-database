@@ -177,6 +177,13 @@ function toTags(expertise) {
   return expertise.split(/,\s*/).filter(Boolean);
 }
 
+function toTitleCase(str) {
+  if (!str) return "";
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
+
 export default function Admin({ onGoToDirectory }) {
   const [pending, setPending] = useState([]);
   const [nominated, setNominated] = useState([]);
@@ -603,11 +610,21 @@ export default function Admin({ onGoToDirectory }) {
   }, [countriesByRegion, filterRegion]);
 
   const expertiseOptions = useMemo(() => {
-    const set = new Set();
+    const seen = new Set();
+    const options = new Set();
     all.forEach((item) => {
-      toTags(item.expertise).forEach((tag) => set.add(tag));
+      toTags(item.expertise).forEach((tag) => {
+        const trimmed = tag.trim();
+        const stripped = trimmed.replace(/^Other:\s*/i, "").trim();
+        const normalized = stripped
+          ? toTitleCase(stripped)
+          : "Other";
+        if (seen.has(normalized.toLowerCase())) return;
+        seen.add(normalized.toLowerCase());
+        options.add(normalized);
+      });
     });
-    return Array.from(set).sort();
+    return Array.from(options).sort();
   }, [all]);
 
   const liveNames = useMemo(() => {
