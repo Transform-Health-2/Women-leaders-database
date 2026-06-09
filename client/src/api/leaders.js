@@ -229,7 +229,7 @@ export const api = {
       .eq("status", "live")
       .ilike("first_name", firstName.trim())
       .ilike("last_name", lastName.trim())
-      .eq("leader_email", email.trim().toLowerCase())
+      .or(`leader_email.eq.${email.trim().toLowerCase()},editor_email.eq.${email.trim().toLowerCase()}`)
       .limit(1);
 
     return data?.length > 0 ? data[0] : null;
