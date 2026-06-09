@@ -1762,6 +1762,29 @@ export default function Admin({ onGoToDirectory }) {
                       </div>
                     </div>
                   )}
+                  {filteredAll.length === 0 ? (
+                    <div className="text-center py-16">
+                      <div className="text-[4.8rem] mb-4 text-gray-300">—</div>
+                      <div className="text-lg text-gray-500">
+                        No entries match your filters
+                      </div>
+                      <button
+                        onClick={() => {
+                          setSearchQuery("");
+                          setFilterRegion("");
+                          setFilterCountry("");
+                          setFilterExpertise("");
+                          setFilterClicks("");
+                          setFilterStatus("");
+                          setAllPage(1);
+                        }}
+                        className="mt-3 text-[1.4rem] text-brand-pink font-medium hover:underline cursor-pointer"
+                      >
+                        Clear all filters
+                      </button>
+                    </div>
+                  ) : (
+                  <>
                   <table className="w-full">
                     <thead className="border-b-2 border-brand-navy bg-brand-navy">
                       <tr>
@@ -2014,6 +2037,8 @@ export default function Admin({ onGoToDirectory }) {
                         })}
                     </tbody>
                   </table>
+                  </>
+                  )}
                 </div>
 
                 {filteredAll.length > PAGE_SIZE && (
