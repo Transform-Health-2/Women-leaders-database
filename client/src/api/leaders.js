@@ -269,14 +269,15 @@ export const api = {
   // Used for self-service: leader requests a magic link directly (no admin needed)
   requestManage: async ({ leaderId, firstName, lastName, linkedin, mode }) => {
     try {
-      // Fetch leader's email from database (admin-only field)
+      // Fetch leader's email from database
       const { data: leader, error: fetchErr } = await supabase
         .from("leaders")
-        .select("leader_email, first_name, last_name")
+        .select("leader_email, editor_email, first_name, last_name")
         .eq("id", leaderId)
         .single();
 
-      if (fetchErr || !leader?.leader_email) {
+      const email = leader?.leader_email || leader?.editor_email;
+      if (fetchErr || !email) {
         throw new Error("Leader email not found");
       }
 
@@ -305,14 +306,14 @@ export const api = {
 
       const { error } = await supabase.functions.invoke("send-email", {
         body: {
-          to: leader.leader_email,
+          to: email,
           subject,
           html,
         },
       });
 
       if (error) throw error;
-      return { ok: true, message: "Magic link sent to " + leader.leader_email };
+      return { ok: true, message: "Magic link sent to " + email };
     } catch (err) {
       console.error("requestManage failed:", err);
       const token = btoa(
