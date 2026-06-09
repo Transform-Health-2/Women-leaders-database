@@ -237,6 +237,27 @@ export default function Admin({ onGoToDirectory }) {
     };
   }, []);
 
+  // Read initial tab from URL hash: #/admin?tab=requests
+  useEffect(() => {
+    const hash = window.location.hash;
+    const match = hash.match(/[?&]tab=([^&]+)/);
+    if (match) {
+      const tab = match[1];
+      const validTabs = ["all", "requests", "nominated", "activity", "manual"];
+      if (validTabs.includes(tab)) setActiveTab(tab);
+    }
+  }, []);
+
+  // Sync active tab to URL hash
+  useEffect(() => {
+    const hash = window.location.hash;
+    const base = hash.split("?")[0] || "#/admin";
+    const newHash = `${base}?tab=${activeTab}`;
+    if (hash !== newHash) {
+      window.history.replaceState(null, "", newHash);
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     loadActiveTabData();
   }, [activeTab]);
@@ -978,6 +999,23 @@ export default function Admin({ onGoToDirectory }) {
                         <option value="live">Live</option>
                         <option value="rejected">Rejected</option>
                       </select>
+                      {(searchQuery || filterRegion || filterCountry || filterExpertise || filterClicks || filterStatus) && (
+                        <button
+                          onClick={() => {
+                            setSearchQuery("");
+                            setFilterRegion("");
+                            setFilterCountry("");
+                            setFilterExpertise("");
+                            setFilterClicks("");
+                            setFilterStatus("");
+                            setAllPage(1);
+                          }}
+                          className="h-8 flex items-center gap-1 px-3 border-2 border-red-300 rounded-lg bg-white text-red-500 text-[1.2rem] font-semibold cursor-pointer hover:bg-red-50"
+                        >
+                          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 4L4 12M4 4l8 8"/></svg>
+                          Clear
+                        </button>
+                      )}
                       <div className="text-[1.3rem] font-semibold text-brand-navy ml-auto">
                         {filteredAll.length} of {allCount} total entries
                       </div>
