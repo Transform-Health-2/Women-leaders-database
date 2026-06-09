@@ -908,11 +908,12 @@ export default function Admin({ onGoToDirectory }) {
               </div>
             )}
 
-          {/* Filter bar - hidden for manual/docs and activity tabs */}
+          {/* Filter bar - hidden for manual/docs, activity, and nominated tabs */}
           {activeTab !== "tests" &&
             activeTab !== "manual" &&
             activeTab !== "fixes" &&
-            activeTab !== "activity" && (
+            activeTab !== "activity" &&
+            activeTab !== "nominated" && (
               <div className="px-8 py-3 border-b-2 border-brand-navy flex-shrink-0 bg-white">
                 <div className="flex flex-col gap-2">
                   {/* Row 1: core filters */}
