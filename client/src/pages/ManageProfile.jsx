@@ -49,6 +49,8 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
   const [editBio, setEditBio] = useState("");
   const [editLinkedin, setEditLinkedin] = useState("");
   const [editExpertise, setEditExpertise] = useState("");
+  const [editPhoto, setEditPhoto] = useState(null);
+  const [editPhotoPreview, setEditPhotoPreview] = useState(null);
   const [reason, setReason] = useState("");
   const [status, setStatus] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -187,6 +189,15 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
           : [];
         if (JSON.stringify(newExp) !== JSON.stringify(oldExp))
           updates.expertise = newExp;
+
+        if (editPhoto) {
+          try {
+            const photoUrl = await api.uploadPhoto(editPhoto);
+            updates.photo_url = photoUrl;
+          } catch (e) {
+            console.error("Photo upload failed:", e);
+          }
+        }
 
         if (Object.keys(updates).length > 0) {
           await api.updateLeader(leaderData.id, updates);
@@ -547,6 +558,36 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
                   onChange={(e) => setEditOrg(e.target.value)}
                   className={INPUT_CLASS}
                 />
+              </div>
+              <div>
+                <label className={LABEL_CLASS}>Profile photo</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      setEditPhoto(f);
+                      setEditPhotoPreview(URL.createObjectURL(f));
+                    }
+                  }}
+                  className={`${INPUT_CLASS} cursor-pointer file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[1.3rem] file:font-semibold file:bg-brand-blue-tint file:text-brand-navy hover:file:bg-blue-100`}
+                />
+                {editPhotoPreview && (
+                  <div className="mt-3">
+                    <img
+                      src={editPhotoPreview}
+                      alt="Preview"
+                      className="w-24 h-24 rounded-full object-cover border-2 border-brand-pink"
+                    />
+                    <button
+                      onClick={() => { setEditPhoto(null); setEditPhotoPreview(null); }}
+                      className="ml-3 text-[1.3rem] text-red-500 hover:underline cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className={LABEL_CLASS}>Bio</label>
