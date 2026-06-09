@@ -904,6 +904,7 @@ export default function Admin({ onGoToDirectory }) {
                         {rejectedCount}
                       </div>
                     </div>
+                  </div>
                   )}
                 </div>
               </div>
