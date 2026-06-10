@@ -40,6 +40,13 @@ function encodeSmtpBase64(s: string): string {
   return btoa(s);
 }
 
+function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("timeout")), ms)),
+  ]);
+}
+
 async function tryGoogleSmtp(to: string, subject: string, html: string): Promise<boolean> {
   const user = Deno.env.get("GOOGLE_SMTP_USER");
   const pass = Deno.env.get("GOOGLE_SMTP_PASS");
@@ -47,7 +54,7 @@ async function tryGoogleSmtp(to: string, subject: string, html: string): Promise
 
   let conn: Deno.TlsConn | null = null;
   try {
-    conn = await Deno.connectTls({ hostname: "smtp.gmail.com", port: 465 });
+    conn = await timeout(Deno.connectTls({ hostname: "smtp.gmail.com", port: 465 }), 10000);
     await readLine(conn);
     await sendCmd(conn, "EHLO transformhealth.org");
     await sendCmd(conn, `AUTH LOGIN`);
@@ -87,9 +94,9 @@ async function tryGenericSmtp(to: string, subject: string, html: string): Promis
   let conn: Deno.TcpConn | Deno.TlsConn | null = null;
   try {
     if (useTls) {
-      conn = await Deno.connectTls({ hostname: host, port });
+      conn = await timeout(Deno.connectTls({ hostname: host, port }), 10000);
     } else {
-      conn = await Deno.connect({ hostname: host, port });
+      conn = await timeout(Deno.connect({ hostname: host, port }), 10000);
     }
     await readLine(conn);
     await sendCmd(conn, "EHLO transformhealth.org");
@@ -97,7 +104,7 @@ async function tryGenericSmtp(to: string, subject: string, html: string): Promis
       try {
         await sendCmd(conn, "STARTTLS");
         conn.close();
-        conn = await Deno.connectTls({ hostname: host, port });
+        conn = await timeout(Deno.connectTls({ hostname: host, port }), 10000);
         await readLine(conn);
         await sendCmd(conn, "EHLO transformhealth.org");
       } catch {
