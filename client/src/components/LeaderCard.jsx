@@ -110,7 +110,7 @@ function Meta() {
   );
 }
 
-/** Tags — up to 3 expertise pills, with overflow count. */
+/** Tags — expertise pills, all visible, no truncation. */
 function Tags() {
   const { leader: l } = useCard();
   const tags = (
@@ -119,20 +119,14 @@ function Tags() {
   if (!tags.length) return null;
   return (
     <div className="flex flex-wrap gap-1 justify-center mb-4">
-      {tags.slice(0, 3).map((tag) => (
+      {tags.map((tag) => (
         <span
           key={tag}
-          title={tag}
-          className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border truncate max-w-[130px]"
+          className="text-[1.2rem] font-medium bg-brand-blue-tint text-brand-navy px-2 py-0.5 rounded-full border border-brand-blue-border"
         >
           {tag.replace(/^Other:\s*/i, "").replace(/\b\w/g, (c) => c.toUpperCase())}
         </span>
       ))}
-      {tags.length > 3 && (
-        <span className="text-[1.2rem] text-brand-navy font-medium">
-          +{tags.length - 3}
-        </span>
-      )}
     </div>
   );
 }

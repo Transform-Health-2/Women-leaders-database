@@ -1,195 +1,163 @@
-// Supabase Function: send-email
-// Sends magic link emails for profile management
-// Uses Google Workspace (Gmail SMTP) — free for Google Workspace users
-// Fallback: SendGrid → generic SMTP
+const FROM =
+  Deno.env.get("SMTP_FROM") ||
+  "Transform Health <noreply@transformhealthcoalition.org>";
 
-import { serve } from "https://deno.land/x/supabase@0.37.3/functions.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@0.11.0/mod.ts";
-
-interface EmailPayload {
-  to: string;
-  subject: string;
-  html: string;
-  from?: string;
+function parseFrom(): { name: string; email: string } {
+  const m = FROM.match(/^(.+)\s+<(.+)>/);
+  return m ? { name: m[1].trim(), email: m[2] } : { name: "Transform Health", email: FROM };
 }
 
-serve(async (req: Request) => {
-  try {
-    const payload: EmailPayload = await req.json();
-    const { to, subject, html, from = Deno.env.get("SMTP_FROM") || "noreply@transformhealthcoalition.org" } = payload;
-
-    if (!to || !subject || !html) {
-      return new Response(JSON.stringify({ error: "Missing required fields: to, subject, html" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    // Try Google Workspace (Gmail SMTP) first — free for Workspace users
-    const googleUser = Deno.env.get("GOOGLE_SMTP_USER"); // e.g. noreply@transformhealthcoalition.org
-    const googlePass = Deno.env.get("GOOGLE_SMTP_PASS"); // App Password (not regular password)
-
-    if (googleUser && googlePass) {
-      try {
-        const client = new SmtpClient({
-          host: "smtp.gmail.com",
-          port: 587,
-          username: googleUser,
-          password: googlePass,
-          tls: true,
-        });
-
-        await client.connect();
-        await client.send({
-          from,
-          to,
-          subject,
-          html,
-        });
-        await client.close();
-
-        return new Response(JSON.stringify({ ok: true, provider: "google-workspace" }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      } catch (err) {
-        console.error("Google SMTP failed:", err.message);
-        // Fall through to next provider
-      }
-    }
-
-    // Fallback: SendGrid
-    const sendGridKey = Deno.env.get("SENDGRID_API_KEY");
-    if (sendGridKey) {
-      const sgMsg = {
-        personalizations: [{ to: [{ email: to }] }],
-        from: { email: from },
-        subject,
-        content: [{ type: "text/html", value: html }],
-      };
-
-      const resp = await fetch("https://api.sendgrid.com/v3/mail/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sendGridKey}`,
-        },
-        body: JSON.stringify(sgMsg),
-      });
-
-      if (resp.ok) {
-        return new Response(JSON.stringify({ ok: true, provider: "sendgrid" }), {
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
-    // Fallback: Generic SMTP
-    const smtpHost = Deno.env.get("SMTP_HOST");
-    const smtpPort = parseInt(Deno.env.get("SMTP_PORT") || "587");
-    const smtpUser = Deno.env.get("SMTP_USERNAME") || "";
-    const smtpPass = Deno.env.get("SMTP_PASSWORD") || "";
-
-    if (!smtpUser || !smtpPass) {
-      return new Response(JSON.stringify({ error: "No email provider configured. Set GOOGLE_SMTP_USER + GOOGLE_SMTP_PASS (Google Workspace) or SENDGRID_API_KEY or SMTP_* secrets." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const client = new SmtpClient({
-      host: smtpHost || "smtp.gmail.com",
-      port: smtpPort,
-      username: smtpUser,
-      password: smtpPass,
-      tls: true,
-    });
-
-    await client.connect();
-    await client.send({
-      from,
-      to,
-      subject,
-      html,
-    });
-    await client.close();
-
-    return new Response(JSON.stringify({ ok: true, provider: "smtp" }), {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (err) {
-    console.error("send-email error:", err);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+// Read a single line from connection (up to \r\n).
+async function readLine(conn: Deno.TcpConn | Deno.TlsConn): Promise<string> {
+  const buf = new Uint8Array(1024);
+  let acc = "";
+  while (true) {
+    const n = await conn.read(buf);
+    if (n === null) throw new Error("Connection closed");
+    acc += new TextDecoder().decode(buf.subarray(0, n));
+    const idx = acc.indexOf("\r\n");
+    if (idx !== -1) return acc.slice(0, idx);
   }
-});
+}
+
+// Drain a multi-line SMTP response (lines starting with NNN- followed by NNN ).
+async function drainResponse(conn: Deno.TcpConn | Deno.TlsConn): Promise<void> {
+  while (true) {
+    const line = await readLine(conn);
+    if (line.length >= 4 && line[3] === " ") break;
+  }
+}
+
+async function sendCmd(conn: Deno.TcpConn | Deno.TlsConn, cmd: string): Promise<string> {
+  await conn.write(new TextEncoder().encode(cmd + "\r\n"));
+  const line = await readLine(conn);
+  // If this is a multi-line response (code + "-"), drain the rest
+  if (line.length >= 4 && line[3] === "-") await drainResponse(conn);
+  return line;
+}
+
+function encodeSmtpBase64(s: string): string {
+  return btoa(s);
+}
+
+async function tryGoogleSmtp(to: string, subject: string, html: string): Promise<boolean> {
+  const user = Deno.env.get("GOOGLE_SMTP_USER");
+  const pass = Deno.env.get("GOOGLE_SMTP_PASS");
+  if (!user || !pass) return false;
+
+  let conn: Deno.TlsConn | null = null;
+  try {
+    conn = await Deno.connectTls({ hostname: "smtp.gmail.com", port: 465 });
+    await readLine(conn);
+    await sendCmd(conn, "EHLO transformhealth.org");
+    await sendCmd(conn, `AUTH LOGIN`);
+    await sendCmd(conn, encodeSmtpBase64(user));
+    await sendCmd(conn, encodeSmtpBase64(pass));
+    const fromEmail = parseFrom().email;
+    await sendCmd(conn, `MAIL FROM:<${fromEmail}>`);
+    await sendCmd(conn, `RCPT TO:<${to}>`);
+    await sendCmd(conn, "DATA");
+    const headers = [
+      `From: ${FROM}`,
+      `To: ${to}`,
+      `Subject: ${subject}`,
+      "MIME-Version: 1.0",
+      "Content-Type: text/html; charset=UTF-8",
+      "",
+      html,
+    ].join("\r\n");
+    await sendCmd(conn, headers + "\r\n.");
+    return true;
+  } catch {
+    return false;
+  } finally {
+    try { conn?.close(); } catch { /* ignore */ }
+  }
+}
+
+async function tryGenericSmtp(to: string, subject: string, html: string): Promise<boolean> {
+  const host = Deno.env.get("SMTP_HOST");
+  const portStr = Deno.env.get("SMTP_PORT");
+  const username = Deno.env.get("SMTP_USERNAME");
+  const password = Deno.env.get("SMTP_PASSWORD");
+  if (!host || !portStr || !username || !password) return false;
+
+  const port = parseInt(portStr, 10);
+  const useTls = port === 465;
+  let conn: Deno.TcpConn | Deno.TlsConn | null = null;
+  try {
+    if (useTls) {
+      conn = await Deno.connectTls({ hostname: host, port });
+    } else {
+      conn = await Deno.connect({ hostname: host, port });
+    }
+    await readLine(conn);
+    await sendCmd(conn, "EHLO transformhealth.org");
+    if (!useTls) {
+      try {
+        await sendCmd(conn, "STARTTLS");
+        conn.close();
+        conn = await Deno.connectTls({ hostname: host, port });
+        await readLine(conn);
+        await sendCmd(conn, "EHLO transformhealth.org");
+      } catch {
+        // STARTTLS not available, continue without TLS
+      }
+    }
+    await sendCmd(conn, `AUTH LOGIN`);
+    await sendCmd(conn, encodeSmtpBase64(username));
+    await sendCmd(conn, encodeSmtpBase64(password));
+    const fromEmail = parseFrom().email;
+    await sendCmd(conn, `MAIL FROM:<${fromEmail}>`);
+    await sendCmd(conn, `RCPT TO:<${to}>`);
+    await sendCmd(conn, "DATA");
+    const headers = [
+      `From: ${FROM}`,
+      `To: ${to}`,
+      `Subject: ${subject}`,
+      "MIME-Version: 1.0",
+      "Content-Type: text/html; charset=UTF-8",
+      "",
+      html,
+    ].join("\r\n");
+    await sendCmd(conn, headers + "\r\n.");
+    return true;
+  } catch {
+    return false;
+  } finally {
+    try { conn?.close(); } catch { /* ignore */ }
+  }
+}
+
+Deno.serve(async (req) => {
+  try {
+    const { to, subject, html } = await req.json();
+    if (!to || !subject || !html) {
+      return new Response(JSON.stringify({ error: "Missing required fields: to, subject, html" }), { status: 400 });
     }
 
-    // Try SendGrid first (if configured)
-    const sendGridKey = Deno.env.get("SENDGRID_API_KEY");
-    if (sendGridKey) {
-      const sgMsg = {
-        personalizations: [{ to: [{ email: to }] }],
-        from: { email: from },
-        subject,
-        content: [{ type: "text/html", value: html }],
-      };
+    const providers = [
+      { name: "Google Workspace", fn: () => tryGoogleSmtp(to, subject, html) },
+      { name: "Generic SMTP", fn: () => tryGenericSmtp(to, subject, html) },
+    ];
 
-      const resp = await fetch("https://api.sendgrid.com/v3/mail/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sendGridKey}`,
-        },
-        body: JSON.stringify(sgMsg),
-      });
-
-      if (resp.ok) {
-        return new Response(JSON.stringify({ ok: true, provider: "sendgrid" }), {
-          headers: { "Content-Type": "application/json" },
-        });
+    for (const provider of providers) {
+      const ok = await provider.fn();
+      if (ok) {
+        console.log(`Email sent via ${provider.name}`);
+        return new Response(JSON.stringify({ ok: true, provider: provider.name }));
       }
     }
 
-    // Fallback: SMTP (SendGrid not configured)
-    const smtpHost = Deno.env.get("SMTP_HOST") || "smtp.sendgrid.net";
-    const smtpPort = parseInt(Deno.env.get("SMTP_PORT") || "587");
-    const smtpUser = Deno.env.get("SMTP_USERNAME") || "";
-    const smtpPass = Deno.env.get("SMTP_PASSWORD") || "";
-
-    if (!smtpUser || !smtpPass) {
-      return new Response(JSON.stringify({ error: "No email provider configured. Set SENDGRID_API_KEY or SMTP_* secrets." }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const client = new SmtpClient({
-      host: smtpHost,
-      port: smtpPort,
-      username: smtpUser,
-      password: smtpPass,
-      tls: true,
-    });
-
-    await client.connect();
-    await client.send({
-      from,
-      to,
-      subject,
-      html,
-    });
-    await client.close();
-
-    return new Response(JSON.stringify({ ok: true, provider: "smtp" }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        error:
+          "No email provider configured. Set GOOGLE_SMTP_USER+GOOGLE_SMTP_PASS or SMTP_HOST+SMTP_PORT+SMTP_USERNAME+SMTP_PASSWORD in Supabase project secrets.",
+      }),
+      { status: 500 },
+    );
   } catch (err) {
-    console.error("send-email error:", err);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error(err);
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 });
