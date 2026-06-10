@@ -6,3 +6,7 @@ client/dist/
 .env
 client/.env
 **/.env.local
+node_modules/
+**/.temp/
+*.png
+client/src/assets/illustrations/
