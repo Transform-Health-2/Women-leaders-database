@@ -22,9 +22,12 @@ Deno.serve(async (req) => {
     const { to, subject, html } = await req.json();
     if (!to || !subject || !html) return respond({ error: "Missing fields" }, 400);
 
-    const user = Deno.env.get("GOOGLE_SMTP_USER");
-    const pass = Deno.env.get("GOOGLE_SMTP_PASS");
-    if (!user || !pass) return respond({ error: "GOOGLE_SMTP_USER/PASS not set" }, 500);
+    const smtpUser = Deno.env.get("GOOGLE_SMTP_USER");
+    const smtpPass = Deno.env.get("GOOGLE_SMTP_PASS");
+    if (!smtpUser || !smtpPass) return respond({ error: "GOOGLE_SMTP_USER/PASS not set" }, 500);
+
+    const fromEmail = Deno.env.get("SMTP_FROM") || smtpUser;
+    const fromName = "Transform Health";
 
     // Wrap entire send attempt in a 15s timeout
     const result = await timeout((async () => {
@@ -45,15 +48,15 @@ Deno.serve(async (req) => {
       await read(); // greeting
       await send("EHLO transformhealth.org");
       await send("AUTH LOGIN");
-      await send(btoa(user));
-      await send(btoa(pass));
-      const from = "noreply@transformhealthcoalition.org";
-      await send(`MAIL FROM:<${from}>`);
+      await send(btoa(smtpUser));
+      await send(btoa(smtpPass));
+      await send(`MAIL FROM:<${fromEmail}>`);
       await send(`RCPT TO:<${to}>`);
-      await send("DATA");
+      await send("DATA"); // server responds 354
+      // Send email content + end-of-data marker; send() reads the 250 OK
       await send(
         [
-          `From: Transform Health <${from}>`,
+          `From: ${fromName} <${fromEmail}>`,
           `To: ${to}`,
           `Subject: ${subject}`,
           "MIME-Version: 1.0",
