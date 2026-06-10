@@ -230,7 +230,7 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
   useEffect(() => {
     if (step === "done") {
       const timer = setTimeout(() => {
-        window.location.href = window.location.origin;
+        window.location.href = `${window.location.origin}${window.location.pathname.split('?')[0]}`;
       }, 1500);
       return () => clearTimeout(timer);
     }
