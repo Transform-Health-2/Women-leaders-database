@@ -308,7 +308,7 @@ export const api = {
         <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#fffff4" style="background-color:#fffff4;font-family:'Montserrat',Arial,Helvetica,sans-serif">
           <tr><td>
             <!-- Full-width banner — Card-top SVG -->
-            <img src="${svgUrl}" alt="" style="display:block;width:100%;height:120px;outline:none;border:0;text-decoration:none" />
+            <img src="${svgUrl}" alt="" width="100%" height="120" style="display:block;outline:none;border:0;text-decoration:none" />
           </td></tr>
           <tr><td align="center" style="padding:0 16px">
             <!-- Avatar — photo or initials with brand-pink ring + linkedin badge -->
