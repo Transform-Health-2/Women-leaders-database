@@ -272,7 +272,7 @@ export const api = {
       // Fetch leader's email from database
       const { data: leader, error: fetchErr } = await supabase
         .from("leaders")
-        .select("leader_email, editor_email, first_name, last_name, photo_url, expertise")
+        .select("leader_email, editor_email, first_name, last_name, photo_url, expertise, linkedin")
         .eq("id", leaderId)
         .single();
 
@@ -290,8 +290,9 @@ export const api = {
         ? "Remove your Transform Health profile"
         : "Update your Transform Health profile";
 
-      // Resolve avatar and tags from passed values, falling back to database
+      // Resolve avatar, linkedin, and tags from passed values, falling back to database
       const avatarUrl = photo_url || leader?.photo_url;
+      const linkedinUrl = linkedin || leader?.linkedin || "";
       const rawTags = expertise || leader?.expertise || [];
       const tags = (
         Array.isArray(rawTags) ? rawTags : (rawTags || "").split(/,\s*/)
@@ -299,31 +300,34 @@ export const api = {
 
       const initials = ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
 
+      // Absolute URL for the card-top SVG (resolved against current page location)
+      const pageDir = window.location.href.split("?")[0].replace(/\/[^/]*$/, "/");
+      const svgUrl = `${pageDir}illustrations/Card-top.svg`;
+
       const html = `
         <div style="font-family:'Montserrat',Arial,Helvetica,sans-serif;max-width:448px;margin:0 auto;background:#fffff4;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
-          <!-- Dark navy banner with concentric ring clusters and scattered dots -->
-          <div style="background:#333333;height:120px;position:relative;overflow:hidden">
-            <div style="position:absolute;top:-28px;left:30px;width:88px;height:88px;border:2px solid rgba(255,255,255,0.12);border-radius:50%"></div>
-            <div style="position:absolute;top:76px;left:57px;width:88px;height:88px;border:2px solid rgba(255,255,255,0.12);border-radius:50%"></div>
-            <div style="position:absolute;top:-19px;left:290px;width:88px;height:88px;border:2px solid rgba(255,255,255,0.12);border-radius:50%"></div>
-            <div style="position:absolute;top:53px;left:378px;width:88px;height:88px;border:2px solid rgba(255,255,255,0.12);border-radius:50%"></div>
-            <div style="position:absolute;top:0;left:193px;width:88px;height:88px;border:2px solid rgba(255,255,255,0.12);border-radius:50%"></div>
-            <div style="position:absolute;top:20px;left:150px;width:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:50%"></div>
-            <div style="position:absolute;top:70px;left:200px;width:3px;height:3px;background:rgba(255,255,255,0.15);border-radius:50%"></div>
-            <div style="position:absolute;top:30px;left:350px;width:5px;height:5px;background:rgba(255,255,255,0.2);border-radius:50%"></div>
-            <div style="position:absolute;top:90px;left:100px;width:3px;height:3px;background:rgba(255,255,255,0.15);border-radius:50%"></div>
-            <div style="position:absolute;top:45px;left:260px;width:4px;height:4px;background:rgba(255,255,255,0.2);border-radius:50%"></div>
-            <div style="position:absolute;top:15px;left:310px;width:3px;height:3px;background:rgba(255,255,255,0.15);border-radius:50%"></div>
-            <div style="position:absolute;top:65px;left:30px;width:4px;height:4px;background:rgba(255,255,255,0.2);border-radius:50%"></div>
-          </div>
+          <!-- Card-top SVG banner (dark navy with concentric rings and dot field) -->
+          <img src="${svgUrl}" alt="" style="display:block;width:100%;height:120px;object-fit:cover" />
 
-          <!-- Avatar — photo or initials with brand-pink ring -->
+          <!-- Avatar — photo or initials with brand-pink ring + linkedin badge overlay -->
           <div style="text-align:center;margin-top:-38px">
-            ${
-              avatarUrl
-                ? `<img src="${avatarUrl}" alt="${firstName} ${lastName}" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid #F85A8E;display:inline-block" />`
-                : `<div style="width:76px;height:76px;border-radius:50%;background:#D9D9D9;border:2px solid #F85A8E;display:inline-flex;align-items:center;justify-content:center;font-size:2rem;font-weight:600;color:#666;line-height:1">${initials}</div>`
-            }
+            <div style="position:relative;display:inline-block">
+              ${
+                avatarUrl
+                  ? `<img src="${avatarUrl}" alt="${firstName} ${lastName}" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid #F85A8E;display:block" />`
+                  : `<div style="width:76px;height:76px;border-radius:50%;background:#D9D9D9;border:2px solid #F85A8E;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:600;color:#666;line-height:1">${initials}</div>`
+              }
+              ${
+                linkedinUrl
+                  ? `<a href="${linkedinUrl}" target="_blank" style="position:absolute;bottom:0;right:0;width:22px;height:22px;display:block">
+                      <svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px">
+                        <rect width="24" height="24" rx="3" fill="#0A66C2"/>
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" fill="white"/>
+                      </svg>
+                    </a>`
+                  : ""
+              }
+            </div>
           </div>
 
           <!-- Body -->
