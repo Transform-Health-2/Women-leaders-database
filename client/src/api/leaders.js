@@ -305,42 +305,42 @@ export const api = {
       const svgUrl = `${pageDir}illustrations/Card-top.svg`;
 
       const html = `
-        <div style="font-family:'Montserrat',Arial,Helvetica,sans-serif;max-width:448px;margin:0 auto;background:#fffff4;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08)">
-          <!-- Card-top SVG banner (dark navy with concentric rings and dot field) -->
-          <img src="${svgUrl}" alt="" style="display:block;width:100%;height:120px;object-fit:cover" />
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#fffff4" style="background-color:#fffff4;font-family:'Montserrat',Arial,Helvetica,sans-serif">
+          <tr><td>
+            <!-- Full-width banner — Card-top SVG -->
+            <img src="${svgUrl}" alt="" style="display:block;width:100%;height:120px;outline:none;border:0;text-decoration:none" />
+          </td></tr>
+          <tr><td align="center" style="padding:0 16px">
+            <!-- Avatar — photo or initials with brand-pink ring + linkedin badge -->
+            <table cellpadding="0" cellspacing="0" border="0" style="margin-top:-38px">
+              <tr><td style="position:relative;text-align:center">
+                ${
+                  avatarUrl
+                    ? `<img src="${avatarUrl}" alt="${firstName} ${lastName}" style="display:block;width:76px;height:76px;border-radius:50%;border:2px solid #F85A8E;outline:none" />`
+                    : `<table cellpadding="0" cellspacing="0" border="0" style="width:76px;height:76px;border-radius:50%;background:#D9D9D9;border:2px solid #F85A8E"><tr><td align="center" valign="middle" style="font-size:2rem;font-weight:600;color:#666;line-height:76px">${initials}</td></tr></table>`
+                }
+                ${
+                  linkedinUrl
+                    ? `<a href="${linkedinUrl}" target="_blank" style="position:absolute;bottom:0;right:0;width:22px;height:22px;display:block;text-decoration:none">
+                        <svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px;display:block">
+                          <rect width="24" height="24" rx="3" fill="#0A66C2"/>
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" fill="white"/>
+                        </svg>
+                      </a>`
+                    : ""
+                }
+              </td></tr>
+            </table>
 
-          <!-- Avatar — photo or initials with brand-pink ring + linkedin badge overlay -->
-          <div style="text-align:center;margin-top:-38px">
-            <div style="position:relative;display:inline-block">
-              ${
-                avatarUrl
-                  ? `<img src="${avatarUrl}" alt="${firstName} ${lastName}" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid #F85A8E;display:block" />`
-                  : `<div style="width:76px;height:76px;border-radius:50%;background:#D9D9D9;border:2px solid #F85A8E;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:600;color:#666;line-height:1">${initials}</div>`
-              }
-              ${
-                linkedinUrl
-                  ? `<a href="${linkedinUrl}" target="_blank" style="position:absolute;bottom:0;right:0;width:22px;height:22px;display:block">
-                      <svg viewBox="0 0 24 24" fill="none" style="width:22px;height:22px">
-                        <rect width="24" height="24" rx="3" fill="#0A66C2"/>
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" fill="white"/>
-                      </svg>
-                    </a>`
-                  : ""
-              }
-            </div>
-          </div>
-
-          <!-- Body -->
-          <div style="padding:16px 20px 24px;text-align:center">
             <!-- Name -->
-            <div style="font-size:1.6rem;font-weight:600;color:#111827;margin-bottom:12px;line-height:1.3">
+            <div style="font-size:1.6rem;font-weight:600;color:#111827;margin:16px 0 12px;line-height:1.3;text-align:center">
               ${firstName} ${lastName}
             </div>
 
             <!-- Tags — expertise pills matching card style -->
             ${
               tags.length
-                ? `<div style="margin-bottom:16px">${tags
+                ? `<div style="text-align:center;margin-bottom:16px">${tags
                     .map(
                       (t) =>
                         `<span style="display:inline-block;font-size:1.2rem;font-weight:500;background:#e6f0ff;color:#02598E;padding:2px 10px;border-radius:9999px;border:1px solid #d1d9ec;margin:2px">${t
@@ -352,24 +352,32 @@ export const api = {
             }
 
             <!-- CTA button — pink for update, red for delete -->
-            <a href="${manageUrl}" style="display:inline-flex;align-items:center;justify-content:center;min-width:200px;height:40px;${
-              isDelete ? "background:#EF4444" : "background:#F85A8E"
-            };border-radius:20px;color:#fff;text-decoration:none;font-size:1.3rem;font-weight:500;padding:0 24px;margin-bottom:16px">
-              ${isDelete ? "Remove my profile" : "Manage my profile"}
-            </a>
+            <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 16px">
+              <tr>
+                <td align="center" style="border-radius:20px;${
+                  isDelete ? "background:#EF4444" : "background:#F85A8E"
+                }">
+                  <a href="${manageUrl}" style="display:inline-block;min-width:200px;padding:10px 24px;border-radius:20px;color:#fff;text-decoration:none;font-size:1.3rem;font-weight:500;text-align:center">
+                    ${isDelete ? "Remove my profile" : "Manage my profile"}
+                  </a>
+                </td>
+              </tr>
+            </table>
 
             <!-- Expiry badge — amber warning pill -->
-            <div style="margin-bottom:16px">
+            <div style="text-align:center;margin-bottom:16px">
               <span style="display:inline-block;background:#fde68a;color:#92400e;font-size:1.1rem;font-weight:500;padding:4px 14px;border-radius:9999px">
                 ⏰ Expires in 24 hours
               </span>
             </div>
 
             <!-- Fallback link — monospace code block -->
-            <div style="font-size:1.2rem;color:#6b7280;margin-bottom:8px">Or copy this link:</div>
-            <div style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;padding:10px 14px;font-family:'Courier New','Consolas',monospace;font-size:1.1rem;color:#374151;word-break:break-all;text-align:left">${manageUrl}</div>
-          </div>
-        </div>
+            <div style="font-size:1.2rem;color:#6b7280;margin-bottom:8px;text-align:center">Or copy this link:</div>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;max-width:448px;margin:0 auto">
+              <tr><td style="padding:10px 14px;font-family:'Courier New','Consolas',monospace;font-size:1.1rem;color:#374151;word-break:break-all">${manageUrl}</td></tr>
+            </table>
+          </td></tr>
+        </table>
       `;
 
       const { error } = await supabase.functions.invoke("send-email", {
