@@ -1,20 +1,24 @@
 # Transform Health — Admin Console User Manual
 
-> **Access:** Navigate to the app and click **Admin** (top-right of the nav bar). The admin console opens in a new tab. Currently open for testing — auth gate will be re-enabled before launch.
+> **Access:** Navigate to the app and click **Admin** (top-right of the nav bar). Auth gate is currently disabled for testing and will be re-enabled before launch.
 
 ---
 
 ## Overview
 
-The Admin Console is the internal tool for the Transform Health team to manage the Women Leaders in Digital Health Database. From here you can:
+The Admin Console is the internal tool for managing the Women Leaders in Digital Health Database. It is organised into tabs in the sidebar, each with a live count badge:
 
-- Browse, filter, and manage the full database of leaders
-- Review and approve/reject pending profile submissions
-- Handle update and deletion requests from leaders
-- Review and approve nominated profiles
-- Monitor QA test results from the testing team
+- **All Entries** — the full database: browse, search, filter, sort, and approve/reject pending submissions
+- **Profile Requests** — self-service update and deletion requests submitted by leaders
+- **Nominated** — profiles submitted on behalf of someone else, ready for admin outreach
+- **Activity Log** — a record of every self-service update and deletion, filterable by action type, date range, and name
+- **Documentation** — this manual, including the Product Report covering technical architecture, cost, licensing, dependencies, and the handover checklist
 
-The sidebar shows live counts for each tab so you always know what needs attention.
+The sidebar shows live counts next to each tab so you always know what needs attention. Hover over any tab for a tooltip. Use the **↻ Refresh** button to reload the latest data from Supabase. The admin auto-refreshes every 30 seconds and on tab visibility change.
+
+**Non-technical content management:** Leaders manage their own profiles entirely without admin intervention via the self-service magic link flow — they find their profile, request a magic link by email, and edit or delete their data directly. The admin only needs to review new submissions and nominations.
+
+A detailed **Product Report** is available in the Documentation section covering the full technical architecture, platform assessment, cost/licensing breakdown, accessibility features, and the handover checklist for transferring the codebase to Transform Health (see `docs/TRANSFER_CHECKLIST.md`).
 
 ---
 

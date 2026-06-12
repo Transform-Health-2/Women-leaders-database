@@ -524,32 +524,58 @@ const SECTIONS = [
       <>
         <P>
           The Admin Console is the internal tool for managing the Women Leaders
-          in Digital Health Database. From here you can:
+          in Digital Health Database. It is organised into tabs in the sidebar,
+          each with a live count badge:
         </P>
         <Ul>
-          <Li>Review and publish new profile submissions</Li>
-          <Li>Browse and audit the full database with filters and search</Li>
-          <Li>Manage nominated profiles and send personalised outreach</Li>
           <Li>
-            Monitor self-service activity — leaders update or delete their own
-            profiles via magic links; all actions appear in the{" "}
-            <strong>Activity Log</strong>
+            <strong>All Entries</strong> — the full database: browse, search,
+            filter, sort, and approve/reject pending submissions
+          </Li>
+          <Li>
+            <strong>Profile Requests</strong> — self-service update and deletion
+            requests submitted by leaders
+          </Li>
+          <Li>
+            <strong>Nominated</strong> — profiles submitted on behalf of someone
+            else, ready for admin outreach
+          </Li>
+          <Li>
+            <strong>Activity Log</strong> — a record of every self-service update
+            and deletion, filterable by action type, date range, and name
+          </Li>
+          <Li>
+            <strong>Documentation</strong> — this manual, including the
+            <strong> Product Report</strong> covering technical architecture,
+            cost, licensing, dependencies, and the handover checklist
           </Li>
         </Ul>
         <P>
           The sidebar shows live counts next to each tab so you always know what
           needs attention. Hover over any tab for a tooltip. Use the{" "}
           <strong>↻ Refresh</strong> button to reload the latest data from Supabase.
+          The admin auto-refreshes every 30 seconds and on tab visibility change.
+        </P>
+        <P>
+          <strong>Non-technical content management:</strong> Leaders manage their
+          own profiles entirely without admin intervention via the self-service
+          magic link flow — they find their profile, request a magic link by email,
+          and edit or delete their data directly. The admin only needs to review
+          new submissions and nominations.
+        </P>
+        <P>
+          A detailed <strong>Product Report</strong> is available in the Documentation
+          section (<code>Reference &amp; Checklists → Product Report</code>) covering
+          the full technical architecture, platform assessment, cost/licensing
+          breakdown, accessibility features, and the handover checklist for
+          transferring the codebase to Transform Health.
         </P>
         <Tip>
           <strong>Access:</strong> Click <strong>Admin</strong> in the top-right
-          of the nav bar — it opens in a new tab. Auth gate is currently
-          disabled for testing and will be re-enabled before launch.
+          of the nav bar. Auth gate is currently disabled for testing and will be
+          re-enabled before launch. The page shows a loading spinner while data
+          is fetched, and each tab loads its data lazily when selected.
         </Tip>
-        <Img
-          src="screenshots/admin-manual/01-overview.png"
-          caption="Admin console: sidebar navigation with live counts"
-        />
       </>
     ),
   },
