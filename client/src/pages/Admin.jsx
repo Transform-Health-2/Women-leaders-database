@@ -226,7 +226,6 @@ export default function Admin({ onGoToDirectory }) {
 
   useEffect(() => {
     loadData();
-    loadActiveTabData();
 
     const interval = setInterval(() => {
       loadActiveTabData();
@@ -290,7 +289,8 @@ export default function Admin({ onGoToDirectory }) {
   }
 
   async function loadActiveTabData() {
-    setTabLoading(true);
+    const isDataTab = activeTab === "all" || activeTab === "nominated" || activeTab === "requests";
+    if (isDataTab) setTabLoading(true);
     try {
       if (activeTab === "all" || activeTab === "nominated") {
         const allLeaders = (await api.getLeaders("all")) || [];
@@ -312,7 +312,7 @@ export default function Admin({ onGoToDirectory }) {
     } catch (e) {
       console.error("Failed to load tab data:", e);
     } finally {
-      setTabLoading(false);
+      if (isDataTab) setTabLoading(false);
     }
   }
 
@@ -1132,11 +1132,11 @@ export default function Admin({ onGoToDirectory }) {
                   <p className="text-[1.4rem] text-gray-500 font-medium">Loading admin data…</p>
                 </div>
               </div>
-            ) : tabLoading ? (
+            ) : tabLoading && activeTab !== "manual" && activeTab !== "activity" ? (
               <div className="flex items-center justify-center py-20">
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-8 h-8 border-3 border-brand-navy border-t-transparent rounded-full animate-spin" />
-                  <p className="text-[1.4rem] text-gray-400 font-medium">Loading {activeTab}…</p>
+                  <p className="text-[1.4rem] text-gray-400 font-medium">Loading…</p>
                 </div>
               </div>
             ) : activeTab === "requests" ? (
