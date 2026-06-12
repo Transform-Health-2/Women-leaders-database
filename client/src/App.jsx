@@ -279,11 +279,11 @@ function App() {
 
         {showManageModal && (
           <div
-            className="fixed inset-0 z-[1100] flex items-end bg-black/40"
+            className="fixed inset-0 z-[1100] flex items-end md:items-center bg-black/40"
             onClick={closeManageModal}
           >
             <div
-              className="relative w-full max-w-2xl mx-auto max-h-[85vh] overflow-y-auto rounded-t-2xl shadow-2xl bg-brand-cream"
+              className="relative w-full max-w-2xl mx-auto max-h-[85vh] overflow-y-auto rounded-t-2xl md:rounded-2xl shadow-2xl bg-brand-cream"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="sticky top-0 z-10 flex justify-end p-4 bg-brand-cream">
