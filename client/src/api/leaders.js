@@ -302,7 +302,7 @@ export const api = {
 
       // Absolute URL for the card-top SVG (resolved against current page location)
       const pageDir = window.location.href.split("?")[0].replace(/\/[^/]*$/, "/");
-      const svgUrl = `${pageDir}illustrations/Rectangle%206709.svg`;
+      const svgUrl = `${pageDir}illustrations/Rectangle%206709-email.svg`;
 
       const html = `
         <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#fffff4" style="background-color:#fffff4;font-family:'Montserrat',Arial,Helvetica,sans-serif">
