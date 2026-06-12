@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // ── Shared primitives ────────────────────────────────────────────────────────
 function H3({ children }) {
   return (
-    <h3 className="text-[1.6rem] font-semibold text-brand-dark mt-6 mb-2">
+    <h3 className="text-[1.8rem] font-bold text-brand-navy mt-8 mb-3 pb-1 border-b-2 border-brand-pink/30">
       {children}
     </h3>
   );
 }
 function H4({ children }) {
   return (
-    <h4 className="text-[1.5rem] font-semibold text-brand-dark mt-5 mb-1.5">
+    <h4 className="text-[1.6rem] font-semibold text-brand-dark mt-6 mb-2">
       {children}
     </h4>
   );
 }
 function P({ children }) {
   return (
-    <p className="text-[1.5rem] text-gray-700 leading-[1.8] mb-3">{children}</p>
+    <p className="text-[1.4rem] text-gray-700 leading-[1.8] mb-3">{children}</p>
   );
 }
 function Li({ children }) {
   return (
-    <li className="text-[1.5rem] text-gray-700 leading-[1.8] mb-1">
+    <li className="text-[1.4rem] text-gray-700 leading-[1.8] mb-1">
       {children}
     </li>
   );
@@ -43,18 +43,18 @@ function Code({ children }) {
 function Note({ children }) {
   return (
     <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-lg px-5 py-3 mb-4">
-      <p className="text-[1.4rem] text-amber-800 leading-[1.7] m-0">
+      <div className="text-[1.35rem] text-amber-800 leading-[1.7] m-0">
         {children}
-      </p>
+      </div>
     </div>
   );
 }
 function Tip({ children }) {
   return (
     <div className="bg-brand-blue-tint border-l-4 border-brand-navy rounded-r-lg px-5 py-3 mb-4">
-      <p className="text-[1.4rem] text-brand-navy leading-[1.7] m-0">
+      <div className="text-[1.35rem] text-brand-navy leading-[1.7] m-0">
         {children}
-      </p>
+      </div>
     </div>
   );
 }
@@ -1583,6 +1583,22 @@ const CATEGORIES = [
 export default function AdminManual({ onBackToAdmin }) {
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
   const [pdfLoading, setPdfLoading] = useState(false);
+
+  // Read initial section from URL hash: ?tab=manual&section=<id>
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get("section");
+    if (section && SECTIONS.find((s) => s.id === section)) {
+      setActiveId(section);
+    }
+  }, []);
+
+  // Sync active section to URL hash
+  useEffect(() => {
+    const url = new URL(window.location);
+    url.searchParams.set("section", activeId);
+    window.history.replaceState({}, "", url);
+  }, [activeId]);
 
   const activeIndex = SECTIONS.findIndex((s) => s.id === activeId);
   const activeSection = SECTIONS[activeIndex];
