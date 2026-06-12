@@ -376,6 +376,16 @@ export const api = {
             <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;max-width:448px;margin:0 auto">
               <tr><td style="padding:10px 14px;font-family:'Courier New','Consolas',monospace;font-size:1.1rem;color:#374151;word-break:break-all">${manageUrl}</td></tr>
             </table>
+
+            <!-- Divider -->
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:24px 0 16px"><tr><td height="1" bgcolor="#d1d5db" style="height:1px;background:#d1d5db;font-size:0;line-height:0">&nbsp;</td></tr></table>
+
+            <!-- Footer -->
+            <div style="font-size:1.1rem;color:#9ca3af;line-height:1.4;text-align:center;padding:0 16px">
+              You received this because you have a profile in the<br />
+              Transform Health Women Leaders Directory.<br />
+              Didn&#39;t request this? You can safely ignore this email.
+            </div>
           </td></tr>
         </table>
       `;
