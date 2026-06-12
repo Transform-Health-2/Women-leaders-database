@@ -300,21 +300,19 @@ export const api = {
 
       const initials = ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
 
-      // Absolute URL for the card-top SVG (resolved against current page location)
-      const pageDir = window.location.href.split("?")[0].replace(/\/[^/]*$/, "/");
-      const svgUrl = `${pageDir}illustrations/Rectangle%206709-email.svg`;
-
       const html = `
         <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#fffff4" style="background-color:#fffff4;font-family:'Montserrat',Arial,Helvetica,sans-serif">
-          <tr><td style="position:relative;padding:0">
-            <!-- Full-width banner — pink curved header -->
-            <img src="${svgUrl}" alt="" width="100%" height="120" style="display:block;outline:none;border:0;text-decoration:none" />
-            <!-- Transform Health logo — top-left overlay -->
-            <img src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/main_logo.svg" alt="Transform Health" style="display:block;border:0;outline:none;text-decoration:none;position:absolute;top:16px;left:16px;height:32px;width:auto" />
+          <tr><td align="center" style="padding:24px 16px 0">
+            <!-- Transform Health logo — centered -->
+            <img src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/main_logo.svg" alt="Transform Health" style="display:block;border:0;outline:none;text-decoration:none;height:32px;width:auto;margin:0 auto" />
+          </td></tr>
+          <tr><td style="padding:16px 0">
+            <!-- 4px full-width horizontal line -->
+            <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td height="4" bgcolor="#F85A8E" style="height:4px;background:#F85A8E;font-size:0;line-height:0">&nbsp;</td></tr></table>
           </td></tr>
           <tr><td align="center" style="padding:0 16px">
             <!-- Avatar — photo or initials with brand-pink ring + linkedin badge -->
-            <table cellpadding="0" cellspacing="0" border="0" style="margin-top:-38px">
+            <table cellpadding="0" cellspacing="0" border="0">
               <tr><td style="position:relative;text-align:center">
                 ${
                   avatarUrl
