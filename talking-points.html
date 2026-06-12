@@ -137,7 +137,7 @@
     }
   </style>
   <script>
-    const sectionOrder = ['built', 'todo', 'challenges', 'journey', 'migration'];
+    const sectionOrder = ['built', 'todo', 'challenges', 'journey', 'migration', 'handover'];
     
     function showSection(id) {
       document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
@@ -188,6 +188,7 @@
     <a href="#" class="nav-journey" data-section="journey" onclick="showSection('journey'); return false;">User Journey</a>
     <a href="#" class="nav-migration" data-section="migration" onclick="showSection('migration'); return false;">→ Supabase</a>
     <a href="testing-sheet.html" class="nav-test">📋 Testing Sheet</a>
+    <a href="#" class="nav-live" data-section="handover" onclick="showSection('handover'); return false;">📋 Handover</a>
     <a href="https://docs.google.com/spreadsheets/d/1ElqmE1NDvhSNrGPPcTU67g_ndKxsZs68FRn04yus4C0/edit" target="_blank" class="nav-live">📈 Live Sheet</a>
   </nav>
 
@@ -693,6 +694,114 @@ leader_id       uuid  references leaders(id)</pre>
       </div>
 
       <footer>Transform Health · Internal use only · Updated May 2026</footer>
+    </section>
+
+    <!-- HANDOVER CHECKLIST -->
+    <section id="handover">
+      <header>
+        <h1>Client Handover Checklist</h1>
+        <p>What the Transform Health team needs to take over ownership · June 2026</p>
+      </header>
+
+      <div style="background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%); border: 1px solid #fca5a5; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 1rem; font-weight: 700; color: #991b1b; margin-bottom: 10px;">⚠ Must-do — required before handover is complete</h3>
+        <table class="compare-table">
+          <thead>
+            <tr><th style="width:30%">Item</th><th>What's needed</th><th style="width:18%">Reference</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GitHub repo access</strong></td>
+              <td>Repo lives at <code>Tich-Labs/transform-health-directory</code> — either transfer to their GitHub org or add them as collaborators with Admin role.</td>
+              <td><code>.github/workflows/deploy.yml</code></td>
+            </tr>
+            <tr>
+              <td><strong>GitHub Actions secrets</strong></td>
+              <td>Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in the new repo's Settings → Secrets and Variables → Actions.</td>
+              <td><code>deploy.yml:35-36</code></td>
+            </tr>
+            <tr>
+              <td><strong>Supabase project access</strong></td>
+              <td>Project <code>bahoslsvhwqybqkjonvb</code> is under the Tich-Labs org. Invite them as collaborators in Supabase Dashboard → Project Settings → Team, or create a fresh project under their account and migrate data.</td>
+              <td><code>client/src/supabase.js</code></td>
+            </tr>
+            <tr>
+              <td><strong>Supabase Edge Function secrets</strong></td>
+              <td>3 secrets set in Supabase Dashboard → Edge Functions: <code>APPS_SCRIPT_URL</code>, <code>GOOGLE_SMTP_USER</code>, <code>GOOGLE_SMTP_PASS</code>.</td>
+              <td><code>send-email/index.ts:14</code></td>
+            </tr>
+            <tr>
+              <td><strong>Google Apps Script</strong></td>
+              <td>The <code>APPS_SCRIPT_URL</code> points to a Google Apps Script Web App deployed by us. They need access to the Google account that owns it, or to deploy their own copy from <code>supabase/functions/send-email/</code>.</td>
+              <td>Supabase Edge Function config</td>
+            </tr>
+            <tr>
+              <td><strong>Google Workspace / SMTP</strong></td>
+              <td>They control <code>transformhealthcoalition.org</code> already. <code>noreply@transformhealthcoalition.org</code> is configured as the sender — confirm access and App Password (or enable 2FA + generate one).</td>
+              <td><code>docs/admin-manual.md:214</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%); border: 1px solid #fcd34d; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 1rem; font-weight: 700; color: #92400e; margin-bottom: 10px;">📌 Nice-to-have / Should discuss</h3>
+        <table class="compare-table">
+          <thead>
+            <tr><th style="width:30%">Item</th><th>What's needed</th><th style="width:18%">Reference</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Custom domain</strong></td>
+              <td>Currently <code>tich-labs.github.io/transform-health-directory/</code>. They may want <code>transformhealthdatabase.org</code> — requires buying the domain (or using theirs), DNS CNAME to GitHub Pages, or switching to Vercel/Cloudflare for cleaner domain handling.</td>
+              <td>GitHub Pages settings</td>
+            </tr>
+            <tr>
+              <td><strong>Analytics</strong></td>
+              <td>Not set up yet. GA4 or Plausible still pending per README. Decide whether to add before or after handover.</td>
+              <td><code>README.md:297</code></td>
+            </tr>
+            <tr>
+              <td><strong>Logo asset hosting</strong></td>
+              <td>Logo is hotlinked from their WordPress site (<code>transformhealthcoalition.org</code>). Confirm those asset URLs are stable and won't change if the site restructures.</td>
+              <td><code>SiteHeader.jsx:20</code>, <code>leaders.js:307</code></td>
+            </tr>
+            <tr>
+              <td><strong>Favicon</strong></td>
+              <td>Also hotlinked from the same WordPress path. Consider downloading a local copy to avoid external dependency.</td>
+              <td><code>index.html:7</code></td>
+            </tr>
+            <tr>
+              <td><strong>Re-enable admin auth gate</strong></td>
+              <td>Currently bypassed for testing. Code is ready — one-line change to re-enable. Need to create an admin user in Supabase Auth first.</td>
+              <td><code>docs/admin-manual.md:322</code></td>
+            </tr>
+            <tr>
+              <td><strong>Documentation handover</strong></td>
+              <td>All docs in <code>docs/</code>. <code>admin-manual.md</code> covers admin workflows and technical architecture of the magic link system. Video walkthrough and screenshots being prepared by the current team ✅.</td>
+              <td><code>docs/</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%); border: 1px solid #86efac; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 1rem; font-weight: 700; color: #166534; margin-bottom: 10px;">🔑 Quick Reference</h3>
+        <table class="compare-table">
+          <tbody>
+            <tr><td>Live URL</td><td><code>https://tich-labs.github.io/transform-health-directory/</code></td></tr>
+            <tr><td>Supabase URL</td><td><code>https://bahoslsvhwqybqkjonvb.supabase.co</code></td></tr>
+            <tr><td>Supabase Project Ref</td><td><code>bahoslsvhwqybqkjonvb</code> (transform-health-directory)</td></tr>
+            <tr><td>CI/CD</td><td><code>.github/workflows/deploy.yml</code> — auto-deploys on push to <code>main</code></td></tr>
+            <tr><td>Edge Function</td><td><code>supabase/functions/send-email/index.ts</code> — proxies through Google Apps Script</td></tr>
+            <tr><td>Database</td><td>Supabase PostgreSQL — <code>leaders</code> + <code>requests</code> + <code>test_results</code> tables</td></tr>
+            <tr><td>Storage</td><td>Supabase Storage — <code>profile-photos</code> bucket</td></tr>
+            <tr><td>Auth</td><td>Supabase Auth — email/password for admin (test mode bypassed)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer>Transform Health · Internal use only · Updated June 2026</footer>
     </section>
 
   </div><!-- end .main -->
