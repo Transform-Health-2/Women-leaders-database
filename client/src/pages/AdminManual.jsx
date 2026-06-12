@@ -1366,6 +1366,170 @@ const SECTIONS = [
       </>
     ),
   },
+  {
+    id: "product-report",
+    label: "📋 Product Report",
+    content: (
+      <>
+        <P>
+          This report documents the technical approach, design decisions, and deliverables for the
+          Women Leaders in Digital Health Database. It responds to each of the three workstreams
+          defined in the scope of work.
+        </P>
+
+        <H3>A. Technical &amp; Visualisation Approach</H3>
+
+        <H4>Platform Assessment</H4>
+        <P>
+          Several platforms were evaluated for building and hosting the database. The assessment
+          considered cost, licensing, maintenance overhead, scalability, and the ability to deliver
+          an interactive, searchable directory without ongoing licensing fees.
+        </P>
+        <Ul>
+          <Li><strong>Google Sheets + Apps Script</strong> — Used in the initial prototype. Functional for small datasets but lacks proper querying, has a 6-minute execution limit, requires manual redeploy on every code change, and cannot handle photo uploads. <strong>Rejected.</strong></Li>
+          <Li><strong>Tableau / Power BI</strong> — Strong visualisation tools but designed for dashboards and reporting, not for interactive profile browsing with CRUD operations. Require per-user licensing. <strong>Rejected.</strong></Li>
+          <Li><strong>Firebase</strong> — Evaluated as a potential backend but introduced vendor lock-in and its document model is less suited for relational leader data. <strong>Rejected.</strong></Li>
+          <Li><strong>Supabase (chosen)</strong> — Open-source Firebase alternative providing PostgreSQL, file storage, authentication, and edge functions in a single platform. Generous free tier, no per-user licensing. <strong>Selected.</strong></Li>
+          <Li><strong>React + Vite (frontend)</strong> — Modern component-based framework with Tailwind CSS for brand-consistent styling. No licensing cost. <strong>Selected.</strong></Li>
+        </Ul>
+
+        <H4>Recommended Architecture</H4>
+        <Note>
+          <strong>Stack:</strong> React 18 + Vite (frontend) → Supabase PostgreSQL (database) + Supabase Storage (photos) + Supabase Auth (admin login) + Supabase Edge Functions (email). Hosted on GitHub Pages via CI/CD.
+        </Note>
+        <P>
+          The frontend is a static site deployed to GitHub Pages — no server to maintain, no hosting cost.
+          Supabase handles all backend concerns with Row Level Security enforcing data access rules.
+        </P>
+
+        <H4>Cost and Licensing</H4>
+        <P>All dependencies are open source with permissive licences (MIT, Apache 2.0, SIL OFL). Total operating cost: <strong>$0/month</strong> on the Supabase free tier.</P>
+        <Ul>
+          <Li>React 18 — MIT — Free</Li>
+          <Li>Vite — MIT — Free</Li>
+          <Li>Tailwind CSS — MIT — Free</Li>
+          <Li>Supabase — Apache 2.0 — Free tier (500 MB database, 1 GB storage, 2 GB bandwidth)</Li>
+          <Li>GitHub Pages — Free</Li>
+          <Li>GitHub Actions — Free</Li>
+          <Li>react-simple-maps — MIT — Free</Li>
+        </Ul>
+        <Note>
+          Supabase paid tier starts at $25/month (Pro) when project scales beyond free-tier limits.
+        </Note>
+
+        <H4>Accessibility</H4>
+        <Ul>
+          <Li>Colour contrast meets WCAG AA</Li>
+          <Li>Visible focus indicators on all interactive elements</Li>
+          <Li>Reduced motion preference respected</Li>
+          <Li>Skip to main content link on every page</Li>
+          <Li>Responsive from 320px to desktop</Li>
+        </Ul>
+
+        <H4>Embedding Within the Transform Health Website</H4>
+        <P>
+          The database includes a <strong>"Chrome toggle"</strong> (eye icon) that hides the site header,
+          nav bar, and footer — useful for embedding without visual duplication. All brand assets are
+          hotlinked from the Transform Health WordPress site for visual consistency.
+        </P>
+
+        <H3>B. Design and Development of Interactive Database</H3>
+
+        <H4>Filters and Search</H4>
+        <Ul>
+          <Li>Dropdown filters for continent, country, and expertise — dynamically populated</Li>
+          <Li>Free-text search across name, role, organisation, bio, expertise, and country</Li>
+          <Li>Sort by Latest / A-Z / Expertise</Li>
+          <Li>Analytics page with interactive world map and simultaneous region + specialisation filtering</Li>
+        </Ul>
+
+        <H4>Profile Presentation</H4>
+        <P>
+          Card grid layout showing photo, name, role, organisation, location, and expertise tags.
+          Click opens a modal with full bio, years of experience, countries, achievements, and LinkedIn.
+          Email never shown publicly. "Load more" pagination.
+        </P>
+
+        <H4>Desktop and Mobile</H4>
+        <Ul>
+          <Li>Responsive: multi-column grid on desktop, single-column on mobile</Li>
+          <Li>Filters: inline on desktop, stacked full-width on mobile</Li>
+          <Li>Modal: bottom-sheet on mobile, centered overlay on desktop</Li>
+          <Li>Touch-friendly interactive elements throughout</Li>
+        </Ul>
+
+        <H4>User Roles</H4>
+        <Ul>
+          <Li><strong>Public Visitor:</strong> Search, filter, browse. No login.</Li>
+          <Li><strong>Leader (self-submit):</strong> 5-step form → pending → admin approval</Li>
+          <Li><strong>Leader (manage):</strong> Magic link → edit/delete own profile. No admin needed.</Li>
+          <Li><strong>Nominator:</strong> Submit someone else → admin outreach</Li>
+          <Li><strong>Admin:</strong> Full console — submissions, requests, analytics, test results</Li>
+        </Ul>
+
+        <H3>C. Handover and Documentation</H3>
+
+        <H4>Maintenance</H4>
+        <Ul>
+          <Li>New leaders: self-submit → admin approve in console</Li>
+          <Li>Updates: self-service magic link or admin via All Entries</Li>
+          <Li>Removals: self-service "Remove profile" or admin delete</Li>
+          <Li>Email: Edge Function → Google Apps Script → Google Workspace SMTP</Li>
+        </Ul>
+
+        <H4>Dependencies and Licences</H4>
+        <Ul>
+          <Li>React 18 (MIT), Vite (MIT), Tailwind CSS (MIT)</Li>
+          <Li>react-simple-maps (MIT), @supabase/supabase-js (MIT/Apache 2.0)</Li>
+          <Li>Supabase platform (Apache 2.0), GitHub Pages, GitHub Actions</Li>
+          <Li>Google Fonts (SIL OFL), Google Apps Script</Li>
+        </Ul>
+        <Note>All open source, no commercial licences required.</Note>
+
+        <H4>Infrastructure</H4>
+        <Ul>
+          <Li>URL: <code>https://tich-labs.github.io/transform-health-directory/</code></Li>
+          <Li>Supabase: <code>bahoslsvhwqybqkjonvb</code> (transform-health-directory)</Li>
+          <Li>Tables: leaders, requests, test_results</Li>
+          <Li>Storage: profile-photos bucket</Li>
+          <Li>CI/CD: auto-deploys on push to main</Li>
+        </Ul>
+
+        <H4>Handover Checklist</H4>
+        <Note>Required before Transform Health can fully own the system:</Note>
+        <Ul>
+          <Li>Transfer GitHub repo or add collaborators</Li>
+          <Li>Invite to Supabase project or create new + migrate</Li>
+          <Li>Set GitHub Actions secrets (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)</Li>
+          <Li>Configure Edge Function secrets (APPS_SCRIPT_URL, GOOGLE_SMTP_USER, GOOGLE_SMTP_PASS)</Li>
+          <Li>Access Google Apps Script Web App or deploy new copy</Li>
+          <Li>Confirm noreply@transformhealthcoalition.org access + App Password</Li>
+        </Ul>
+
+        <H4>Limitations and Future Expansion</H4>
+        <P><strong>Current limitations:</strong></P>
+        <Ul>
+          <Li>Admin auth gate bypassed for testing — one-line re-enable</Li>
+          <Li>Email via Google Apps Script; SendGrid/Resend for scale</Li>
+          <Li>No analytics (GA4/Plausible) configured</Li>
+          <Li>Map supports region-level only, not country drilldown</Li>
+        </Ul>
+        <P><strong>Future expansion:</strong></P>
+        <Ul>
+          <Li>ORCID integration for optional researcher verification</Li>
+          <Li>Open Badges / Verifiable Credentials (W3C standard)</Li>
+          <Li>Supabase Auth signInWithOtp() for production-grade magic links</Li>
+          <Li>Custom domain (database.transformhealthcoalition.org)</Li>
+          <Li>Vercel deployment for simpler env management</Li>
+          <Li>CSV/PDF export for search results</Li>
+        </Ul>
+
+        <Tip>
+          <strong>Identity strategy:</strong> LinkedIn is treated as a vanity identifier — leaders provide structured data via consent-backed form. This avoids LinkedIn's locked API and GDPR risk. Future: ORCID, Open Badges, email-as-identity.
+        </Tip>
+      </>
+    ),
+  },
 ];
 
 // ── Category grouping for better sidebar organization ────────────────────────
@@ -1399,7 +1563,7 @@ const CATEGORIES = [
   {
     icon: "📚",
     title: "Reference & Checklists",
-    sections: ["status-reference", "tips-notes", "pre-launch-checklist"],
+    sections: ["status-reference", "tips-notes", "pre-launch-checklist", "product-report"],
   },
   {
     icon: "❓",
