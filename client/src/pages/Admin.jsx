@@ -191,6 +191,7 @@ export default function Admin({ onGoToDirectory }) {
   const [requests, setRequests] = useState([]);
   const [testResults, setTestResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [tabLoading, setTabLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [requestSubTab, setRequestSubTab] = useState("new");
   const [selectedAll, setSelectedAll] = useState([]);
@@ -272,21 +273,15 @@ export default function Admin({ onGoToDirectory }) {
   async function loadData() {
     setLoading(true);
     try {
-      const [allLeaders, reqs, tests] = await Promise.all([
-        api.getLeaders("all"),
-        api.getRequests(),
-        api.getTestResults(),
-      ]);
-      const leaders = allLeaders || [];
+      const allLeaders = (await api.getLeaders("all")) || [];
+      setAll(allLeaders);
       setPending(
-        leaders.filter((l) => l.status === "pending" && l.branch !== "nominate")
+        allLeaders.filter((l) => l.status === "pending" && l.branch !== "nominate")
       );
       setNominated(
-        leaders.filter((l) => l.status === "pending" && l.branch === "nominate")
+        allLeaders.filter((l) => l.status === "pending" && l.branch === "nominate")
       );
-      setAll(leaders);
-      if (reqs?.length) setRequests(reqs);
-      if (tests?.length) setTestResults(tests);
+      await loadActiveTabData();
     } catch (e) {
       console.error("Failed to load admin data:", e);
     } finally {
@@ -295,6 +290,7 @@ export default function Admin({ onGoToDirectory }) {
   }
 
   async function loadActiveTabData() {
+    setTabLoading(true);
     try {
       if (activeTab === "all" || activeTab === "nominated") {
         const allLeaders = (await api.getLeaders("all")) || [];
@@ -312,12 +308,11 @@ export default function Admin({ onGoToDirectory }) {
       } else if (activeTab === "requests") {
         const reqs = await api.getRequests();
         if (reqs?.length) setRequests(reqs);
-      // } else if (activeTab === "tests") {
-      //   const tests = await api.getTestResults();
-      //   if (tests?.length) setTestResults(tests);
       }
     } catch (e) {
       console.error("Failed to load tab data:", e);
+    } finally {
+      setTabLoading(false);
     }
   }
 
@@ -1131,8 +1126,18 @@ export default function Admin({ onGoToDirectory }) {
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto px-8 py-6 bg-white">
             {loading ? (
-              <div className="text-center py-12 text-xl text-brand-navy">
-                Loading...
+              <div className="flex items-center justify-center py-20">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-10 h-10 border-4 border-brand-navy border-t-transparent rounded-full animate-spin" />
+                  <p className="text-[1.4rem] text-gray-500 font-medium">Loading admin data…</p>
+                </div>
+              </div>
+            ) : tabLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-8 h-8 border-3 border-brand-navy border-t-transparent rounded-full animate-spin" />
+                  <p className="text-[1.4rem] text-gray-400 font-medium">Loading {activeTab}…</p>
+                </div>
               </div>
             ) : activeTab === "requests" ? (
               <div className="rounded-lg overflow-hidden border-2 border-brand-navy bg-white">

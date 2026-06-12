@@ -148,11 +148,13 @@ Open `http://localhost:5173`.
 - [ ] Update GitHub Actions CI secrets: add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`, remove `VITE_APPS_SCRIPT_URL` and Firebase vars
 - [ ] Set up email system for magic-link profile management:
 
-  The magic link flow lets leaders update their own profiles with no account or password:
-  1. Leader requests a profile update
-  2. Admin clicks **Send update link** in **Profile Requests → Updates**
-  3. Leader receives an email with a unique magic link
-  4. Leader clicks the link → pre-filled form → submits → done
+  The self-service magic link flow lets leaders update or delete their own profiles with no account or password:
+  1. Leader clicks "Manage your profile" on the site
+  2. Enters name and email → system finds their profile
+  3. Chooses "Update profile" or "Remove profile"
+  4. A magic link is sent directly to their email (no admin involved)
+  5. Leader clicks the link → edits fields directly or confirms deletion
+  6. Changes save directly to the database — no admin approval needed
 
   **What the client needs to provide:**
 
@@ -163,21 +165,13 @@ Open `http://localhost:5173`.
   3. Share the app password with you
 
   Then configure these secrets in **Supabase Dashboard → Settings → Functions → Secrets**:
+  - `APPS_SCRIPT_URL`: Google Apps Script Web App URL (email relay)
   - `GOOGLE_SMTP_USER`: The Workspace email (e.g. `noreply@transformhealthcoalition.org`)
   - `GOOGLE_SMTP_PASS`: The 16-character app password
 
-  **Option B: SendGrid (paid)**
-  - `SENDGRID_API_KEY`: Your SendGrid API key
+  The Edge Function is already deployed at `supabase/functions/send-email/`. It forwards email requests to a Google Apps Script Web App which handles SMTP delivery.
 
-  **Option C: Generic SMTP**
-  - `SMTP_HOST`: Your SMTP host
-  - `SMTP_PORT`: Usually `587`
-  - `SMTP_USERNAME`: SMTP username
-  - `SMTP_PASSWORD`: SMTP password
-
-  The Edge Function is already deployed at `supabase/functions/send-email/`. The function tries providers in order: Google Workspace → SendGrid → Generic SMTP.
-
-- [ ] Verify: Send an update link from **Admin → Profile Requests → Updates** and confirm the leader receives the email
+- [ ] Verify: Trigger a magic link from the site's "Manage your profile" flow and confirm the leader receives the email
 
 ---
 
@@ -209,7 +203,7 @@ client/src/
     └── compressImage.js # Client-side image compression
 
 docs/
-└── admin-manual.md      # Markdown source for the admin user manual
+└── admin-manual.md      # Markdown source for the admin user manual (also rendered in-app)
 ```
 
 ---
@@ -226,13 +220,16 @@ docs/
 
 ---
 
-## Legacy: Google Apps Script
+## Email Delivery
 
-The `apps-script/` folder is retained but is **not required for core functionality**. The full backend has moved to Supabase.
+Email sending uses a Supabase Edge Function (`supabase/functions/send-email/`) that proxies through a Google Apps Script Web App:
 
-Apps Script is still referenced for one action: sending update-link emails to leaders via `MailApp`. This will be replaced with a production SMTP solution before launch.
+```
+requestManage() → supabase.functions.invoke("send-email")
+                  → Google Apps Script → Google Workspace SMTP
+```
 
-The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the frontend for any data operations.
+The `APPS_SCRIPT_URL`, `GOOGLE_SMTP_USER`, and `GOOGLE_SMTP_PASS` secrets are configured in the Supabase project dashboard. The `apps-script/` folder contains the legacy Apps Script code (retained for reference).
 
 ---
 
@@ -263,53 +260,28 @@ The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the fr
 
 ## TODO / Backlog
 
-### Done (Migration Complete — May 2026)
+### Completed (May–June 2026)
 
 | Task | Status |
 | --- | --- |
-| Supabase PostgreSQL database — `leaders` + `requests` tables | Done |
-| 82 leaders migrated from Google Sheets to Supabase | Done |
-| Photo storage — Supabase Storage `profile-photos` bucket wired | Done |
-| Photo mandatory on submit (was optional, now enforced) | Done |
-| Supabase Auth wired for admin (bypassed in test mode) | Done |
-| Firebase removed — `firebase.js` deleted, package removed | Done |
-| Mock data removed — `mockData.js` deleted | Done |
-| Apps Script removed as backend — `api/leaders.js` fully rewritten | Done |
-| Email field added (private, not public) | Done |
-| "Other" expertise + 5 selection limit | Done |
-| Bio 300-500 chars enforced | Done |
-| Countries of operation field (multi-select country picker) | Done |
-| Nominator name/email saved and displayed in Admin | Done |
-| Analytics: region + specialization combo filtering | Done |
-| Analytics: dynamic bar chart, clickable bars | Done |
-| Emerging Voices section removed from Analytics | Done |
-| Toggle button to hide/show header & footer | Done |
-| No-scroll layout in talking-points.html | Done |
-| User Journey section added to talking-points.html | Done |
-| Testing sheet (testing-sheet.html) with checklist | Done |
-| Apps Script: `bulkSeed` function added | Done |
-| `scripts/` folder committed (seed scripts) | Done |
-| LinkedIn click tracking — `linkedin_clicks` column + Admin filters | Done |
-| Admin — Test Results tab (Supabase `test_results` table) | Done |
-| Admin Sidebar — reordered (All Entries first, divider before Tests) | Done |
-| Testing Sheet — Testing Notes at top, status dropdown fix | Done |
-| Production SMTP emails | ⏳ Pending | Apps Script MailApp still used for "send update link"; needs SendGrid/Mailgun/Resend |
-| GA4 / Plausible analytics | ⏳ Pending | No analytics service configured |
-| Profile modal — wider + better design | ✅ Done | 1200px wide, brand colours, improved spacing |
-| Photo storage | ✅ Done | Supabase Storage fully implemented and working |
-| Regions of operation field | ✅ Done | Implemented as multi-select country picker |
-| Nominations submitter info | ✅ Done | Nominator name/email saved and displayed in Admin Console |
+| Supabase migration — PostgreSQL, Storage, Auth, Edge Functions | ✅ Done |
+| 82+ leaders live in Supabase | ✅ Done |
+| Self-service magic-link profile management (update + delete) | ✅ Done |
+| Photo upload with client-side compression | ✅ Done |
+| Interactive Analytics page (world map, region + specialisation filters) | ✅ Done |
+| LinkedIn click tracking with Admin filters | ✅ Done |
+| Admin Console — full feature set (submissions, requests, nominations, test results) | ✅ Done |
+| In-app Admin Manual with Product Report section | ✅ Done |
+| CI/CD — GitHub Actions auto-deploy to GitHub Pages | ✅ Done |
 
----
-
-## Before Launch
+### Pending
 
 | Task | Notes |
 | --- | --- |
-| Re-enable admin auth gate | One-line change in `Admin.jsx` |
-| Create admin user in Supabase Auth dashboard | Manual step, no code change |
-| Update GitHub Actions CI secrets | Add Supabase vars, remove Firebase + Apps Script vars |
-| Create `test_results` table in Supabase | Run `scripts/create-test-results-table.sql` in SQL Editor |
+| Production SMTP emails | Currently uses Google Apps Script relay. SendGrid/Resend recommended for higher volume |
+| GA4 / Plausible analytics | No analytics service configured yet |
+| Re-enable admin auth gate | One-line change + create admin user in Supabase Auth |
+| Country-level map drilldown | Analytics map supports region-level only |
 
 ---
 
@@ -318,5 +290,3 @@ The Apps Script web app URL (`VITE_APPS_SCRIPT_URL`) is no longer used by the fr
 For interactive testing, open `testing-sheet.html` in your browser — it includes test cases across multiple sections with step-by-step instructions, priority indicators, and auto-saved results.
 
 **Test results** are saved to the Supabase `test_results` table and visible in the **Admin Console → "Test Results" tab** (new tab with pass/fail/pending summary cards and full results table).
-
-**⚠️ One-time setup required:** Run `scripts/create-test-results-table.sql` in the Supabase SQL Editor to create the `test_results` table. Until then, the "Save Results Now" button will save locally only.
