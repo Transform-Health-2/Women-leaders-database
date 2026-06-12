@@ -301,7 +301,7 @@ export const api = {
       const initials = ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
 
       const html = `
-        <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#fffff4" style="background-color:#fffff4;font-family:'Montserrat',Arial,Helvetica,sans-serif">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f5efe0" style="background-color:#f5efe0;font-family:'Montserrat',Arial,Helvetica,sans-serif">
           <tr><td align="center" style="padding:24px 16px 0">
             <!-- Transform Health logo — centered -->
             <img src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/main_logo.svg" alt="Transform Health" style="display:block;border:0;outline:none;text-decoration:none;height:32px;width:auto;margin:0 auto" />
