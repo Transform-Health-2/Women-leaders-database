@@ -951,7 +951,7 @@ export default function Admin({ onGoToDirectory }) {
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-center gap-4 px-8 py-4">
           <div className="flex items-center gap-4">
             <img
-              src="/illustrations/TH-Logo-Tag%20Top-FC.png"
+              src="illustrations/TH-Logo-Tag-Top-FC.png"
               alt="Transform Health"
               className="h-12 block"
             />

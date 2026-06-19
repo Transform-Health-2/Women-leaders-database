@@ -613,6 +613,10 @@ const SECTIONS = [
           These counts update each time you refresh. Use the <strong>↻</strong>{" "}
           button in the sidebar header to force a reload.
         </Tip>
+        <Img
+          src="screenshots/admin-manual/01-overview.png"
+          caption="All Entries — Pending, Live, and Rejected stat cards visible at the top"
+        />
       </>
     ),
   },
@@ -957,6 +961,10 @@ const SECTIONS = [
             <strong>Activity Log</strong> tab for admin visibility
           </Li>
         </Ol>
+        <Img
+          src="screenshots/admin-manual/13-manage-profile.png"
+          caption="Manage your profile — leaders enter their name and email to receive a magic link"
+        />
         <H3>Setup: Google Workspace (Recommended)</H3>
         <P>Ask the client to:</P>
         <Ol>

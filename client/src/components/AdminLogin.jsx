@@ -34,7 +34,7 @@ export default function AdminLogin({ onLogin }) {
     setError("");
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + "/#/admin",
+        redirectTo: window.location.origin,
       });
       if (error) throw error;
       setResetSent(true);
