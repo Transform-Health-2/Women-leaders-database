@@ -585,6 +585,10 @@ const SECTIONS = [
           Auth) when prompted. The page shows a loading spinner while data is
           fetched, and each tab loads its data lazily when selected.
         </Tip>
+        <Img
+          src="screenshots/admin-manual/01-overview.png"
+          caption="Admin Console — All Entries tab showing the full sidebar and leader table"
+        />
       </>
     ),
   },
@@ -609,10 +613,6 @@ const SECTIONS = [
           These counts update each time you refresh. Use the <strong>↻</strong>{" "}
           button in the sidebar header to force a reload.
         </Tip>
-        <Img
-          src="screenshots/admin-manual/02-dashboard-stats.png"
-          caption="Summary cards: Pending, Live, and Rejected counts"
-        />
       </>
     ),
   },
@@ -647,10 +647,6 @@ const SECTIONS = [
               "Button to expand the row — toggles to Hide when open. Shows full profile details with Approve / Reject / Delete actions",
             ],
           ]}
-        />
-        <Img
-          src="screenshots/admin-manual/03-all-entries.png"
-          caption="All Entries table with filters, status badges, and search"
         />
         <H3>Reviewing a pending submission</H3>
         <Ol>
@@ -743,10 +739,6 @@ const SECTIONS = [
           <Code>pending</Code> in All Entries. Approving or rejecting here
           updates them everywhere.
         </Note>
-        <Img
-          src="screenshots/admin-manual/04-profile-requests-new.png"
-          caption="Profile Requests — pending new submissions awaiting review"
-        />
         <H3>Updates &amp; Deletions</H3>
         <P>
           Leaders update and remove their own profiles directly via the{" "}
@@ -781,10 +773,6 @@ const SECTIONS = [
             <strong>Reject</strong> — removes it from the queue
           </Li>
         </Ul>
-        <Img
-          src="screenshots/admin-manual/07-nominated.png"
-          caption="Nominated tab showing third-party nomination records"
-        />
       </>
     ),
   },
@@ -836,10 +824,6 @@ const SECTIONS = [
           the general search/country/expertise filters from other tabs do not
           appear here.
         </Note>
-        <Img
-          src="screenshots/admin-manual/08-activity-log.png"
-          caption="Activity Log — self-service updates and deletions with action type, date, and name filters"
-        />
       </>
     ),
   },
