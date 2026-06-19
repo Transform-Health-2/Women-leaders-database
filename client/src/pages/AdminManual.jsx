@@ -752,6 +752,9 @@ const SECTIONS = [
           action required. All completed changes are automatically recorded in
           the <strong>Activity Log</strong> tab for admin visibility.
         </P>
+        <Note>
+          Screenshots not yet added — will be captured once new profile submissions arrive.
+        </Note>
       </>
     ),
   },
@@ -779,6 +782,9 @@ const SECTIONS = [
             <strong>Reject</strong> — removes it from the queue
           </Li>
         </Ul>
+        <Note>
+          Screenshots not yet added — will be captured once nominated leaders arrive.
+        </Note>
       </>
     ),
   },
