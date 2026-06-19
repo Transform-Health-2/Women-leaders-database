@@ -384,7 +384,7 @@ If you want to be removed from the directory:
 
 ### I submitted but never received the confirmation email
 - **Check spam folder** (magic link emails sometimes get marked as spam)
-- **Wait 24 hours** — sometimes emails take a bit to deliver
+- **Wait 48 hours** — sometimes emails take a bit to deliver
 - **Contact us** with your email address, we can resend or verify your submission
 
 ---

@@ -1,6 +1,6 @@
 # Transform Health — Admin Console User Manual
 
-> **Access:** Navigate to the app and click **Admin** (top-right of the nav bar). Auth gate is currently disabled for testing and will be re-enabled before launch.
+> **Access:** Navigate to the app and click **Admin** (top-right of the nav bar). You will be prompted to sign in with your admin email and password (Supabase Auth).
 
 ---
 
@@ -167,6 +167,12 @@ These are hardcoded reference items (not database-driven) — use this tab to cr
 
 ### 6. Self-Service Profile Management (Email System)
 
+---
+
+### 7. Manage Admin Users *(super admin only)*
+
+Controls who can access the admin console and what they can do. This tab is only visible to super admins. See **[Managing Admin Users](#managing-admin-users)** below for the full roles reference, step-by-step instructions, and activity log details.
+
 Leaders can now manage their own profiles entirely without admin intervention. The flow uses a Supabase Edge Function (`send-email`) to deliver secure, single-use magic links.
 
 **User journey — fully self-service:**
@@ -232,7 +238,7 @@ The magic link email is constructed inline in `client/src/api/leaders.js` (`requ
 4. **Leader name** — bold, centered
 5. **Expertise tags** — blue pills matching the card style
 6. **CTA button** — pink ("Manage my profile") or red ("Remove my profile")
-7. **Expiry badge** — amber pill reading "Expires in 24 hours"
+7. **Expiry badge** — amber pill reading "Expires in 48 hours"
 8. **Fallback link** — monospace code block with the raw `?manage=` URL
 9. **1px grey divider**
 10. **Footer** — "You received this because you have a profile in the **Transform Health Women Leaders Directory** (pink, bold). Didn't request this? You can safely ignore this email."
@@ -247,10 +253,11 @@ The magic link system has three layers:
 
 When a user requests a magic link, the frontend builds a token:
 ```js
-const token = btoa(JSON.stringify({ leaderId, mode }));
+const token = btoa(JSON.stringify({ leaderId, mode, createdAt: Date.now() }));
 ```
 - `leaderId` — the leader's UUID in the `leaders` table
 - `mode` — `"update"` or `"delete"`
+- `createdAt` — timestamp used to enforce **48-hour expiry** on the client side
 - The token is **not encrypted** — it is simple base64. Security relies on the token being sent only to the leader's email address.
 - The full magic link URL: `{origin}?manage={token}`
 
@@ -338,6 +345,43 @@ Profile updates are now fully self-service — leaders manage their own updates 
 
 ---
 
+## Managing Admin Users
+
+> **Access:** Only super admins see the **Manage Admin Users** tab in the sidebar. Regular admins and editors do not have access to this tab.
+
+### Admin roles
+
+There are three roles in the system. Each role is a strict subset of the one above it.
+
+| Role | Who it's for | What they can do |
+|---|---|---|
+| `super_admin` | Platform owner / technical lead | Everything admin can do, plus add and remove other admin users. Cannot be removed from the console. |
+| `admin` | Core team members managing the directory | Approve and reject submissions, delete leaders, send enrichment magic links, view all profile data and gaps. Cannot manage other admin users. |
+| `editor` | Reviewers or observers | View all entries and profile data, see which fields are missing from any profile. Cannot approve, reject, delete, send magic links, or manage admin users. |
+
+> **Tip:** Use `editor` for team members who need visibility into the data but should not be able to approve or remove leaders. Promote to `admin` when they need to take action.
+
+### Adding a new user
+
+1. Go to **Manage Admin Users** in the sidebar (super admin only).
+2. Enter the person's email address.
+3. Select their role from the dropdown.
+4. Click **Add user**.
+
+The system will create a Supabase Auth account for that email if one does not already exist, assign the selected role, and send an invitation email with a link to the admin console. The new user should use **Forgot password** on the login page to set their password on first sign-in.
+
+> If the person already has a Supabase Auth account (e.g., they previously submitted a leader profile), the system will assign the role to their existing account without creating a duplicate.
+
+### Removing a user
+
+Click the **✕** button next to any non-super-admin user and confirm the prompt. Access is revoked immediately — the user will be signed out on their next request. Super admins cannot be removed through the console (this prevents accidental lockout).
+
+### Admin activity log
+
+Every add and remove action is recorded in the **Admin activity** section at the bottom of the Manage Admin Users tab. Each entry shows what happened, who performed the action, and when. This log is read-only and cannot be edited.
+
+---
+
 ## Duplicate Detection
 
 The platform includes two layers of duplicate protection:
@@ -360,7 +404,7 @@ The platform includes two layers of duplicate protection:
 - **Live auto-refresh:** The console refreshes its data every 30 seconds while the tab is open and visible. It also refreshes when the tab regains focus (e.g., switching back from another tab).
 - **DEV badge:** The Test Results and Test Fixes tabs show a `DEV` badge in the sidebar — these are developer/internal tools used during pre-launch testing and may be hidden or restricted in production.
 - **Photo review:** Profile photos are not displayed in the admin expanded view during review. To verify a photo, check the public directory after approval or inspect the row in Supabase directly.
-- **Chrome toggle (eye button):** A small eye toggle appears at the bottom-right of the Database, Analytics, and Submit pages. Click it to hide/show the site header, nav bar, and footer — useful when demoing how the directory would look embedded in the Transform Health website.
+- **Chrome toggle (eye button):** A small eye toggle appears at the bottom-right of the Database, Analytics, and Submit pages. Click it to hide/show the site header, nav bar, and footer — useful when demoing how the directory would look embedded in the Transform Health website. The site header and footer now match the Transform Health WordPress site (white navbar with dropdowns, multi-column navy footer).
 
 ---
 
@@ -368,14 +412,11 @@ The platform includes two layers of duplicate protection:
 
 Before going live, the following need to be completed by the technical team:
 
-- [ ] **Re-enable the admin auth gate** — add auth check at the top of `Admin.jsx` (currently no auth at all)
-- [ ] **Create an admin user** in Supabase Auth (manual dashboard step)
-- [ ] **Configure SMTP secrets** in Supabase project settings — the `send-email` Edge Function is built; set `GOOGLE_SMTP_USER` + `GOOGLE_SMTP_PASS` (or `SENDGRID_API_KEY` / `SMTP_*` fallback)
+- [x] **Re-enable the admin auth gate** — `Admin.jsx` now checks `supabase.auth.getSession()` on mount and gates content behind login
+- [ ] **Create an admin user** in Supabase Auth (manual dashboard step — use the noreply email address)
 - [ ] **Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`** to GitHub Actions secrets (if CI/CD is set up)
 - [ ] **Remove test-mode RLS policies** — drop three policies in `schema.sql` lines 63–82 (`Admin test mode: read all leaders`, `Admin test mode: update leaders`, `Admin test mode: update requests`)
 - [x] **Run `create-test-results-table.sql`** on production — done, test results schema migrated
-
-> The SMTP setup is partially complete: a Supabase Edge Function (`supabase/functions/send-email/`) handles email delivery. It supports Google Workspace SMTP, SendGrid, and generic SMTP fallback. It needs the relevant secrets configured in the Supabase project dashboard before going live.
 
 ---
 

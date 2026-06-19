@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
 
   try {
-    const { to, subject, html } = await req.json();
+    const { to, cc, subject, html } = await req.json();
     if (!to || !subject || !html) return respond({ error: "Missing fields" }, 400);
 
     const res = await fetch(APPS_SCRIPT_URL, {
@@ -26,6 +26,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         action: "sendRawEmail",
         to,
+        cc: cc || "",
         subject,
         htmlBody: html,
       }),

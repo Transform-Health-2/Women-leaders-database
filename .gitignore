@@ -8,6 +8,9 @@ client/.env
 **/.env.local
 node_modules/
 **/.temp/
-*.png
+docs/screenshots/
 client/src/assets/illustrations/
 talking-points.html
+client/public/testing-sheet.html
+.playwright-mcp/
+test-dummy-test.js

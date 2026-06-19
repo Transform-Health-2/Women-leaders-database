@@ -20,7 +20,7 @@ A project to increase visibility, representation, and engagement of women leader
 | Styling | Tailwind CSS (design tokens in tailwind.config.cjs) |
 | Maps | react-simple-maps |
 | HTTP | Axios |
-| Database | Supabase (PostgreSQL) |
+| Database | Supabase (PostgreSQL) — currently on **Free Tier** (see [docs/TRANSFER_CHECKLIST.md#8-supabase-free-tier--features--limitations](docs/TRANSFER_CHECKLIST.md)) |
 | File Storage | Supabase Storage (profile-photos bucket) |
 | Auth | Supabase Auth (email/password — currently bypassed in test mode) |
 | Deployment | GitHub Pages |
@@ -278,7 +278,6 @@ The `APPS_SCRIPT_URL`, `GOOGLE_SMTP_USER`, and `GOOGLE_SMTP_PASS` secrets are co
 
 | Task | Notes |
 | --- | --- |
-| Production SMTP emails | Currently uses Google Apps Script relay. SendGrid/Resend recommended for higher volume |
 | GA4 / Plausible analytics | No analytics service configured yet |
 | Re-enable admin auth gate | One-line change + create admin user in Supabase Auth |
 | Country-level map drilldown | Analytics map supports region-level only |

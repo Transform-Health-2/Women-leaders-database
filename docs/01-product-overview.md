@@ -51,7 +51,7 @@ We do this by building and maintaining a searchable, global directory of accompl
 | **Smart Search** | Find leaders by name, role, organization, expertise, or geography |
 | **Expertise Tagging** | 15+ expertise areas including AI, Digital Health Policy, Health Financing, mHealth |
 | **Geographic Filtering** | Browse by country or continent to find regional leaders |
-| **Profile Management** | Self-service updates and deletion via secure magic link — no account or password required |
+| **Profile Management** | Self-service updates and deletion via secure magic link (48h expiry) — no account or password required |
 | **Nomination System** | Anyone can nominate a leader on their behalf (lightweight entry) |
 | **Analytics** | Interactive world map with region/country/specialisation filtering, expertise distribution chart, and leader discovery |
 | **Admin Dashboard** | Review submissions, approve/reject profiles, manage requests |
@@ -147,6 +147,7 @@ User searches directory (by name, expertise, country)
 - **File Storage:** Supabase Storage (profile photos)
 - **Maps:** react-simple-maps (for geographic visualization)
 - **Email:** Supabase Edge Functions (magic link flow)
+- **Auth:** Supabase Auth (email/password for admin console)
 - **Deployment:** GitHub Pages (static site)
 
 ---

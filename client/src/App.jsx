@@ -37,9 +37,12 @@ function App() {
   const [route, setRoute] = useState(parseHash);
   const [managePrefill, setManagePrefill] = useState(null);
   const [showManageModal, setShowManageModal] = useState(false);
-  const [chromeHidden, setChromeHidden] = useState(
-    () => localStorage.getItem("th-chrome-hidden") === "true"
-  );
+  const [chromeHidden, setChromeHidden] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("chrome") === "hidden") return true;
+    if (params.get("chrome") === "visible") return false;
+    return localStorage.getItem("th-chrome-hidden") !== "false";
+  });
   const [manageTokenData, setManageTokenData] = useState(null);
 
   // Keep URL in sync when route changes programmatically
@@ -105,6 +108,8 @@ function App() {
         Skip to main content
       </a>
       {route !== "admin" && !chromeHidden && <SiteHeader />}
+
+      {route !== "admin" && !chromeHidden && <div className="h-[6.4rem]" />}
 
       {route === "database" && (
         <div className="relative bg-brand-sand font-sans">
@@ -209,7 +214,7 @@ function App() {
 
       {route !== "admin" && (
         <nav
-          className="sticky top-0 z-50 bg-brand-yellow"
+          className={`sticky z-50 bg-brand-yellow ${chromeHidden ? "top-0" : "top-[6.4rem]"}`}
           role="navigation"
           aria-label="Main navigation"
         >
@@ -240,13 +245,6 @@ function App() {
               })}
             </div>
 
-            {/* Admin — tucked to the right, smaller */}
-            <button
-              onClick={() => navigate("admin")}
-              className="font-['Montserrat'] font-medium text-[1.2rem] tracking-[0.08em] uppercase px-3.5 py-1.5 mb-1.5 cursor-pointer rounded flex-shrink-0 text-brand-dark border border-gray-500 bg-transparent"
-            >
-              Admin
-            </button>
           </div>
         </nav>
       )}
@@ -307,6 +305,16 @@ function App() {
         )}
       </main>
       {route !== "admin" && !chromeHidden && <SiteFooter />}
+
+      {/* Admin link — subtle, fixed bottom-right above chrome toggle */}
+      {route !== "admin" && (
+        <button
+          onClick={() => navigate("admin")}
+          className="fixed bottom-[5.5rem] right-5 z-[9999] text-[1.1rem] text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+        >
+          admin
+        </button>
+      )}
 
       {/* Chrome toggle — fixed bottom-right, always visible */}
       {route !== "admin" && (

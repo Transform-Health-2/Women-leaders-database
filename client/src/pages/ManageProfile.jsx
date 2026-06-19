@@ -56,8 +56,17 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
   const [errorMsg, setErrorMsg] = useState("");
   const [fallbackUrl, setFallbackUrl] = useState("");
 
+  // Token expiry check — 48 hours
+  const TOKEN_TTL = 48 * 60 * 60 * 1000;
+
   useEffect(() => {
     if (isMagicLink && fromMagicLink?.leaderId) {
+      const createdAt = fromMagicLink.createdAt;
+      if (!createdAt || Date.now() - createdAt > TOKEN_TTL) {
+        setStatus("error");
+        setErrorMsg("This link has expired. Please request a new magic link.");
+        return;
+      }
       api.getLeaderById(fromMagicLink.leaderId)
         .then((data) => {
           if (!data) throw new Error("Profile not found");

@@ -5,17 +5,20 @@ import { useFocusTrap } from "../hooks/useFocusTrap";
 function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
 }
+function hasValue(v) {
+  return !!v && v !== "null" && v.trim() !== "";
+}
 
 function toTags(expertise) {
-  if (!expertise) return [];
-  if (Array.isArray(expertise)) return expertise.filter(Boolean);
-  return expertise.split(/,\s*/).filter(Boolean);
+  if (!expertise || expertise === "null") return [];
+  if (Array.isArray(expertise)) return expertise.filter(v => v && v !== "null");
+  return expertise.split(/,\s*/).filter(v => v && v !== "null");
 }
 
 function toList(field) {
-  if (!field) return [];
-  if (Array.isArray(field)) return field.filter(Boolean);
-  return field.split(/,\s*/).filter(Boolean);
+  if (!field || field === "null") return [];
+  if (Array.isArray(field)) return field.filter(v => v && v !== "null");
+  return field.split(/,\s*/).filter(v => v && v !== "null");
 }
 
 function SectionLabel({ children }) {
@@ -39,7 +42,8 @@ export default function ProfileModal({ leader, onClose, onManage }) {
 
   const expertiseTags = toTags(leader.expertise);
   const countriesList = toList(leader.countries || leader.selectedCountries);
-  const yearsExp = leader.years_experience || leader.yearsExp;
+  const yearsExp = hasValue(leader.years_experience) ? leader.years_experience
+    : hasValue(leader.yearsExp) ? leader.yearsExp : null;
   const notableItems = leader.notable_items || leader.notableItems || [];
   const isFeatured = leader.featured === true || leader.featured === "true";
 
@@ -77,7 +81,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
         <div className="px-10 pt-6 pb-6 flex items-start gap-7">
           {/* Photo — overlaps strip bottom */}
           <div className="flex-shrink-0 -mt-[52px] relative z-10">
-            {leader.photo_url ? (
+            {hasValue(leader.photo_url) ? (
               <img
                 src={leader.photo_url}
                 alt={`${leader.first_name} ${leader.last_name}`}
@@ -102,7 +106,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
               className="text-[2.8rem] font-bold text-brand-navy leading-[1.1] tracking-heading mb-2 flex items-center gap-3 flex-wrap"
             >
               {leader.first_name} {leader.last_name}
-              {leader.linkedin?.trim() && (
+              {hasValue(leader.linkedin) && (
                 <a
                   href={leader.linkedin}
                   target="_blank"
@@ -120,10 +124,10 @@ export default function ProfileModal({ leader, onClose, onManage }) {
               )}
             </h2>
 
-            {(leader.role || leader.organisation) && (
+            {(hasValue(leader.role) || hasValue(leader.organisation)) && (
               <p className="text-[1.5rem] text-gray-700 leading-snug">
                 {[leader.role, leader.organisation]
-                  .filter(Boolean)
+                  .filter(v => hasValue(v))
                   .join(" · ")}
               </p>
             )}
@@ -131,9 +135,9 @@ export default function ProfileModal({ leader, onClose, onManage }) {
         </div>
 
         {/* ── META STRIP — only renders if at least one field has data ── */}
-        {(leader.country || yearsExp || countriesList.length > 0) && (
+        {(hasValue(leader.country) || yearsExp || countriesList.length > 0) && (
           <div className="mx-10 mb-6 bg-brand-parchment rounded-xl px-6 py-4 flex flex-wrap gap-x-8 gap-y-3 border border-brand-parchment-border">
-            {leader.country && (
+            {hasValue(leader.country) && (
               <div>
                 <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
                   Based in
@@ -183,7 +187,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
         )}
 
         {/* ── BIO — hidden when empty ── */}
-        {leader.bio && (
+        {hasValue(leader.bio) && (
           <div className="px-10 mb-6">
             <SectionLabel>About</SectionLabel>
             <p className="text-[1.6rem] text-brand-dark leading-[1.8] break-words">

@@ -196,6 +196,9 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 | Profile field standards | [Data Quality Standards](05-data-quality-standards.md#field-by-field-standards) |
 | Admin workflows | [Admin Manual](admin-manual.md#tab-reference) |
 | Email setup | [Admin Manual - Email System](admin-manual.md#6-email-system-setup) |
+| Admin auth setup | [Admin Manual - Pre-Launch Checklist](admin-manual.md#pre-launch-checklist-admin-setup) |
+| Magic link expiry | [Admin Manual - Email System](admin-manual.md#6-email-system-setup) |
+| Nav/Footer styling | [Product Overview - Key Features](01-product-overview.md#key-features) |
 | Approval criteria | [Data Quality Standards](05-data-quality-standards.md#what-gets-rejected) |
 | Troubleshooting | [FAQ - Troubleshooting](04-faq.md#troubleshooting) |
 
@@ -230,7 +233,7 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 | [FAQ](04-faq.md) | ✓ Complete | June 2026 | Product Manager |
 | [Data Quality Standards](05-data-quality-standards.md) | ✓ Complete | June 2026 | QA Lead |
 | [Privacy Policy](06-privacy-policy.md) | ✓ Complete | June 2026 | Legal / Privacy |
-| [Admin Manual](admin-manual.md) | ✓ Complete | Earlier | Admin Team |
+| [Admin Manual](admin-manual.md) | ✓ Updated | June 2026 | Admin Team |
 
 ---
 
@@ -266,7 +269,7 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 |------|-----------|----------|
 | **Live profile** | A profile currently published in the public directory | [Admin Manual](admin-manual.md) |
 | **Pending profile** | A submission awaiting admin review | [Admin Manual](admin-manual.md) |
-| **Magic link** | Email link that lets leaders update their profile without a password | [Submit Profile Guide](02-submit-profile-guide.md) |
+| **Magic link** | Email link (valid 48h) that lets leaders update their profile without a password | [Submit Profile Guide](02-submit-profile-guide.md) |
 | **Self-submitted** | Profile submitted by the leader herself | [Submit Profile Guide](02-submit-profile-guide.md) |
 | **Nominated** | Profile created when someone nominates a woman leader | [Nominator Guide](03-nominator-guide.md) |
 | **Expertise tags** | Categories like "AI," "Telemedicine," "Policy" that describe a leader's work | [Data Quality Standards](05-data-quality-standards.md) |

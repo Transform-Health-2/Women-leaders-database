@@ -9,6 +9,10 @@ const useCard = () => useContext(CardCtx);
 function getInitials(first, last) {
   return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
 }
+// Guard against JS null, undefined, empty string, and the literal string "null"
+function hasValue(v) {
+  return !!v && v !== "null" && v.trim() !== "";
+}
 
 // ─── Sub-components ────────────────────────────────────────────────────────
 
@@ -54,7 +58,7 @@ function Avatar() {
   return (
     <div className="absolute left-1/2 -translate-x-1/2 top-[60px] z-[2]">
       <div className="relative">
-        {l.photo_url ? (
+        {hasValue(l.photo_url) ? (
           <img
             src={l.photo_url}
             alt={`${l.first_name} ${l.last_name}`}
@@ -65,7 +69,7 @@ function Avatar() {
             {getInitials(l.first_name, l.last_name)}
           </div>
         )}
-        {l.linkedin?.trim() && (
+        {hasValue(l.linkedin) && (
           <a
             href={l.linkedin}
             target="_blank"
@@ -115,7 +119,7 @@ function Tags() {
   const { leader: l } = useCard();
   const tags = (
     Array.isArray(l.expertise) ? l.expertise : (l.expertise || "").split(/,\s*/)
-  ).filter(Boolean);
+  ).filter(v => v && v !== "null");
   if (!tags.length) return null;
   return (
     <div className="flex flex-wrap gap-1 justify-center mb-4">
@@ -139,7 +143,7 @@ function Footer() {
   const { leader: l, onSelect } = useCard();
   return (
     <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
-      {l.country ? (
+      {hasValue(l.country) ? (
         <span className="text-[1.2rem] text-gray-600 flex items-center gap-1.5">
           <LocationIcon /> <span>{l.country}</span>
         </span>

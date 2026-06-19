@@ -92,11 +92,19 @@ function Table({ headers, rows }) {
     </div>
   );
 }
-function CheckItem({ children }) {
+function CheckItem({ checked, children }) {
   return (
     <li className="flex items-start gap-3 mb-2">
-      <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 border-gray-300 bg-white" />
-      <span className="text-[1.5rem] text-gray-700 leading-[1.7]">
+      <span className={`mt-0.5 w-5 h-5 flex-shrink-0 rounded border-2 flex items-center justify-center text-[1.2rem] ${
+        checked
+          ? "bg-green-500 border-green-500 text-white"
+          : "border-gray-300 bg-white"
+      }`}>
+        {checked ? "✓" : ""}
+      </span>
+      <span className={`text-[1.5rem] leading-[1.7] ${
+        checked ? "text-gray-500 line-through" : "text-gray-700"
+      }`}>
         {children}
       </span>
     </li>
@@ -116,9 +124,6 @@ function Img({ src, caption }) {
           {caption}
         </figcaption>
       )}
-      <figcaption className="text-[1.1rem] text-amber-600 mt-1 text-center">
-        ⚠ Screenshot may not reflect latest UI — pending update
-      </figcaption>
     </figure>
   );
 }
@@ -359,6 +364,10 @@ const SECTIONS = [
         <Tip>
           <strong>When in doubt:</strong> Reach out to the submitter with questions rather than rejecting. Most submissions are just incomplete, not problematic.
         </Tip>
+        <Img
+          src="screenshots/admin-manual/10-all-entries-expanded.png"
+          caption="Expanded pending submission — read the full profile before clicking Approve or Reject"
+        />
       </>
     ),
   },
@@ -453,7 +462,7 @@ const SECTIONS = [
         </P>
         <Ul>
           <Li>Ask the leader to check spam folder</Li>
-          <Li>Wait 24 hours and retry</Li>
+          <Li>Magic links expire after 48 hours — request a new one if expired</Li>
           <Li>Ask the technical team to check Supabase Function logs</Li>
         </Ul>
 
@@ -572,9 +581,9 @@ const SECTIONS = [
         </P>
         <Tip>
           <strong>Access:</strong> Click <strong>Admin</strong> in the top-right
-          of the nav bar. Auth gate is currently disabled for testing and will be
-          re-enabled before launch. The page shows a loading spinner while data
-          is fetched, and each tab loads its data lazily when selected.
+          of the nav bar. Sign in with your admin email and password (Supabase
+          Auth) when prompted. The page shows a loading spinner while data is
+          fetched, and each tab loads its data lazily when selected.
         </Tip>
       </>
     ),
@@ -695,7 +704,7 @@ const SECTIONS = [
         </Note>
         <Img
           src="screenshots/admin-manual/10-all-entries-expanded.png"
-          caption="Expanded row showing full profile details with Approve / Reject / Delete buttons"
+          caption="Expanded leader row — full profile details with Approve / Reject / Delete buttons"
         />
       </>
     ),
@@ -846,6 +855,101 @@ const SECTIONS = [
     ),
   },
 
+  {
+    id: "manage-admin-users",
+    label: "👥 Manage Admin Users",
+    content: (
+      <>
+        <P>
+          The <strong>Manage Admin Users</strong> tab is visible only to{" "}
+          <strong>super admins</strong>. It controls who can access the admin
+          console and what they can do. All changes are recorded in the Admin
+          activity log at the bottom of that tab.
+        </P>
+
+        <H3>Roles</H3>
+        <P>
+          There are three roles. Each is a strict subset of the one above it —
+          an editor cannot do anything an admin can, and an admin cannot manage
+          other admin users.
+        </P>
+        <Table
+          headers={["Role", "Who it's for", "What they can do", "What they cannot do"]}
+          rows={[
+            [
+              "Super admin",
+              "Platform owner / technical lead",
+              "Everything admin can do + add and remove other admin users",
+              "Cannot be removed via the console (prevents lockout)",
+            ],
+            [
+              "Admin",
+              "Core team members managing the directory",
+              "Approve and reject submissions, delete leaders, send enrichment magic links, view all profile data and gaps",
+              "Cannot add or remove other admin users",
+            ],
+            [
+              "Editor",
+              "Reviewers or observers who need read access",
+              "View all entries and profile data, see which fields are missing from any profile",
+              "Cannot approve, reject, delete, send magic links, or manage admin users",
+            ],
+          ]}
+        />
+        <Tip>
+          Use <strong>Editor</strong> for team members who need visibility into
+          the data without the ability to approve or remove leaders. Promote to{" "}
+          <strong>Admin</strong> when they need to take action.
+        </Tip>
+
+        <Img
+          src="screenshots/admin-manual/12-manage-admin.png"
+          caption="Manage Admin Users tab — add users, assign roles, and view the activity log"
+        />
+
+        <H3>Adding a new user</H3>
+        <Ol>
+          <Li>Open the <strong>Manage Admin Users</strong> tab (super admin only).</Li>
+          <Li>Enter the person's email address in the input field.</Li>
+          <Li>Select their role from the dropdown.</Li>
+          <Li>Click <strong>Add user</strong>.</Li>
+        </Ol>
+        <P>
+          The system will create a Supabase Auth account for that email if one
+          does not already exist, assign the role, and send an invitation email
+          with a link to the admin console. The new user should click{" "}
+          <strong>Forgot password?</strong> on the login page to set their
+          password on first sign-in.
+        </P>
+        <Note>
+          If the person already has a Supabase Auth account (e.g. they
+          previously submitted a leader profile), the system assigns the role to
+          their existing account — no duplicate is created.
+        </Note>
+
+        <H3>Removing a user</H3>
+        <P>
+          Click the <strong>✕</strong> button next to any non-super-admin user
+          and confirm the prompt. Access is revoked immediately. Super admins
+          cannot be removed through the console.
+        </P>
+
+        <H3>Admin activity log</H3>
+        <P>
+          Every add and remove action is recorded at the bottom of the Manage
+          Admin Users tab. Each entry shows what happened, who performed the
+          action, and when. The log is read-only.
+        </P>
+        <Note>
+          The admin activity log requires the <Code>admin_activity_log</Code>{" "}
+          table to exist in Supabase. Run{" "}
+          <Code>scripts/create-admin-activity-log.sql</Code> in the Supabase SQL
+          Editor if it has not been set up yet.
+        </Note>
+      </>
+    ),
+  },
+
   // ────────────────────────────────────────────────────────────────────────
   // ⚙️ SECTION GROUP: ADVANCED WORKFLOWS & SETUP
   // ────────────────────────────────────────────────────────────────────────
@@ -909,22 +1013,7 @@ const SECTIONS = [
             ["<Code>GOOGLE_SMTP_PASS</Code>", "The 16-character app password"],
           ]}
         />
-        <H3>Alternative providers</H3>
-        <Ul>
-          <Li>
-            <strong>SendGrid:</strong> Configure <Code>SENDGRID_API_KEY</Code>
-          </Li>
-          <Li>
-            <strong>Generic SMTP:</strong> Configure <Code>SMTP_HOST</Code>,{" "}
-            <Code>SMTP_PORT</Code>, <Code>SMTP_USERNAME</Code>,{" "}
-            <Code>SMTP_PASSWORD</Code>
-          </Li>
-        </Ul>
-        <Tip>
-          The <Code>send-email</Code> function tries providers in order: Google
-          Workspace → SendGrid → Generic SMTP. It is already deployed — only
-          secrets need to be configured.
-        </Tip>
+
       </>
     ),
   },
@@ -1106,49 +1195,7 @@ const SECTIONS = [
       </>
     ),
   },
-  {
-    id: "pre-launch-checklist",
-    label: "✅ Pre-Launch Checklist",
-    content: (
-      <>
-        <P>
-          Items to complete before the platform goes live — for the technical
-          team:
-        </P>
-        <ul className="list-none ml-0 mb-4">
-          <CheckItem>
-            Re-enable the admin auth gate — add auth check in{" "}
-            <Code>Admin.jsx</Code> (currently no auth)
-          </CheckItem>
-          <CheckItem>Create an admin user in Supabase Auth</CheckItem>
-          <CheckItem>
-            Configure SMTP secrets in Supabase — the <Code>send-email</Code>{" "}
-            Edge Function is built; set <Code>GOOGLE_SMTP_USER</Code> +{" "}
-            <Code>GOOGLE_SMTP_PASS</Code> (or <Code>SENDGRID_API_KEY</Code> /{" "}
-            <Code>SMTP_*</Code> fallback)
-          </CheckItem>
-          <CheckItem>
-            Add <Code>VITE_SUPABASE_URL</Code> and{" "}
-            <Code>VITE_SUPABASE_ANON_KEY</Code> to GitHub Actions secrets
-          </CheckItem>
-          <CheckItem>
-            Drop three test-mode RLS policies —{" "}
-            <Code>Admin test mode: read all leaders</Code>,{" "}
-            <Code>Admin test mode: update leaders</Code>,{" "}
-            <Code>Admin test mode: update requests</Code>
-          </CheckItem>
-        </ul>
-        <Note>
-          The SMTP function lives at <Code>supabase/functions/send-email/</Code>
-          . It supports Google Workspace SMTP, SendGrid, and generic SMTP
-          fallback. Configure the relevant secrets in the Supabase dashboard
-          before launch. The auth gate currently does not exist — it needs to be
-          built (not just uncommented).
-        </Note>
-      </>
-    ),
-  },
-
+  
   // ────────────────────────────────────────────────────────────────────────
   // 👥 SECTION GROUP: UNDERSTANDING THE USERS & PRODUCT
   // ────────────────────────────────────────────────────────────────────────
@@ -1191,8 +1238,16 @@ const SECTIONS = [
           ]}
         />
         <Img
-          src="screenshots/admin-manual/08-directory-cards.png"
-          caption="Public directory showing leader profile cards with search filters"
+          src="screenshots/01-database-grid.png"
+          caption="Public directory — leader profile cards grid with search and filters"
+        />
+        <Img
+          src="screenshots/02-database-profile-modal.png"
+          caption="Profile modal — full leader details including bio, expertise tags, and LinkedIn"
+        />
+        <Img
+          src="screenshots/03-database-search.png"
+          caption="Directory search in action — filtering by expertise, continent, and keyword"
         />
         <Tip>
           <strong>Pro tip:</strong> Visit the public directory yourself to see what users experience. Browse profiles, use filters, and test search — this gives you the user perspective when reviewing approvals.
@@ -1244,8 +1299,8 @@ const SECTIONS = [
           ]}
         />
         <Img
-          src="screenshots/admin-manual/09-analytics-dashboard.png"
-          caption="Analytics dashboard with world map, regional breakdown, and expertise distribution charts"
+          src="screenshots/04-analytics-overview.png"
+          caption="Analytics page — world map with regional highlights and expertise distribution panel"
         />
 
         <H3>How to Use Analytics</H3>
@@ -1307,20 +1362,54 @@ const SECTIONS = [
         <H3>Self-Submission Steps (What Users Experience)</H3>
         <Ol>
           <Li>
-            <strong>Step 0 - Start:</strong> User chooses "Submit My Profile" or "Nominate Someone"
+            <strong>Step 0 - Start:</strong> User chooses "I am nominating myself" or "I am nominating someone else"
           </Li>
+        </Ol>
+        <Img
+          src="screenshots/05-submit-step0-self.png"
+          caption="Step 0 (self-submit path) — consent notice and path selection"
+        />
+        <Img
+          src="screenshots/06-submit-step0-nominate.png"
+          caption="Step 0 (nominate path) — nominating a leader on their behalf"
+        />
+        <Ol start={2}>
           <Li>
             <strong>Step 1 - Consent:</strong> Agrees to privacy terms and that profile will be public
           </Li>
+        </Ol>
+        <Img
+          src="screenshots/07-submit-step1-consent.png"
+          caption="Step 1 — Consent to privacy terms before submitting"
+        />
+        <Ol start={3}>
           <Li>
             <strong>Step 2 - Basic Info:</strong> Name, email, role, organization. Email is used for follow-up if profile is rejected.
           </Li>
+        </Ol>
+        <Img
+          src="screenshots/08-submit-step2-basicinfo.png"
+          caption="Step 2 — Basic information: name, email, role, and organisation"
+        />
+        <Ol start={4}>
           <Li>
             <strong>Step 3 - Profile Details:</strong> Expertise tags (checkboxes), bio, photo upload, years of experience, country, geographic scope, and country list if scope is regional/global
           </Li>
+        </Ol>
+        <Img
+          src="screenshots/09-submit-step3-profile.png"
+          caption="Step 3 — Profile details: expertise tags, bio, photo, experience, and geography"
+        />
+        <Ol start={5}>
           <Li>
             <strong>Step 4 - Links:</strong> LinkedIn URL (optional but encouraged), and notable achievements can be added as bullet points
           </Li>
+        </Ol>
+        <Img
+          src="screenshots/10-submit-step4-links.png"
+          caption="Step 4 — Links and notable achievements"
+        />
+        <Ol start={6}>
           <Li>
             <strong>Step 5 - Review:</strong> User sees full profile preview before final submission. Edit buttons appear on each section to jump back and fix issues.
           </Li>
@@ -1329,8 +1418,8 @@ const SECTIONS = [
           </Li>
         </Ol>
         <Img
-          src="screenshots/admin-manual/11-submit-profile-flow.png"
-          caption="Multi-step submission form showing one of the profile data entry steps"
+          src="screenshots/11-submit-step5-review.png"
+          caption="Step 5 — Review full profile preview with Edit buttons per section before submitting"
         />
 
         <H3>Smart Features in the Form</H3>
@@ -1461,9 +1550,13 @@ const SECTIONS = [
 
         <H4>Embedding Within the Transform Health Website</H4>
         <P>
-          The database includes a <strong>"Chrome toggle"</strong> (eye icon) that hides the site header,
-          nav bar, and footer — useful for embedding without visual duplication. All brand assets are
-          hotlinked from the Transform Health WordPress site for visual consistency.
+          The database is designed to be embedded as a page on the Transform
+          Health WordPress site. The site header and footer now match the
+          Transform Health branding (white navbar with dropdown navigation,
+          multi-column navy footer with social links and CTAs). A{" "}
+          <strong>"Chrome toggle"</strong> (eye icon) can hide the header and
+          footer if visual duplication occurs. All brand assets are hotlinked
+          from the Transform Health WordPress site for visual consistency.
         </P>
 
         <H3>B. Design and Development of Interactive Database</H3>
@@ -1507,7 +1600,7 @@ const SECTIONS = [
           <Li>New leaders: self-submit → admin approve in console</Li>
           <Li>Updates: self-service magic link or admin via All Entries</Li>
           <Li>Removals: self-service "Remove profile" or admin delete</Li>
-          <Li>Email: Edge Function → Google Apps Script → Google Workspace SMTP</Li>
+          <Li>Email: Supabase Edge Function → Google Apps Script → Google Workspace</Li>
         </Ul>
 
         <H4>Dependencies and Licences</H4>
@@ -1522,7 +1615,7 @@ const SECTIONS = [
         <H4>Infrastructure</H4>
         <Ul>
           <Li>URL: <code>https://tich-labs.github.io/transform-health-directory/</code></Li>
-          <Li>Supabase: <code>bahoslsvhwqybqkjonvb</code> (transform-health-directory)</Li>
+          <Li>Supabase: <code>qglymhpdsjzkmdvzizdu</code> (transform-health-directory)</Li>
           <Li>Tables: leaders, requests, test_results</Li>
           <Li>Storage: profile-photos bucket</Li>
           <Li>CI/CD: auto-deploys on push to main</Li>
@@ -1543,7 +1636,7 @@ const SECTIONS = [
 
         <H4>2. Supabase Access, RLS, Storage, Backup</H4>
         <Ul>
-          <Li>Grant team access to project <code>bahoslsvhwqybqkjonvb</code> (transform-health-directory) or create fresh project + migrate</Li>
+          <Li>Grant team access to project <code>qglymhpdsjzkmdvzizdu</code> (transform-health-directory) or create fresh project + migrate</Li>
           <Li>Verify Edge Function secrets: <code>APPS_SCRIPT_URL</code>, <code>GOOGLE_SMTP_USER</code>, <code>GOOGLE_SMTP_PASS</code></Li>
           <Li>Confirm RLS: anon reads only <code>live</code> leaders; auth required for writes</Li>
           <Li>Verify <code>profile-photos</code> storage bucket is public-read</Li>
@@ -1584,9 +1677,8 @@ const SECTIONS = [
 
         <H4>7. Pre-Launch Tasks</H4>
         <Ul>
-          <Li>Re-enable admin auth gate — one-line change in <code>Admin.jsx</code></Li>
+          <Li>Admin auth gate is now live — uses <code>supabase.auth.signInWithPassword()</code></Li>
           <Li>Create admin user in Supabase Auth dashboard (email/password)</Li>
-          <Li>Upgrade SMTP from Google Apps Script to SendGrid/Resend if higher volume expected</Li>
           <Li>Add analytics (GA4 or Plausible) if desired</Li>
           <Li>Test end-to-end: submit → approve → directory → magic link → edit → notification</Li>
         </Ul>
@@ -1594,21 +1686,21 @@ const SECTIONS = [
         <H4>8. Quick Reference</H4>
         <Ul>
           <Li>Live URL: <code>https://tich-labs.github.io/transform-health-directory/</code></Li>
-          <Li>Supabase Project: <code>bahoslsvhwqybqkjonvb</code></Li>
-          <Li>Supabase URL: <code>https://bahoslsvhwqybqkjonvb.supabase.co</code></Li>
+          <Li>Supabase Project: <code>qglymhpdsjzkmdvzizdu</code></Li>
+          <Li>Supabase URL: <code>https://qglymhpdsjzkmdvzizdu.supabase.co</code></Li>
           <Li>Database: PostgreSQL — tables: <code>leaders</code>, <code>requests</code>, <code>test_results</code></Li>
           <Li>Storage: <code>profile-photos</code> bucket</Li>
-          <Li>Auth: Supabase Auth — email/password (test mode bypassed)</Li>
+          <Li>Auth: Supabase Auth — email/password (login required for admin)</Li>
           <Li>CI/CD: <code>.github/workflows/deploy.yml</code> — auto-deploys on push to <code>main</code></Li>
-          <Li>Email: Edge Function → Google Apps Script → Google Workspace SMTP</Li>
+          <Li>Email: Supabase Edge Function → Google Apps Script → Google Workspace</Li>
           <Li>Sender: <code>noreply@transformhealthcoalition.org</code></Li>
         </Ul>
 
         <H4>Limitations and Future Expansion</H4>
         <P><strong>Current limitations:</strong></P>
         <Ul>
-          <Li>Admin auth gate bypassed for testing — one-line re-enable</Li>
-          <Li>Email via Google Apps Script; SendGrid/Resend for scale</Li>
+          <Li>Admin auth gate implemented — uses Supabase Auth email/password</Li>
+          <Li>Email via Google Apps Script</Li>
           <Li>No analytics (GA4/Plausible) configured</Li>
           <Li>Map supports region-level only, not country drilldown</Li>
         </Ul>

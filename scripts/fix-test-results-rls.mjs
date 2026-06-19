@@ -24,7 +24,7 @@ if (!SERVICE_KEY) {
 }
 
 // Supabase connection pooler (port 5432 on direct host is often blocked by ISPs)
-const DB_URL = "postgresql://postgres.bahoslsvhwqybqkjonvb:" + SERVICE_KEY +
+const DB_URL = "postgresql://postgres.qglymhpdsjzkmdvzizdu:" + SERVICE_KEY +
   "@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require";
 
 const client = new Client({ connectionString: DB_URL });

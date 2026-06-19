@@ -267,7 +267,8 @@ export const api = {
 
   // Send a magic link email via Supabase Function (send-email)
   // Used for self-service: leader requests a magic link directly (no admin needed)
-  requestManage: async ({ leaderId, firstName, lastName, linkedin, photo_url, expertise, mode }) => {
+  // Also used by admin enrichment flow via sendEnrichmentLink below
+  requestManage: async ({ leaderId, firstName, lastName, linkedin, photo_url, expertise, mode, cc, contactEmail, missingFields }) => {
     try {
       // Fetch leader's email from database
       const { data: leader, error: fetchErr } = await supabase
@@ -282,13 +283,16 @@ export const api = {
       }
 
       const token = btoa(
-        JSON.stringify({ leaderId, mode })
+        JSON.stringify({ leaderId, mode, createdAt: Date.now() })
       );
       const manageUrl = `${window.location.origin}${window.location.pathname}?manage=${token}`;
       const isDelete = mode === "delete";
-      const subject = isDelete
-        ? "Remove your Transform Health profile"
-        : "Update your Transform Health profile";
+      const isEnrichment = missingFields && missingFields.length > 0;
+      const subject = isEnrichment
+        ? "Update your Transform Health profile — some sections need your attention"
+        : isDelete
+          ? "Remove your Transform Health profile"
+          : "Update your Transform Health profile";
 
       // Resolve avatar, linkedin, and tags from passed values, falling back to database
       const avatarUrl = photo_url || leader?.photo_url;
@@ -299,6 +303,33 @@ export const api = {
       ).filter(Boolean);
 
       const initials = ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
+
+      const missingFieldsHtml = isEnrichment
+        ? `
+            <!-- Enrichment preamble -->
+            <div style="background:#fef9e7;border:1px solid #fde68a;border-radius:8px;padding:16px;margin-bottom:16px;text-align:left;max-width:480px;margin-left:auto;margin-right:auto">
+              <div style="font-size:1.3rem;font-weight:600;color:#92400e;margin-bottom:8px;text-align:center">
+                Your profile needs a little love 💕
+              </div>
+              <div style="font-size:1.2rem;color:#78350f;line-height:1.6;text-align:center">
+                You're in the directory, but these sections are still missing:
+              </div>
+              <div style="margin-top:10px;text-align:center">
+                ${missingFields.map(f =>
+                  `<span style="display:inline-block;background:#fef3c7;color:#92400e;font-size:1.1rem;font-weight:500;padding:3px 12px;border-radius:9999px;border:1px solid #fde68a;margin:3px">${f}</span>`
+                ).join("")}
+              </div>
+              <div style="font-size:1.2rem;color:#78350f;margin-top:10px;text-align:center">
+                Please click below to complete your profile.
+              </div>
+            </div>`
+        : "";
+
+      const contactHtml = contactEmail
+        ? `<div style="font-size:1rem;color:#6b7280;line-height:1.5;text-align:center;padding:0 16px;margin-top:8px">
+              Questions? Contact <a href="mailto:${contactEmail}" style="color:#F85A8E;font-weight:500;text-decoration:underline">${contactEmail}</a>
+            </div>`
+        : "";
 
       const html = `
         <table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f5efe0" style="background-color:#f5efe0;font-family:'Montserrat',Arial,Helvetica,sans-serif">
@@ -311,6 +342,8 @@ export const api = {
             <table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td height="1" bgcolor="#F85A8E" style="height:1px;background:#F85A8E;font-size:0;line-height:0">&nbsp;</td></tr></table>
           </td></tr>
           <tr><td align="center" style="padding:0 16px">
+            ${missingFieldsHtml}
+
             <!-- Avatar — photo or initials with brand-pink ring + linkedin badge -->
             <table cellpadding="0" cellspacing="0" border="0">
               <tr><td style="position:relative;text-align:center">
@@ -367,7 +400,7 @@ export const api = {
             <!-- Expiry badge — amber warning pill -->
             <div style="text-align:center;margin-bottom:16px">
               <span style="display:inline-block;background:#fde68a;color:#92400e;font-size:1.1rem;font-weight:500;padding:4px 14px;border-radius:9999px">
-                ⏰ Expires in 24 hours
+                ⏰ Expires in 48 hours
               </span>
             </div>
 
@@ -386,24 +419,22 @@ export const api = {
               <span style="color:#F85A8E;font-weight:600">Transform Health Women Leaders Directory</span>.<br />
               Didn&#39;t request this? You can safely ignore this email.
             </div>
+            ${contactHtml}
           </td></tr>
         </table>
       `;
 
-      const { error } = await supabase.functions.invoke("send-email", {
-        body: {
-          to: email,
-          subject,
-          html,
-        },
-      });
+      const body = { to: email, subject, html };
+      if (cc) body.cc = cc;
+
+      const { error } = await supabase.functions.invoke("send-email", { body });
 
       if (error) throw error;
       return { ok: true, message: "Magic link sent to " + email };
     } catch (err) {
       console.error("requestManage failed:", err);
       const token = btoa(
-        JSON.stringify({ leaderId, mode })
+        JSON.stringify({ leaderId, mode, createdAt: Date.now() })
       );
       const url = `${window.location.origin}?manage=${token}`;
       return {
@@ -412,6 +443,60 @@ export const api = {
         message: "Email service unavailable. Use this link instead:",
       };
     }
+  },
+
+  // Admin-triggered enrichment: save leader email and send magic link highlighting missing fields
+  sendEnrichmentLink: async ({ leaderId, email }) => {
+    const CONTACT = "ndifanji.namacha@transformhealthcoalition.org";
+
+    // Save the admin-provided email to the leader's record
+    const { error: saveErr } = await supabase
+      .from("leaders")
+      .update({ leader_email: email })
+      .eq("id", leaderId);
+    if (saveErr) throw saveErr;
+
+    // Fetch refreshed leader data
+    const { data: leader, error: fetchErr } = await supabase
+      .from("leaders")
+      .select("first_name, last_name, linkedin, photo_url, expertise, country, years_experience, bio, geo_scope, countries, notable_items")
+      .eq("id", leaderId)
+      .single();
+    if (fetchErr) throw fetchErr;
+
+    // Compute missing fields
+    const missing = [];
+    if (!leader.country) missing.push("Country");
+    if (!leader.years_experience) missing.push("Years of experience");
+    if (!leader.bio) missing.push("Biography");
+    if (!leader.geo_scope) missing.push("Geographical scope");
+    if (!leader.photo_url) missing.push("Profile photo");
+    if (!leader.expertise || leader.expertise.length === 0) missing.push("Expertise tags");
+    if (!leader.countries || leader.countries.length === 0) missing.push("Countries of work");
+    if (!leader.notable_items || leader.notable_items.length === 0) missing.push("Notable items");
+
+    const fieldLabels = {
+      country: "Country",
+      years_experience: "Years of experience",
+      bio: "Biography",
+      geo_scope: "Geographical scope",
+      photo_url: "Profile photo",
+      countries: "Countries of work",
+      notable_items: "Notable items",
+    };
+
+    return await api.requestManage({
+      leaderId,
+      firstName: leader.first_name,
+      lastName: leader.last_name,
+      linkedin: leader.linkedin,
+      photo_url: leader.photo_url,
+      expertise: leader.expertise,
+      mode: "update",
+      cc: CONTACT,
+      contactEmail: CONTACT,
+      missingFields: missing,
+    });
   },
 
   // Fetch full leader data by ID (used when landing from magic link)
@@ -470,5 +555,40 @@ export const api = {
       },
     });
     if (error) console.error("Admin notification failed:", error);
+  },
+
+  // Get the current user's admin role from admin_roles table
+  getAdminRole: async (email) => {
+    if (!email) return null;
+    const { data, error } = await supabase
+      .from("admin_roles")
+      .select("role")
+      .eq("email", email)
+      .maybeSingle();
+    if (error) {
+      console.error("getAdminRole error:", error);
+      return null;
+    }
+    return data?.role || null;
+  },
+
+  // Super admin: manage other admin users (invoke edge function)
+  manageAdmin: async ({ action, email, role, invokerEmail }) => {
+    const { data, error } = await supabase.functions.invoke("manage-admin", {
+      body: { action, email, role, invokerEmail },
+    });
+    if (error) {
+      // Try to extract the real error message from the function response body
+      if (error.context instanceof Response) {
+        try {
+          const body = await error.context.json();
+          if (body?.error) throw new Error(body.error);
+        } catch (parseErr) {
+          if (parseErr !== error) throw parseErr;
+        }
+      }
+      throw error;
+    }
+    return data;
   },
 };

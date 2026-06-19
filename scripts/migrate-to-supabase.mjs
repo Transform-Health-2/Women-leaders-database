@@ -14,7 +14,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const leaders = require("./seed-data.json");
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://bahoslsvhwqybqkjonvb.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://qglymhpdsjzkmdvzizdu.supabase.co";
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 if (!SUPABASE_SERVICE_KEY) {

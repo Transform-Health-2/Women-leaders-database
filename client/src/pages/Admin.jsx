@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { api } from "../api/leaders";
+import { supabase } from "../supabase";
 import { COUNTRY_TO_REGION, REGION_LABELS, ALL_COUNTRIES } from "../utils/countries";
 import AdminManual from "./AdminManual";
+import AdminLogin from "../components/AdminLogin";
 // import AdminFixes from "./AdminFixes";
 
 const SIDEBAR_ITEMS = [
@@ -9,7 +11,9 @@ const SIDEBAR_ITEMS = [
   { id: "requests", label: "Profile Requests", icon: "mail" },
   { id: "nominated", label: "Nominated", icon: "user-plus" },
   { id: "activity", label: "Activity Log", icon: "activity" },
+  { id: "manage-admins", label: "Manage Admins", icon: "shield" },
   { id: "divider", label: "", icon: "divider" },
+  { id: "embed", label: "Notes to Agency", icon: "embed" },
   // { id: "tests", label: "Test Results", icon: "test" },
   // { id: "fixes", label: "Test Fixes", icon: "fixes" },
 ];
@@ -155,6 +159,23 @@ function ActivityIcon() {
   );
 }
 
+function EmbedIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
 const ICONS = {
   inbox: InboxIcon,
   mail: MailIcon,
@@ -164,6 +185,8 @@ const ICONS = {
   test: TestIcon,
   fixes: FixesIcon,
   manual: ManualIcon,
+  embed: EmbedIcon,
+  shield: ShieldIcon,
 };
 
 function getInitials(first, last) {
@@ -184,7 +207,18 @@ function toTitleCase(str) {
   );
 }
 
+// Returns null for JS null/undefined AND the literal string "null" that sometimes comes from the DB
+function val(v) {
+  if (v === null || v === undefined || v === "null" || v === "") return null;
+  return v;
+}
+
 export default function Admin({ onGoToDirectory }) {
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [adminRole, setAdminRole] = useState(null);
+  const [adminRoleLoading, setAdminRoleLoading] = useState(false);
+
   const [pending, setPending] = useState([]);
   const [nominated, setNominated] = useState([]);
   const [all, setAll] = useState([]);
@@ -222,26 +256,22 @@ export default function Admin({ onGoToDirectory }) {
   const [testFilterTester, setTestFilterTester] = useState("");
   const [testFilterStatus, setTestFilterStatus] = useState("");
   const [testFilterSearch, setTestFilterSearch] = useState("");
+  const [enrichEmail, setEnrichEmail] = useState({});
+  const [enrichSending, setEnrichSending] = useState(null);
+  const [enrichMsg, setEnrichMsg] = useState({});
+  const [manageAdmins, setManageAdmins] = useState([]);
+  const [manageAdminsLoading, setManageAdminsLoading] = useState(false);
+  const [manageAdminsMsg, setManageAdminsMsg] = useState("");
+  const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [newAdminRole, setNewAdminRole] = useState("admin");
+  const [adminActivity, setAdminActivity] = useState([]);
+  const [adminActivityLoading, setAdminActivityLoading] = useState(false);
+  const [adminSearch, setAdminSearch] = useState("");
   const PAGE_SIZE = 15;
+  const tableTopRef = useRef(null);
 
   useEffect(() => {
     loadData();
-
-    const interval = setInterval(() => {
-      loadActiveTabData();
-    }, 30000);
-
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        loadActiveTabData();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
   }, []);
 
   // Read initial tab from URL hash: #/admin?tab=requests
@@ -268,6 +298,71 @@ export default function Admin({ onGoToDirectory }) {
   useEffect(() => {
     loadActiveTabData();
   }, [activeTab]);
+
+  // Load admin list + activity when Manage Admins tab is opened
+  useEffect(() => {
+    if (activeTab === "manage-admins" && adminRole === "super_admin") {
+      loadManageAdmins();
+      loadAdminActivity();
+    }
+  }, [activeTab, adminRole]);
+
+  // Auto-dismiss action messages after 5s
+  useEffect(() => {
+    if (!actionMessage) return;
+    const t = setTimeout(() => setActionMessage(""), 5000);
+    return () => clearTimeout(t);
+  }, [actionMessage]);
+
+  // Auth state listener
+  useEffect(() => {
+    // DEV screenshot bypass — localhost only, activated by ?screenshot=true
+    if (import.meta.env.DEV &&
+        (window.location.search.includes("screenshot=true") ||
+         window.location.hash.includes("screenshot=true"))) {
+      setUser({ email: "screenshot@dev.local", id: "screenshot-dev" });
+      setAdminRole("super_admin");
+      setAuthLoading(false);
+      return;
+    }
+
+    setAuthLoading(true);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        fetchAdminRole(session.user.email);
+      }
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        fetchAdminRole(session.user.email);
+      } else {
+        setUser(null);
+        setAdminRole(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function fetchAdminRole(email) {
+    setAdminRoleLoading(true);
+    try {
+      const role = await api.getAdminRole(email);
+      setAdminRole(role);
+    } catch {
+      setAdminRole(null);
+    } finally {
+      setAdminRoleLoading(false);
+    }
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+  }
 
   async function loadData() {
     setLoading(true);
@@ -502,6 +597,98 @@ export default function Admin({ onGoToDirectory }) {
         }
       },
     });
+  }
+
+  async function handleSendEnrichmentLink(item) {
+    const email = enrichEmail[item.id]?.trim();
+    if (!email) return;
+    setEnrichSending(item.id);
+    setEnrichMsg((prev) => ({ ...prev, [item.id]: "" }));
+    try {
+      await api.sendEnrichmentLink({ leaderId: item.id, email });
+      setEnrichMsg((prev) => ({ ...prev, [item.id]: `✓ Magic link sent to ${email}` }));
+      setAll((prev) =>
+        prev.map((l) => (l.id === item.id ? { ...l, leader_email: email } : l))
+      );
+    } catch (e) {
+      setEnrichMsg((prev) => ({ ...prev, [item.id]: `✗ Failed: ${e.message}` }));
+    } finally {
+      setEnrichSending(null);
+    }
+  }
+
+  async function loadManageAdmins() {
+    setManageAdminsMsg("");
+    setManageAdminsLoading(true);
+    try {
+      const res = await api.manageAdmin({ action: "list", invokerEmail: user.email });
+      if (res.ok) setManageAdmins(res.data || []);
+      else setManageAdminsMsg("✗ Failed to load");
+    } catch (e) {
+      setManageAdminsMsg("✗ Failed to load: " + e.message);
+    } finally {
+      setManageAdminsLoading(false);
+    }
+  }
+
+  async function loadAdminActivity() {
+    setAdminActivityLoading(true);
+    try {
+      const res = await api.manageAdmin({ action: "activity", invokerEmail: user.email });
+      if (res.ok) setAdminActivity(res.data || []);
+    } catch (_e) {
+      // non-fatal — table may not exist yet
+    } finally {
+      setAdminActivityLoading(false);
+    }
+  }
+
+  async function handleAddAdmin() {
+    const email = newAdminEmail.trim();
+    if (!email) return;
+    setManageAdminsMsg("");
+    try {
+      const res = await api.manageAdmin({ action: "add", email, role: newAdminRole, invokerEmail: user.email });
+      if (res.ok) {
+        setManageAdminsMsg(`✓ ${res.message}`);
+        setNewAdminEmail("");
+        loadManageAdmins();
+        loadAdminActivity();
+      } else {
+        setManageAdminsMsg(`✗ ${res.error}`);
+      }
+    } catch (e) {
+      setManageAdminsMsg(`✗ ${e.message}`);
+    }
+  }
+
+  async function handleRemoveAdmin(email) {
+    setManageAdminsMsg("");
+    try {
+      const res = await api.manageAdmin({ action: "remove", email, invokerEmail: user.email });
+      if (res.ok) {
+        setManageAdminsMsg(`✓ ${res.message}`);
+        loadManageAdmins();
+        loadAdminActivity();
+      } else {
+        setManageAdminsMsg(`✗ ${res.error}`);
+      }
+    } catch (e) {
+      setManageAdminsMsg(`✗ ${e.message}`);
+    }
+  }
+
+  function getMissingFields(item) {
+    const fields = [];
+    if (!item.country) fields.push("Country");
+    if (!item.years_experience) fields.push("Years of experience");
+    if (!item.bio) fields.push("Biography");
+    if (!item.geo_scope) fields.push("Geographical scope");
+    if (!item.photo_url) fields.push("Profile photo");
+    if (!item.expertise || item.expertise.length === 0) fields.push("Expertise tags");
+    if (!item.countries || item.countries.length === 0) fields.push("Countries of work");
+    if (!item.notable_items || item.notable_items.length === 0) fields.push("Notable items");
+    return fields;
   }
 
   function toggleDeleteSelect(id) {
@@ -746,15 +933,27 @@ export default function Admin({ onGoToDirectory }) {
     });
   }, [activityLog, activityFilter, activitySearch, activityDateRange, activityDateFrom, activityDateTo]);
 
-  const sidebarData = [
+  const sidebarItems = [
     { ...SIDEBAR_ITEMS[0], count: allCount },
     { ...SIDEBAR_ITEMS[1], count: pending.length },
     { ...SIDEBAR_ITEMS[2], count: nominatedCount },
     { ...SIDEBAR_ITEMS[3], count: activityLog.length },
-    SIDEBAR_ITEMS[4], // divider (no count)
-    // { ...SIDEBAR_ITEMS[5], count: testResults.length },
-    // { ...SIDEBAR_ITEMS[6], count: 21 },
+    ...(adminRole === "super_admin" ? [{ ...SIDEBAR_ITEMS[4] }] : []), // manage-admins (super admin only)
+    SIDEBAR_ITEMS[5], // divider
+    SIDEBAR_ITEMS[6], // Notes to Agency (with spacing)
   ];
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-brand-sand flex items-center justify-center">
+        <div className="text-xl text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AdminLogin onLogin={(u) => setUser(u)} />;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-brand-sand overflow-hidden">
@@ -772,18 +971,20 @@ export default function Admin({ onGoToDirectory }) {
               Admin Console
             </div>
           </div>
-          <div className="flex justify-end">
-            <span className="text-[1.3rem] text-brand-navy font-semibold italic">
-              Test mode
-            </span>
+          <div className="flex justify-end items-center gap-3">
+            <span className="text-[1.3rem] text-gray-500 hidden md:block truncate max-w-[200px]">{user?.email}</span>
+            <button
+              onClick={handleSignOut}
+              className="text-[1.3rem] font-medium text-brand-pink border border-brand-pink px-3 py-1.5 rounded-lg hover:bg-brand-pink hover:text-white transition-colors cursor-pointer whitespace-nowrap"
+            >
+              Sign out
+            </button>
           </div>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className={`w-80 min-w-[24rem] border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col flex-shrink-0 ${
-          activeTab === "manual" ? "hidden" : ""
-        }`}>
+        <aside className={`w-72 flex-shrink-0 border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col ${activeTab === "manual" ? "hidden" : ""}`}>
           <div className="px-6 py-5 border-b-2 border-brand-pink">
             <div className="flex items-center justify-center">
               <button
@@ -796,7 +997,7 @@ export default function Admin({ onGoToDirectory }) {
           </div>
 
           <nav className="flex-1 px-3 py-4 space-y-1">
-            {sidebarData.map((item) => {
+            {sidebarItems.map((item) => {
               // Divider row
               if (item.id === "divider") {
                 return (
@@ -818,6 +1019,8 @@ export default function Admin({ onGoToDirectory }) {
                     requests: "Review and approve new submissions",
                     nominated: "Reach out to third-party nominations",
                     activity: "Track self-service updates and deletions",
+                    embed: "Instructions for the web agency embedding the directory",
+                    "manage-admins": "Manage admin user roles (super admin only)",
                     documentation: "Guides, workflows, and admin reference",
                   }[item.id] || item.label}
                   className={`w-full flex items-center gap-3 px-3 py-3 rounded-md text-xl font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 ${
@@ -868,7 +1071,7 @@ export default function Admin({ onGoToDirectory }) {
               Documentation
             </button>
             <button
-              onClick={() => onGoToDirectory?.()}
+              onClick={() => window.open(window.location.origin + window.location.pathname, "_blank")}
               className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-brand-pink px-3 py-3 text-[1.6rem] font-medium text-brand-pink bg-brand-parchment hover:bg-brand-pink hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2"
             >
               View directory
@@ -876,18 +1079,17 @@ export default function Admin({ onGoToDirectory }) {
           </div>
         </aside>
 
-        <main className={`flex-1 flex flex-col overflow-hidden ${
-          activeTab === "manual" ? "w-full" : ""
-        }`}>
+        <main className="flex-1 flex flex-col overflow-hidden">
           {/* Page header + stats - hidden for Tests tab */}
           {activeTab !== "tests" &&
             activeTab !== "manual" &&
-            activeTab !== "fixes" && (
+            activeTab !== "fixes" &&
+            activeTab !== "embed" && (
               <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                   <div>
                     <h2 className="text-3xl font-semibold text-brand-navy tracking-heading">
-                      {sidebarData.find((s) => s.id === activeTab)?.label}
+                      {sidebarItems.find((s) => s.id === activeTab)?.label}
                     </h2>
                   </div>
                   {activeTab === "all" && (
@@ -1045,7 +1247,9 @@ export default function Admin({ onGoToDirectory }) {
                         ? `${pending.length} new`
                         : activeTab === "activity"
                         ? `${activityLog.length} events`
-                        : `${requestsCount} pending requests`}
+                        : activeTab === "manage-admins"
+                        ? `${manageAdmins.length} user${manageAdmins.length !== 1 ? "s" : ""}`
+                        : `${requestsCount} pending nominations`}
                     </div>
                   )}
                 </div>
@@ -1141,53 +1345,23 @@ export default function Admin({ onGoToDirectory }) {
               </div>
             ) : activeTab === "requests" ? (
               <div className="rounded-lg overflow-hidden border-2 border-brand-navy bg-white">
-                {/* Sub-tab bar */}
-                <div className="flex border-b-2 border-brand-navy bg-brand-navy">
-                  <button
-                    onClick={() => setRequestSubTab("new")}
-                    title="New profile submissions waiting for approval"
-                    className={`flex-1 px-5 py-3 text-lg font-bold transition-colors ${
-                      requestSubTab === "new"
-                        ? "bg-white text-green-700 border-b-[4px] border-green-500"
-                        : "bg-transparent text-white border-b-[4px] border-transparent hover:bg-white hover:bg-opacity-15"
-                    }`}
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      <svg width="14" height="14" viewBox="0 0 14 14">
-                        <circle cx="7" cy="7" r="7" fill="#22c55e" />
-                      </svg>
-                      New
-                      <span
-                        className={`text-[1.3rem] font-medium px-2 py-0.5 rounded-full ${
-                          requestSubTab === "new"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-200 text-gray-500"
-                        }`}
-                      >
-                        {pending.length}
-                      </span>
-                    </span>
-                  </button>
-                </div>
-                {/* Updates and Deletes sub-tabs removed — self-service actions now in Activity Log */}
-                {requestSubTab === "new" && (
+                {pending.length === 0 ? (
+                  <div className="text-center py-20">
+                    <div className="text-[4.8rem] mb-4 text-green-400">
+                      ✓
+                    </div>
+                    <div className="text-lg text-green-600">
+                      No new submissions
+                    </div>
+                  </div>
+                ) : (
                   <>
-                    {pending.length === 0 ? (
-                      <div className="text-center py-20">
-                        <div className="text-[4.8rem] mb-4 text-green-400">
-                          ✓
-                        </div>
-                        <div className="text-lg text-green-600">
-                          No new submissions
+                    <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
+                      <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
+                        <div className="text-[1.4rem] font-bold text-white">
+                          {pending.length} pending submission(s)
                         </div>
                       </div>
-                    ) : (
-                      <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                        <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
-                          <div className="text-[1.4rem] font-bold text-white">
-                            {pending.length} pending submission(s)
-                          </div>
-                        </div>
                         {pending.map((item) => {
                           const isExpanded = expandedId === item.id;
                           return (
@@ -1453,9 +1627,8 @@ export default function Admin({ onGoToDirectory }) {
                           );
                         })}
                       </div>
-                    )}
-                  </>
-                )}
+                    </>
+                  )}
 
               </div>
             ) : activeTab === "activity" ? (
@@ -1543,30 +1716,23 @@ export default function Admin({ onGoToDirectory }) {
                               <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-1 text-gray-500">
                                 Changes
                               </div>
-                              {!isDelete && entry.changes && (
-                                <div className="mt-3 ml-14 rounded-lg p-3 bg-gray-50 border border-gray-200">
-                                  <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-1 text-gray-500">
-                                    Changes
+                              <div className="flex flex-col gap-1.5">
+                                {Object.entries(
+                                  typeof entry.changes === "string"
+                                    ? JSON.parse(entry.changes)
+                                    : entry.changes
+                                ).map(([field, val]) => (
+                                  <div key={field} className="text-[1.3rem] leading-[1.6]">
+                                    <span className="font-medium text-brand-dark capitalize">
+                                      {field.replace(/_/g, " ")}
+                                    </span>
+                                    <span className="text-gray-400 mx-1.5">·</span>
+                                    <span className="line-through text-gray-400">{val.old || "—"}</span>
+                                    <span className="text-gray-400 mx-1.5">→</span>
+                                    <span className="text-brand-dark-blue">{val.new || "—"}</span>
                                   </div>
-                                  <div className="flex flex-col gap-1.5">
-                                    {Object.entries(
-                                      typeof entry.changes === "string"
-                                        ? JSON.parse(entry.changes)
-                                        : entry.changes
-                                    ).map(([field, val]) => (
-                                      <div key={field} className="text-[1.3rem] leading-[1.6]">
-                                        <span className="font-medium text-brand-dark capitalize">
-                                          {field.replace(/_/g, " ")}
-                                        </span>
-                                        <span className="text-gray-400 mx-1.5">·</span>
-                                        <span className="line-through text-gray-400">{val.old || "—"}</span>
-                                        <span className="text-gray-400 mx-1.5">→</span>
-                                        <span className="text-brand-dark-blue">{val.new || "—"}</span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1810,23 +1976,23 @@ export default function Admin({ onGoToDirectory }) {
                     </div>
                   ) : (
                   <>
-                  <table className="w-full">
+                  <table ref={tableTopRef} className="w-full">
                     <thead className="border-b-2 border-brand-navy bg-brand-navy">
                       <tr>
                         <th className="w-10 px-2 py-3"></th>
                         {[
-                          "Name",
-                          "Expertise",
-                          "LinkedIn Clicks",
-                          "Details",
-                          "Status",
-                          "Date Joined",
-                        ].map((h) => (
+                          { label: "Name", align: "left" },
+                          { label: "Expertise", align: "left" },
+                          { label: "LinkedIn Clicks", align: "center" },
+                          { label: "Details", align: "center" },
+                          { label: "Status", align: "left" },
+                          { label: "Date Joined", align: "left" },
+                        ].map(({ label, align }) => (
                           <th
-                            key={h}
-                            className="text-left text-[1.4rem] font-bold uppercase tracking-wider px-5 py-3 text-white"
+                            key={label}
+                            className={`text-${align} text-[1.4rem] font-bold uppercase tracking-wider px-5 py-3 text-white`}
                           >
-                            {h}
+                            {label}
                           </th>
                         ))}
                       </tr>
@@ -1858,9 +2024,9 @@ export default function Admin({ onGoToDirectory }) {
                                   }
                                 }}
                                 className="transition-colors cursor-pointer bg-transparent hover:bg-brand-warm-row focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
-                                onClick={() =>
-                                  setExpandedAllId(isExpanded ? null : item.id)
-                                }
+                                onClick={() => {
+                                  setExpandedAllId(isExpanded ? null : item.id);
+                                }}
                               >
                                 <td className="px-2 py-3.5">
                                   {isPending && (
@@ -1939,27 +2105,23 @@ export default function Admin({ onGoToDirectory }) {
                                     colSpan="7"
                                     className="px-5 py-4 bg-brand-parchment"
                                   >
-                                    <div className="grid gap-4 md:grid-cols-2">
-                                      <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                        <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                          Entry details
-                                        </div>
-                                        <div className="space-y-2 text-[1.5rem] text-brand-dark-blue">
-                                          <div>
-                                            <span className="text-brand-navy font-semibold">
-                                              Country:{" "}
-                                            </span>
-                                            {item.country || "—"}
+                                    <div className="flex flex-col gap-4">
+                                      {/* Row 1: Entry details + Summary */}
+                                      <div className="grid gap-4 md:grid-cols-2">
+                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                            Entry details
                                           </div>
-                                          <div>
-                                            <span className="text-brand-navy font-semibold">
-                                              Expertise:{" "}
-                                            </span>
-                                            {toTags(item.expertise).length >
-                                            0 ? (
-                                              <div className="flex flex-wrap gap-1.5 mt-1">
-                                                {toTags(item.expertise).map(
-                                                  (tag, i) => (
+                                          <div className="space-y-2 text-[1.5rem] text-brand-dark-blue">
+                                            <div>
+                                              <span className="text-brand-navy font-semibold">Country: </span>
+                                              {val(item.country) || <span className="text-gray-400 italic text-[1.3rem]">No country set</span>}
+                                            </div>
+                                            <div>
+                                              <span className="text-brand-navy font-semibold">Expertise: </span>
+                                              {toTags(item.expertise).length > 0 ? (
+                                                <div className="flex flex-wrap gap-1.5 mt-1">
+                                                  {toTags(item.expertise).map((tag, i) => (
                                                     <span
                                                       key={i}
                                                       title={tag}
@@ -1967,57 +2129,139 @@ export default function Admin({ onGoToDirectory }) {
                                                     >
                                                       {tag}
                                                     </span>
-                                                  )
+                                                  ))}
+                                                </div>
+                                              ) : <span className="text-gray-400 italic text-[1.3rem]">No expertise tags added</span>}
+                                            </div>
+                                            <div>
+                                              <span className="text-brand-navy font-semibold">LinkedIn: </span>
+                                              {val(item.linkedin) ? (
+                                                <a
+                                                  href={item.linkedin}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="hover:underline text-brand-navy"
+                                                >
+                                                  {item.linkedin}
+                                                </a>
+                                              ) : <span className="text-gray-400 italic text-[1.3rem]">No LinkedIn URL</span>}
+                                            </div>
+                                            <div>
+                                              <span className="text-brand-navy font-semibold">Leader email: </span>
+                                              {val(item.leader_email) || <span className="text-gray-400 italic text-[1.3rem]">Not yet collected</span>}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                            Summary
+                                          </div>
+                                          <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">
+                                            {val(item.bio) || <span className="text-gray-400 italic text-[1.3rem]">No bio provided yet</span>}
+                                          </div>
+                                        </div>
+                                      </div>
+                                      {/* Row 2: Full-width Enrich / Profile gaps */}
+                                      {adminRole !== "editor" ? (
+                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                            Enrich profile
+                                          </div>
+                                          {(() => {
+                                            const missing = getMissingFields(item);
+                                            return (
+                                              <div className="flex flex-col gap-3">
+                                                {missing.length > 0 ? (
+                                                  <div>
+                                                    <div className="text-[1.3rem] text-amber-800 font-medium mb-2">
+                                                      Missing fields ({missing.length}):
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-1.5">
+                                                      {missing.map((f) => (
+                                                        <span
+                                                          key={f}
+                                                          className="inline-block bg-amber-50 text-amber-700 text-[1.2rem] font-medium px-2.5 py-0.5 rounded-full border border-amber-200"
+                                                        >
+                                                          {f}
+                                                        </span>
+                                                      ))}
+                                                    </div>
+                                                  </div>
+                                                ) : (
+                                                  <div className="text-[1.3rem] text-green-700 font-medium">
+                                                    ✓ All fields complete
+                                                  </div>
                                                 )}
+                                                <div className="flex flex-col gap-2">
+                                                  <div className="flex flex-wrap items-center gap-2">
+                                                    <input
+                                                      type="email"
+                                                      placeholder="Enter leader email to send magic link…"
+                                                      value={enrichEmail[item.id] || ""}
+                                                      onChange={(e) =>
+                                                        setEnrichEmail((prev) => ({
+                                                          ...prev,
+                                                          [item.id]: e.target.value,
+                                                        }))
+                                                      }
+                                                      className="flex-1 min-w-[240px] border border-gray-300 rounded-lg px-3 py-2 text-[1.4rem] focus:outline-none focus:ring-2 focus:ring-brand-pink focus:border-transparent"
+                                                    />
+                                                    <button
+                                                      onClick={() => handleSendEnrichmentLink(item)}
+                                                      disabled={enrichSending === item.id || !enrichEmail[item.id]?.trim()}
+                                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+                                                    >
+                                                      {enrichSending === item.id ? "Sending…" : "Send magic link"}
+                                                    </button>
+                                                  </div>
+                                                  {enrichMsg[item.id] && (
+                                                    <div className={`text-[1.4rem] px-3 py-2 rounded-lg border ${
+                                                      enrichMsg[item.id].startsWith("✓")
+                                                        ? "text-green-800 bg-green-50 border-green-200"
+                                                        : "text-red-800 bg-red-50 border-red-200"
+                                                    }`}>
+                                                      {enrichMsg[item.id]}
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            );
+                                          })()}
+                                        </div>
+                                      ) : (
+                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
+                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
+                                            Profile gaps
+                                          </div>
+                                          {(() => {
+                                            const missing = getMissingFields(item);
+                                            return missing.length > 0 ? (
+                                              <div>
+                                                <div className="text-[1.3rem] text-amber-800 font-medium mb-2">
+                                                  Missing fields ({missing.length}):
+                                                </div>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                  {missing.map((f) => (
+                                                    <span
+                                                      key={f}
+                                                      className="inline-block bg-amber-50 text-amber-700 text-[1.2rem] font-medium px-2.5 py-0.5 rounded-full border border-amber-200"
+                                                    >
+                                                      {f}
+                                                    </span>
+                                                  ))}
+                                                </div>
                                               </div>
                                             ) : (
-                                              "—"
-                                            )}
-                                          </div>
-                                          <div>
-                                            <span className="text-brand-navy font-semibold">
-                                              LinkedIn:{" "}
-                                            </span>
-                                            {item.linkedin ? (
-                                              <a
-                                                href={item.linkedin}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="hover:underline text-brand-navy"
-                                              >
-                                                {item.linkedin}
-                                              </a>
-                                            ) : (
-                                              "—"
-                                            )}
-                                          </div>
-                                          <div>
-                                            <span className="text-brand-navy font-semibold">
-                                              Editor:{" "}
-                                            </span>
-                                            {item.editor_email ||
-                                              item.editorEmail ||
-                                              "—"}
-                                          </div>
-                                          <div>
-                                            <span className="text-brand-navy font-semibold">
-                                              Leader email:{" "}
-                                            </span>
-                                            {item.leader_email || "—"}
-                                          </div>
+                                              <div className="text-[1.3rem] text-green-700 font-medium">
+                                                ✓ All fields complete
+                                              </div>
+                                            );
+                                          })()}
                                         </div>
-                                      </div>
-                                      <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                        <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                          Summary
-                                        </div>
-                                        <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">
-                                          {item.bio || "No bio available."}
-                                        </div>
-                                      </div>
+                                      )}
                                     </div>
                                     <div className="mt-4 flex items-center justify-end gap-3">
-                                      {isPending && (
+                                      {adminRole !== "editor" && isPending && (
                                         <>
                                           <button
                                             onClick={() =>
@@ -2041,6 +2285,7 @@ export default function Admin({ onGoToDirectory }) {
                                           </button>
                                         </>
                                       )}
+                                      {adminRole !== "editor" && (
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -2053,6 +2298,7 @@ export default function Admin({ onGoToDirectory }) {
                                       >
                                         Delete entry
                                       </button>
+                                      )}
                                     </div>
                                   </td>
                                 </tr>
@@ -2069,7 +2315,7 @@ export default function Admin({ onGoToDirectory }) {
                 {filteredAll.length > PAGE_SIZE && (
                   <div className="flex items-center gap-2 mt-6 pt-4 border-t border-brand-warm-border flex-wrap justify-center">
                     <button
-                      onClick={() => setAllPage((p) => Math.max(1, p - 1))}
+                      onClick={() => { setAllPage((p) => Math.max(1, p - 1)); tableTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                       disabled={allPage === 1}
                       className="px-3 py-1.5 border border-gray-300 rounded text-[1.4rem] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:border-gray-400"
                     >
@@ -2080,7 +2326,7 @@ export default function Admin({ onGoToDirectory }) {
                       (_, i) => (
                         <button
                           key={i + 1}
-                          onClick={() => setAllPage(i + 1)}
+                          onClick={() => { setAllPage(i + 1); tableTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                           className={`px-3 py-1.5 border rounded text-[1.4rem] font-medium transition-colors ${
                             allPage === i + 1
                               ? "bg-brand-navy text-white border-brand-navy"
@@ -2092,17 +2338,8 @@ export default function Admin({ onGoToDirectory }) {
                       )
                     )}
                     <button
-                      onClick={() =>
-                        setAllPage((p) =>
-                          Math.min(
-                            Math.ceil(filteredAll.length / PAGE_SIZE),
-                            p + 1
-                          )
-                        )
-                      }
-                      disabled={
-                        allPage === Math.ceil(filteredAll.length / PAGE_SIZE)
-                      }
+                      onClick={() => { setAllPage((p) => Math.min(Math.ceil(filteredAll.length / PAGE_SIZE), p + 1)); tableTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+                      disabled={allPage === Math.ceil(filteredAll.length / PAGE_SIZE)}
                       className="px-3 py-1.5 border border-gray-300 rounded text-[1.4rem] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:border-gray-400"
                     >
                       Next →
@@ -2110,6 +2347,399 @@ export default function Admin({ onGoToDirectory }) {
                   </div>
                 )}
               </>
+            ) : activeTab === "manage-admins" && adminRole === "super_admin" ? (
+              <div className="p-8">
+                <h2 className="text-3xl font-semibold text-brand-navy tracking-heading mb-2">
+                  Manage Admin Users
+                </h2>
+                <p className="text-[1.4rem] text-gray-500 mb-6">
+                  Control who can access the admin console and what they can do. Only super admins can add or remove users.
+                </p>
+
+                {/* Roles reference — single row, 3 columns */}
+                <div className="bg-brand-sand border border-brand-blue-border rounded-lg p-5 mb-8">
+                  <h3 className="text-[1.5rem] font-semibold text-brand-navy mb-3">Role permissions</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    {[
+                      {
+                        label: "Super admin",
+                        color: "bg-purple-100 text-purple-800 border-purple-200",
+                        can: ["Everything admin can do", "Add and remove other admin users"],
+                        cannot: [],
+                      },
+                      {
+                        label: "Admin",
+                        color: "bg-blue-100 text-blue-800 border-blue-200",
+                        can: ["Approve and reject submissions", "Delete leaders", "Send enrichment magic links", "View all profile data and gaps"],
+                        cannot: ["Manage other admin users"],
+                      },
+                      {
+                        label: "Editor",
+                        color: "bg-gray-100 text-gray-700 border-gray-200",
+                        can: ["View all entries and profile data", "See which profile fields are missing"],
+                        cannot: ["Approve, reject, or delete", "Send magic links", "Manage admin users"],
+                      },
+                    ].map(({ label, color, can, cannot }) => (
+                      <div key={label} className="bg-white rounded-lg p-4 border">
+                        <span className={`inline-block px-3 py-1 rounded-full text-[1.2rem] font-medium mb-3 ${color}`}>
+                          {label}
+                        </span>
+                        <div className="text-[1.2rem] leading-relaxed">
+                          <span className="text-gray-700">
+                            {can.join(" · ")}
+                          </span>
+                          {cannot.length > 0 && (
+                            <span className="text-gray-400"> — cannot: {cannot.join(", ")}</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Row 2: Add a new admin (left) + Current users (right) */}
+                <div className="grid grid-cols-2 gap-6 mb-8">
+                  <div className="bg-white border border-brand-blue-border rounded-lg p-6">
+                    <h3 className="text-[1.8rem] font-semibold text-brand-navy mb-4">
+                      Add a new admin
+                    </h3>
+                    <input
+                      type="email"
+                      placeholder="admin@example.org"
+                      value={newAdminEmail}
+                      onChange={(e) => setNewAdminEmail(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[1.5rem] focus:outline-none focus:ring-2 focus:ring-brand-pink mb-3"
+                    />
+                    <select
+                      value={newAdminRole}
+                      onChange={(e) => setNewAdminRole(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[1.5rem] focus:outline-none focus:ring-2 focus:ring-brand-pink mb-3"
+                    >
+                      <option value="admin">Admin — approve, reject, delete, send magic links</option>
+                      <option value="editor">Editor — view only, see profile gaps (no approvals)</option>
+                    </select>
+                    <button
+                      onClick={handleAddAdmin}
+                      disabled={!newAdminEmail.trim()}
+                      className="px-8 py-3 text-[1.5rem] font-medium rounded-lg bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors disabled:opacity-40 cursor-pointer"
+                    >
+                      Add user
+                    </button>
+                    {manageAdminsMsg && (
+                      <div className={`mt-4 rounded-lg px-4 py-3 text-[1.4rem] border ${
+                        manageAdminsMsg.startsWith("✓")
+                          ? "border-green-300 bg-green-50 text-green-800"
+                          : "border-red-300 bg-red-50 text-red-800"
+                      }`}>
+                        {manageAdminsMsg}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-white border border-brand-blue-border rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-[1.8rem] font-semibold text-brand-navy shrink-0">
+                        Current users
+                      </h3>
+                      <input
+                        type="text"
+                        placeholder="Search by email…"
+                        value={adminSearch}
+                        onChange={(e) => setAdminSearch(e.target.value)}
+                        className="mx-4 flex-1 max-w-[240px] border border-gray-300 rounded-lg px-3 py-2 text-[1.3rem] focus:outline-none focus:ring-2 focus:ring-brand-pink"
+                      />
+                      <button
+                        onClick={() => { loadManageAdmins(); loadAdminActivity(); }}
+                        className="text-[1.4rem] text-brand-pink underline hover:text-brand-pink/80 cursor-pointer shrink-0"
+                      >
+                        Refresh ↻
+                      </button>
+                    </div>
+                    {manageAdminsLoading ? (
+                      <div className="flex items-center gap-3 py-4 text-[1.4rem] text-gray-500">
+                        <div className="w-5 h-5 border-2 border-brand-navy border-t-transparent rounded-full animate-spin" />
+                        Loading…
+                      </div>
+                    ) : manageAdmins.length === 0 ? (
+                      <p className="text-[1.5rem] text-gray-500">No admin users found.</p>
+                    ) : (
+                      <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                        {manageAdmins
+                          .filter((a) => !adminSearch || a.email.toLowerCase().includes(adminSearch.toLowerCase()))
+                          .map((a) => {
+                          const roleLabel = a.role === "super_admin"
+                            ? "Super admin"
+                            : a.role === "admin"
+                              ? "Admin"
+                              : "Editor";
+                          const roleDesc = a.role === "super_admin"
+                            ? "Full access + manages admin users"
+                            : a.role === "admin"
+                              ? "Can approve, reject, delete, send magic links"
+                              : "View only — sees profile gaps, no approvals";
+                          const badgeColor = a.role === "super_admin"
+                            ? "bg-purple-100 text-purple-800"
+                            : a.role === "admin"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-700";
+                          return (
+                            <div
+                              key={a.id}
+                              className="flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 hover:border-brand-pink/30 transition-colors"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="w-9 h-9 rounded-full bg-brand-navy text-white flex items-center justify-center text-[1.3rem] font-bold shrink-0">
+                                  {(a.email?.[0] || "?").toUpperCase()}
+                                </div>
+                                <div className="min-w-0">
+                                  <div className="text-[1.4rem] font-medium text-gray-900 flex items-center gap-2 flex-wrap">
+                                    <span className="truncate">{a.email}</span>
+                                    {a.email === user?.email && (
+                                      <span className="text-[1.1rem] text-gray-400 font-normal italic shrink-0">(you)</span>
+                                    )}
+                                  </div>
+                                  <div className="text-[1.1rem] text-gray-500 mt-0.5">
+                                    Added {a.created_by ? `by ${a.created_by}` : ""} · {new Date(a.created_at).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0 ml-3">
+                                <span className={`inline-block px-2.5 py-0.5 rounded-full text-[1.1rem] font-medium ${badgeColor}`}>
+                                  {roleLabel}
+                                </span>
+                                {a.role !== "super_admin" ? (
+                                  <button
+                                    onClick={() => {
+                                      setShowConfirm({
+                                        action: "remove-admin",
+                                        title: "Remove user",
+                                        message: `Remove ${a.email} as ${roleLabel}? They will immediately lose access to the admin console.`,
+                                        confirmLabel: "Remove",
+                                        onConfirm: () => handleRemoveAdmin(a.email),
+                                      });
+                                    }}
+                                    className="text-red-400 hover:text-red-600 text-[1.3rem] px-2 py-1 rounded hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+                                    title="Remove user"
+                                  >
+                                    ✕
+                                  </button>
+                                ) : (
+                                  <span className="w-7" />
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Admin activity log */}
+                <div className="bg-white border border-brand-blue-border rounded-lg p-6">
+                  <h3 className="text-[1.8rem] font-semibold text-brand-navy mb-4">
+                    Admin activity
+                  </h3>
+                  {adminActivityLoading ? (
+                    <div className="flex items-center gap-3 py-4 text-[1.4rem] text-gray-500">
+                      <div className="w-5 h-5 border-2 border-brand-navy border-t-transparent rounded-full animate-spin" />
+                      Loading…
+                    </div>
+                  ) : adminActivity.length === 0 ? (
+                    <p className="text-[1.4rem] text-gray-400 italic">No activity recorded yet. Changes to admin users will appear here.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {adminActivity.map((entry) => {
+                        const isAdd = entry.action === "add_admin";
+                        return (
+                          <div key={entry.id} className="flex items-start gap-3 py-2.5 border-b border-gray-100 last:border-0">
+                            <div className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center text-[1.1rem] shrink-0 ${
+                              isAdd ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
+                            }`}>
+                              {isAdd ? "+" : "−"}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-[1.4rem] text-gray-800">
+                                <span className="font-medium">{entry.target_email}</span>
+                                {isAdd
+                                  ? <> added as <span className="font-medium">{entry.role}</span></>
+                                  : <> removed</>
+                                }
+                              </div>
+                              <div className="text-[1.2rem] text-gray-400 mt-0.5">
+                                by {entry.performed_by} · {new Date(entry.created_at).toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : activeTab === "embed" ? (
+              <div className="p-8 max-w-[900px] mx-auto">
+                <h2 className="text-3xl font-semibold text-brand-navy tracking-heading mb-6">
+                  Embedding the Directory into the TH Website
+                </h2>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8">
+                  <p className="text-[1.5rem] text-amber-800 font-medium">
+                    This guide is for the web agency building the Transform Health website at{" "}
+                    <a href="https://transformhealth.rrzdev.co.za" target="_blank" rel="noopener noreferrer" className="underline">
+                      transformhealth.rrzdev.co.za
+                    </a>
+                    .
+                    Share this tab with them so they know how to embed the Women Leaders Directory.
+                  </p>
+                </div>
+
+                <section className="mb-8">
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">Overview</h3>
+                  <p className="text-[1.5rem] text-gray-700 leading-[1.7] mb-3">
+                    The Women Leaders Directory is a standalone React application deployed on GitHub Pages.
+                    It is <strong>not</strong> part of the WordPress site — it lives at its own URL and gets
+                    embedded into the TH website.
+                  </p>
+                  <p className="text-[1.5rem] text-gray-700 leading-[1.7]">
+                    <strong>Live URL:</strong>{" "}
+                    <code className="bg-gray-100 px-2 py-1 rounded text-[1.4rem]">https://tich-labs.github.io/transform-health-directory/</code>
+                  </p>
+                </section>
+
+                <section className="mb-8">
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">
+                    Header &amp; Footer — Demo Only
+                  </h3>
+                  <p className="text-[1.5rem] text-gray-700 leading-[1.7] mb-3">
+                    The current site header and footer (nav bar with dropdowns, multi-column footer)
+                    are <strong>only for demo purposes</strong> — they let the TH team visualise
+                    how the directory will look when embedded in the real site.
+                  </p>
+                  <p className="text-[1.5rem] text-gray-700 leading-[1.7] mb-3">
+                    <strong>The web agency should NOT replicate or use these.</strong> The agency will
+                    provide the real TH site navigation and footer, and the directory will sit within
+                    that chrome.
+                  </p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-3">
+                    <p className="text-[1.4rem] text-blue-800">
+                      <strong>Tip:</strong> The demo header and footer are <strong>hidden by default</strong> — what you see is already the embedded view. Click the eye button <span className="text-xl">👁️</span> at the bottom-right of any page to temporarily show them for comparison.
+                    </p>
+                  </div>
+                </section>
+
+                <section className="mb-8">
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">Embedding Options</h3>
+
+                  <div className="mb-5">
+                    <h4 className="text-[1.7rem] font-semibold text-brand-navy mb-2">
+                      Option A: Iframe Embed (Recommended)
+                    </h4>
+                    <p className="text-[1.5rem] text-gray-700 leading-[1.7] mb-2">
+                      Place the directory in a full-width page on the TH site using an iframe:
+                    </p>
+                    <pre className="bg-gray-900 text-green-300 p-4 rounded-lg text-[1.3rem] overflow-x-auto leading-[1.6]">
+{`<iframe
+  src="https://tich-labs.github.io/transform-health-directory/?chrome=hidden"
+  width="100%"
+  height="800px"
+  style="border:none;overflow-y:auto"
+  title="Women Leaders in Digital Health Directory"
+></iframe>`}
+                    </pre>
+                    <p className="text-[1.4rem] text-gray-600 mt-2">
+                      The <code className="bg-gray-100 px-1.5 py-0.5 rounded">?chrome=hidden</code> parameter
+                      hides the demo header/footer automatically. Adjust the height as needed or use
+                      a JavaScript resize handler for a seamless experience.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-[1.7rem] font-semibold text-brand-navy mb-2">
+                      Option B: Link Out
+                    </h4>
+                    <p className="text-[1.5rem] text-gray-700 leading-[1.7] mb-2">
+                      Link directly to the directory from the TH site navigation:
+                    </p>
+                    <pre className="bg-gray-900 text-green-300 p-4 rounded-lg text-[1.3rem] overflow-x-auto leading-[1.6]">
+{`<a href="https://tich-labs.github.io/transform-health-directory/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Women Leaders in Digital Health Directory
+</a>`}
+                    </pre>
+                  </div>
+                </section>
+
+                <section className="mb-8">
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">URL Parameters</h3>
+                  <table className="w-full text-[1.4rem] border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="text-left px-4 py-2 border border-gray-200 font-semibold">Parameter</th>
+                        <th className="text-left px-4 py-2 border border-gray-200 font-semibold">Value</th>
+                        <th className="text-left px-4 py-2 border border-gray-200 font-semibold">Effect</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="px-4 py-2 border border-gray-200"><code>?chrome=hidden</code></td>
+                        <td className="px-4 py-2 border border-gray-200"><code>hidden</code></td>
+                        <td className="px-4 py-2 border border-gray-200">Hides the demo header, nav bar, and footer</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+
+                <section className="mb-8">
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">What the TH Team Needs to Provide</h3>
+                  <ul className="list-disc pl-6 text-[1.5rem] text-gray-700 leading-[1.7] space-y-2">
+                    <li>
+                      <strong>A page or section</strong> on the TH website where the directory will be
+                      embedded (full-width recommended)
+                    </li>
+                    <li>
+                      <strong>If iframe:</strong> the page dimensions so we can set appropriate height
+                    </li>
+                    <li>
+                      <strong>If link-out:</strong> the placement in the site navigation
+                    </li>
+                  </ul>
+                </section>
+
+                <section className="mb-8">
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">Notes for the Agency</h3>
+                  <ul className="list-disc pl-6 text-[1.5rem] text-gray-700 leading-[1.7] space-y-2">
+                    <li>
+                      The directory is fully responsive — works on mobile, tablet, and desktop
+                    </li>
+                    <li>
+                      No API calls or CORS configuration needed — it is a static site that calls
+                      Supabase directly from the browser
+                    </li>
+                    <li>
+                      If using an iframe, ensure your CSP (Content Security Policy) allows the
+                      directory URL and Supabase API endpoints
+                    </li>
+                    <li>
+                      The directory has its own search, filter, and analytics — it is self-contained
+                    </li>
+                    <li>
+                      No login is required for public users — the directory is fully open
+                    </li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h3 className="text-2xl font-semibold text-brand-navy mb-3">Testing the Embed</h3>
+                  <p className="text-[1.5rem] text-gray-700 leading-[1.7]">
+                    To test: open the directory with{" "}
+                    <code className="bg-gray-100 px-1.5 py-0.5 rounded">?chrome=hidden</code> in an iframe
+                    on your local dev environment, or visit the URL directly with that parameter.
+                    The TH team can also use the eye button <span className="text-xl">👁️</span> on the live
+                    site to preview the chrome-less view.
+                  </p>
+                </section>
+              </div>
             ) : activeTab === "manual" ? (
               <AdminManual onBackToAdmin={() => handleTabChange("all")} />
             ) : null}
@@ -2118,12 +2748,9 @@ export default function Admin({ onGoToDirectory }) {
       </div>
 
       <footer className="border-t border-gray-200 bg-brand-parchment flex-shrink-0">
-        <div className="max-w-[1440px] mx-auto px-8 py-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="text-[1.4rem] text-gray-700">
+        <div className="max-w-[1440px] mx-auto px-8 py-3 text-center">
+          <div className="text-[1.3rem] text-gray-400">
             Women Leaders in Digital Health Database — Admin console
-          </div>
-          <div className="text-[1.3rem] text-gray-500">
-            Test mode — auth will be required before launch
           </div>
         </div>
       </footer>
@@ -2134,7 +2761,8 @@ export default function Admin({ onGoToDirectory }) {
             <div
               className={`text-xl font-semibold mb-2 ${
                 showConfirm.action === "reject" ||
-                showConfirm.action === "delete"
+                showConfirm.action === "delete" ||
+                showConfirm.action === "remove-admin"
                   ? "text-red-600"
                   : "text-brand-navy"
               }`}
@@ -2158,7 +2786,8 @@ export default function Admin({ onGoToDirectory }) {
                 }}
                 className={`px-5 py-2.5 text-[1.5rem] font-medium rounded-full text-white transition-colors ${
                   showConfirm.action === "reject" ||
-                  showConfirm.action === "delete"
+                  showConfirm.action === "delete" ||
+                  showConfirm.action === "remove-admin"
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-brand-navy hover:bg-brand-navy-hover"
                 }`}

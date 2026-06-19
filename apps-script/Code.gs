@@ -31,6 +31,7 @@ function doPost(e) {
 
 function sendRawEmail(payload) {
   var to       = payload.to       || '';
+  var cc       = payload.cc       || '';
   var subject  = payload.subject  || '';
   var htmlBody = payload.htmlBody || '';
 
@@ -38,11 +39,17 @@ function sendRawEmail(payload) {
     return { ok: false, error: 'missing_fields' };
   }
 
-  MailApp.sendEmail({
+  var params = {
     to: to,
     subject: subject,
     htmlBody: htmlBody,
-  });
+  };
+
+  if (cc) {
+    params.cc = cc;
+  }
+
+  MailApp.sendEmail(params);
 
   return { ok: true };
 }
