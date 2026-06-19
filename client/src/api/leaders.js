@@ -436,7 +436,7 @@ export const api = {
       const token = btoa(
         JSON.stringify({ leaderId, mode, createdAt: Date.now() })
       );
-      const url = `${window.location.origin}?manage=${token}`;
+      const url = `${window.location.origin}${window.location.pathname}?manage=${token}`;
       return {
         ok: false,
         url,
