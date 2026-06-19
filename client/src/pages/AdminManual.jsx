@@ -364,6 +364,9 @@ const SECTIONS = [
         <Tip>
           <strong>When in doubt:</strong> Reach out to the submitter with questions rather than rejecting. Most submissions are just incomplete, not problematic.
         </Tip>
+        <Note>
+          Screenshot placeholder — will be replaced with an actual expanded pending submission once new submissions arrive.
+        </Note>
         <Img
           src="screenshots/admin-manual/10-all-entries-expanded.png"
           caption="Expanded pending submission — read the full profile before clicking Approve or Reject"
@@ -702,10 +705,9 @@ const SECTIONS = [
           different person with the same name. The submitter was warned at
           submission time — you have the final call.
         </Note>
-        <Img
-          src="screenshots/admin-manual/10-all-entries-expanded.png"
-          caption="Expanded leader row — full profile details with Approve / Reject / Delete buttons"
-        />
+        <Note>
+          Screenshot placeholder — will be captured once new submissions provide a live expanded leader row.
+        </Note>
       </>
     ),
   },
