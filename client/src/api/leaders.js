@@ -575,7 +575,7 @@ export const api = {
   // Super admin: manage other admin users (invoke edge function)
   manageAdmin: async ({ action, email, role, invokerEmail }) => {
     const { data, error } = await supabase.functions.invoke("manage-admin", {
-      body: { action, email, role, invokerEmail },
+      body: { action, email, role, invokerEmail, origin: window.location.origin },
     });
     if (error) {
       // Try to extract the real error message from the function response body

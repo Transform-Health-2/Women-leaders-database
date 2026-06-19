@@ -316,16 +316,6 @@ export default function Admin({ onGoToDirectory }) {
 
   // Auth state listener
   useEffect(() => {
-    // DEV screenshot bypass — localhost only, activated by ?screenshot=true
-    if (import.meta.env.DEV &&
-        (window.location.search.includes("screenshot=true") ||
-         window.location.hash.includes("screenshot=true"))) {
-      setUser({ email: "screenshot@dev.local", id: "screenshot-dev" });
-      setAdminRole("super_admin");
-      setAuthLoading(false);
-      return;
-    }
-
     setAuthLoading(true);
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -961,7 +951,7 @@ export default function Admin({ onGoToDirectory }) {
         <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-center gap-4 px-8 py-4">
           <div className="flex items-center gap-4">
             <img
-              src="https://transformhealthcoalition.org/wp-content/themes/th/assets/images/main_logo.svg"
+              src="/illustrations/TH-Logo-Tag%20Top-FC.png"
               alt="Transform Health"
               className="h-12 block"
             />

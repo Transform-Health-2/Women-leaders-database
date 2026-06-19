@@ -745,30 +745,15 @@ const SECTIONS = [
         </Note>
         <Img
           src="screenshots/admin-manual/04-profile-requests-new.png"
-          caption="Profile Requests > New sub-tab with pending submissions"
+          caption="Profile Requests — pending new submissions awaiting review"
         />
-        <H3>Updates</H3>
+        <H3>Updates &amp; Deletions</H3>
         <P>
-          Leaders can now update their own profiles directly via the{" "}
-          <strong>Manage Profile</strong> page with a magic link — no admin
-          action required. Completed updates are logged in the{" "}
-          <strong>Activity Log</strong> tab for admin visibility.
+          Leaders update and remove their own profiles directly via the{" "}
+          <strong>Manage Profile</strong> page using a magic link — no admin
+          action required. All completed changes are automatically recorded in
+          the <strong>Activity Log</strong> tab for admin visibility.
         </P>
-        <Img
-          src="screenshots/admin-manual/05-profile-requests-updates.png"
-          caption="Profile Requests > Updates sub-tab (self-service — no admin action needed)"
-        />
-        <H3>Deletes</H3>
-        <P>
-          Leaders can remove themselves from the directory via the{" "}
-          <strong>Manage Profile</strong> page with a magic link — no admin
-          action required. Completed deletions are logged in the{" "}
-          <strong>Activity Log</strong> tab for admin visibility.
-        </P>
-        <Img
-          src="screenshots/admin-manual/06-profile-requests-deletes.png"
-          caption="Profile Requests > Deletes sub-tab (self-service — no admin action needed)"
-        />
       </>
     ),
   },
@@ -851,6 +836,10 @@ const SECTIONS = [
           the general search/country/expertise filters from other tabs do not
           appear here.
         </Note>
+        <Img
+          src="screenshots/admin-manual/08-activity-log.png"
+          caption="Activity Log — self-service updates and deletions with action type, date, and name filters"
+        />
       </>
     ),
   },

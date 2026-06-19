@@ -17,7 +17,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
 
   try {
-    const { action, email, role, invokerEmail } = await req.json();
+    const { action, email, role, invokerEmail, origin } = await req.json();
     const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
@@ -78,7 +78,7 @@ serve(async (req) => {
       // Send invitation email
       const appScriptUrl = Deno.env.get("APPS_SCRIPT_URL") || "";
       if (appScriptUrl) {
-        const loginUrl = "https://tich-labs.github.io/transform-health-directory/#/admin";
+        const loginUrl = (origin || "https://tich-labs.github.io/transform-health-directory") + "/#/admin";
         try {
           await fetch(appScriptUrl, {
             method: "POST",

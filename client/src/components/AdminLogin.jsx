@@ -33,7 +33,7 @@ export default function AdminLogin({ onLogin }) {
     setError("");
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "https://tich-labs.github.io/transform-health-directory/#/admin",
+        redirectTo: window.location.origin + "/#/admin",
       });
       if (error) throw error;
       setResetSent(true);
