@@ -78,7 +78,8 @@ serve(async (req) => {
       // Send invitation email
       const appScriptUrl = Deno.env.get("APPS_SCRIPT_URL") || "";
       if (appScriptUrl) {
-        const loginUrl = (origin || "https://tich-labs.github.io/transform-health-directory") + "/#/admin";
+        const baseUrl = origin || "https://tich-labs.github.io/transform-health-directory";
+        const loginUrl = baseUrl + "/?setup=" + encodeURIComponent(email) + "#/admin";
         try {
           await fetch(appScriptUrl, {
             method: "POST",
@@ -87,7 +88,7 @@ serve(async (req) => {
               action: "sendRawEmail",
               to: email,
               subject: "You've been added as " + role + " — Transform Health Admin",
-              htmlBody: "<p>You have been added as <strong>" + role + "</strong> to the Transform Health Women Leaders Directory admin console.</p><p>Go to the <a href=\"" + loginUrl + "\">Admin Console</a> and sign in with your email address.</p><p>If you do not have a password yet, use the <strong>Forgot password</strong> link on the login page to set one.</p>",
+              htmlBody: "<p>You have been added as <strong>" + role + "</strong> to the Transform Health Women Leaders Directory admin console. <a href=\"" + loginUrl + "\">Click here to set your password</a> — you'll be logged in immediately after.</p>",
             }),
           });
         } catch (_e) {

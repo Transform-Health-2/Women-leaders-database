@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { supabase } from "../supabase";
 
 export default function AdminLogin({ onLogin }) {
-  const [email, setEmail] = useState("");
+  const setupEmail = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("setup") || "";
+  }, []);
+
+  const [email, setEmail] = useState(setupEmail);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showForgot, setShowForgot] = useState(false);
+  const [showForgot, setShowForgot] = useState(!!setupEmail);
   const [resetSent, setResetSent] = useState(false);
   const [showPw, setShowPw] = useState(false);
 
@@ -55,9 +60,13 @@ export default function AdminLogin({ onLogin }) {
               alt="Transform Health"
               className="h-8 mx-auto mb-6"
             />
-            <h1 className="text-2xl font-bold text-brand-navy">Reset password</h1>
+            <h1 className="text-2xl font-bold text-brand-navy">
+              {setupEmail ? "Set your password" : "Reset password"}
+            </h1>
             <p className="text-[1.4rem] text-gray-500 mt-2">
-              Enter your email to receive a reset link
+              {setupEmail
+                ? "You've been added as an admin. Click below to receive a password setup link."
+                : "Enter your email to receive a reset link"}
             </p>
           </div>
 
@@ -100,7 +109,7 @@ export default function AdminLogin({ onLogin }) {
                 disabled={loading}
                 className="w-full py-3 bg-brand-pink text-white font-semibold text-[1.5rem] rounded-lg hover:bg-brand-pink-dark transition-colors disabled:opacity-50 cursor-pointer"
               >
-                {loading ? "Sending..." : "Send reset link"}
+                {loading ? "Sending..." : setupEmail ? "Send setup link" : "Send reset link"}
               </button>
 
               <div className="text-center">
