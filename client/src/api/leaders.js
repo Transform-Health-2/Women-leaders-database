@@ -304,6 +304,17 @@ export const api = {
 
       const initials = ((firstName?.[0] || "") + (lastName?.[0] || "")).toUpperCase();
 
+      const FIELD_DESCRIPTIONS = {
+        "Country": "Where you are based",
+        "Years of experience": "How long you have been working in this space",
+        "Biography": "A short paragraph about your background and impact",
+        "Geographical scope": "The region where most of your work takes place",
+        "Profile photo": "A headshot or professional photo",
+        "Expertise tags": "Your areas of specialisation (e.g. Digital Health, AI & Automation)",
+        "Countries of work": "Countries where you actively work or have worked",
+        "Notable items": "Publications, projects, awards, or initiatives you want to highlight (up to 3)",
+      };
+
       const missingFieldsHtml = isEnrichment
         ? `
             <!-- Enrichment preamble -->
@@ -311,16 +322,16 @@ export const api = {
               <div style="font-size:1.3rem;font-weight:600;color:#92400e;margin-bottom:8px;text-align:center">
                 Your profile needs a little love 💕
               </div>
-              <div style="font-size:1.2rem;color:#78350f;line-height:1.6;text-align:center">
-                You're in the directory, but these sections are still missing:
+              <div style="font-size:1.2rem;color:#78350f;line-height:1.6;text-align:center;margin-bottom:12px">
+                You're in the directory, but these sections are still empty:
               </div>
-              <div style="margin-top:10px;text-align:center">
-                ${missingFields.map(f =>
-                  `<span style="display:inline-block;background:#fef3c7;color:#92400e;font-size:1.1rem;font-weight:500;padding:3px 12px;border-radius:9999px;border:1px solid #fde68a;margin:3px">${f}</span>`
-                ).join("")}
-              </div>
-              <div style="font-size:1.2rem;color:#78350f;margin-top:10px;text-align:center">
-                Please click below to complete your profile.
+              ${missingFields.map(f => `
+                <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;margin-bottom:8px">
+                  <div style="font-size:1.2rem;font-weight:600;color:#92400e">${f}</div>
+                  <div style="font-size:1.1rem;color:#78350f;margin-top:2px">${FIELD_DESCRIPTIONS[f] || ""}</div>
+                </div>`).join("")}
+              <div style="font-size:1.2rem;color:#78350f;margin-top:12px;text-align:center">
+                Click the button below to fill these in — it only takes a few minutes.
               </div>
             </div>`
         : "";

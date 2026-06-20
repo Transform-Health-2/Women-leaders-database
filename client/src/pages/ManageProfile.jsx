@@ -1,5 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { api } from "../api/leaders";
+import { getCountriesForGeoScope, ALL_COUNTRIES } from "../utils/countries";
+
+const GEO_SCOPES = [
+  { value: "Global", label: "Global" },
+  { value: "Africa", label: "Africa" },
+  { value: "Americas", label: "Americas" },
+  { value: "Asia", label: "Asia" },
+  { value: "Europe", label: "Europe" },
+  { value: "Oceania", label: "Oceania" },
+  { value: "National", label: "National only" },
+];
+const YEARS_OPTIONS = ["0-2 yrs", "3-7 yrs", "8-15 yrs", "15+ yrs"];
+const ITEM_TYPES = ["Publication", "Project", "Award", "Initiative", "Other"];
 
 const INPUT_CLASS =
   "w-full px-[1.6rem] py-5 border-[1.5px] border-gray-300 rounded-lg text-1.5 outline-none bg-brand-blue-tint";
@@ -51,6 +64,11 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
   const [editExpertise, setEditExpertise] = useState("");
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoPreview, setEditPhotoPreview] = useState(null);
+  const [editCountry, setEditCountry] = useState("");
+  const [editYearsExp, setEditYearsExp] = useState("");
+  const [editGeoScope, setEditGeoScope] = useState("");
+  const [editCountries, setEditCountries] = useState([]);
+  const [editNotableItems, setEditNotableItems] = useState([]);
   const [reason, setReason] = useState("");
   const [status, setStatus] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -77,6 +95,11 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
           setEditOrg(data.organisation || "");
           setEditBio(data.bio || "");
           setEditLinkedin(data.linkedin || "");
+          setEditCountry(data.country || "");
+          setEditYearsExp(data.years_experience || "");
+          setEditGeoScope(data.geo_scope || "");
+          setEditCountries(Array.isArray(data.countries) ? data.countries : []);
+          setEditNotableItems(Array.isArray(data.notable_items) ? data.notable_items : []);
           const exp = Array.isArray(data.expertise)
             ? data.expertise.join(", ")
             : data.expertise || "";
@@ -200,11 +223,23 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean);
-        const oldExp = Array.isArray(leaderData.expertise)
-          ? leaderData.expertise
-          : [];
+        const oldExp = Array.isArray(leaderData.expertise) ? leaderData.expertise : [];
         if (JSON.stringify(newExp) !== JSON.stringify(oldExp))
           updates.expertise = newExp;
+
+        if (editCountry !== (leaderData.country || ""))
+          updates.country = editCountry || null;
+        if (editYearsExp !== (leaderData.years_experience || ""))
+          updates.years_experience = editYearsExp || null;
+        if (editGeoScope !== (leaderData.geo_scope || ""))
+          updates.geo_scope = editGeoScope || null;
+        const oldCountries = Array.isArray(leaderData.countries) ? leaderData.countries : [];
+        if (JSON.stringify(editCountries) !== JSON.stringify(oldCountries))
+          updates.countries = editCountries;
+        const oldNotable = Array.isArray(leaderData.notable_items) ? leaderData.notable_items : [];
+        const cleanNotable = editNotableItems.filter(n => n.title?.trim());
+        if (JSON.stringify(cleanNotable) !== JSON.stringify(oldNotable))
+          updates.notable_items = cleanNotable;
 
         if (editPhoto) {
           try {
@@ -533,129 +568,249 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
         )}
 
         {/* MODE B: EDIT FORM (via magic link) */}
-        {isMagicLink && step === "edit-magic" && leaderData && (
-          <div>
-            <h2 className="text-[2.6rem] font-bold text-brand-navy mb-2">
-              Update your profile
-            </h2>
-            <p className="text-1.4 text-gray-600 leading-[1.7] mb-6">
-              Make your changes below. All fields are optional.
-            </p>
+        {isMagicLink && step === "edit-magic" && leaderData && (() => {
+          const missing = new Set();
+          if (!leaderData.bio) missing.add("bio");
+          if (!leaderData.country) missing.add("country");
+          if (!leaderData.years_experience) missing.add("yearsExp");
+          if (!leaderData.geo_scope) missing.add("geoScope");
+          if (!leaderData.photo_url) missing.add("photo");
+          if (!leaderData.expertise || leaderData.expertise.length === 0) missing.add("expertise");
+          if (!leaderData.countries || leaderData.countries.length === 0) missing.add("countries");
+          if (!leaderData.notable_items || leaderData.notable_items.length === 0) missing.add("notable");
 
-            <div className="space-y-5">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={LABEL_CLASS}>First name</label>
-                  <input
-                    value={editFirstName}
-                    onChange={(e) => setEditFirstName(e.target.value)}
-                    className={INPUT_CLASS}
-                  />
+          const MissingBadge = () => (
+            <span className="ml-2 text-[1.1rem] font-semibold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+              Missing
+            </span>
+          );
+
+          const countryOptions = editGeoScope ? getCountriesForGeoScope(editGeoScope) : ALL_COUNTRIES;
+
+          function toggleCountry(c) {
+            setEditCountries(prev =>
+              prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]
+            );
+          }
+
+          function addNotableItem() {
+            if (editNotableItems.length >= 3) return;
+            setEditNotableItems(prev => [...prev, { title: "", link: "", type: "Publication" }]);
+          }
+
+          function updateNotableItem(i, field, val) {
+            setEditNotableItems(prev => prev.map((item, idx) => idx === i ? { ...item, [field]: val } : item));
+          }
+
+          function removeNotableItem(i) {
+            setEditNotableItems(prev => prev.filter((_, idx) => idx !== i));
+          }
+
+          return (
+            <div>
+              <h2 className="text-[2.6rem] font-bold text-brand-navy mb-2">
+                Update your profile
+              </h2>
+              {missing.size > 0 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 mb-6">
+                  <p className="text-[1.4rem] font-semibold text-amber-800 mb-1">
+                    Your profile needs a little love 💕
+                  </p>
+                  <p className="text-[1.3rem] text-amber-700">
+                    Fields marked <span className="font-semibold">Missing</span> below are empty — filling them in makes your profile more discoverable.
+                  </p>
                 </div>
-                <div>
-                  <label className={LABEL_CLASS}>Last name</label>
-                  <input
-                    value={editLastName}
-                    onChange={(e) => setEditLastName(e.target.value)}
-                    className={INPUT_CLASS}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className={LABEL_CLASS}>Role / Title</label>
-                <input
-                  value={editRole}
-                  onChange={(e) => setEditRole(e.target.value)}
-                  className={INPUT_CLASS}
-                />
-              </div>
-              <div>
-                <label className={LABEL_CLASS}>Organisation</label>
-                <input
-                  value={editOrg}
-                  onChange={(e) => setEditOrg(e.target.value)}
-                  className={INPUT_CLASS}
-                />
-              </div>
-              <div>
-                <label className={LABEL_CLASS}>Profile photo</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) {
-                      setEditPhoto(f);
-                      setEditPhotoPreview(URL.createObjectURL(f));
-                    }
-                  }}
-                  className={`${INPUT_CLASS} cursor-pointer file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[1.3rem] file:font-semibold file:bg-brand-blue-tint file:text-brand-navy hover:file:bg-blue-100`}
-                />
-                {editPhotoPreview && (
-                  <div className="mt-3">
-                    <img
-                      src={editPhotoPreview}
-                      alt="Preview"
-                      className="w-24 h-24 rounded-full object-cover border-2 border-brand-pink"
-                    />
-                    <button
-                      onClick={() => { setEditPhoto(null); setEditPhotoPreview(null); }}
-                      className="ml-3 text-[1.3rem] text-red-500 hover:underline cursor-pointer"
-                    >
-                      Remove
-                    </button>
+              )}
+
+              <div className="space-y-5">
+                {/* Basic info */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={LABEL_CLASS}>First name</label>
+                    <input value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)} className={INPUT_CLASS} />
                   </div>
-                )}
+                  <div>
+                    <label className={LABEL_CLASS}>Last name</label>
+                    <input value={editLastName} onChange={(e) => setEditLastName(e.target.value)} className={INPUT_CLASS} />
+                  </div>
+                </div>
+                <div>
+                  <label className={LABEL_CLASS}>Role / Title</label>
+                  <input value={editRole} onChange={(e) => setEditRole(e.target.value)} className={INPUT_CLASS} />
+                </div>
+                <div>
+                  <label className={LABEL_CLASS}>Organisation</label>
+                  <input value={editOrg} onChange={(e) => setEditOrg(e.target.value)} className={INPUT_CLASS} />
+                </div>
+
+                {/* Photo */}
+                <div>
+                  <label className={LABEL_CLASS}>
+                    Profile photo {missing.has("photo") && <MissingBadge />}
+                  </label>
+                  {leaderData.photo_url && !editPhotoPreview && (
+                    <img src={leaderData.photo_url} alt="Current" className="w-16 h-16 rounded-full object-cover border-2 border-brand-pink mb-2" />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) { setEditPhoto(f); setEditPhotoPreview(URL.createObjectURL(f)); }
+                    }}
+                    className={`${INPUT_CLASS} cursor-pointer file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[1.3rem] file:font-semibold file:bg-brand-blue-tint file:text-brand-navy hover:file:bg-blue-100`}
+                  />
+                  {editPhotoPreview && (
+                    <div className="mt-3 flex items-center gap-3">
+                      <img src={editPhotoPreview} alt="Preview" className="w-16 h-16 rounded-full object-cover border-2 border-brand-pink" />
+                      <button onClick={() => { setEditPhoto(null); setEditPhotoPreview(null); }} className="text-[1.3rem] text-red-500 hover:underline cursor-pointer">Remove</button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <label className={LABEL_CLASS}>
+                    Biography {missing.has("bio") && <MissingBadge />}
+                  </label>
+                  <p className="text-[1.2rem] text-gray-500 mb-1">A short paragraph about your background, focus areas, and impact.</p>
+                  <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} rows={4} className={`${INPUT_CLASS} resize-none`} />
+                </div>
+
+                {/* LinkedIn */}
+                <div>
+                  <label className={LABEL_CLASS}>LinkedIn URL</label>
+                  <input value={editLinkedin} onChange={(e) => setEditLinkedin(e.target.value)} className={INPUT_CLASS} placeholder="https://linkedin.com/in/yourname" />
+                </div>
+
+                {/* Expertise */}
+                <div>
+                  <label className={LABEL_CLASS}>
+                    Expertise {missing.has("expertise") && <MissingBadge />}
+                  </label>
+                  <p className="text-[1.2rem] text-gray-500 mb-1">Your areas of specialisation, comma-separated (e.g. Digital Health, AI & Automation).</p>
+                  <input value={editExpertise} onChange={(e) => setEditExpertise(e.target.value)} className={INPUT_CLASS} placeholder="e.g. Digital Health, Health Systems, Policy" />
+                </div>
+
+                {/* Country + Years experience */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={LABEL_CLASS}>
+                      Country {missing.has("country") && <MissingBadge />}
+                    </label>
+                    <select value={editCountry} onChange={(e) => setEditCountry(e.target.value)} className={`${INPUT_CLASS} ${!editCountry ? "text-gray-400" : "text-gray-900"}`}>
+                      <option value="">Select country…</option>
+                      {ALL_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={LABEL_CLASS}>
+                      Years of experience {missing.has("yearsExp") && <MissingBadge />}
+                    </label>
+                    <select value={editYearsExp} onChange={(e) => setEditYearsExp(e.target.value)} className={`${INPUT_CLASS} ${!editYearsExp ? "text-gray-400" : "text-gray-900"}`}>
+                      <option value="">Select…</option>
+                      {YEARS_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Geo scope */}
+                <div>
+                  <label className={LABEL_CLASS}>
+                    Geographical scope {missing.has("geoScope") && <MissingBadge />}
+                  </label>
+                  <p className="text-[1.2rem] text-gray-500 mb-1">The region where most of your work takes place.</p>
+                  <select value={editGeoScope} onChange={(e) => { setEditGeoScope(e.target.value); setEditCountries([]); }} className={`${INPUT_CLASS} ${!editGeoScope ? "text-gray-400" : "text-gray-900"}`}>
+                    <option value="">Select scope…</option>
+                    {GEO_SCOPES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                  </select>
+                </div>
+
+                {/* Countries of work */}
+                <div>
+                  <label className={LABEL_CLASS}>
+                    Countries of work {missing.has("countries") && <MissingBadge />}
+                  </label>
+                  <p className="text-[1.2rem] text-gray-500 mb-2">Select all countries where you actively work or have worked.</p>
+                  <div className="border border-gray-300 rounded-lg bg-brand-blue-tint max-h-[180px] overflow-y-auto px-3 py-2 flex flex-col gap-1">
+                    {countryOptions.map(c => (
+                      <label key={c} className="flex items-center gap-2 cursor-pointer py-0.5">
+                        <input
+                          type="checkbox"
+                          checked={editCountries.includes(c)}
+                          onChange={() => toggleCountry(c)}
+                          className="accent-brand-pink w-4 h-4 flex-shrink-0"
+                        />
+                        <span className="text-[1.3rem] text-gray-800">{c}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {editCountries.length > 0 && (
+                    <p className="text-[1.2rem] text-brand-navy mt-1">Selected: {editCountries.join(", ")}</p>
+                  )}
+                </div>
+
+                {/* Notable items */}
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className={LABEL_CLASS + " mb-0"}>
+                      Notable work {missing.has("notable") && <MissingBadge />}
+                    </label>
+                    {editNotableItems.length < 3 && (
+                      <button onClick={addNotableItem} className="text-[1.3rem] text-brand-pink font-semibold hover:underline cursor-pointer">
+                        + Add item
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[1.2rem] text-gray-500 mb-2">Publications, projects, awards, or initiatives — up to 3.</p>
+                  {editNotableItems.length === 0 && (
+                    <button onClick={addNotableItem} className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-[1.3rem] text-gray-500 hover:border-brand-pink hover:text-brand-pink transition-colors cursor-pointer">
+                      + Add your first notable item
+                    </button>
+                  )}
+                  <div className="space-y-3">
+                    {editNotableItems.map((item, i) => (
+                      <div key={i} className="border border-gray-200 rounded-lg p-4 bg-white space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[1.3rem] font-semibold text-brand-navy">Item {i + 1}</span>
+                          <button onClick={() => removeNotableItem(i)} className="text-[1.2rem] text-red-400 hover:text-red-600 cursor-pointer">Remove</button>
+                        </div>
+                        <input
+                          value={item.title}
+                          onChange={(e) => updateNotableItem(i, "title", e.target.value)}
+                          placeholder="Title (e.g. Global Health Report 2024)"
+                          className={INPUT_CLASS}
+                        />
+                        <input
+                          value={item.link}
+                          onChange={(e) => updateNotableItem(i, "link", e.target.value)}
+                          placeholder="Link (optional)"
+                          className={INPUT_CLASS}
+                        />
+                        <select
+                          value={item.type}
+                          onChange={(e) => updateNotableItem(i, "type", e.target.value)}
+                          className={INPUT_CLASS}
+                        >
+                          {ITEM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className={LABEL_CLASS}>Bio</label>
-                <textarea
-                  value={editBio}
-                  onChange={(e) => setEditBio(e.target.value)}
-                  rows={4}
-                  className={`${INPUT_CLASS} resize-none`}
-                />
-              </div>
-              <div>
-                <label className={LABEL_CLASS}>LinkedIn URL</label>
-                <input
-                  value={editLinkedin}
-                  onChange={(e) => setEditLinkedin(e.target.value)}
-                  className={INPUT_CLASS}
-                />
-              </div>
-              <div>
-                <label className={LABEL_CLASS}>
-                  Expertise{" "}
-                  <span className="text-1.3 text-gray-400 font-normal">
-                    (comma-separated)
-                  </span>
-                </label>
-                <input
-                  value={editExpertise}
-                  onChange={(e) => setEditExpertise(e.target.value)}
-                  className={INPUT_CLASS}
-                />
+
+              {errorMsg && <p className="text-1.3 text-red-500 mt-4">{errorMsg}</p>}
+
+              <div className={NAV_CLASS}>
+                <button onClick={onBack} className={BACK_CLASS}>← CLOSE</button>
+                <ContinueBtn disabled={status === "submitting"} onClick={saveViaMagicLink}>
+                  {status === "submitting" ? "SAVING..." : "SAVE CHANGES →"}
+                </ContinueBtn>
               </div>
             </div>
-
-            {errorMsg && (
-              <p className="text-1.3 text-red-500 mt-4">{errorMsg}</p>
-            )}
-
-            <div className={NAV_CLASS}>
-              <button onClick={onBack} className={BACK_CLASS}>
-                ← CLOSE
-              </button>
-              <ContinueBtn
-                disabled={status === "submitting"}
-                onClick={saveViaMagicLink}
-              >
-                {status === "submitting" ? "SAVING..." : "SAVE CHANGES →"}
-              </ContinueBtn>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* MODE B: DELETE CONFIRMATION (via magic link) */}
         {isMagicLink && step === "delete-magic" && leaderData && (

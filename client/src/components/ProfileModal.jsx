@@ -44,6 +44,7 @@ export default function ProfileModal({ leader, onClose, onManage }) {
   const countriesList = toList(leader.countries || leader.selectedCountries);
   const yearsExp = hasValue(leader.years_experience) ? leader.years_experience
     : hasValue(leader.yearsExp) ? leader.yearsExp : null;
+  const geoScope = hasValue(leader.geo_scope) ? leader.geo_scope : null;
   const notableItems = leader.notable_items || leader.notableItems || [];
   const isFeatured = leader.featured === true || leader.featured === "true";
 
@@ -135,34 +136,30 @@ export default function ProfileModal({ leader, onClose, onManage }) {
         </div>
 
         {/* ── META STRIP — only renders if at least one field has data ── */}
-        {(hasValue(leader.country) || yearsExp || countriesList.length > 0) && (
+        {(hasValue(leader.country) || yearsExp || geoScope || countriesList.length > 0) && (
           <div className="mx-10 mb-6 bg-brand-parchment rounded-xl px-6 py-4 flex flex-wrap gap-x-8 gap-y-3 border border-brand-parchment-border">
             {hasValue(leader.country) && (
               <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
-                  Based in
-                </div>
-                <div className="text-[1.4rem] text-brand-dark">
-                  {leader.country}
-                </div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Based in</div>
+                <div className="text-[1.4rem] text-brand-dark">{leader.country}</div>
               </div>
             )}
             {yearsExp && (
               <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
-                  Experience
-                </div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Experience</div>
                 <div className="text-[1.4rem] text-brand-dark">{yearsExp}</div>
+              </div>
+            )}
+            {geoScope && (
+              <div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Scope</div>
+                <div className="text-[1.4rem] text-brand-dark">{geoScope}</div>
               </div>
             )}
             {countriesList.length > 0 && (
               <div>
-                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">
-                  Works across
-                </div>
-                <div className="text-[1.4rem] text-brand-dark">
-                  {countriesList.join(", ")}
-                </div>
+                <div className="text-[1.1rem] font-bold uppercase tracking-[0.1em] text-brand-navy mb-0.5">Works across</div>
+                <div className="text-[1.4rem] text-brand-dark">{countriesList.join(", ")}</div>
               </div>
             )}
           </div>
