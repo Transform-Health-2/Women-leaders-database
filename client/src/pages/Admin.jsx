@@ -2160,8 +2160,8 @@ export default function Admin({ onGoToDirectory }) {
                                           </div>
                                         </div>
                                       </div>
-                                      {/* Row 2: Full-width Enrich / Profile gaps */}
-                                      {adminRole !== "editor" ? (
+                                      {/* Row 2: Full-width Enrich profile — available to all roles */}
+                                      {(
                                         <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
                                           <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
                                             Enrich profile
@@ -2223,36 +2223,6 @@ export default function Admin({ onGoToDirectory }) {
                                                     </div>
                                                   )}
                                                 </div>
-                                              </div>
-                                            );
-                                          })()}
-                                        </div>
-                                      ) : (
-                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                            Profile gaps
-                                          </div>
-                                          {(() => {
-                                            const missing = getMissingFields(item);
-                                            return missing.length > 0 ? (
-                                              <div>
-                                                <div className="text-[1.3rem] text-amber-800 font-medium mb-2">
-                                                  Missing fields ({missing.length}):
-                                                </div>
-                                                <div className="flex flex-wrap gap-1.5">
-                                                  {missing.map((f) => (
-                                                    <span
-                                                      key={f}
-                                                      className="inline-block bg-amber-50 text-amber-700 text-[1.2rem] font-medium px-2.5 py-0.5 rounded-full border border-amber-200"
-                                                    >
-                                                      {f}
-                                                    </span>
-                                                  ))}
-                                                </div>
-                                              </div>
-                                            ) : (
-                                              <div className="text-[1.3rem] text-green-700 font-medium">
-                                                ✓ All fields complete
                                               </div>
                                             );
                                           })()}
@@ -2375,8 +2345,8 @@ export default function Admin({ onGoToDirectory }) {
                       {
                         label: "Editor",
                         color: "bg-gray-100 text-gray-700 border-gray-200",
-                        can: ["View all entries and profile data", "See which profile fields are missing"],
-                        cannot: ["Approve, reject, or delete", "Send magic links", "Manage admin users"],
+                        can: ["View all entries and profile data", "See which profile fields are missing", "Send enrichment magic links"],
+                        cannot: ["Approve, reject, or delete", "Manage admin users"],
                       },
                     ].map(({ label, color, can, cannot }) => (
                       <div key={label} className="bg-white rounded-lg p-4 border">
@@ -2475,7 +2445,7 @@ export default function Admin({ onGoToDirectory }) {
                             ? "Full access + manages admin users"
                             : a.role === "admin"
                               ? "Can approve, reject, delete, send magic links"
-                              : "View only — sees profile gaps, no approvals";
+                              : "View + send enrichment magic links — no approvals";
                           const badgeColor = a.role === "super_admin"
                             ? "bg-purple-100 text-purple-800"
                             : a.role === "admin"

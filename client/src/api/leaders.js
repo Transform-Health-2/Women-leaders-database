@@ -229,7 +229,7 @@ export const api = {
       .eq("status", "live")
       .ilike("first_name", firstName.trim())
       .ilike("last_name", lastName.trim())
-      .or(`leader_email.eq.${email.trim().toLowerCase()},editor_email.eq.${email.trim().toLowerCase()}`)
+      .eq("leader_email", email.trim().toLowerCase())
       .limit(1);
 
     return data?.length > 0 ? data[0] : null;
@@ -273,11 +273,11 @@ export const api = {
       // Fetch leader's email from database
       const { data: leader, error: fetchErr } = await supabase
         .from("leaders")
-        .select("leader_email, editor_email, first_name, last_name, photo_url, expertise, linkedin")
+        .select("leader_email, first_name, last_name, photo_url, expertise, linkedin")
         .eq("id", leaderId)
         .single();
 
-      const email = leader?.leader_email || leader?.editor_email;
+      const email = leader?.leader_email;
       if (fetchErr || !email) {
         throw new Error("Leader email not found");
       }

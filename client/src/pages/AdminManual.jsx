@@ -453,9 +453,11 @@ const SECTIONS = [
 
         <H3>How do leaders update their profiles?</H3>
         <P>
-          Leaders visit the <strong>Manage Profile</strong> page, enter their name and email,
-          and receive a magic link.  They can edit or delete their profile directly — 
-          no admin action required. Completed changes appear in the{" "}
+          Leaders click the <strong>✏ pencil icon</strong> fixed at the bottom-left
+          of every public page (Database, Analytics, Submit). It opens the{" "}
+          <strong>Manage Profile</strong> modal — they enter their name and email,
+          and receive a magic link to edit or delete their profile directly.
+          No admin action required. Completed changes appear in the{" "}
           <strong>Activity Log</strong> for admin visibility.
         </P>
 
@@ -877,15 +879,16 @@ const SECTIONS = [
             [
               "Editor",
               "Reviewers or observers who need read access",
-              "View all entries and profile data, see which fields are missing from any profile",
-              "Cannot approve, reject, delete, send magic links, or manage admin users",
+              "View all entries and profile data, see which fields are missing from any profile, send enrichment magic links to leaders",
+              "Cannot approve, reject, delete, or manage admin users",
             ],
           ]}
         />
         <Tip>
-          Use <strong>Editor</strong> for team members who need visibility into
-          the data without the ability to approve or remove leaders. Promote to{" "}
-          <strong>Admin</strong> when they need to take action.
+          Use <strong>Editor</strong> for team members who need visibility and
+          can reach out to leaders via magic link, but should not approve or
+          remove entries. Promote to <strong>Admin</strong> when they need
+          full action rights.
         </Tip>
 
         <Img
