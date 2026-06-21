@@ -591,11 +591,20 @@ const SECTIONS = [
           transferring the codebase to Transform Health.
         </P>
         <Tip>
-          <strong>Access:</strong> Click <strong>Admin</strong> in the top-right
-          of the nav bar. Sign in with your admin email and password (Supabase
-          Auth) when prompted. The page shows a loading spinner while data is
-          fetched, and each tab loads its data lazily when selected.
+          <strong>Access:</strong> Scroll to the bottom of any public page and
+          click the discreet <strong>shield icon (🛡)</strong> in the footer.
+          Sign in with your admin email and password when prompted. The page
+          shows a loading spinner while data is fetched, and each tab loads its
+          data lazily when selected.
         </Tip>
+        <Img
+          src="screenshots/admin-manual/shield-icon-detail.png"
+          caption="The discreet shield icon in the site footer — click to access the admin login"
+        />
+        <Img
+          src="screenshots/admin-manual/admin-login.png"
+          caption="Admin login screen — sign in with your Supabase Auth email and password"
+        />
         <Img
           src="screenshots/admin-manual/01-overview.png"
           caption="Admin Console — All Entries tab showing the full sidebar and leader table"
@@ -965,6 +974,14 @@ const SECTIONS = [
           verification, and email sending in one place.
         </P>
         <H3>How the magic link flow works</H3>
+        <P>
+          Leaders access the <strong>Manage Profile</strong> page via the link
+          in the site footer.
+        </P>
+        <Img
+          src="screenshots/admin-manual/manage-profile-footer-link.png"
+          caption="Manage Profile footer link — visible on every public page"
+        />
         <Ol>
           <Li>
             Leader visits the <strong>Manage Profile</strong> page and enters their
@@ -991,6 +1008,10 @@ const SECTIONS = [
         <Img
           src="screenshots/admin-manual/13-manage-profile.png"
           caption="Manage your profile — leaders enter their name and email to receive a magic link"
+        />
+        <Img
+          src="screenshots/admin-manual/14-manage-profile-edit.png"
+          caption="Profile edit form — pre-filled with existing data; empty fields show a Missing badge"
         />
         <H3>Email setup: Google Apps Script relay</H3>
         <P>
