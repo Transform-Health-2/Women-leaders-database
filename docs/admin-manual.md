@@ -200,33 +200,32 @@ Use a dedicated functional email address — not an individual team member's acc
 
 This email is used solely for sending automated profile management links (system-generated, not actively monitored). If needed, copies or alerts can be forwarded to designated team members.
 
-**Setup steps:**
+**How email sending works:**
 
-The Transform Health team needs to:
+Email is sent via a Google Apps Script Web App deployed under the Transform Health Google Workspace account. The `send-email` Supabase Edge Function calls the Apps Script URL, which uses `MailApp.sendEmail()` to send from the designated Google account — no SMTP credentials are needed.
 
-1. Create or designate the functional email address (e.g. `noreply@transformhealthcoalition.org`) in Google Workspace
+**Edge Function secrets** (configured in Supabase Dashboard → Settings → Edge Functions → Secrets):
 
-2. **Recommended (production):** Enable 2-Step Verification on the account, then generate an App Password:
-   - Go to **Google Account → Security → 2-Step Verification** → turn it on
-   - Then go to **Google Account → Security → App Passwords**
-   - Select **"Mail"** as the app and **"Other"** (name it "Supabase SMTP")
-   - Copy the 16-character app password
-   - Share it with the technical team as `GOOGLE_SMTP_PASS`
-   
-   An App Password is more secure than using the account password directly, and won't break if the account password is changed later.
-
-3. **Interim (current):** Since 2-Step Verification is not yet enabled, the account password is used directly for SMTP auth. The technical team has configured `GOOGLE_SMTP_PASS` with the account password.
-
-The technical team configures these secrets in the Supabase project dashboard (**Project Settings → Edge Functions → Secrets**):
-
-| Secret | Value |
+| Secret | Purpose |
 |---|---|
-| `GOOGLE_SMTP_USER` | `noreply@transformhealthcoalition.org` |
-| `GOOGLE_SMTP_PASS` | Account password or App Password (see above) |
+| `APPS_SCRIPT_URL` | URL of the deployed Google Apps Script Web App — required for all email delivery |
+| `MAGIC_LINK_SECRET` | HMAC-SHA256 key used to sign and verify self-service tokens — prevents forged magic links |
+| `ADMIN_NOTIFY_EMAIL` | Address that receives a notification whenever a leader updates or deletes their profile |
 
-> **Recommendation:** Enable 2-Step Verification and switch to an App Password before launch. This is more secure and avoids disruption if the account password is ever changed. The SMTP config in Supabase only needs to be updated once when switching.
+**Security properties of the magic link flow:**
 
-> **The `send-email` Edge Function is already deployed** at `supabase/functions/send-email/`. Only the secrets above need to be configured in the Supabase project dashboard. Once set, test by sending an update link from **Profile Requests → Updates** and verifying the leader receives the email.
+- Tokens are generated server-side by the `generate-manage-token` Edge Function, signed with `MAGIC_LINK_SECRET`
+- When a leader lands on a magic link, `verify-manage-token` checks the signature and a 48-hour expiry before the edit form is shown
+- Forged or expired tokens are silently rejected — no edit form is shown
+- The `send-email` function validates every recipient against the database before sending — it cannot be used to send arbitrary email
+
+**If email delivery stops working:**
+
+1. Check `APPS_SCRIPT_URL` is still set in Supabase Edge Function Secrets
+2. Confirm the Google Apps Script Web App is still deployed under an active Transform Health Google account (redeployment is needed if the owning account changes)
+3. Check the Apps Script execution log for errors: Google Drive → find the script → Executions
+
+> **The `send-email` Edge Function is deployed** at `supabase/functions/send-email/`. To test after any change, send a test magic link from the **All Entries** tab using the enrichment email button on any live leader with an email on file.
 
 **Email structure (current implementation):**
 

@@ -10,7 +10,9 @@ This document lists everything required to transfer the Women Leaders in Digital
 - [ ] **Verify GitHub Actions secrets** are set in the new repo:
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_ANON_KEY`
-- [ ] **Remove stale secrets** (Firebase, legacy Apps Script vars) if present
+  - `VITE_ADMIN_CC_EMAIL` — staff email CC'd on enrichment emails
+  - `VITE_ADMIN_NOTIFY_EMAIL` — address that receives self-service action notifications
+- [ ] **Remove stale secrets** (legacy Apps Script / Firebase vars) if present
 - [ ] **Confirm CI/CD is operational** — push to `main` triggers automatic build + deploy
 - [ ] **Verify branch protection** rules are configured on `main` if desired
 
@@ -18,9 +20,11 @@ This document lists everything required to transfer the Women Leaders in Digital
 
 - [x] **Supabase project created** under Transform Health account (`qglymhpdsjzkmdvzizdu`)
 - [ ] **Grant team access** — invite collaborators via Supabase Dashboard → Project Settings → Team
-- [ ] **Verify Edge Function secrets** are configured in Supabase Dashboard → Edge Functions:
+- [ ] **Verify Edge Function secrets** are configured in Supabase Dashboard → Settings → Edge Functions → Secrets:
   - `APPS_SCRIPT_URL` — Google Apps Script Web App URL **(required)**
-- [x] **Row Level Security (RLS)** policies are active (created during setup)
+  - `MAGIC_LINK_SECRET` — HMAC secret for signing self-service tokens **(required)** — generate with `openssl rand -hex 32`
+  - `ADMIN_NOTIFY_EMAIL` — address to receive self-service action notifications **(required)**
+- [x] **Row Level Security (RLS)** policies are active — test-mode policies have been dropped; only production-grade authenticated policies remain
 - [x] **Storage bucket** `profile-photos` exists and is public-read
 - [ ] **Back up database** — export a SQL dump of all tables (`leaders`, `requests`, `admin_roles`)
 
@@ -74,7 +78,7 @@ The project currently runs on the **Supabase Free Tier** (`qglymhpdsjzkmdvzizdu`
 | **Row count** | Unlimited | ~100 rows | No concern |
 | **Auth users** | 50,000 | 1–5 admin users | No concern |
 | **Edge Functions** | 500,000 invocations / month | Very low | Fine for current traffic |
-| **Edge Function count** | 2 per project | 2 (send-email, manage-admin) | **At limit** — need Pro ($25/mo) for more |
+| **Edge Function count** | 2 per project | 4 (send-email, manage-admin, generate-manage-token, verify-manage-token) | **Over free limit** — Pro plan ($25/mo) required |
 | **File Storage** | 1 GB | Minimal (profile photos) | Fine |
 | **Bandwidth** | 2 GB | Low | Fine |
 | **Daily backups** | ✗ (Free tier has no PITR) | — | **Risk** — manual backup required |
@@ -102,7 +106,7 @@ The project currently runs on the **Supabase Free Tier** (`qglymhpdsjzkmdvzizdu`
 | Supabase URL | `https://qglymhpdsjzkmdvzizdu.supabase.co` |
 | Database | PostgreSQL — tables: `leaders`, `requests`, `admin_roles` |
 | Storage | Supabase Storage — bucket: `profile-photos` |
-| Auth | Supabase Auth — email/password (test mode bypassed) |
+| Auth | Supabase Auth — email/password (login required; test-mode policies removed) |
 | CI/CD | `.github/workflows/deploy.yml` — auto-deploys on push to `main` |
 | Email | Supabase Edge Function → Google Apps Script → Google Workspace |
 | Frontend | React 18 + Vite + Tailwind CSS |

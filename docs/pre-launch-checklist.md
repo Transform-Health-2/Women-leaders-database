@@ -9,14 +9,21 @@ Items to complete before the platform goes live — for the technical team.
 - [x] New Supabase project created under Transform Health account (`qglymhpdsjzkmdvzizdu`)
 - [x] Schema migrated (leaders, requests, admin_roles tables)
 - [x] All 82 leaders migrated from old project
-- [x] RLS policies active (anon: read live leaders only; admin: full access)
+- [x] RLS policies active — test-mode policies dropped; anon can only read `live` leaders; all mutations require authentication
 - [x] Storage bucket `profile-photos` created and public-read
-- [x] Edge Functions deployed (send-email, manage-admin)
+- [x] Edge Functions deployed: `send-email`, `manage-admin`, `generate-manage-token`, `verify-manage-token`
 - [x] `APPS_SCRIPT_URL` secret set in Supabase Edge Function settings
+- [x] `MAGIC_LINK_SECRET` set in Supabase Edge Function settings (HMAC signing for self-service tokens)
+- [x] `ADMIN_NOTIFY_EMAIL` set in Supabase Edge Function settings
+- [x] Magic link tokens are HMAC-SHA256 signed and verified server-side — forged tokens rejected
+- [x] `send-email` Edge Function: CORS locked to deployment origin, recipient validated against database, rate limited
+- [x] `manage-admin` Edge Function: caller identity extracted from verified JWT (not client-supplied body)
+- [x] Admin email addresses moved to environment variables (`VITE_ADMIN_CC_EMAIL`, `VITE_ADMIN_NOTIFY_EMAIL`)
+- [x] GitHub Actions secrets updated with all four required vars
 - [x] Role system live (super_admin, admin, editor)
 - [x] Manage Admins tab with card UI, role badges, remove confirmation
 - [x] Forgot password flow working via `supabase.auth.resetPasswordForEmail()`
-- [x] CC support in email chain (ndifanji.namacha@transformhealthcoalition.org)
+- [x] CC support in email chain (configured via `VITE_ADMIN_CC_EMAIL` env var)
 
 ## Still Needed
 

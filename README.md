@@ -22,7 +22,7 @@ A project to increase visibility, representation, and engagement of women leader
 | HTTP | Axios |
 | Database | Supabase (PostgreSQL) — currently on **Free Tier** (see [docs/TRANSFER_CHECKLIST.md#8-supabase-free-tier--features--limitations](docs/TRANSFER_CHECKLIST.md)) |
 | File Storage | Supabase Storage (profile-photos bucket) |
-| Auth | Supabase Auth (email/password — currently bypassed in test mode) |
+| Auth | Supabase Auth (email/password — login required for all admin access) |
 | Deployment | GitHub Pages |
 
 ---
@@ -83,6 +83,8 @@ Edit `client/.env` and set:
 ```env
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-public-key
+VITE_ADMIN_CC_EMAIL=name@yourorg.org
+VITE_ADMIN_NOTIFY_EMAIL=noreply@yourorg.org
 ```
 
 ---
@@ -113,7 +115,7 @@ Open `http://localhost:5173`.
 
 1. Open the DATABASE tab — you should see leader cards loading from Supabase (~82 leaders)
 2. Submit a test profile via the SUBMIT PROFILE tab
-3. Go to ADMIN tab (currently open — no login required in test mode)
+3. Go to ADMIN tab — sign in with your Supabase admin account
 4. Approve the test submission — the profile should appear in DATABASE
 
 ---
@@ -122,8 +124,12 @@ Open `http://localhost:5173`.
 
 1. **Add GitHub Actions secrets:**
    - Go to your GitHub repo → **Settings → Secrets and variables → Actions**
-   - Add: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
-   - Remove any old Firebase or Apps Script secrets if present
+   - Add all four secrets:
+     - `VITE_SUPABASE_URL`
+     - `VITE_SUPABASE_ANON_KEY`
+     - `VITE_ADMIN_CC_EMAIL`
+     - `VITE_ADMIN_NOTIFY_EMAIL`
+   - Remove any old Apps Script or Firebase secrets if present
 
 2. **Enable GitHub Pages:**
    - Go to **Settings → Pages**
@@ -145,7 +151,7 @@ Open `http://localhost:5173`.
 - [ ] Create `test_results` table in Supabase (run `scripts/create-test-results-table.sql`)
 - [ ] Re-enable admin auth gate — one-line change in `client/src/pages/Admin.jsx` (currently bypassed for testing)
 - [ ] Create admin user in Supabase Auth dashboard (email/password)
-- [ ] Update GitHub Actions CI secrets: add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`, remove `VITE_APPS_SCRIPT_URL` and Firebase vars
+- [ ] Update GitHub Actions CI secrets: add `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`, remove `VITE_APPS_SCRIPT_URL`
 - [ ] Set up email system for magic-link profile management:
 
   The self-service magic link flow lets leaders update or delete their own profiles with no account or password:
