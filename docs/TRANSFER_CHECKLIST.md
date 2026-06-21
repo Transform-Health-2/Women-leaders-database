@@ -67,7 +67,7 @@ The project currently runs on the **Supabase Free Tier** (`qglymhpdsjzkmdvzizdu`
 | **Row count** | Unlimited | ~100 rows | No concern |
 | **Auth users** | 50,000 | 1–5 admin users | No concern |
 | **Edge Functions** | 500,000 invocations / month | Very low | Fine for current traffic |
-| **Edge Function count** | 2 per project | 3 (send-email, manage-admin, manage-token) | **Over free limit** — Pro plan ($25/mo) required |
+| **Edge Function count** | 2 per project | 2 (self-service, manage-admin) | Within free limit |
 | **File Storage** | 1 GB | Minimal (profile photos) | Fine |
 | **Bandwidth** | 2 GB | Low | Fine |
 | **Daily backups** | ✗ (Free tier has no PITR) | — | **Risk** — manual backup required |
@@ -75,16 +75,15 @@ The project currently runs on the **Supabase Free Tier** (`qglymhpdsjzkmdvzizdu`
 
 ### Scaling Considerations
 
-- **3+ Edge Functions** → Upgrade to **Pro** ($25/month)
+- **3+ Edge Functions** → Upgrade to **Pro** ($25/month) — currently at 2 (within limit)
 - **Database > 500 MB or high traffic** → Upgrade to **Pro** for read replicas, connection pooling
 - **Production SLA / Support** → Upgrade to **Team** ($599/month) or **Enterprise**
 - **PITR backups** → Pro plan ($25/month) includes 7-day Point-in-Time Recovery
 
 ### Recommended Upgrade Path
 
-1. **Immediate:** Upgrade to **Pro ($25/mo)** — the project now has 4 Edge Functions, which exceeds the free tier limit of 2. Pro removes this cap and adds PITR backups and 8 GB bandwidth.
-2. **Now (if staying free temporarily):** Manually export SQL backups via Dashboard → SQL Editor → `SELECT * FROM leaders`
-3. **Production launch:** Pro at minimum for PITR backups and support SLA
+1. **Now:** Manually export SQL backups via Dashboard → SQL Editor → `SELECT * FROM leaders` (free tier has no PITR)
+2. **Production launch:** Upgrade to **Pro ($25/mo)** for PITR backups, support SLA, and headroom if a third Edge Function is ever needed
 
 ## 9. Quick Reference
 

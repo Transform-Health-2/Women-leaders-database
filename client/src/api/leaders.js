@@ -283,7 +283,7 @@ export const api = {
       }
 
       const { data: tokenData, error: tokenErr } = await supabase.functions.invoke(
-        "manage-token",
+        "self-service",
         { body: { action: "generate", leaderId, mode } },
       );
       if (tokenErr || !tokenData?.token) throw new Error("Failed to generate secure token");
@@ -437,10 +437,10 @@ export const api = {
         </table>
       `;
 
-      const body = { to: email, subject, html };
+      const body = { action: "send-email", to: email, subject, html };
       if (cc) body.cc = cc;
 
-      const { error } = await supabase.functions.invoke("send-email", { body });
+      const { error } = await supabase.functions.invoke("self-service", { body });
 
       if (error) throw error;
       return { ok: true, message: "Magic link sent to " + email };
@@ -555,8 +555,9 @@ export const api = {
   // Notify admin about a self-service action
   notifyAdmin: async ({ subject, html }) => {
     // Send to the configured noreply address which can forward to admin team
-    const { error } = await supabase.functions.invoke("send-email", {
+    const { error } = await supabase.functions.invoke("self-service", {
       body: {
+        action: "send-email",
         to: import.meta.env.VITE_ADMIN_NOTIFY_EMAIL,
         subject,
         html,
