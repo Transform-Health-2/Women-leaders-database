@@ -67,7 +67,7 @@ The project currently runs on the **Supabase Free Tier** (`qglymhpdsjzkmdvzizdu`
 | **Row count** | Unlimited | ~100 rows | No concern |
 | **Auth users** | 50,000 | 1–5 admin users | No concern |
 | **Edge Functions** | 500,000 invocations / month | Very low | Fine for current traffic |
-| **Edge Function count** | 2 per project | 4 (send-email, manage-admin, generate-manage-token, verify-manage-token) | **Over free limit** — Pro plan ($25/mo) required |
+| **Edge Function count** | 2 per project | 3 (send-email, manage-admin, manage-token) | **Over free limit** — Pro plan ($25/mo) required |
 | **File Storage** | 1 GB | Minimal (profile photos) | Fine |
 | **Bandwidth** | 2 GB | Low | Fine |
 | **Daily backups** | ✗ (Free tier has no PITR) | — | **Risk** — manual backup required |

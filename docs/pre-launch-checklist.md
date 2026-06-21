@@ -11,7 +11,7 @@ Items to complete before the platform goes live — for the technical team.
 - [x] All 82 leaders migrated from old project
 - [x] RLS policies active — test-mode policies dropped; anon can only read `live` leaders; all mutations require authentication
 - [x] Storage bucket `profile-photos` created and public-read
-- [x] Edge Functions deployed: `send-email`, `manage-admin`, `generate-manage-token`, `verify-manage-token`
+- [x] Edge Functions deployed: `send-email`, `manage-admin`, `manage-token` (generate + verify combined)
 - [x] `APPS_SCRIPT_URL` secret set in Supabase Edge Function settings
 - [x] `MAGIC_LINK_SECRET` set in Supabase Edge Function settings (HMAC signing for self-service tokens)
 - [x] `ADMIN_NOTIFY_EMAIL` set in Supabase Edge Function settings

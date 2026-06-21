@@ -283,8 +283,8 @@ export const api = {
       }
 
       const { data: tokenData, error: tokenErr } = await supabase.functions.invoke(
-        "generate-manage-token",
-        { body: { leaderId, mode } },
+        "manage-token",
+        { body: { action: "generate", leaderId, mode } },
       );
       if (tokenErr || !tokenData?.token) throw new Error("Failed to generate secure token");
       const manageUrl = `${window.location.origin}${window.location.pathname}?manage=${tokenData.token}`;

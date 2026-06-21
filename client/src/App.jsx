@@ -67,7 +67,7 @@ function App() {
     const t = params.get("manage");
     if (!t) return;
     supabase.functions
-      .invoke("verify-manage-token", { body: { token: t } })
+      .invoke("manage-token", { body: { action: "verify", token: t } })
       .then(({ data, error }) => {
         if (!error && data?.ok) {
           setManageTokenData({ leaderId: data.leaderId, mode: data.mode });
