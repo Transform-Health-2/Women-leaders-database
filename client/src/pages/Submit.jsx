@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const DRAFT_KEY = "submit_profile_draft";
 function loadDraft() {
   try {
-    return JSON.parse(localStorage.getItem(DRAFT_KEY) || "null") || {};
+    return JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null") || {};
   } catch {
     return {};
   }
@@ -67,9 +67,9 @@ export default function Submit({ onManageProfile }) {
   const [duplicateWarning, setDuplicateWarning] = useState(null);
   const [returnStep, setReturnStep] = useState(null);
 
-  // Persist draft to localStorage (excludes photo/photoPreview — not serialisable)
+  // Persist draft to sessionStorage (excludes photo/photoPreview — not serialisable)
   useEffect(() => {
-    localStorage.setItem(
+    sessionStorage.setItem(
       DRAFT_KEY,
       JSON.stringify({
         step,
@@ -217,7 +217,7 @@ export default function Submit({ onManageProfile }) {
   }
 
   function resetForm() {
-    localStorage.removeItem(DRAFT_KEY);
+    sessionStorage.removeItem(DRAFT_KEY);
     setFirstName("");
     setLastName("");
     setRole("");
@@ -265,11 +265,9 @@ export default function Submit({ onManageProfile }) {
         expertise: [
           ...expertise.filter((e) => e !== "Other"),
           otherExpertise ? `Other: ${otherExpertise}` : "",
-        ]
-          .filter(Boolean)
-          .join(", "),
+        ].filter(Boolean),
         yearsExp,
-        countries: selectedCountries.join(", "),
+        countries: selectedCountries,
         bio,
         linkedin,
         notableItems: notableItems.filter(
@@ -279,7 +277,7 @@ export default function Submit({ onManageProfile }) {
       };
 
       await api.submitProfile(payload);
-      localStorage.removeItem(DRAFT_KEY);
+      sessionStorage.removeItem(DRAFT_KEY);
       setStatus("submitted");
     } catch (err) {
       console.error(err);

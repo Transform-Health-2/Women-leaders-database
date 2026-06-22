@@ -1,18 +1,10 @@
 import React, { createContext, useContext } from "react";
 import { LinkedInIcon, LocationIcon } from "./icons";
+import { getInitials, hasValue } from "../utils/adminUtils";
 
 // ─── Context ────────────────────────────────────────────────────────
 const CardCtx = createContext(null);
 const useCard = () => useContext(CardCtx);
-
-// ─── Internal helpers ────────────────────────────────────────────────────────
-function getInitials(first, last) {
-  return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
-}
-// Guard against JS null, undefined, empty string, and the literal string "null"
-function hasValue(v) {
-  return !!v && v !== "null" && v.trim() !== "";
-}
 
 // ─── Sub-components ────────────────────────────────────────────────────────
 

@@ -2,9 +2,15 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { api } from "../api/leaders";
 import { supabase } from "../supabase";
 import { COUNTRY_TO_REGION, REGION_LABELS, ALL_COUNTRIES } from "../utils/countries";
+import { toTags, toTitleCase } from "../utils/adminUtils";
 import AdminManual from "./AdminManual";
 import AdminLogin from "../components/AdminLogin";
-// import AdminFixes from "./AdminFixes";
+import ActivityLog from "../components/admin/ActivityLog";
+import ManageAdmins from "../components/admin/ManageAdmins";
+import NominatedTab from "../components/admin/NominatedTab";
+import ProfileRequests from "../components/admin/ProfileRequests";
+import AllEntries from "../components/admin/AllEntries";
+// import QAReport from "./QAReport";
 
 const SIDEBAR_ITEMS = [
   { id: "all", label: "All Entries", icon: "list" },
@@ -189,29 +195,6 @@ const ICONS = {
   shield: ShieldIcon,
 };
 
-function getInitials(first, last) {
-  return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
-}
-
-// expertise is stored as text[] in Supabase — normalise to array for all comparisons
-function toTags(expertise) {
-  if (!expertise) return [];
-  if (Array.isArray(expertise)) return expertise.filter(Boolean);
-  return expertise.split(/,\s*/).filter(Boolean);
-}
-
-function toTitleCase(str) {
-  if (!str) return "";
-  return str.replace(/\w\S*/g, (txt) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
-
-// Returns null for JS null/undefined AND the literal string "null" that sometimes comes from the DB
-function val(v) {
-  if (v === null || v === undefined || v === "null" || v === "") return null;
-  return v;
-}
 
 export default function Admin({ onGoToDirectory }) {
   const [user, setUser] = useState(null);
@@ -226,7 +209,13 @@ export default function Admin({ onGoToDirectory }) {
   const [testResults, setTestResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tabLoading, setTabLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash;
+    const match = hash.match(/[?&]tab=([^&]+)/);
+    const tab = match ? match[1] : "all";
+    const validTabs = ["all", "requests", "nominated", "activity", "manual", "embed", "manage-admins"];
+    return validTabs.includes(tab) ? tab : "all";
+  });
   const [requestSubTab, setRequestSubTab] = useState("new");
   const [selectedAll, setSelectedAll] = useState([]);
   const [actionId, setActionId] = useState(null);
@@ -280,7 +269,7 @@ export default function Admin({ onGoToDirectory }) {
     const match = hash.match(/[?&]tab=([^&]+)/);
     if (match) {
       const tab = match[1];
-      const validTabs = ["all", "requests", "nominated", "activity", "manual"];
+      const validTabs = ["all", "requests", "nominated", "activity", "manual", "embed", "manage-admins"];
       if (validTabs.includes(tab)) setActiveTab(tab);
     }
   }, []);
@@ -677,18 +666,6 @@ export default function Admin({ onGoToDirectory }) {
     }
   }
 
-  function getMissingFields(item) {
-    const fields = [];
-    if (!item.country) fields.push("Country");
-    if (!item.years_experience) fields.push("Years of experience");
-    if (!item.bio) fields.push("Biography");
-    if (!item.geo_scope) fields.push("Geographical scope");
-    if (!item.photo_url) fields.push("Profile photo");
-    if (!item.expertise || item.expertise.length === 0) fields.push("Expertise tags");
-    if (!item.countries || item.countries.length === 0) fields.push("Countries of work");
-    if (!item.notable_items || item.notable_items.length === 0) fields.push("Notable items");
-    return fields;
-  }
 
   function toggleDeleteSelect(id) {
     setSelectedDeletes((current) =>
@@ -1343,1209 +1320,87 @@ export default function Admin({ onGoToDirectory }) {
                 </div>
               </div>
             ) : activeTab === "requests" ? (
-              <div className="rounded-lg overflow-hidden border-2 border-brand-navy bg-white">
-                {pending.length === 0 ? (
-                  <div className="text-center py-20">
-                    <div className="text-[4.8rem] mb-4 text-green-400">
-                      ✓
-                    </div>
-                    <div className="text-lg text-green-600">
-                      No new submissions
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                      <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
-                        <div className="text-[1.4rem] font-bold text-white">
-                          {pending.length} pending submission(s)
-                        </div>
-                      </div>
-                        {pending.map((item) => {
-                          const isExpanded = expandedId === item.id;
-                          return (
-                            <div key={item.id}>
-                              <div
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={isExpanded}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === " ") {
-                                    e.preventDefault();
-                                    setExpandedId(isExpanded ? null : item.id);
-                                  }
-                                }}
-                                className={`flex items-center px-5 cursor-pointer transition-colors min-h-[64px] border-b border-brand-warm-row-border ${
-                                  isExpanded
-                                    ? "bg-brand-warm-row"
-                                    : "bg-white hover:bg-brand-warm-bg"
-                                } ${
-                                  !isExpanded
-                                    ? "focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
-                                    : ""
-                                }`}
-                                onClick={() =>
-                                  setExpandedId(isExpanded ? null : item.id)
-                                }
-                              >
-                                <div className="flex-shrink-0 mr-4">
-                                  <div className="w-2.5 h-2.5 rounded-full bg-amber-600" />
-                                </div>
-                                <div className="w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 mr-4 bg-brand-blue-tint text-brand-navy">
-                                  {getInitials(item.first_name, item.last_name)}
-                                </div>
-                                <div className="flex-1 min-w-0 mr-4">
-                                  <div className="flex items-center gap-3">
-                                    <span className="font-semibold text-lg truncate text-brand-dark">
-                                      {item.first_name} {item.last_name}
-                                    </span>
-                                    <span className="text-[1.4rem] truncate text-gray-500">
-                                      {item.role}
-                                    </span>
-                                  </div>
-                                  <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
-                                    {item.organisation}
-                                  </div>
-                                </div>
-                                <svg
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                  className={`text-gray-400 transition-transform ${
-                                    isExpanded ? "rotate-180" : "rotate-0"
-                                  }`}
-                                >
-                                  <path
-                                    d="M4 6l4 4 4-4"
-                                    stroke="currentColor"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </div>
-                              {isExpanded && (
-                                <div className="px-5 py-4 bg-brand-warm-bg border-b border-brand-warm-border">
-                                  <div className="grid gap-4 mb-4 md:grid-cols-2">
-                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
-                                        Personal
-                                      </div>
-                                      <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Email:{" "}
-                                          </span>
-                                          {item.editor_email ||
-                                            item.email ||
-                                            "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Role:{" "}
-                                          </span>
-                                          {item.role || "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Organisation:{" "}
-                                          </span>
-                                          {item.organisation || "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Country:{" "}
-                                          </span>
-                                          {item.country || "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Experience:{" "}
-                                          </span>
-                                          {item.years_experience ||
-                                            item.yearsExp ||
-                                            "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Geo scope:{" "}
-                                          </span>
-                                          {item.geo_scope || "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Works across:{" "}
-                                          </span>
-                                          {item.countries || "—"}
-                                        </div>
-                                        <div>
-                                          <span className="text-brand-navy font-semibold">
-                                            Submitted:{" "}
-                                          </span>
-                                          {item.created_at
-                                            ? new Date(
-                                                item.created_at
-                                              ).toLocaleString()
-                                            : "—"}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
-                                        Expertise
-                                      </div>
-                                      <div className="mb-3">
-                                        {toTags(item.expertise).length > 0 ? (
-                                          <div className="flex flex-wrap gap-1.5">
-                                            {toTags(item.expertise).map(
-                                              (tag, i) => (
-                                                <span
-                                                  key={i}
-                                                  title={tag}
-                                                  className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border"
-                                                >
-                                                  {tag}
-                                                </span>
-                                              )
-                                            )}
-                                          </div>
-                                        ) : (
-                                          "—"
-                                        )}
-                                      </div>
-                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
-                                        LinkedIn
-                                      </div>
-                                      <div className="mb-3 text-[1.5rem]">
-                                        {item.linkedin ? (
-                                          <a
-                                            href={item.linkedin}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="hover:underline text-brand-navy break-all"
-                                          >
-                                            {item.linkedin}
-                                          </a>
-                                        ) : (
-                                          "—"
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="grid gap-4 mb-4 md:grid-cols-2">
-                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
-                                        Bio
-                                      </div>
-                                      <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7] break-words">
-                                        {item.bio || "—"}
-                                      </div>
-                                    </div>
-                                    <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                      <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-2 text-brand-navy">
-                                        Notable items
-                                      </div>
-                                      {(() => {
-                                        const raw =
-                                          item.notable_items ||
-                                          item.notableItems;
-                                        const items = Array.isArray(raw)
-                                          ? raw
-                                          : typeof raw === "string"
-                                          ? (() => {
-                                              try {
-                                                return JSON.parse(raw);
-                                              } catch {
-                                                return [];
-                                              }
-                                            })()
-                                          : [];
-                                        return items.length > 0 ? (
-                                          <div className="flex flex-col gap-2">
-                                            {items.map((ni, i) => (
-                                              <div
-                                                key={i}
-                                                className="text-[1.5rem] text-brand-dark-blue"
-                                              >
-                                                <span className="font-semibold">
-                                                  {ni.title || "—"}
-                                                </span>
-                                                {ni.type && (
-                                                  <span className="text-gray-500">
-                                                    {" "}
-                                                    ({ni.type})
-                                                  </span>
-                                                )}
-                                                {ni.link && (
-                                                  <span>
-                                                    {" "}
-                                                    —{" "}
-                                                    <a
-                                                      href={ni.link}
-                                                      target="_blank"
-                                                      rel="noopener noreferrer"
-                                                      className="hover:underline text-brand-navy break-all"
-                                                    >
-                                                      {ni.link}
-                                                    </a>
-                                                  </span>
-                                                )}
-                                              </div>
-                                            ))}
-                                          </div>
-                                        ) : (
-                                          "—"
-                                        );
-                                      })()}
-                                    </div>
-                                  </div>
-                                  <div className="flex gap-2">
-                                    <button
-                                      onClick={() =>
-                                        handleAction(item.id, "approve")
-                                      }
-                                      disabled={actionId === item.id}
-                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
-                                    >
-                                      {actionId === item.id ? "..." : "Approve"}
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        handleAction(item.id, "reject")
-                                      }
-                                      disabled={actionId === item.id}
-                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                                    >
-                                      Reject
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </>
-                  )}
-
-              </div>
+              <ProfileRequests
+                pending={pending}
+                expandedId={expandedId}
+                setExpandedId={setExpandedId}
+                actionId={actionId}
+                handleAction={handleAction}
+              />
             ) : activeTab === "activity" ? (
-              filteredActivityLog.length === 0 && activityLog.length === 0 ? (
-                <div className="text-center py-20">
-                  <div className="text-[4.8rem] mb-4 text-gray-300">—</div>
-                  <div className="text-lg text-gray-500">
-                    No self-service activity yet
-                  </div>
-                  <div className="text-[1.4rem] text-gray-400 mt-2">
-                    Updates and deletions by leaders will appear here
-                  </div>
-                </div>
-              ) : filteredActivityLog.length === 0 ? (
-                <div className="text-center py-20">
-                  <div className="text-[4.8rem] mb-4 text-gray-300">—</div>
-                  <div className="text-lg text-gray-500">
-                    No results match the current filters
-                  </div>
-                  <button
-                    onClick={() => { setActivityFilter("all"); setActivitySearch(""); setActivityDateRange("all"); setActivityDateFrom(""); setActivityDateTo(""); }}
-                    className="mt-3 text-[1.4rem] text-brand-pink font-medium hover:underline cursor-pointer"
-                  >
-                    Clear filters
-                  </button>
-                </div>
-              ) : (
-                <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-blue-border bg-white">
-                  <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
-                    <div className="text-[1.4rem] font-bold text-white">
-                      Self-service activity log
-                    </div>
-                    <div className="text-[1.3rem] text-gray-300">
-                      {filteredActivityLog.length} event(s)
-                    </div>
-                  </div>
-                  <div className="divide-y divide-brand-warm-row-border">
-                    {filteredActivityLog.map((entry) => {
-                      const isDelete = entry.request_type === "delete";
-                      return (
-                        <div
-                          key={entry.id}
-                          className="px-5 py-4 bg-white hover:bg-brand-warm-bg transition-colors"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 ${
-                              isDelete
-                                ? "bg-red-50 text-red-600"
-                                : "bg-amber-50 text-amber-600"
-                            }`}>
-                              {getInitials(entry.first_name, entry.last_name)}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-lg text-brand-dark">
-                                  {entry.first_name} {entry.last_name}
-                                </span>
-                                <span className={`text-[1.2rem] font-semibold px-2 py-0.5 rounded-full ${
-                                  isDelete
-                                    ? "bg-red-100 text-red-700"
-                                    : "bg-amber-100 text-amber-700"
-                                }`}>
-                                  {isDelete ? "Deleted" : "Updated"}
-                                </span>
-                              </div>
-                              <div className="text-[1.3rem] text-gray-400 mt-0.5">
-                                {entry.created_at
-                                  ? new Date(entry.created_at).toLocaleString()
-                                  : "—"}
-                              </div>
-                            </div>
-                          </div>
-                          {isDelete && entry.changes && (
-                            <div className="mt-3 ml-14 rounded-lg p-3 bg-red-50 border border-red-200">
-                              <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-1 text-gray-500">
-                                Reason
-                              </div>
-                              <p className="text-[1.3rem] text-brand-dark-blue">
-                                {entry.changes}
-                              </p>
-                            </div>
-                          )}
-                          {!isDelete && entry.changes && (
-                            <div className="mt-3 ml-14 rounded-lg p-3 bg-gray-50 border border-gray-200">
-                              <div className="text-[1.2rem] font-semibold uppercase tracking-wider mb-1 text-gray-500">
-                                Changes
-                              </div>
-                              <div className="flex flex-col gap-1.5">
-                                {Object.entries(
-                                  typeof entry.changes === "string"
-                                    ? JSON.parse(entry.changes)
-                                    : entry.changes
-                                ).map(([field, val]) => (
-                                  <div key={field} className="text-[1.3rem] leading-[1.6]">
-                                    <span className="font-medium text-brand-dark capitalize">
-                                      {field.replace(/_/g, " ")}
-                                    </span>
-                                    <span className="text-gray-400 mx-1.5">·</span>
-                                    <span className="line-through text-gray-400">{val.old || "—"}</span>
-                                    <span className="text-gray-400 mx-1.5">→</span>
-                                    <span className="text-brand-dark-blue">{val.new || "—"}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )
+              <ActivityLog
+                filteredActivityLog={filteredActivityLog}
+                activityLog={activityLog}
+                activityFilter={activityFilter}
+                setActivityFilter={setActivityFilter}
+                activitySearch={activitySearch}
+                setActivitySearch={setActivitySearch}
+                activityDateRange={activityDateRange}
+                setActivityDateRange={setActivityDateRange}
+                activityDateFrom={activityDateFrom}
+                setActivityDateFrom={setActivityDateFrom}
+                activityDateTo={activityDateTo}
+                setActivityDateTo={setActivityDateTo}
+              />
             ) : activeTab === "nominated" ? (
-              nominatedList.length === 0 ? (
-                <div className="text-center py-20">
-                  <div className="text-[4.8rem] mb-4 text-green-400">✓</div>
-                  <div className="text-lg text-green-600">
-                    No pending nominations
-                  </div>
-                </div>
-              ) : (
-                <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                  <div className="flex items-center justify-between px-5 py-3 border-b bg-pink-light border-brand-pink-border">
-                    <div className="text-[1.4rem] font-semibold text-accent-pink">
-                      {nominatedList.length} nominations to reach out to
-                    </div>
-                    <div className="text-[1.3rem] text-accent-purple">
-                      Click a nominee to view details
-                    </div>
-                  </div>
-
-                  {nominatedList.map((item) => {
-                    const isExpanded = expandedNominee === item.id;
-                    const isCopied = copiedId === item.id;
-                    return (
-                      <div key={item.id}>
-                        <div
-                          role="button"
-                          tabIndex={0}
-                          aria-expanded={isExpanded}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              setExpandedNominee(isExpanded ? null : item.id);
-                            }
-                          }}
-                          className={`flex items-center px-5 cursor-pointer transition-colors min-h-[64px] border-b border-brand-warm-row-border ${
-                            isExpanded
-                              ? "bg-brand-warm-row"
-                              : "bg-white hover:bg-brand-warm-bg"
-                          } ${
-                            !isExpanded
-                              ? "focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            setExpandedNominee(isExpanded ? null : item.id)
-                          }
-                        >
-                          <div className="flex-shrink-0 mr-4">
-                            <div className="w-2.5 h-2.5 rounded-full bg-brand-pink" />
-                          </div>
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-[1.4rem] font-medium flex-shrink-0 mr-4 bg-pink-light text-accent-pink">
-                            {getInitials(item.first_name, item.last_name)}
-                          </div>
-                          <div className="flex-1 min-w-0 mr-4">
-                            <div className="flex items-center gap-3">
-                              <span className="font-semibold text-lg truncate text-brand-dark">
-                                {item.first_name} {item.last_name}
-                              </span>
-                            </div>
-                            <div className="text-[1.4rem] truncate mt-0.5 text-gray-400">
-                              Nominated by{" "}
-                              {item.nominator_name || item.editor_email || "—"}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            {item.linkedin && (
-                              <a
-                                href={item.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()}
-                                className="text-[1.3rem] font-medium px-2.5 py-1 rounded-lg bg-brand-blue-tint text-brand-navy hover:bg-blue-50 transition-colors"
-                              >
-                                LinkedIn ↗
-                              </a>
-                            )}
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              className={`text-gray-400 transition-transform ${
-                                isExpanded ? "rotate-180" : "rotate-0"
-                              }`}
-                            >
-                              <path
-                                d="M4 6l4 4 4-4"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        {isExpanded && (
-                          <div className="px-5 py-4 bg-brand-warm-bg border-b border-brand-warm-border">
-                            <div className="grid gap-4 mb-4 md:grid-cols-2">
-                              <div className="rounded-lg p-4 bg-brand-parchment border border-brand-pink-border">
-                                <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-accent-pink">
-                                  Nominator
-                                </div>
-                                <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                  <div>
-                                    <span className="text-accent-pink font-semibold">
-                                      Full name:{" "}
-                                    </span>
-                                    {item.nominator_name || "—"}
-                                  </div>
-                                  <div>
-                                    <span className="text-accent-pink font-semibold">
-                                      Email:{" "}
-                                    </span>
-                                    {item.editor_email || "—"}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="rounded-lg p-4 bg-brand-parchment border border-brand-blue-border">
-                                <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                  Nominee
-                                </div>
-                                <div className="grid gap-2 text-[1.5rem] text-brand-dark-blue">
-                                  <div>
-                                    <span className="text-brand-navy font-semibold">
-                                      Full name:{" "}
-                                    </span>
-                                    {item.first_name} {item.last_name}
-                                  </div>
-                                  <div>
-                                    <span className="text-brand-navy font-semibold">
-                                      Profile link:{" "}
-                                    </span>
-                                    {item.nominate_link ? (
-                                      <a
-                                        href={item.nominate_link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:underline text-brand-navy break-all"
-                                      >
-                                        {item.nominate_link}
-                                      </a>
-                                    ) : (
-                                      "—"
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="flex gap-2 mt-4">
-                              <button
-                                onClick={() => handleAction(item.id, "approve")}
-                                disabled={actionId === item.id}
-                                className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
-                              >
-                                {actionId === item.id ? "..." : "Approve"}
-                              </button>
-                              <button
-                                onClick={() => handleAction(item.id, "reject")}
-                                disabled={actionId === item.id}
-                                className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                              >
-                                Reject
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )
+              <NominatedTab
+                nominatedList={nominatedList}
+                expandedNominee={expandedNominee}
+                setExpandedNominee={setExpandedNominee}
+                copiedId={copiedId}
+                handleCopyMessage={handleCopyMessage}
+                actionId={actionId}
+                handleAction={handleAction}
+              />
             ) : activeTab === "all" ? (
-              <>
-                <div className="rounded-lg overflow-hidden border-[1.5px] border-brand-warm-border bg-brand-parchment">
-                  {selectedAll.length > 0 && (
-                    <div className="flex items-center justify-between px-5 py-3 border-b-2 border-brand-navy bg-brand-navy">
-                      <div className="flex items-center gap-3">
-                        <div className="text-[1.4rem] font-bold text-white">
-                          {selectedAll.length} pending selected
-                        </div>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={filteredAll
-                              .filter((r) => r.status === "pending")
-                              .every((r) => selectedAll.includes(r.id))}
-                            onChange={toggleAllEntries}
-                            className="w-4 h-4 rounded"
-                          />
-                          <span className="text-[1.3rem] font-medium text-amber-800">
-                            Select all
-                          </span>
-                        </label>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleBulkAllEntries("approve")}
-                          className="px-3 py-1.5 text-[1.3rem] font-semibold rounded-lg bg-green-600 text-white transition-colors"
-                        >
-                          Approve {selectedAll.length}
-                        </button>
-                        <button
-                          onClick={() => handleBulkAllEntries("reject")}
-                          className="px-3 py-1.5 text-[1.3rem] font-semibold rounded-lg bg-red-600 text-white transition-colors"
-                        >
-                          Reject {selectedAll.length}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  {filteredAll.length === 0 ? (
-                    <div className="text-center py-16">
-                      <div className="text-[4.8rem] mb-4 text-gray-300">—</div>
-                      <div className="text-lg text-gray-500">
-                        No entries match your filters
-                      </div>
-                      <button
-                        onClick={() => {
-                          setSearchQuery("");
-                          setFilterRegion("");
-                          setFilterCountry("");
-                          setFilterExpertise("");
-                          setFilterClicks("");
-                          setFilterStatus("");
-                          setAllPage(1);
-                        }}
-                        className="mt-3 text-[1.4rem] text-brand-pink font-medium hover:underline cursor-pointer"
-                      >
-                        Clear all filters
-                      </button>
-                    </div>
-                  ) : (
-                  <>
-                  <table ref={tableTopRef} className="w-full">
-                    <thead className="border-b-2 border-brand-navy bg-brand-navy">
-                      <tr>
-                        <th className="w-10 px-2 py-3"></th>
-                        {[
-                          { label: "Name", align: "left" },
-                          { label: "Expertise", align: "left" },
-                          { label: "LinkedIn Clicks", align: "center" },
-                          { label: "Details", align: "center" },
-                          { label: "Status", align: "left" },
-                          { label: "Date Joined", align: "left" },
-                        ].map(({ label, align }) => (
-                          <th
-                            key={label}
-                            className={`text-${align} text-[1.4rem] font-bold uppercase tracking-wider px-5 py-3 text-white`}
-                          >
-                            {label}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#f0ebe0]">
-                      {filteredAll
-                        .slice((allPage - 1) * PAGE_SIZE, allPage * PAGE_SIZE)
-                        .map((item) => {
-                          const isExpanded = expandedAllId === item.id;
-                          const isPending = item.status === "pending";
-                          const isDuplicate =
-                            isPending &&
-                            liveNames.has(
-                              `${
-                                item.first_name?.trim()?.toLowerCase() ?? ""
-                              } ${item.last_name?.trim()?.toLowerCase() ?? ""}`
-                            );
-                          return (
-                            <React.Fragment key={item.id}>
-                              <tr
-                                tabIndex={0}
-                                aria-expanded={isExpanded}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === " ") {
-                                    e.preventDefault();
-                                    setExpandedAllId(
-                                      isExpanded ? null : item.id
-                                    );
-                                  }
-                                }}
-                                className="transition-colors cursor-pointer bg-transparent hover:bg-brand-warm-row focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-inset"
-                                onClick={() => {
-                                  setExpandedAllId(isExpanded ? null : item.id);
-                                }}
-                              >
-                                <td className="px-2 py-3.5">
-                                  {isPending && (
-                                    <input
-                                      type="checkbox"
-                                      checked={selectedAll.includes(item.id)}
-                                      onChange={(e) => {
-                                        e.stopPropagation();
-                                        toggleAllSelect(item.id);
-                                      }}
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="w-4 h-4 rounded cursor-pointer"
-                                    />
-                                  )}
-                                </td>
-                                <td className="px-5 py-3.5">
-                                  <div className="flex items-center gap-3">
-                                    <span className="text-lg font-medium text-brand-dark">
-                                      {item.first_name} {item.last_name}
-                                    </span>
-                                    {isDuplicate && (
-                                      <span className="flex-shrink-0 text-[1.3rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300">
-                                        ⚠ Possible duplicate
-                                      </span>
-                                    )}
-                                  </div>
-                                </td>
-                                <td className="px-5 py-3.5">
-                                  <div className="flex flex-wrap gap-1">
-                                    {toTags(item.expertise).slice(0, 3).map((tag, i) => (
-                                      <span key={i} className="inline-block bg-brand-blue-tint text-brand-navy text-[1.2rem] font-medium px-2 py-0.5 rounded-full border border-brand-blue-border">
-                                        {tag}
-                                      </span>
-                                    ))}
-                                    {toTags(item.expertise).length > 3 && (
-                                      <span className="text-[1.2rem] text-gray-400">+{toTags(item.expertise).length - 3}</span>
-                                    )}
-                                  </div>
-                                </td>
-                                <td className="px-5 py-3.5 text-lg text-gray-600 text-center">
-                                  {item.linkedin_clicks || 0}
-                                </td>
-                                <td className="px-2 py-3.5 text-center">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setExpandedAllId(isExpanded ? null : item.id);
-                                    }}
-                                    className="text-[1.2rem] font-medium px-3 py-1.5 rounded-lg transition-colors bg-brand-blue-tint text-brand-navy border border-brand-blue-border hover:bg-blue-100 cursor-pointer"
-                                  >
-                                    {isExpanded ? "Hide" : "View"}
-                                  </button>
-                                </td>
-                                <td className="px-5 py-3.5">
-                                  <span
-                                    className={`text-[1.3rem] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg ${
-                                      item.status === "live"
-                                        ? "bg-green-600 text-white"
-                                        : item.status === "pending"
-                                        ? "bg-yellow-500 text-white"
-                                        : "bg-red-600 text-white"
-                                    }`}
-                                  >
-                                    {item.status}
-                                  </span>
-                                </td>
-                                <td className="px-5 py-3.5 text-[1.3rem] text-gray-500 whitespace-nowrap">
-                                  {item.created_at
-                                    ? new Date(item.created_at).toLocaleDateString()
-                                    : "—"}
-                                </td>
-                              </tr>
-                              {isExpanded && (
-                                <tr>
-                                  <td
-                                    colSpan="7"
-                                    className="px-5 py-4 bg-brand-parchment"
-                                  >
-                                    <div className="flex flex-col gap-4">
-                                      {/* Row 1: Entry details + Summary */}
-                                      <div className="grid gap-4 md:grid-cols-2">
-                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                            Entry details
-                                          </div>
-                                          <div className="space-y-2 text-[1.5rem] text-brand-dark-blue">
-                                            <div>
-                                              <span className="text-brand-navy font-semibold">Country: </span>
-                                              {val(item.country) || <span className="text-gray-400 italic text-[1.3rem]">No country set</span>}
-                                            </div>
-                                            <div>
-                                              <span className="text-brand-navy font-semibold">Expertise: </span>
-                                              {toTags(item.expertise).length > 0 ? (
-                                                <div className="flex flex-wrap gap-1.5 mt-1">
-                                                  {toTags(item.expertise).map((tag, i) => (
-                                                    <span
-                                                      key={i}
-                                                      title={tag}
-                                                      className="inline-block bg-brand-blue-tint text-brand-navy text-[1.3rem] font-medium px-2.5 py-0.5 rounded-full border border-brand-blue-border"
-                                                    >
-                                                      {tag}
-                                                    </span>
-                                                  ))}
-                                                </div>
-                                              ) : <span className="text-gray-400 italic text-[1.3rem]">No expertise tags added</span>}
-                                            </div>
-                                            <div>
-                                              <span className="text-brand-navy font-semibold">LinkedIn: </span>
-                                              {val(item.linkedin) ? (
-                                                <a
-                                                  href={item.linkedin}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="hover:underline text-brand-navy"
-                                                >
-                                                  {item.linkedin}
-                                                </a>
-                                              ) : <span className="text-gray-400 italic text-[1.3rem]">No LinkedIn URL</span>}
-                                            </div>
-                                            <div>
-                                              <span className="text-brand-navy font-semibold">Leader email: </span>
-                                              {val(item.leader_email) || <span className="text-gray-400 italic text-[1.3rem]">Not yet collected</span>}
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                            Summary
-                                          </div>
-                                          <div className="text-[1.5rem] text-brand-dark-blue leading-[1.7]">
-                                            {val(item.bio) || <span className="text-gray-400 italic text-[1.3rem]">No bio provided yet</span>}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      {/* Row 2: Full-width Enrich profile — available to all roles */}
-                                      {(
-                                        <div className="rounded-lg p-4 bg-white border border-brand-blue-border">
-                                          <div className="text-[1.4rem] font-semibold uppercase tracking-wider mb-3 text-brand-navy">
-                                            Enrich profile
-                                          </div>
-                                          {(() => {
-                                            const missing = getMissingFields(item);
-                                            return (
-                                              <div className="flex flex-col gap-3">
-                                                {missing.length > 0 ? (
-                                                  <div>
-                                                    <div className="text-[1.3rem] text-amber-800 font-medium mb-2">
-                                                      Missing fields ({missing.length}):
-                                                    </div>
-                                                    <div className="flex flex-wrap gap-1.5">
-                                                      {missing.map((f) => (
-                                                        <span
-                                                          key={f}
-                                                          className="inline-block bg-amber-50 text-amber-700 text-[1.2rem] font-medium px-2.5 py-0.5 rounded-full border border-amber-200"
-                                                        >
-                                                          {f}
-                                                        </span>
-                                                      ))}
-                                                    </div>
-                                                  </div>
-                                                ) : (
-                                                  <div className="text-[1.3rem] text-green-700 font-medium">
-                                                    ✓ All fields complete
-                                                  </div>
-                                                )}
-                                                <div className="flex flex-col gap-2">
-                                                  <div className="flex flex-wrap items-center gap-2">
-                                                    <input
-                                                      type="email"
-                                                      placeholder="Enter leader email to send magic link…"
-                                                      value={enrichEmail[item.id] || ""}
-                                                      onChange={(e) =>
-                                                        setEnrichEmail((prev) => ({
-                                                          ...prev,
-                                                          [item.id]: e.target.value,
-                                                        }))
-                                                      }
-                                                      className="flex-1 min-w-[240px] border border-gray-300 rounded-lg px-3 py-2 text-[1.4rem] focus:outline-none focus:ring-2 focus:ring-brand-pink focus:border-transparent"
-                                                    />
-                                                    <button
-                                                      onClick={() => handleSendEnrichmentLink(item)}
-                                                      disabled={enrichSending === item.id || !enrichEmail[item.id]?.trim()}
-                                                      className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
-                                                    >
-                                                      {enrichSending === item.id ? "Sending…" : "Send magic link"}
-                                                    </button>
-                                                  </div>
-                                                  {enrichMsg[item.id] && (
-                                                    <div className={`text-[1.4rem] px-3 py-2 rounded-lg border ${
-                                                      enrichMsg[item.id].startsWith("✓")
-                                                        ? "text-green-800 bg-green-50 border-green-200"
-                                                        : "text-red-800 bg-red-50 border-red-200"
-                                                    }`}>
-                                                      {enrichMsg[item.id]}
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            );
-                                          })()}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div className="mt-4 flex items-center justify-end gap-3">
-                                      {adminRole !== "editor" && isPending && (
-                                        <>
-                                          <button
-                                            onClick={() =>
-                                              handleAction(item.id, "approve")
-                                            }
-                                            disabled={actionId === item.id}
-                                            className="px-4 py-2 text-[1.4rem] font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
-                                          >
-                                            {actionId === item.id
-                                              ? "..."
-                                              : "Approve"}
-                                          </button>
-                                          <button
-                                            onClick={() =>
-                                              handleAction(item.id, "reject")
-                                            }
-                                            disabled={actionId === item.id}
-                                            className="px-4 py-2 text-[1.4rem] font-medium rounded-lg border-[1.5px] border-red-400 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                                          >
-                                            Reject
-                                          </button>
-                                        </>
-                                      )}
-                                      {adminRole !== "editor" && (
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          handleDeleteLeader(
-                                            item.id,
-                                            `${item.first_name} ${item.last_name}`
-                                          );
-                                        }}
-                                        className="text-[1.3rem] font-medium text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-4 py-1.5 rounded-lg transition-colors"
-                                      >
-                                        Delete entry
-                                      </button>
-                                      )}
-                                    </div>
-                                  </td>
-                                </tr>
-                              )}
-                            </React.Fragment>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                  </>
-                  )}
-                </div>
-
-                {filteredAll.length > PAGE_SIZE && (
-                  <div className="flex items-center gap-2 mt-6 pt-4 border-t border-brand-warm-border flex-wrap justify-center">
-                    <button
-                      onClick={() => { setAllPage((p) => Math.max(1, p - 1)); tableTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                      disabled={allPage === 1}
-                      className="px-3 py-1.5 border border-gray-300 rounded text-[1.4rem] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:border-gray-400"
-                    >
-                      ← Prev
-                    </button>
-                    {Array.from(
-                      { length: Math.ceil(filteredAll.length / PAGE_SIZE) },
-                      (_, i) => (
-                        <button
-                          key={i + 1}
-                          onClick={() => { setAllPage(i + 1); tableTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                          className={`px-3 py-1.5 border rounded text-[1.4rem] font-medium transition-colors ${
-                            allPage === i + 1
-                              ? "bg-brand-navy text-white border-brand-navy"
-                              : "bg-brand-parchment text-brand-dark border-gray-300 hover:border-gray-400"
-                          }`}
-                        >
-                          {i + 1}
-                        </button>
-                      )
-                    )}
-                    <button
-                      onClick={() => { setAllPage((p) => Math.min(Math.ceil(filteredAll.length / PAGE_SIZE), p + 1)); tableTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                      disabled={allPage === Math.ceil(filteredAll.length / PAGE_SIZE)}
-                      className="px-3 py-1.5 border border-gray-300 rounded text-[1.4rem] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:border-gray-400"
-                    >
-                      Next →
-                    </button>
-                  </div>
-                )}
-              </>
+              <AllEntries
+                filteredAll={filteredAll}
+                allPage={allPage}
+                setAllPage={setAllPage}
+                selectedAll={selectedAll}
+                toggleAllSelect={toggleAllSelect}
+                toggleAllEntries={toggleAllEntries}
+                handleBulkAllEntries={handleBulkAllEntries}
+                setSearchQuery={setSearchQuery}
+                setFilterRegion={setFilterRegion}
+                setFilterCountry={setFilterCountry}
+                setFilterExpertise={setFilterExpertise}
+                setFilterClicks={setFilterClicks}
+                setFilterStatus={setFilterStatus}
+                expandedAllId={expandedAllId}
+                setExpandedAllId={setExpandedAllId}
+                liveNames={liveNames}
+                enrichEmail={enrichEmail}
+                setEnrichEmail={setEnrichEmail}
+                enrichSending={enrichSending}
+                enrichMsg={enrichMsg}
+                handleSendEnrichmentLink={handleSendEnrichmentLink}
+                adminRole={adminRole}
+                handleAction={handleAction}
+                actionId={actionId}
+                handleDeleteLeader={handleDeleteLeader}
+                tableTopRef={tableTopRef}
+              />
             ) : activeTab === "manage-admins" && adminRole === "super_admin" ? (
-              <div className="p-8">
-                <h2 className="text-3xl font-semibold text-brand-navy tracking-heading mb-2">
-                  Manage Admin Users
-                </h2>
-                <p className="text-[1.4rem] text-gray-500 mb-6">
-                  Control who can access the admin console and what they can do. Only super admins can add or remove users.
-                </p>
-
-                {/* Roles reference — single row, 3 columns */}
-                <div className="bg-brand-sand border border-brand-blue-border rounded-lg p-5 mb-8">
-                  <h3 className="text-[1.5rem] font-semibold text-brand-navy mb-3">Role permissions</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {[
-                      {
-                        label: "Super admin",
-                        color: "bg-purple-100 text-purple-800 border-purple-200",
-                        can: ["Everything admin can do", "Add and remove other admin users"],
-                        cannot: [],
-                      },
-                      {
-                        label: "Admin",
-                        color: "bg-blue-100 text-blue-800 border-blue-200",
-                        can: ["Approve and reject submissions", "Delete leaders", "Send enrichment magic links", "View all profile data and gaps"],
-                        cannot: ["Manage other admin users"],
-                      },
-                      {
-                        label: "Editor",
-                        color: "bg-gray-100 text-gray-700 border-gray-200",
-                        can: ["View all entries and profile data", "See which profile fields are missing", "Send enrichment magic links"],
-                        cannot: ["Approve, reject, or delete", "Manage admin users"],
-                      },
-                    ].map(({ label, color, can, cannot }) => (
-                      <div key={label} className="bg-white rounded-lg p-4 border">
-                        <span className={`inline-block px-3 py-1 rounded-full text-[1.2rem] font-medium mb-3 ${color}`}>
-                          {label}
-                        </span>
-                        <div className="text-[1.2rem] leading-relaxed">
-                          <span className="text-gray-700">
-                            {can.join(" · ")}
-                          </span>
-                          {cannot.length > 0 && (
-                            <span className="text-gray-400"> — cannot: {cannot.join(", ")}</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Row 2: Add a new admin (left) + Current users (right) */}
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                  <div className="bg-white border border-brand-blue-border rounded-lg p-6">
-                    <h3 className="text-[1.8rem] font-semibold text-brand-navy mb-4">
-                      Add a new admin
-                    </h3>
-                    <input
-                      type="email"
-                      placeholder="admin@example.org"
-                      value={newAdminEmail}
-                      onChange={(e) => setNewAdminEmail(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[1.5rem] focus:outline-none focus:ring-2 focus:ring-brand-pink mb-3"
-                    />
-                    <select
-                      value={newAdminRole}
-                      onChange={(e) => setNewAdminRole(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[1.5rem] focus:outline-none focus:ring-2 focus:ring-brand-pink mb-3"
-                    >
-                      <option value="admin">Admin — approve, reject, delete, send magic links</option>
-                      <option value="editor">Editor — view only, see profile gaps (no approvals)</option>
-                    </select>
-                    <button
-                      onClick={handleAddAdmin}
-                      disabled={!newAdminEmail.trim()}
-                      className="px-8 py-3 text-[1.5rem] font-medium rounded-lg bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors disabled:opacity-40 cursor-pointer"
-                    >
-                      Add user
-                    </button>
-                    {manageAdminsMsg && (
-                      <div className={`mt-4 rounded-lg px-4 py-3 text-[1.4rem] border ${
-                        manageAdminsMsg.startsWith("✓")
-                          ? "border-green-300 bg-green-50 text-green-800"
-                          : "border-red-300 bg-red-50 text-red-800"
-                      }`}>
-                        {manageAdminsMsg}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-white border border-brand-blue-border rounded-lg p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-[1.8rem] font-semibold text-brand-navy shrink-0">
-                        Current users
-                      </h3>
-                      <input
-                        type="text"
-                        placeholder="Search by email…"
-                        value={adminSearch}
-                        onChange={(e) => setAdminSearch(e.target.value)}
-                        className="mx-4 flex-1 max-w-[240px] border border-gray-300 rounded-lg px-3 py-2 text-[1.3rem] focus:outline-none focus:ring-2 focus:ring-brand-pink"
-                      />
-                      <button
-                        onClick={() => { loadManageAdmins(); loadAdminActivity(); }}
-                        className="text-[1.4rem] text-brand-pink underline hover:text-brand-pink/80 cursor-pointer shrink-0"
-                      >
-                        Refresh ↻
-                      </button>
-                    </div>
-                    {manageAdminsLoading ? (
-                      <div className="flex items-center gap-3 py-4 text-[1.4rem] text-gray-500">
-                        <div className="w-5 h-5 border-2 border-brand-navy border-t-transparent rounded-full animate-spin" />
-                        Loading…
-                      </div>
-                    ) : manageAdmins.length === 0 ? (
-                      <p className="text-[1.5rem] text-gray-500">No admin users found.</p>
-                    ) : (
-                      <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
-                        {manageAdmins
-                          .filter((a) => !adminSearch || a.email.toLowerCase().includes(adminSearch.toLowerCase()))
-                          .map((a) => {
-                          const roleLabel = a.role === "super_admin"
-                            ? "Super admin"
-                            : a.role === "admin"
-                              ? "Admin"
-                              : "Editor";
-                          const roleDesc = a.role === "super_admin"
-                            ? "Full access + manages admin users"
-                            : a.role === "admin"
-                              ? "Can approve, reject, delete, send magic links"
-                              : "View + send enrichment magic links — no approvals";
-                          const badgeColor = a.role === "super_admin"
-                            ? "bg-purple-100 text-purple-800"
-                            : a.role === "admin"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-700";
-                          return (
-                            <div
-                              key={a.id}
-                              className="flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3 hover:border-brand-pink/30 transition-colors"
-                            >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="w-9 h-9 rounded-full bg-brand-navy text-white flex items-center justify-center text-[1.3rem] font-bold shrink-0">
-                                  {(a.email?.[0] || "?").toUpperCase()}
-                                </div>
-                                <div className="min-w-0">
-                                  <div className="text-[1.4rem] font-medium text-gray-900 flex items-center gap-2 flex-wrap">
-                                    <span className="truncate">{a.email}</span>
-                                    {a.email === user?.email && (
-                                      <span className="text-[1.1rem] text-gray-400 font-normal italic shrink-0">(you)</span>
-                                    )}
-                                  </div>
-                                  <div className="text-[1.1rem] text-gray-500 mt-0.5">
-                                    Added {a.created_by ? `by ${a.created_by}` : ""} · {new Date(a.created_at).toLocaleDateString()}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 shrink-0 ml-3">
-                                <span className={`inline-block px-2.5 py-0.5 rounded-full text-[1.1rem] font-medium ${badgeColor}`}>
-                                  {roleLabel}
-                                </span>
-                                {a.role !== "super_admin" ? (
-                                  <button
-                                    onClick={() => {
-                                      setShowConfirm({
-                                        action: "remove-admin",
-                                        title: "Remove user",
-                                        message: `Remove ${a.email} as ${roleLabel}? They will immediately lose access to the admin console.`,
-                                        confirmLabel: "Remove",
-                                        onConfirm: () => handleRemoveAdmin(a.email),
-                                      });
-                                    }}
-                                    className="text-red-400 hover:text-red-600 text-[1.3rem] px-2 py-1 rounded hover:bg-red-50 transition-colors cursor-pointer shrink-0"
-                                    title="Remove user"
-                                  >
-                                    ✕
-                                  </button>
-                                ) : (
-                                  <span className="w-7" />
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Admin activity log */}
-                <div className="bg-white border border-brand-blue-border rounded-lg p-6">
-                  <h3 className="text-[1.8rem] font-semibold text-brand-navy mb-4">
-                    Admin activity
-                  </h3>
-                  {adminActivityLoading ? (
-                    <div className="flex items-center gap-3 py-4 text-[1.4rem] text-gray-500">
-                      <div className="w-5 h-5 border-2 border-brand-navy border-t-transparent rounded-full animate-spin" />
-                      Loading…
-                    </div>
-                  ) : adminActivity.length === 0 ? (
-                    <p className="text-[1.4rem] text-gray-400 italic">No activity recorded yet. Changes to admin users will appear here.</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {adminActivity.map((entry) => {
-                        const isAdd = entry.action === "add_admin";
-                        return (
-                          <div key={entry.id} className="flex items-start gap-3 py-2.5 border-b border-gray-100 last:border-0">
-                            <div className={`mt-0.5 w-7 h-7 rounded-full flex items-center justify-center text-[1.1rem] shrink-0 ${
-                              isAdd ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
-                            }`}>
-                              {isAdd ? "+" : "−"}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="text-[1.4rem] text-gray-800">
-                                <span className="font-medium">{entry.target_email}</span>
-                                {isAdd
-                                  ? <> added as <span className="font-medium">{entry.role}</span></>
-                                  : <> removed</>
-                                }
-                              </div>
-                              <div className="text-[1.2rem] text-gray-400 mt-0.5">
-                                by {entry.performed_by} · {new Date(entry.created_at).toLocaleString()}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <ManageAdmins
+                newAdminEmail={newAdminEmail}
+                setNewAdminEmail={setNewAdminEmail}
+                newAdminRole={newAdminRole}
+                setNewAdminRole={setNewAdminRole}
+                handleAddAdmin={handleAddAdmin}
+                manageAdminsMsg={manageAdminsMsg}
+                adminSearch={adminSearch}
+                setAdminSearch={setAdminSearch}
+                loadManageAdmins={loadManageAdmins}
+                loadAdminActivity={loadAdminActivity}
+                manageAdminsLoading={manageAdminsLoading}
+                manageAdmins={manageAdmins}
+                user={user}
+                setShowConfirm={setShowConfirm}
+                handleRemoveAdmin={handleRemoveAdmin}
+                adminActivityLoading={adminActivityLoading}
+                adminActivity={adminActivity}
+              />
             ) : activeTab === "embed" ? (
               <div className="p-8 max-w-[900px] mx-auto">
                 <h2 className="text-3xl font-semibold text-brand-navy tracking-heading mb-6">

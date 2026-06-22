@@ -30,8 +30,8 @@ function Li({ children }) {
 function Ul({ children }) {
   return <ul className="list-disc list-outside ml-6 mb-4">{children}</ul>;
 }
-function Ol({ children }) {
-  return <ol className="list-decimal list-outside ml-6 mb-4">{children}</ol>;
+function Ol({ start, children }) {
+  return <ol start={start} className="list-decimal list-outside ml-6 mb-4">{children}</ol>;
 }
 function Code({ children }) {
   return (
@@ -259,7 +259,7 @@ const SECTIONS = [
 
   {
     id: "approval-quick-ref",
-    label: "✓ Approval Quick Reference",
+    label: "✓ Approval Checklist",
     content: (
       <>
         <P>
@@ -364,9 +364,14 @@ const SECTIONS = [
         <Tip>
           <strong>When in doubt:</strong> Reach out to the submitter with questions rather than rejecting. Most submissions are just incomplete, not problematic.
         </Tip>
-        <Note>
-          Screenshot placeholder — will be replaced with an actual expanded pending submission once new submissions arrive.
-        </Note>
+        <div className="bg-red-50 border-l-4 border-red-500 rounded-r-lg px-5 py-3 mb-4">
+          <div className="text-[1.35rem] text-red-800 leading-[1.7] m-0 flex items-start gap-2">
+            <svg className="w-6 h-6 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <span>Screenshot placeholder — will be replaced with an actual expanded pending submission once new submissions arrive.</span>
+          </div>
+        </div>
         <Img
           src="screenshots/admin-manual/10-all-entries-expanded.png"
           caption="Expanded pending submission — read the full profile before clicking Approve or Reject"
@@ -381,7 +386,7 @@ const SECTIONS = [
 
   {
     id: "admin-faq",
-    label: "❓ Admin FAQ & Troubleshooting",
+    label: "❓ FAQ & Troubleshooting",
     content: (
       <>
         <P>Answers to common admin questions about workflows and operations.</P>
@@ -452,19 +457,35 @@ const SECTIONS = [
         </P>
 
         <H3>How do leaders update their profiles?</H3>
-        <P>
-          Leaders click the <strong>"Already in the directory? Manage or remove
-          your profile"</strong> link at the bottom of the Database and Analytics
-          pages. It opens the <strong>Manage Profile</strong> modal — they enter
-          their name and email and receive a magic link. Once they click the
-          link, they see a pre-filled form covering every field: name, role,
-          organisation, photo, bio, LinkedIn, expertise, country, years of
-          experience, geographical scope, countries of work, and notable items
-          (publications, projects, awards). Empty fields are highlighted with an
-          amber <strong>Missing</strong> badge so they know exactly what to
-          complete. No admin action required. Completed changes appear in the{" "}
-          <strong>Activity Log</strong> for admin visibility.
-        </P>
+        <P>It's fully self-service — no admin action required.</P>
+        <Ol>
+          <Li>
+            Leader clicks <strong>"Already in the directory? Manage or remove your
+            profile"</strong> at the bottom of any Database or Analytics page
+          </Li>
+          <Li>
+            Manage Profile modal opens — they add their email and click{" "}
+            <strong>Find my profile</strong> (name and LinkedIn are pre-filled
+            from their profile card)
+          </Li>
+          <Li>
+            System sends a magic link to their email — no password needed
+          </Li>
+          <Li>
+            Clicking the link opens a pre-filled form covering every field: name,
+            role, organisation, photo, bio, LinkedIn, expertise, country, years
+            of experience, geographical scope, countries of work, and notable
+            items (publications, projects, awards)
+          </Li>
+          <Li>
+            Empty fields show an amber <strong>Missing</strong> badge — leaders
+            know exactly what to complete
+          </Li>
+          <Li>
+            Changes save instantly to the database. Completed actions appear in
+            the <strong>Activity Log</strong> for admin visibility
+          </Li>
+        </Ol>
 
         <H3>What if the email never sent?</H3>
         <P>
@@ -534,12 +555,34 @@ const SECTIONS = [
         <P>
           That's fine — photos are optional. You can approve a profile without one. However, profiles WITH photos get 2-3x more clicks, so encourage it in rejection reasons if you're asking for changes.
         </P>
+
+        <H3>How do I add or remove an admin user?</H3>
+        <P>
+          Only <strong>super admins</strong> can manage admin users. Open the{" "}
+          <strong>Manage Admins</strong> tab in the sidebar, then:
+        </P>
+        <Ol>
+          <Li>
+            To <strong>add</strong>: enter the user's email, select a role
+            (Editor / Admin / Super Admin), and click Add
+          </Li>
+          <Li>
+            To <strong>remove</strong>: find the user in the list and click
+            Remove (super admins cannot be removed via the console to prevent
+            lockout)
+          </Li>
+        </Ol>
+        <P>
+          All changes are logged in the admin activity log. See the{" "}
+          <strong>Manage Admin Users</strong> section for full role
+          descriptions.
+        </P>
       </>
     ),
   },
   {
     id: "overview",
-    label: "📋 Overview",
+    label: "📋 Console Overview",
     content: (
       <>
         <P>
@@ -722,15 +765,32 @@ const SECTIONS = [
           different person with the same name. The submitter was warned at
           submission time — you have the final call.
         </Note>
-        <Note>
-          Screenshot placeholder — will be captured once new submissions provide a live expanded leader row.
-        </Note>
+        <div className="bg-red-50 border-l-4 border-red-500 rounded-r-lg px-5 py-3 mb-4">
+          <div className="text-[1.35rem] text-red-800 leading-[1.7] m-0 flex items-start gap-2">
+            <svg className="w-6 h-6 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <span>Screenshot placeholder — will be captured once new submissions provide a live expanded leader row.</span>
+          </div>
+        </div>
+
+        <H3>Filling missing profile fields (Enrichment)</H3>
+        <P>
+          For live leaders with incomplete profiles (missing bio, photo, country,
+          etc.), you can send them a magic link directly from the expanded row.
+          Enter their email in the input box and click <strong>Send magic link</strong>
+          — they'll receive a link to fill in their missing fields themselves.
+        </P>
+        <Img
+          src="screenshots/admin-manual/profile-with-missing-fields.png"
+          caption="Expanded leader row showing missing fields with enrichment input box to send a magic link"
+        />
       </>
     ),
   },
   {
     id: "profile-requests",
-    label: "✉️ Profile Requests",
+    label: "✉️ Submissions",
     content: (
       <>
         <P>
@@ -774,9 +834,17 @@ const SECTIONS = [
           role, organisation, photo, bio, LinkedIn, expertise tags, country,
           years of experience, geographical scope, countries of work, and
           notable items. Fields that are still empty are highlighted with an
-          amber <strong>Missing</strong> badge so the leader knows exactly what
+          amber           <strong>Missing</strong> badge so the leader knows exactly what
           to complete.
         </P>
+        <div className="bg-red-50 border-l-4 border-red-500 rounded-r-lg px-5 py-3 mb-4">
+          <div className="text-[1.35rem] text-red-800 leading-[1.7] m-0 flex items-start gap-2">
+            <svg className="w-6 h-6 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <span>Screenshot placeholder — will be captured once new submissions provide a live expanded leader row.</span>
+          </div>
+        </div>
       </>
     ),
   },
@@ -804,9 +872,14 @@ const SECTIONS = [
             <strong>Reject</strong> — removes it from the queue
           </Li>
         </Ul>
-        <Note>
-          Screenshots not yet added — will be captured once nominated leaders arrive.
-        </Note>
+        <div className="bg-red-50 border-l-4 border-red-500 rounded-r-lg px-5 py-3 mb-4">
+          <div className="text-[1.35rem] text-red-800 leading-[1.7] m-0 flex items-start gap-2">
+            <svg className="w-6 h-6 mt-0.5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <span>Screenshots not yet added — will be captured once nominated leaders arrive.</span>
+          </div>
+        </div>
       </>
     ),
   },
@@ -968,59 +1041,11 @@ const SECTIONS = [
     content: (
       <>
         <P>
-          Magic-link emails let leaders update their own profiles with no
-          account or password. The flow uses the <Code>self-service</Code>{" "}
-          Supabase Edge Function, which handles token generation, token
-          verification, and email sending in one place.
+          Magic-link emails let leaders update or delete their own profiles
+          without an account or password. The leader flow is covered in the{" "}
+          <strong>Manage Profile User Flow</strong> section — this section
+          covers the technical setup.
         </P>
-        <H3>How the magic link flow works</H3>
-        <P>
-          Leaders access the <strong>Manage Profile</strong> page via the link
-          in the site footer.
-        </P>
-        <Img
-          src="screenshots/admin-manual/manage-profile-footer-link.png"
-          caption="Manage Profile footer link — visible on every public page"
-        />
-        <Ol>
-          <Li>
-            Leader visits the <strong>Manage Profile</strong> page and enters their
-            name and email
-          </Li>
-          <Li>
-            The system matches their profile by email and sends a magic link
-            directly — no admin action required
-          </Li>
-          <Li>
-            Leader clicks the link → lands on a pre-filled form with all their
-            existing data; empty fields show a <strong>Missing</strong> badge
-          </Li>
-          <Li>
-            Leader can update any field (name, photo, bio, expertise, country,
-            scope, countries of work, notable items) or delete their profile —
-            all self-service, no account, no password, no login needed
-          </Li>
-          <Li>
-            Completed actions appear in the{" "}
-            <strong>Activity Log</strong> tab for admin visibility
-          </Li>
-        </Ol>
-        <Img
-          src="screenshots/admin-manual/13-manage-profile.png"
-          caption="Manage your profile — leaders enter their name and email to receive a magic link"
-        />
-        <Img
-          src="screenshots/admin-manual/14-manage-profile-edit.png"
-          caption="Profile edit form — pre-filled with existing data; empty fields show a Missing badge"
-        />
-        <Img
-          src="screenshots/admin-manual/15-manage-profile-sent-update.png"
-          caption="Check your email — confirmation shown after requesting an update magic link"
-        />
-        <Img
-          src="screenshots/admin-manual/16-manage-profile-sent-delete.png"
-          caption="Check your email — confirmation shown after requesting a removal magic link"
-        />
         <H3>Email setup: Google Apps Script relay</H3>
         <P>
           Magic link emails are sent via a Google Apps Script web app that relays
@@ -1167,7 +1192,7 @@ const SECTIONS = [
 
   {
     id: "status-reference",
-    label: "📍 Status Reference",
+    label: "📍 Status & Tips",
     content: (
       <>
         <Table
@@ -1182,14 +1207,6 @@ const SECTIONS = [
           Status changes are instant — approving a record publishes it
           immediately. There is no scheduled publish.
         </Tip>
-      </>
-    ),
-  },
-  {
-    id: "tips-notes",
-    label: "💡 Pro Tips & Notes",
-    content: (
-      <>
         <Ul>
           <Li>
             <strong>Refresh (↻)</strong> in the sidebar header reloads all data
@@ -1243,7 +1260,7 @@ const SECTIONS = [
 
   {
     id: "directory-features",
-    label: "📖 Directory Features",
+    label: "📖 Directory & Search",
     content: (
       <>
         <P>
@@ -1322,7 +1339,7 @@ const SECTIONS = [
   },
   {
     id: "analytics-dashboard",
-    label: "📊 Analytics Dashboard",
+    label: "📊 Analytics",
     content: (
       <>
         <P>
@@ -1376,7 +1393,7 @@ const SECTIONS = [
   },
   {
     id: "submit-profile-flow",
-    label: "✍️ Submit Profile User Flow",
+    label: "✍️ Submit Profile Flow",
     content: (
       <>
         <P>
@@ -1525,6 +1542,154 @@ const SECTIONS = [
 
         <Tip>
           When rejecting, always include actionable feedback in the Comments field. Users need to know exactly what to fix, not just "bio too vague" — tell them specifically what to add or improve.
+        </Tip>
+      </>
+    ),
+  },
+  {
+    id: "manage-profile-flow",
+    label: "🔐 Manage Profile Flow",
+    content: (
+      <>
+        <P>
+          Leaders can update or delete their own profiles without an account or
+          password using the self-service magic link flow. Understanding how this
+          works helps you answer leader questions and know what to expect in the
+          Activity Log.
+        </P>
+
+        <H3>Two Self-Service Actions</H3>
+        <Table
+          headers={["Action", "How it works", "Admin involvement"]}
+          rows={[
+            [
+              "Update profile",
+              "Leader receives a magic link → edits their name, photo, bio, expertise, country, and more directly",
+              "None — changes are saved instantly and logged in Activity Log",
+            ],
+            [
+              "Delete profile",
+              "Leader requests removal → confirms via magic link → status set to rejected",
+              "None — admin receives a notification email",
+            ],
+          ]}
+        />
+
+        <H3>How Leaders Access the Manage Profile Page</H3>
+        <Ol>
+          <Li>
+            Click <strong>"Manage or remove your profile"</strong> on any
+            profile card or in the site footer
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/full-profile-modal-open.png"
+          caption="Profile modal with 'Manage or remove your profile' link at the bottom"
+        />
+        <Ol start={2}>
+          <Li>
+            Add email and click <strong>Find my profile</strong> — name and
+            LinkedIn are pre-filled from the card
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/manage-profile-modal-open.png"
+          caption="Manage Profile modal — name pre-filled, leader adds their email"
+        />
+        <Img
+          src="screenshots/manage-profile-modal-with-email-input.png"
+          caption="Manage Profile modal — email entered, ready to click Find my profile"
+        />
+        <Ol start={3}>
+          <Li>
+            Profile found — choose <strong>Update</strong> or{" "}
+            <strong>Remove</strong>
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/manage-profile-with-update-remove-button.png"
+          caption="Profile found — leader chooses to update or remove their profile"
+        />
+
+        <H3>Update Flow (What Leaders Experience)</H3>
+        <Ol>
+          <Li>
+            <strong>Request:</strong> Leader chooses "Update my profile" and
+            enters their details
+          </Li>
+          <Li>
+            <strong>Send link:</strong> Leader confirms and clicks{" "}
+            <strong>Send magic link</strong>
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/update-profile-send-link.png"
+          caption="Update confirmation — leader clicks Send magic link to receive their profile edit link"
+        />
+        <Ol start={3}>
+          <Li>
+            <strong>Magic link email:</strong> They receive an email with a
+            unique magic link (secure, valid for 48 hours)
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/update-profile-email.png"
+          caption="Update magic link email — leader receives a link to edit their profile (valid for 48 hours)"
+        />
+        <Ol start={4}>
+          <Li>
+            <strong>Edit form:</strong> Clicking the link opens a pre-filled form
+            with all their existing data. Every field is editable — name,
+            photo, bio, expertise, country, and more. Empty fields show a{" "}
+            <strong>Missing</strong> badge as a reminder
+          </Li>
+          <Li>
+            <strong>Save:</strong> Changes are saved directly to the database —
+            no admin approval needed
+          </Li>
+        </Ol>
+
+        <H3>Delete Flow (What Leaders Experience)</H3>
+        <Ol>
+          <Li>
+            <strong>Request:</strong> Leader chooses "Remove my profile" and
+            confirms their intent
+          </Li>
+          <Li>
+            <strong>Send link:</strong> Leader confirms and clicks{" "}
+            <strong>Send magic link</strong>
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/delete-profile-send-link.png"
+          caption="Delete confirmation — leader clicks Send magic link to receive their removal link"
+        />
+        <Ol start={3}>
+          <Li>
+            <strong>Magic link email:</strong> They receive a removal
+            confirmation link (secure, valid for 48 hours)
+          </Li>
+        </Ol>
+        <Img
+          src="screenshots/delete-profile-email.png"
+          caption="Delete magic link email — leader receives a link to confirm profile removal"
+        />
+        <Ol start={3}>
+          <Li>
+            <strong>Confirm delete:</strong> Clicking the link shows a "Remove
+            your profile" screen with "Are you sure?" and a red delete button
+          </Li>
+          <Li>
+            <strong>Removed:</strong> After confirming, a checkmark screen
+            says "Profile removed — your profile has been removed from the
+            directory"
+          </Li>
+        </Ol>
+
+        <Tip>
+          All self-service actions are logged in the{" "}
+          <strong>Activity Log</strong> tab. Admin receives a notification email
+          whenever a leader updates or deletes their profile.
         </Tip>
       </>
     ),
@@ -1761,34 +1926,34 @@ const CATEGORIES = [
     sections: ["quick-start-hub", "overview"],
   },
   {
-    icon: "⭐",
-    title: "Daily Admin Tasks",
+    icon: "✅",
+    title: "Admin Tasks",
     sections: [
       "approval-quick-ref",
-      "dashboard-stats",
       "all-entries",
       "profile-requests",
       "nominated",
+      "activity-log",
     ],
   },
   {
-    icon: "👥",
-    title: "Understanding Users & Product",
-    sections: ["directory-features", "submit-profile-flow", "analytics-dashboard"],
+    icon: "🌐",
+    title: "Public Experience",
+    sections: ["directory-features", "submit-profile-flow", "manage-profile-flow", "analytics-dashboard"],
   },
   {
     icon: "⚙️",
-    title: "Advanced Workflows & Setup",
-    sections: ["email-setup", "common-workflows", "duplicate-detection"],
+    title: "Configuration & Access",
+    sections: ["email-setup", "manage-admin-users", "duplicate-detection"],
   },
   {
     icon: "📚",
-    title: "Reference & Checklists",
-        sections: ["status-reference", "tips-notes", "pre-launch-checklist", "product-report"],
+    title: "Reference",
+    sections: ["common-workflows", "status-reference", "product-report"],
   },
   {
     icon: "❓",
-    title: "Help & Troubleshooting",
+    title: "Help",
     sections: ["admin-faq"],
   },
 ];
@@ -1818,6 +1983,10 @@ export default function AdminManual({ onBackToAdmin }) {
   const activeSection = SECTIONS[activeIndex];
   const prev = SECTIONS[activeIndex - 1] ?? null;
   const next = SECTIONS[activeIndex + 1] ?? null;
+
+  const activeCategory = CATEGORIES.find((cat) =>
+    cat.sections.includes(activeId)
+  );
 
   const downloadPdf = () => {
     setPdfLoading(true);
@@ -1877,19 +2046,6 @@ body{margin:0;padding:15mm;font-family:system-ui,sans-serif;background:#fff}
           <p className="text-[1.3rem] uppercase tracking-widest text-gray-400 font-semibold mb-3 px-2">
             Contents
           </p>
-          <button
-            onClick={downloadPdf}
-            disabled={pdfLoading}
-            className="mx-2 mb-3 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[1.3rem] font-medium bg-brand-navy text-white hover:bg-brand-navy/90 transition-colors disabled:opacity-50 cursor-pointer"
-          >
-            {pdfLoading ? "Generating PDF…" : "Download PDF"}
-          </button>
-          <button
-            onClick={onBackToAdmin}
-            className="mx-2 mb-4 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[1.3rem] font-medium bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors cursor-pointer"
-          >
-            ← Back to Admin
-          </button>
           {/* Render sections organized by category */}
           {CATEGORIES.map((category, catIndex) => (
             <div key={catIndex} className="mb-4">
@@ -1923,18 +2079,28 @@ body{margin:0;padding:15mm;font-family:system-ui,sans-serif;background:#fff}
 
         {/* Section content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header with back button */}
-          <div className="flex-shrink-0 flex items-center justify-between px-10 py-4 border-b border-gray-200 bg-white">
-            <button
-              onClick={onBackToAdmin}
-              className="flex items-center gap-2 text-[1.4rem] font-medium text-brand-pink hover:text-brand-navy transition-colors cursor-pointer"
-            >
-              ← Back to Admin Console
-            </button>
-            <span className="text-[1.4rem] font-semibold text-brand-navy">
-              {activeSection?.label}
-            </span>
-            <div />
+          {/* Sticky top bar with breadcrumbs and actions */}
+          <div className="sticky top-0 z-10 flex-shrink-0 flex items-center justify-between px-10 py-3 border-b border-gray-200 bg-white shadow-sm">
+            <div className="flex items-center gap-2 text-[1.35rem] text-gray-500">
+              <span className="font-medium text-brand-navy">{activeCategory?.icon} {activeCategory?.title}</span>
+              <span className="text-gray-300 mx-1">›</span>
+              <span className="font-semibold text-brand-pink">{activeSection?.label}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={downloadPdf}
+                disabled={pdfLoading}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-[1.3rem] font-medium bg-brand-navy text-white hover:bg-brand-navy/90 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {pdfLoading ? "Generating PDF…" : "Download PDF"}
+              </button>
+              <button
+                onClick={onBackToAdmin}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-[1.3rem] font-medium bg-brand-pink text-white hover:bg-brand-pink/90 transition-colors cursor-pointer"
+              >
+                ← Back to Admin
+              </button>
+            </div>
           </div>
           {/* Scrollable section body */}
           <div className="flex-1 overflow-y-auto px-10 py-8">

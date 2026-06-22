@@ -1,4 +1,4 @@
-const BASE = "https://transformhealth.rrzdev.co.za";
+const BASE = "https://transformhealthcoalition.org";
 
 const COLUMN_1 = [
   { label: "Our Story", href: "/our-story/" },

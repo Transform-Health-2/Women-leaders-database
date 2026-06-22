@@ -106,8 +106,11 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 - Approving/rejecting profiles
 - Managing profile requests (updates, deletions)
 - Reviewing nominations
+- Manage Profile user flow (self-service update/delete)
+- Email system setup (magic links, enrichment)
 - Test results dashboard
-- Email system setup
+- Admin user management
+- Data quality and reference
 
 ### [**Data Quality Standards**](05-data-quality-standards.md)
 **What:** Standards for what makes a publishable profile  
@@ -143,6 +146,7 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 |------|----------|------|
 | **Learn what this project is** | [Product Overview](01-product-overview.md) | 5 min |
 | **Submit my profile** | [Submit Profile Guide](02-submit-profile-guide.md) | 15 min |
+| **Update or delete my profile** | [Submit Profile Guide](02-submit-profile-guide.md#after-your-profile-is-approved) | 5 min |
 | **Nominate a leader** | [Nominator Guide](03-nominator-guide.md) | 10 min |
 | **Find a leader** | [FAQ - Search](04-faq.md#for-directory-users--searching--viewing-profiles) | 5 min |
 | **Find an answer to my question** | [FAQ](04-faq.md) | 5-15 min |
@@ -214,12 +218,12 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 → See [FAQ - Troubleshooting](04-faq.md#troubleshooting) section
 
 ### Still Stuck?
-→ Contact us: [support contact info here]  
+→ Contact us: [info@transformhealthcoalition.org](mailto:info@transformhealthcoalition.org)  
 → Tell us: What you were trying to do + what went wrong
 
 ### Found an Error in Documentation?
 → Let us know! Documentation should be clear and accurate.  
-→ Email: [documentation contact]
+→ Email: [info@transformhealthcoalition.org](mailto:info@transformhealthcoalition.org)
 
 ---
 

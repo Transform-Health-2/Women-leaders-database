@@ -160,6 +160,38 @@ User searches directory (by name, expertise, country)
 - ✓ Admin dashboard
 - ✓ Profile management (update/delete)
 
+### Near-term Enhancements
+
+#### Google Analytics 4 (GA4) — Visitor Insights
+
+**Status:** Ready to implement — awaiting client Measurement ID  
+**Effort:** Small (under 1 hour)  
+**Requires:** Transform Health creates a GA4 property in their Google Analytics account
+
+**What it adds:**
+
+| Metric | Detail |
+| --- | --- |
+| Visitor counts | Daily/weekly/monthly unique visitors and sessions |
+| Traffic sources | Where visitors come from (Google search, social, direct, referrals) |
+| Country breakdown | Which countries visitors are in |
+| Tab usage | Which sections (Directory, Analytics, Submit) are visited most |
+| Device types | Desktop vs mobile vs tablet split |
+| LinkedIn click events | Already tracked in the database; can be mirrored to GA4 as custom events |
+
+**Implementation steps (for the development team):**
+
+1. Client creates a GA4 property: Google Analytics → Admin → Create Property → copy the Measurement ID (`G-XXXXXXXXXX`)
+2. Add two script tags to `client/index.html` (the gtag.js loader and config call)
+3. Add a `hashchange` listener in `App.jsx` to fire `page_view` events when the user switches tabs — without this, only the initial page load is counted
+4. Deploy — data appears in GA4 within 24–48 hours
+
+**Privacy note:** GA4 Measurement IDs are public by design and safe to include in the HTML source. If Transform Health has users in the EU, a cookie consent notice may be required under GDPR. For a global audience with no EU-specific targeting, analytics-only mode without advertising features is generally considered low-risk — but Transform Health should confirm this with their legal or privacy advisor.
+
+**Alternative:** [Plausible Analytics](https://plausible.io) is a privacy-first, cookieless alternative that requires no consent banner anywhere in the world. It costs ~$9/month but is significantly simpler to comply with.
+
+---
+
 ### Planned (v2.0)
 - Community features (groups, discussion threads)
 - Event directory integration

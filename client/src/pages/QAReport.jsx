@@ -678,7 +678,7 @@ const SECTIONS = [
   },
 ];
 
-export default function AdminFixes() {
+export default function QAReport() {
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
 
   const activeIndex = SECTIONS.findIndex((s) => s.id === activeId);

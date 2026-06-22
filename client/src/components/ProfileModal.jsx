@@ -1,19 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { LinkedInIcon } from "./icons";
 import { useFocusTrap } from "../hooks/useFocusTrap";
-
-function getInitials(first, last) {
-  return ((first?.[0] || "") + (last?.[0] || "")).toUpperCase();
-}
-function hasValue(v) {
-  return !!v && v !== "null" && v.trim() !== "";
-}
-
-function toTags(expertise) {
-  if (!expertise || expertise === "null") return [];
-  if (Array.isArray(expertise)) return expertise.filter(v => v && v !== "null");
-  return expertise.split(/,\s*/).filter(v => v && v !== "null");
-}
+import { getInitials, hasValue, toTags } from "../utils/adminUtils";
 
 function toList(field) {
   if (!field || field === "null") return [];

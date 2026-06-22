@@ -74,17 +74,9 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
   const [errorMsg, setErrorMsg] = useState("");
   const [fallbackUrl, setFallbackUrl] = useState("");
 
-  // Token expiry check — 48 hours
-  const TOKEN_TTL = 48 * 60 * 60 * 1000;
-
   useEffect(() => {
     if (isMagicLink && fromMagicLink?.leaderId) {
-      const createdAt = fromMagicLink.createdAt;
-      if (!createdAt || Date.now() - createdAt > TOKEN_TTL) {
-        setStatus("error");
-        setErrorMsg("This link has expired. Please request a new magic link.");
-        return;
-      }
+      // Server-side token verify (action="verify") handles expiry — no client TTL needed
       api.getLeaderById(fromMagicLink.leaderId)
         .then((data) => {
           if (!data) throw new Error("Profile not found");
@@ -92,17 +84,19 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
           setEditFirstName(data.first_name || "");
           setEditLastName(data.last_name || "");
           setEditRole(data.role || "");
-          setEditOrg(data.organisation || "");
-          setEditBio(data.bio || "");
-          setEditLinkedin(data.linkedin || "");
-          setEditCountry(data.country || "");
-          setEditYearsExp(data.years_experience || "");
-          setEditGeoScope(data.geo_scope || "");
-          setEditCountries(Array.isArray(data.countries) ? data.countries : []);
+          // Sanitise legacy "null" strings stored in DB
+          const clean = (v) => (!v || v === "null" ? "" : v);
+          setEditOrg(clean(data.organisation));
+          setEditBio(clean(data.bio));
+          setEditLinkedin(clean(data.linkedin));
+          setEditCountry(clean(data.country));
+          setEditYearsExp(clean(data.years_experience));
+          setEditGeoScope(clean(data.geo_scope));
+          setEditCountries(Array.isArray(data.countries) ? data.countries.filter(c => c && c !== "null") : []);
           setEditNotableItems(Array.isArray(data.notable_items) ? data.notable_items : []);
           const exp = Array.isArray(data.expertise)
-            ? data.expertise.join(", ")
-            : data.expertise || "";
+            ? data.expertise.filter(e => e && e !== "null").join(", ")
+            : clean(data.expertise);
           setEditExpertise(exp);
           setStep(tokenMode === "delete" ? "delete-magic" : "edit-magic");
         })
@@ -174,9 +168,7 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
       if (result.ok) {
         setStep("sent");
       } else {
-        setStep("sent");
-        setErrorMsg(result.message || "Email service unavailable.");
-        setFallbackUrl(result.url || "");
+        setLinkError(result.message || "We couldn't send your link right now. Please try again.");
       }
     } catch (err) {
       setLinkError("Failed to send magic link. Please try again.");
@@ -298,6 +290,8 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
           </h2>
           <p className="text-1.5 text-gray-600 leading-[1.7] mb-5">
             We&apos;ve sent a magic link to <strong>{email}</strong>.
+          </p>
+          <p className="text-1.5 text-gray-600 leading-[1.7] mb-5">
             Click the link to{" "}
             {selectedMode === "delete" ? "remove" : "update"} your profile.
           </p>

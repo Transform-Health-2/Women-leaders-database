@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const BASE = "https://transformhealth.rrzdev.co.za";
+const BASE = "https://transformhealthcoalition.org";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -32,7 +32,7 @@ export default function SiteHeader() {
       <div className="container-fluid max-w-[1400px] mx-auto flex justify-between items-center px-4 py-3">
         <a href={BASE} className="navbar-brand">
           <img
-            src="https://transformhealth.rrzdev.co.za/wp-content/uploads/2026/02/TH-Logo-Hor-FC.svg"
+            src="https://transformhealthcoalition.org/wp-content/uploads/2026/02/TH-Logo-Hor-FC.svg"
             alt="Transform Health"
             className="h-[3.2rem] sm:h-[3.6rem] block"
           />

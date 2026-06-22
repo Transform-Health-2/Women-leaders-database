@@ -61,11 +61,17 @@ function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  // Parse ?manage= token on mount — verify signature server-side before trusting it
+  // Parse ?manage= token on mount — verify signature server-side before trusting it.
+  // Token is removed from the URL immediately (replaceState) to prevent it appearing
+  // in browser history or being forwarded in Referer headers.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("manage");
     if (!t) return;
+    // Scrub token from address bar before the async verify completes
+    const clean = new URL(window.location.href);
+    clean.searchParams.delete("manage");
+    window.history.replaceState({}, "", clean.toString());
     supabase.functions
       .invoke("self-service", { body: { action: "verify", token: t } })
       .then(({ data, error }) => {

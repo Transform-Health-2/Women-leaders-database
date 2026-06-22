@@ -14,7 +14,7 @@ The Admin Console is the internal tool for managing the Women Leaders in Digital
 - **Activity Log** — a record of every self-service update and deletion, filterable by action type, date range, and name
 - **Documentation** — this manual, including the Product Report covering technical architecture, cost, licensing, dependencies, and the handover checklist
 
-The sidebar shows live counts next to each tab so you always know what needs attention. Hover over any tab for a tooltip. Use the **↻ Refresh** button to reload the latest data from Supabase. The admin auto-refreshes every 30 seconds and on tab visibility change.
+The sidebar shows live counts next to each tab so you always know what needs attention. Hover over any tab for a tooltip. Use the **↻ Refresh** button to reload the latest data from Supabase.
 
 **Non-technical content management:** Leaders manage their own profiles entirely without admin intervention via the self-service magic link flow — they find their profile, request a magic link by email, and edit or delete their data directly. The admin only needs to review new submissions and nominations.
 
@@ -121,55 +121,12 @@ Profiles where someone nominated a woman leader on her behalf. These are lightwe
 - **Approve** — publishes the nomination record with status live (creates a stub profile)
 - **Reject** — removes it from the queue
 
----
 
-### 4. Test Results
-
-A dashboard of submissions from the QA testing sheet. Used during pre-launch testing sprints.
-
-**What you see:**
-- Pass / Fail / Pending summary counts
-- One card per tester, showing their overall pass rate with a colour-coded progress bar
-- Expand each tester to see results by section (Directory, Analytics, Submit, Admin, etc.)
-- Expand each section to see individual test cases with scenario, priority, status, and notes
-
-Test results are saved both to your browser's local storage and to the database (Supabase). When a tester re-enters their name on a return visit, previous results are loaded and merged automatically. The database uses upsert (insert or update) based on tester name + scenario — so revisiting a scenario updates its existing row rather than creating a duplicate.
-
-**Filters:**
-- Filter by tester name
-- Filter by status (Pass / Fail / Pending)
-- Search by scenario or notes text
-
-Rows with a **Fail** status are tinted red for quick scanning. When filters are active, section headings show how many results are visible vs. the total.
-
-**Managing test results:**
-- **Delete a single result** — click the **✕** button on any row to permanently remove that test case
-- **Clear a tester's results** — click the **✕ clear** button on a tester's card to remove all of their results at once
-- Both actions show a confirmation dialog before deleting
-
-> Deletions are permanent and cannot be undone from the admin console.
+### 4. Self-Service Profile Management (Email System)
 
 ---
 
-### 5. Test Fixes
-
-A reference checklist of 21 known bug items identified during pre-launch QA testing. All items have been fixed and verified in the codebase.
-
-Each item shows:
-- An ID and description of the issue
-- A priority level (Critical / Important / Nice-to-have)
-- File references for where the fix was applied
-- A green ✓ status indicator confirming the fix is in place
-
-These are hardcoded reference items (not database-driven) — use this tab to cross-reference what was addressed in the latest deployment before re-testing via the Testing Sheet.
-
----
-
-### 6. Self-Service Profile Management (Email System)
-
----
-
-### 7. Manage Admin Users *(super admin only)*
+### 5. Manage Admin Users *(super admin only)*
 
 Controls who can access the admin console and what they can do. This tab is only visible to super admins. See **[Managing Admin Users](#managing-admin-users)** below for the full roles reference, step-by-step instructions, and activity log details.
 
@@ -379,7 +336,12 @@ The system will create a Supabase Auth account for that email if one does not al
 
 ### Removing a user
 
-Click the **✕** button next to any non-super-admin user and confirm the prompt. Access is revoked immediately — the user will be signed out on their next request. Super admins cannot be removed through the console (this prevents accidental lockout).
+Click the **✕** button next to any non-super-admin user and confirm the prompt. Removal does two things:
+
+1. Deletes their row from `admin_roles` — they immediately lose admin privileges
+2. Deletes their account from Supabase Auth — they can no longer log in at all
+
+Super admins cannot be removed through the console (this prevents accidental lockout). If you need to remove a super admin, do it directly in Supabase Dashboard → Authentication → Users.
 
 ### Admin activity log
 
@@ -405,9 +367,6 @@ The platform includes two layers of duplicate protection:
 - **LinkedIn Clicks** in All Entries shows how many times a leader's LinkedIn link has been clicked from their profile card — useful for seeing which profiles get the most engagement.
 - **Expertise tags** are shown as blue pill/badge chips everywhere they appear — hover to see the full text if it's truncated on smaller screens.
 - The **admin tab** does not show the site header/footer — it is a standalone internal tool.
-- **Returning testers** can continue where they left off — the testing sheet saves their name, current section, scroll position, and all results to local storage and Supabase. When they re-enter their name on a return visit, previous results are loaded and merged automatically.
-- **Live auto-refresh:** The console refreshes its data every 30 seconds while the tab is open and visible. It also refreshes when the tab regains focus (e.g., switching back from another tab).
-- **DEV badge:** The Test Results and Test Fixes tabs show a `DEV` badge in the sidebar — these are developer/internal tools used during pre-launch testing and may be hidden or restricted in production.
 - **Photo review:** Profile photos are not displayed in the admin expanded view during review. To verify a photo, check the public directory after approval or inspect the row in Supabase directly.
 - **Chrome toggle (eye button):** A small eye toggle appears at the bottom-right of the Database, Analytics, and Submit pages. Click it to hide/show the site header, nav bar, and footer — useful when demoing how the directory would look embedded in the Transform Health website. The site header and footer now match the Transform Health WordPress site (white navbar with dropdowns, multi-column navy footer).
 
@@ -417,11 +376,11 @@ The platform includes two layers of duplicate protection:
 
 Before going live, the following need to be completed by the technical team:
 
-- [x] **Re-enable the admin auth gate** — `Admin.jsx` now checks `supabase.auth.getSession()` on mount and gates content behind login
-- [ ] **Create an admin user** in Supabase Auth (manual dashboard step — use the noreply email address)
-- [ ] **Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`** to GitHub Actions secrets (if CI/CD is set up)
-- [ ] **Remove test-mode RLS policies** — drop three policies in `schema.sql` lines 63–82 (`Admin test mode: read all leaders`, `Admin test mode: update leaders`, `Admin test mode: update requests`)
-- [x] **Run `create-test-results-table.sql`** on production — done, test results schema migrated
+- [x] **Re-enable the admin auth gate** — done; `Admin.jsx` checks `supabase.auth.getSession()` on mount and gates all content behind login
+- [x] **Create an admin user** in Supabase Auth — done (`noreply@transformhealthcoalition.org`)
+- [x] **Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`** to GitHub Actions secrets — done
+- [x] **Remove test-mode RLS policies** — done; test-mode policies have been dropped from production
+- [ ] **Run migration 015** (`015_restrict_public_columns.sql`) in Supabase Dashboard → SQL Editor — restricts anon API access to public-safe columns only
 
 ---
 

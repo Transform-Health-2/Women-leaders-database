@@ -4,7 +4,6 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          orange:        "#F8571D",
           "orange-light": "#F97A1A",
           orange: {
             DEFAULT: "#F8571D",
