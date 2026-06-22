@@ -95,6 +95,23 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 
 ## 🛠️ For Admin Team
 
+### [**Transfer & Handover Checklist**](transfer-checklist.md)
+**What:** Complete checklist for handing over the project from the development team to Transform Health  
+**Why read:** Ensure nothing is missed during transition — GitHub repo, Supabase project, Edge Function secrets, email setup, database migrations  
+**Time:** 30 minutes to review; varies to action  
+**Best for:** Technical lead, project manager, anyone coordinating the handover
+
+**Covers:**
+
+- GitHub repository transfer steps and post-transfer actions
+- Supabase project setup and secret configuration
+- Database migrations to run
+- Email / Google Apps Script setup
+- Database backup procedure
+- Pre-launch checklist
+
+---
+
 ### [**Admin Manual**](admin-manual.md)
 **What:** Complete guide to the admin console  
 **Why read:** Manage submissions, approve profiles, handle requests  
