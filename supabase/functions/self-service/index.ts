@@ -323,6 +323,56 @@ Deno.serve(async (req) => {
       return await sendViaAppsScript({ to, cc, subject, html }, req);
     }
 
+    // ── Self-service: update profile (via magic link, uses service role) ────
+    if (action === "update-profile") {
+      const secret = Deno.env.get("MAGIC_LINK_SECRET");
+      if (!secret) return respond({ error: "server misconfigured" }, 500, req);
+
+      const { token, updates } = body;
+      if (!token || !updates) return respond({ error: "missing token or updates" }, 400, req);
+
+      let parsed: { leaderId: string; mode: string; expires: number; sig: string };
+      try {
+        parsed = JSON.parse(atob(token));
+      } catch {
+        return respond({ error: "invalid token" }, 401, req);
+      }
+
+      const { leaderId, mode, expires, sig } = parsed;
+      if (!leaderId || mode !== "update" || !expires || !sig) {
+        return respond({ error: "invalid token" }, 401, req);
+      }
+      if (Date.now() > expires) return respond({ error: "token expired" }, 401, req);
+
+      const expectedSig = await hmacSign(secret, `${leaderId}:${mode}:${expires}`);
+      if (expectedSig !== sig) return respond({ error: "invalid signature" }, 401, req);
+
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+      const res = await fetch(
+        `${supabaseUrl}/rest/v1/leaders?id=eq.${encodeURIComponent(leaderId)}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`,
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify(updates),
+        },
+      );
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("update-profile failed:", res.status, errText);
+        return respond({ error: "update failed" }, 500, req);
+      }
+
+      return respond({ ok: true }, 200, req);
+    }
+
     // ── Email: notify admin ──────────────────────────────────────────────────
     // Resolves recipient from ADMIN_NOTIFY_EMAIL secret — never exposed to client.
     if (action === "notify-admin") {

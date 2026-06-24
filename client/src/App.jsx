@@ -76,7 +76,7 @@ function App() {
       .invoke("self-service", { body: { action: "verify", token: t } })
       .then(({ data, error }) => {
         if (!error && data?.ok) {
-          setManageTokenData({ leaderId: data.leaderId, mode: data.mode });
+          setManageTokenData({ leaderId: data.leaderId, mode: data.mode, rawToken: t });
           setShowManageModal(true);
         }
         // silently ignore invalid / expired tokens
@@ -305,6 +305,7 @@ function App() {
                 onBack={closeManageModal}
                 fromMagicLink={manageTokenData}
                 tokenMode={manageTokenData?.mode}
+                magicToken={manageTokenData?.rawToken}
               />
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { supabase } from "../supabase";
 import { api } from "../api/leaders";
 import { getCountriesForGeoScope, ALL_COUNTRIES } from "../utils/countries";
 
@@ -37,7 +38,7 @@ function ContinueBtn({ disabled, onClick, children }) {
   );
 }
 
-export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMode }) {
+export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMode, magicToken }) {
   const isMagicLink = !!fromMagicLink;
 
   // Mode A: send-link flow
@@ -243,7 +244,14 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
         }
 
         if (Object.keys(updates).length > 0) {
-          await api.updateLeader(leaderData.id, updates);
+          if (magicToken) {
+            const { error } = await supabase.functions.invoke("self-service", {
+              body: { action: "update-profile", token: magicToken, updates },
+            });
+            if (error) throw error;
+          } else {
+            await api.updateLeader(leaderData.id, updates);
+          }
           await api.logSelfService({
             leaderId: leaderData.id,
             firstName: leaderData.first_name,
