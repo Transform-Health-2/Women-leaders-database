@@ -111,8 +111,8 @@ Deno.serve(async (req) => {
       // Send invitation email
       const appScriptUrl = Deno.env.get("APPS_SCRIPT_URL") || "";
       if (appScriptUrl) {
-        const baseUrl = origin || "https://tich-labs.github.io/transform-health-directory";
-        const loginUrl = baseUrl + "/?setup=" + encodeURIComponent(email) + "#/admin";
+        const siteUrl = body.baseUrl || origin || "https://tich-labs.github.io/transform-health-directory";
+        const loginUrl = siteUrl + "/?setup=" + encodeURIComponent(email) + "#/admin";
         try {
           await fetch(appScriptUrl, {
             method: "POST",
