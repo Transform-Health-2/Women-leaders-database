@@ -1952,10 +1952,10 @@ const SECTIONS = [
         </Ul>
         <P><strong>Future expansion:</strong></P>
         <Ul>
-          <Li>ORCID integration for optional researcher verification</Li>
-          <Li>Open Badges / Verifiable Credentials (W3C standard)</Li>
-          <Li>Supabase Auth signInWithOtp() for production-grade magic links</Li>
-          <Li>CSV/PDF export for search results</Li>
+          <Li><strong>ORCID integration</strong> — lets leaders link their ORCID iD (a persistent researcher identifier) to verify identity, auto-populate publications/affiliations, and add credibility. Requires ORCID API integration and a consent flow.</Li>
+          <Li><strong>Open Badges / Verifiable Credentials (W3C standard)</strong> — issue tamper-proof digital credentials (e.g. "Verified Women Leaders in Digital Health") that leaders can display on LinkedIn, CVs, or personal sites. Follows W3C standards for interoperability.</Li>
+          <Li><strong>Supabase Auth signInWithOtp()</strong> — replace the current custom magic link flow with Supabase's built-in one-time password (OTP) email auth. Simplifies maintenance and improves security with Supabase's battle-tested email handling.</Li>
+          <Li><strong>CSV/PDF export</strong> — allow admins to download filtered search results as CSV (for analysis) or PDF (for reports). Useful for grant reporting, stakeholder presentations, and offline reference.</Li>
         </Ul>
 
         <Tip>
