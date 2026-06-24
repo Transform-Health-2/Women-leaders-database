@@ -1864,11 +1864,13 @@ const SECTIONS = [
 
         <H4>Infrastructure</H4>
         <Ul>
-          <Li>URL: <code>https://tich-labs.github.io/transform-health-directory/</code></Li>
-          <Li>Supabase: <code>qglymhpdsjzkmdvzizdu</code> (transform-health-directory)</Li>
+          <Li><strong>Production:</strong> <code>https://transform-health-2.github.io/Women-leaders-database/</code> — repo: <code>Transform-Health-2/Women-leaders-database</code></Li>
+          <Li><strong>Staging:</strong> <code>https://tich-labs.github.io/transform-health-directory/</code> — repo: <code>Tich-Labs/transform-health-directory</code></Li>
+          <Li>Production Supabase: <code>qglymhpdsjzkmdvzizdu</code></Li>
+          <Li>Staging Supabase: <code>mphzkizjaqxhrzhpdhst</code></Li>
           <Li>Tables: leaders, requests, test_results</Li>
           <Li>Storage: profile-photos bucket</Li>
-          <Li>CI/CD: auto-deploys on push to main</Li>
+          <Li>CI/CD: auto-deploys on push to main (both repos)</Li>
         </Ul>
 
         <H4>Handover Checklist</H4>
@@ -1878,7 +1880,7 @@ const SECTIONS = [
 
         <H4>1. GitHub Repo &amp; Secrets</H4>
         <Ul>
-          <Li>Transfer repo ownership from <code>Tich-Labs/transform-health-directory</code> to Transform Health's GitHub org, or add team members as Admin collaborators</Li>
+          <Li>Transfer production repo ownership from <code>Transform-Health-2/Women-leaders-database</code> to Transform Health's GitHub org, or add team members as Admin collaborators</Li>
           <Li>Set GitHub Actions secrets in the new repo: <code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_ANON_KEY</code></Li>
           <Li>Remove any stale secrets (legacy Apps Script vars)</Li>
           <Li>Verify CI/CD works — push to <code>main</code> triggers auto-deploy</Li>
@@ -1886,7 +1888,7 @@ const SECTIONS = [
 
         <H4>2. Supabase Access, RLS, Storage, Backup</H4>
         <Ul>
-          <Li>Grant team access to project <code>qglymhpdsjzkmdvzizdu</code> (transform-health-directory) or create fresh project + migrate</Li>
+          <Li>Grant team access to production Supabase project <code>qglymhpdsjzkmdvzizdu</code></Li>
           <Li>Verify Edge Function secret: <code>APPS_SCRIPT_URL</code></Li>
           <Li>Confirm RLS: anon reads only <code>live</code> leaders; auth required for writes</Li>
           <Li>Verify <code>profile-photos</code> storage bucket is public-read</Li>
@@ -1928,9 +1930,10 @@ const SECTIONS = [
 
         <H4>8. Quick Reference</H4>
         <Ul>
-          <Li>Live URL: <code>https://tich-labs.github.io/transform-health-directory/</code></Li>
-          <Li>Supabase Project: <code>qglymhpdsjzkmdvzizdu</code></Li>
-          <Li>Supabase URL: <code>https://qglymhpdsjzkmdvzizdu.supabase.co</code></Li>
+          <Li>Production URL: <code>https://transform-health-2.github.io/Women-leaders-database/</code></Li>
+          <Li>Staging URL: <code>https://tich-labs.github.io/transform-health-directory/</code></Li>
+          <Li>Production Supabase Project: <code>qglymhpdsjzkmdvzizdu</code></Li>
+          <Li>Staging Supabase Project: <code>mphzkizjaqxhrzhpdhst</code></Li>
           <Li>Database: PostgreSQL — tables: <code>leaders</code>, <code>requests</code>, <code>test_results</code></Li>
           <Li>Storage: <code>profile-photos</code> bucket</Li>
           <Li>Auth: Supabase Auth — email/password (login required for admin)</Li>
