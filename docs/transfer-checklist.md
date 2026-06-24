@@ -6,29 +6,32 @@ This document lists everything required to transfer the Women Leaders in Digital
 
 ## 1. Source Code & Repository
 
-- [ ] **Transfer GitHub repository ownership** — see steps below
-- [x] **Verify GitHub Actions secrets** are set in the new repo:
+- [x] **Production repository live** — `https://github.com/Transform-Health-2/Women-leaders-database` is the production repo; CI/CD is operational and GitHub Pages is deployed
+- [x] **Staging repository** — `https://github.com/Tich-Labs/transform-health-directory` remains as staging (all changes go here first, then pushed to production)
+- [x] **Verify GitHub Actions secrets** are set in the production repo:
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_ANON_KEY`
 - [x] **Remove stale secrets** — `VITE_ADMIN_CC_EMAIL` and `VITE_ADMIN_NOTIFY_EMAIL` deleted (moved to Edge Function Secrets)
-- [x] **Confirm CI/CD is operational** — push to `main` triggers automatic build + deploy
+- [x] **Confirm CI/CD is operational** — push to `main` triggers automatic build + deploy to GitHub Pages
 - [ ] **Verify branch protection** rules are configured on `main` if desired
 
-### GitHub Repository Transfer Steps
+### Repository Setup (Current)
 
-1. **Transform Health must have a GitHub organisation** — create one at `github.com/organizations/new` if they don't have one yet
-2. Go to `github.com/tich-labs/transform-health-directory` → **Settings → Danger Zone → Transfer repository**
-3. Enter the Transform Health GitHub org name → confirm transfer
-4. **After transfer — re-add GitHub Actions secrets** in the new repo (secrets do not transfer automatically):
-   - New repo → Settings → Secrets and variables → Actions → add:
-     - `VITE_SUPABASE_URL`
-     - `VITE_SUPABASE_ANON_KEY`
-5. **GitHub Pages URL changes** — the live URL becomes `https://<their-org>.github.io/transform-health-directory/`. Update:
-   - `ALLOWED_ORIGINS` in `supabase/functions/self-service/index.ts` — add the new GitHub Pages domain
-   - `ALLOWED_ORIGINS` in `supabase/functions/manage-admin/index.ts` — same
-   - Deploy both Edge Functions after updating
-6. **Admin URL changes** to `https://<their-org>.github.io/transform-health-directory/#admin` — share the new URL with the admin team
-7. GitHub automatically redirects the old `tich-labs.github.io` URL for a period — do not rely on this permanently
+The project uses a two-repo model:
+
+| Repo | Purpose | URL |
+|------|---------|-----|
+| `Transform-Health-2/Women-leaders-database` | **Production** | `https://transform-health-2.github.io/Women-leaders-database/` |
+| `Tich-Labs/transform-health-directory` | **Staging** | `https://tich-labs.github.io/transform-health-directory/` |
+
+Both point to the same Supabase project. To push a change to production:
+1. Commit and push to `main` on the local repo (auto-deploys to staging via `staging` remote)
+2. Push to the production remote: `git push origin main`
+
+If Transform Health want to transfer the repo to their own org in future:
+1. Go to `github.com/Transform-Health-2/Women-leaders-database` → **Settings → Danger Zone → Transfer repository**
+2. After transfer, re-add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` secrets (they don't transfer)
+3. Update `ALLOWED_ORIGINS` in both Edge Functions with the new GitHub Pages domain
 
 ## 2. Supabase Project
 
@@ -54,7 +57,7 @@ After deploying code, run the following SQL in Supabase Dashboard → SQL Editor
 
 - [x] **015_restrict_public_columns.sql** — creates the `public_leaders` view and revokes direct anon SELECT on the `leaders` table to prevent column-level data leaks via the REST API. **Deployed and verified.**
 
-- [ ] **016_find_leader_rpc.sql** — creates the `find_leader_by_email(TEXT, TEXT, TEXT)` SECURITY DEFINER function required for the self-service "Manage my profile" lookup. Without this, leaders cannot find their own profile (migration 015 revoked anon access to the base table). **Run this in Supabase Dashboard → SQL Editor.**
+- [x] **016_find_leader_rpc.sql** — creates the `find_leader_by_email(TEXT, TEXT, TEXT)` SECURITY DEFINER function required for the self-service "Manage my profile" lookup. Without this, leaders cannot find their own profile (migration 015 revoked anon access to the base table). **Deployed and verified.**
 
 ## 4. Email & Google Workspace
 
@@ -80,7 +83,7 @@ After deploying code, run the following SQL in Supabase Dashboard → SQL Editor
 - [x] **Re-enable admin auth gate** — done
 - [x] **Create admin user** in Supabase Auth dashboard — done (`noreply@transformhealthcoalition.org`)
 - [ ] **Analytics** — decide whether to add GA4 or Plausible before or after launch
-- [ ] **Test end-to-end flow:** submit profile → approve → appears in directory → manage via magic link → email notification received
+- [x] **Test end-to-end flow:** public directory loads (81 leaders), Manage Profile form renders, self-service identify flow works, admin login page confirmed on production (`transform-health-2.github.io`)
 
 ## 8. Profile Photo Cleanup
 
@@ -133,7 +136,8 @@ The project currently runs on the **Supabase Free Tier** (`qglymhpdsjzkmdvzizdu`
 
 | Resource | Value |
 | --- | --- |
-| Live URL | `https://tich-labs.github.io/transform-health-directory/` |
+| Live URL (Production) | `https://transform-health-2.github.io/Women-leaders-database/` |
+| Live URL (Staging) | `https://tich-labs.github.io/transform-health-directory/` |
 | Supabase Project | `qglymhpdsjzkmdvzizdu` |
 | Supabase URL | `https://qglymhpdsjzkmdvzizdu.supabase.co` |
 | Database | PostgreSQL — tables: `leaders`, `requests`, `admin_roles` |
