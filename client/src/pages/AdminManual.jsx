@@ -785,6 +785,36 @@ const SECTIONS = [
           src="screenshots/admin-manual/profile-with-missing-fields.png"
           caption="Expanded leader row showing missing fields with enrichment input box to send a magic link"
         />
+
+        <H3>Rejection Modal</H3>
+        <P>
+          When you click <strong>Reject</strong> on a pending entry, a confirmation
+          modal appears asking you to confirm. The profile status changes to{" "}
+          <strong>rejected</strong> — it is hidden from the public directory and
+          removed from the pending queue. The submitter can resubmit with corrections.
+        </P>
+        <P>
+          There is no undo button. If you reject by mistake, the submitter can
+          resubmit. If you approve incorrectly, use <strong>Delete</strong> to
+          permanently remove the record.
+        </P>
+
+        <H3>Rejected Submission List</H3>
+        <P>
+          Rejected profiles remain in the database and are visible in{" "}
+          <strong>All Entries</strong> when you filter by status{" "}
+          <strong>Rejected</strong>. This lets you review past decisions if needed.
+          Rejected entries can be:
+        </P>
+        <Ul>
+          <Li>Viewed — full profile details are still accessible</Li>
+          <Li>Deleted — hard delete, permanently removes the record</Li>
+          <Li>Re-approved — not possible directly; the submitter must resubmit</Li>
+        </Ul>
+        <P>
+          The <strong>Rejected</strong> stat card at the top of All Entries shows
+          the total count. Filter by Rejected status to see all declined profiles.
+        </P>
       </>
     ),
   },
@@ -822,6 +852,29 @@ const SECTIONS = [
           <Code>pending</Code> in All Entries. Approving or rejecting here
           updates them everywhere.
         </Note>
+
+        <H3>Pending Profile Requests</H3>
+        <P>
+          All unprocessed submissions appear under the <strong>New</strong> tab
+          with a <strong>pending</strong> status badge. Each row shows the
+          submitter's name, organisation, country, and submission date. Click a
+          row to expand it and review the full profile before approving or rejecting.
+        </P>
+        <P>
+          The pending queue includes both self-submitted profiles and nominated
+          leaders awaiting review. The <strong>Pending</strong> count at the top
+          of the Submissions section shows how many profiles need your attention.
+        </P>
+
+        <H3>Rejected Submissions</H3>
+        <P>
+          Rejected profiles are still visible in the Submissions section — they
+          are moved to a separate view within the same tab. You can review why
+          a profile was rejected and, if needed, delete it permanently. Rejected
+          submitters can resubmit with corrections, which creates a new pending
+          entry.
+        </P>
+
         <H3>Updates &amp; Deletions</H3>
         <P>
           Leaders update and remove their own profiles directly via the{" "}
