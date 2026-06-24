@@ -607,9 +607,6 @@ export default function ManageProfile({ prefill, onBack, fromMagicLink, tokenMod
               </h2>
               {missing.size > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 mb-6">
-                  <p className="text-[1.4rem] font-semibold text-amber-800 mb-1">
-                    Your profile needs a little love 💕
-                  </p>
                   <p className="text-[1.3rem] text-amber-700">
                     Fields marked <span className="font-semibold">Missing</span> below are empty — filling them in makes your profile more discoverable.
                   </p>
