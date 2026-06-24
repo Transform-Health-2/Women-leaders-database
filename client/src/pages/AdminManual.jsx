@@ -1912,7 +1912,7 @@ const SECTIONS = [
         <Ul>
           <Li><code>docs/admin-manual.md</code> — markdown source for the in-app Admin Manual</Li>
           <Li><code>docs/TRANSFER_CHECKLIST.md</code> — this checklist in standalone form</Li>
-          <Li>In-app Product Report — accessible at <code>/admin?tab=manual&amp;section=product-report</code></Li>
+          <Li>In-app Product Report — accessible at <code>/admin?tab=documentation&amp;section=product-report</code></Li>
           <Li><code>README.md</code> — updated to reflect current codebase state</Li>
           <Li>Admin Manual PDF — can be generated from the in-app "Download PDF" button</Li>
           <Li>Screenshots / video walkthrough — being prepared by the current team</Li>
@@ -2008,7 +2008,7 @@ export default function AdminManual({ onBackToAdmin }) {
   const [activeId, setActiveId] = useState(SECTIONS[0].id);
   const [pdfLoading, setPdfLoading] = useState(false);
 
-  // Read initial section from URL hash: ?tab=manual&section=<id>
+  // Read initial section from URL hash: ?tab=documentation&section=<id>
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const section = params.get("section");

@@ -213,7 +213,7 @@ export default function Admin({ onGoToDirectory }) {
     const hash = window.location.hash;
     const match = hash.match(/[?&]tab=([^&]+)/);
     const tab = match ? match[1] : "all";
-    const validTabs = ["all", "requests", "nominated", "activity", "manual", "embed", "manage-admins"];
+    const validTabs = ["all", "requests", "nominated", "activity", "documentation", "embed", "manage-admins"];
     return validTabs.includes(tab) ? tab : "all";
   });
   const [requestSubTab, setRequestSubTab] = useState("new");
@@ -269,7 +269,7 @@ export default function Admin({ onGoToDirectory }) {
     const match = hash.match(/[?&]tab=([^&]+)/);
     if (match) {
       const tab = match[1];
-      const validTabs = ["all", "requests", "nominated", "activity", "manual", "embed", "manage-admins"];
+      const validTabs = ["all", "requests", "nominated", "activity", "documentation", "embed", "manage-admins"];
       if (validTabs.includes(tab)) setActiveTab(tab);
     }
   }, []);
@@ -960,7 +960,7 @@ export default function Admin({ onGoToDirectory }) {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className={`w-72 flex-shrink-0 border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col ${activeTab === "manual" ? "hidden" : ""}`}>
+        <aside className={`w-72 flex-shrink-0 border-r-4 border-brand-pink bg-brand-navy shadow-md flex flex-col ${activeTab === "documentation" ? "hidden" : ""}`}>
           <div className="px-6 py-5 border-b-2 border-brand-pink">
             <div className="flex items-center justify-center">
               <button
@@ -1040,7 +1040,7 @@ export default function Admin({ onGoToDirectory }) {
 
           <div className="px-3 py-4 border-t border-gray-200 flex flex-col gap-2">
             <button
-              onClick={() => setActiveTab("manual")}
+              onClick={() => setActiveTab("documentation")}
               className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-3 text-[1.6rem] font-medium text-gray-600 bg-white hover:bg-gray-50 hover:text-brand-navy transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2"
             >
               <ManualIcon />
@@ -1058,7 +1058,7 @@ export default function Admin({ onGoToDirectory }) {
         <main className="flex-1 flex flex-col overflow-hidden">
           {/* Page header + stats - hidden for Tests tab */}
           {activeTab !== "tests" &&
-            activeTab !== "manual" &&
+            activeTab !== "documentation" &&
             activeTab !== "fixes" &&
             activeTab !== "embed" && (
               <div className="px-8 py-6 border-b border-brand-warm-border flex-shrink-0 bg-gradient-to-br from-brand-sand to-[#ede7d8]">
@@ -1100,9 +1100,9 @@ export default function Admin({ onGoToDirectory }) {
               </div>
             )}
 
-          {/* Filter bar - hidden for manual/docs, activity, and nominated tabs */}
+          {/* Filter bar - hidden for documentation, activity, and nominated tabs */}
           {activeTab !== "tests" &&
-            activeTab !== "manual" &&
+            activeTab !== "documentation" &&
             activeTab !== "fixes" &&
             activeTab !== "activity" &&
             activeTab !== "nominated" && (
@@ -1312,7 +1312,7 @@ export default function Admin({ onGoToDirectory }) {
                   <p className="text-[1.4rem] text-gray-500 font-medium">Loading admin data…</p>
                 </div>
               </div>
-            ) : tabLoading && activeTab !== "manual" && activeTab !== "activity" ? (
+            ) : tabLoading && activeTab !== "documentation" && activeTab !== "activity" ? (
               <div className="flex items-center justify-center py-20">
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-8 h-8 border-3 border-brand-navy border-t-transparent rounded-full animate-spin" />
@@ -1564,7 +1564,7 @@ export default function Admin({ onGoToDirectory }) {
                   </p>
                 </section>
               </div>
-            ) : activeTab === "manual" ? (
+            ) : activeTab === "documentation" ? (
               <AdminManual onBackToAdmin={() => handleTabChange("all")} />
             ) : null}
           </div>
