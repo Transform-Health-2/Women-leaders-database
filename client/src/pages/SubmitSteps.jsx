@@ -57,6 +57,7 @@ export function Step0Branch({
   nomineeLastName,
   setNomineeLastName,
   onContinue,
+  onSelfSelect,
   onManageProfile,
 }) {
   const nominateValid =
@@ -93,7 +94,7 @@ export function Step0Branch({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
         <button
-          onClick={() => setBranch("self")}
+          onClick={onSelfSelect}
           className={`pt-[4.8rem] px-[2.4rem] pb-[4rem] rounded-xl text-center cursor-pointer bg-white border-2 ${
             branch === "self" ? "border-brand-navy" : "border-gray-200"
           }`}
@@ -204,15 +205,17 @@ export function Step0Branch({
         ) : (
           <span />
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          className={CONT_CLS}
-          onClick={onContinue}
-          disabled={branch === "nominate" && !nominateValid}
-        >
-          {branch === "nominate" ? "SUBMIT NOMINATION →" : "CONTINUE →"}
-        </Button>
+        {branch === "nominate" && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className={CONT_CLS}
+            onClick={onContinue}
+            disabled={!nominateValid}
+          >
+            SUBMIT NOMINATION →
+          </Button>
+        )}
       </div>
 
       <div className="mt-6 pt-5 border-t border-gray-200 text-center">

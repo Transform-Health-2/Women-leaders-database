@@ -35,7 +35,17 @@ const EXPANDED_VISIBLE = 9;
 const PAGE_SIZE = 9;
 
 const SELECT_CLASS =
-  "pl-[1.6rem] pr-[2.4rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.4rem] outline-none bg-brand-blue-tint cursor-pointer font-semibold text-brand-dark";
+  "appearance-none bg-no-repeat pl-[1.6rem] pr-[3.6rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.4rem] outline-none bg-brand-blue-tint cursor-pointer font-semibold text-brand-dark";
+
+const CHEVRON_SVG = `url("data:image/svg+xml,${encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1L6 6L11 1' stroke='#222B45' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+)}")`;
+
+const CHEVRON_STYLE = {
+  backgroundImage: CHEVRON_SVG,
+  backgroundPosition: "right 1.4rem center",
+  backgroundSize: "12px 8px",
+};
 
 export default function Database({ onManageProfile }) {
   const [search, setSearch] = useState("");
@@ -190,6 +200,7 @@ export default function Database({ onManageProfile }) {
                 value={sortBy}
                 onChange={handleSort}
                 className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                style={CHEVRON_STYLE}
                 aria-label="Sort leaders"
               >
                 <option value="">Sort by</option>
@@ -202,6 +213,7 @@ export default function Database({ onManageProfile }) {
                 value={continentFilter}
                 onChange={handleContinent}
                 className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                style={CHEVRON_STYLE}
                 aria-label="Filter by continent"
               >
                 <option value="">Continent: All</option>
@@ -216,6 +228,7 @@ export default function Database({ onManageProfile }) {
                 value={countryFilter}
                 onChange={handleCountry}
                 className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                style={CHEVRON_STYLE}
                 aria-label="Filter by country"
               >
                 <option value="">Country: All</option>
@@ -230,6 +243,7 @@ export default function Database({ onManageProfile }) {
                 value={expertiseFilter}
                 onChange={handleExpertise}
                 className={SELECT_CLASS + " flex-1 sm:flex-none"}
+                style={CHEVRON_STYLE}
                 aria-label="Filter by expertise"
               >
                 <option value="">Expertise: All</option>

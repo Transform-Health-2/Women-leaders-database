@@ -142,6 +142,11 @@ export default function Submit({ onManageProfile }) {
     goStep(1);
   }
 
+  function handleSelfSelect() {
+    setBranch("self");
+    goStep(1);
+  }
+
   async function submitNomination() {
     setStatus("submitting");
     try {
@@ -410,6 +415,7 @@ export default function Submit({ onManageProfile }) {
                   nomineeLastName={nomineeLastName}
                   setNomineeLastName={setNomineeLastName}
                   onContinue={handleStep0Continue}
+                  onSelfSelect={handleSelfSelect}
                   onManageProfile={onManageProfile}
                 />
               )}
