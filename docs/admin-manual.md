@@ -395,7 +395,7 @@ Before going live, the following need to be completed by the technical team:
 - [x] **Create an admin user** in Supabase Auth — done (`noreply@transformhealthcoalition.org`)
 - [x] **Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`** to GitHub Actions secrets — done
 - [x] **Remove test-mode RLS policies** — done; test-mode policies have been dropped from production
-- [ ] **Run migration 015** (`015_restrict_public_columns.sql`) in Supabase Dashboard → SQL Editor — restricts anon API access to public-safe columns only
+- [x] **Run migration 015** (`015_restrict_public_columns.sql`) in Supabase Dashboard → SQL Editor — restricts anon API access to public-safe columns only. **Verified live** (2026-08-04): direct anon `SELECT` on `leaders` returns 401, `public_leaders` view returns only public-safe columns.
 
 ---
 
