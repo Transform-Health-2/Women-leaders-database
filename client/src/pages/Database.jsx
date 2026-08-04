@@ -35,7 +35,7 @@ const EXPANDED_VISIBLE = 9;
 const PAGE_SIZE = 9;
 
 const SELECT_CLASS =
-  "px-[1.6rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.4rem] outline-none bg-brand-blue-tint cursor-pointer font-semibold text-brand-dark";
+  "pl-[1.6rem] pr-[2.4rem] py-[1.0rem] border-[1.5px] border-gray-300 rounded-[10px] text-[1.4rem] outline-none bg-brand-blue-tint cursor-pointer font-semibold text-brand-dark";
 
 export default function Database({ onManageProfile }) {
   const [search, setSearch] = useState("");

@@ -496,7 +496,7 @@ const SECTIONS = [
         </P>
         <Ul>
           <Li>Ask the leader to check spam folder</Li>
-          <Li>Magic links expire after 48 hours — request a new one if expired</Li>
+          <Li>Magic links expire after 5 days — request a new one if expired</Li>
           <Li>Ask the technical team to check Supabase Function logs</Li>
         </Ul>
 
@@ -1684,12 +1684,12 @@ const SECTIONS = [
         <Ol start={3}>
           <Li>
             <strong>Magic link email:</strong> They receive an email with a
-            unique magic link (secure, valid for 48 hours)
+            unique magic link (secure, valid for 5 days)
           </Li>
         </Ol>
         <Img
           src="screenshots/update-profile-email.png"
-          caption="Update magic link email — leader receives a link to edit their profile (valid for 48 hours)"
+          caption="Update magic link email — leader receives a link to edit their profile (valid for 5 days)"
         />
         <Ol start={4}>
           <Li>
@@ -1722,7 +1722,7 @@ const SECTIONS = [
         <Ol start={3}>
           <Li>
             <strong>Magic link email:</strong> They receive a removal
-            confirmation link (secure, valid for 48 hours)
+            confirmation link (secure, valid for 5 days)
           </Li>
         </Ol>
         <Img

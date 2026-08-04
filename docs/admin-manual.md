@@ -172,7 +172,7 @@ Email is sent via a Google Apps Script Web App deployed under the Transform Heal
 **Security properties of the magic link flow:**
 
 - Tokens are generated server-side by the `self-service` Edge Function (`action: "generate"`), signed with `MAGIC_LINK_SECRET`
-- When a leader lands on a magic link, `self-service` (`action: "verify"`) checks the signature and a 48-hour expiry before the edit form is shown
+- When a leader lands on a magic link, `self-service` (`action: "verify"`) checks the signature and a 5-day expiry before the edit form is shown
 - Forged or expired tokens are silently rejected — no edit form is shown
 - The `self-service` function validates every email recipient against the database before sending — it cannot be used to send arbitrary email
 
@@ -194,7 +194,7 @@ The magic link email is constructed inline in `client/src/api/leaders.js` (`requ
 4. **Leader name** — bold, centered
 5. **Expertise tags** — blue pills matching the card style
 6. **CTA button** — pink ("Manage my profile") or red ("Remove my profile")
-7. **Expiry badge** — amber pill reading "Expires in 48 hours"
+7. **Expiry badge** — amber pill reading "Expires in 5 days"
 8. **Fallback link** — monospace code block with the raw `?manage=` URL
 9. **1px grey divider**
 10. **Footer** — "You received this because you have a profile in the **Transform Health Women Leaders Directory** (pink, bold). Didn't request this? You can safely ignore this email."
@@ -203,23 +203,27 @@ The page background uses `#f5efe0` (`brand-sand`) to match the database content 
 
 **Technical architecture:**
 
-The magic link system has three layers:
+Token generation, signing, email construction, and verification all happen server-side in the `self-service` Edge Function — the frontend (`client/src/api/leaders.js`, `requestManage()`) only invokes the function and never builds or sees the signed token payload.
 
-**1. Token (`client/src/api/leaders.js:284-286`)**
+**1. Token (`supabase/functions/self-service/index.ts`)**
 
-When a user requests a magic link, the frontend builds a token:
-```js
-const token = btoa(JSON.stringify({ leaderId, mode, createdAt: Date.now() }));
+When a leader requests a magic link, the Edge Function builds and signs a token:
+```ts
+const expires = Date.now() + 1000 * 60 * 60 * 24 * 5;
+const payload = `${leaderId}:${mode}:${expires}`;
+const sig = await hmacSign(secret, payload);
+const token = btoa(JSON.stringify({ leaderId, mode, expires, sig }));
 ```
 - `leaderId` — the leader's UUID in the `leaders` table
 - `mode` — `"update"` or `"delete"`
-- `createdAt` — timestamp used to enforce **48-hour expiry** on the client side
-- The token is **not encrypted** — it is simple base64. Security relies on the token being sent only to the leader's email address.
+- `expires` — absolute timestamp enforcing a **5-day expiry**, checked server-side on `action: "verify"`
+- `sig` — HMAC-SHA256 signature over `leaderId:mode:expires`, signed with `MAGIC_LINK_SECRET`; forged or tampered tokens fail verification
+- The token is **not encrypted** — it is simple base64, but its signature prevents forgery. Security relies on the token being sent only to the leader's email address.
 - The full magic link URL: `{origin}?manage={token}`
 
-**2. Email HTML (`client/src/api/leaders.js:303-391`)**
+**2. Email HTML (`supabase/functions/self-service/index.ts`, `buildManageEmail`)**
 
-The entire email body is constructed as a template literal inside `requestManage()`. It uses inline `<table>` layout for email client compatibility. The function resolves avatar, LinkedIn URL, and expertise tags from the values passed by the find-profile step, falling back to database values if absent.
+The entire email body is constructed server-side as a template literal. It uses inline `<table>` layout for email client compatibility. The function resolves avatar, LinkedIn URL, and expertise tags from the values passed by the find-profile step, falling back to database values if absent.
 
 **3. Edge Function (`supabase/functions/self-service/index.ts`)**
 

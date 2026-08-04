@@ -314,17 +314,23 @@ export default function Submit({ onManageProfile }) {
               {
                 title: "Profile under review",
                 body: "The Transform Health team reviews all submissions before they go live. This typically takes 3–5 business days.",
+                spinning: true,
               },
               {
                 title: "Once approved",
                 body: "Your full profile card will appear in the public directory at transformhealthcoalition.org/leaders",
+                spinning: false,
               },
-            ].map(({ title, body }) => (
+            ].map(({ title, body, spinning }) => (
               <div
                 key={title}
                 className="bg-gray-50 border border-gray-200 rounded-xl px-11 py-9 flex gap-5 items-start"
               >
-                <div className="w-9 h-9 rounded-full border-[3px] border-brand-navy border-t-transparent flex-shrink-0 mt-0.5" />
+                <div
+                  className={`w-9 h-9 rounded-full border-[3px] border-brand-navy border-t-transparent flex-shrink-0 mt-0.5 ${
+                    spinning ? "animate-spin" : ""
+                  }`}
+                />
                 <div>
                   <div className="font-bold text-[1.8rem] text-brand-dark mb-2">
                     {title}
