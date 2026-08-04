@@ -92,6 +92,21 @@ git push origin main
 
 Always push to **staging first**, then to **origin** (production). This keeps them in sync — both will always point to the exact same commit.
 
+### Local Remote Setup
+
+Cloning from either URL only gives you one remote (named `origin`), which won't match the table above. Configure both remotes explicitly:
+
+```bash
+git clone https://github.com/Tich-Labs/transform-health-directory.git
+cd transform-health-directory
+
+git remote rename origin staging
+git remote add origin https://github.com/Transform-Health-2/Women-leaders-database.git
+git fetch --all
+```
+
+Verify with `git remote -v` — you should see `staging` pointing at `Tich-Labs/transform-health-directory` and `origin` pointing at `Transform-Health-2/Women-leaders-database`.
+
 ### GitHub Pages
 
 Both repos are configured to auto-deploy to GitHub Pages via GitHub Actions on every push to `main`. Each has its own URL:
