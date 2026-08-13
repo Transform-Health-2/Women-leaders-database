@@ -163,7 +163,7 @@ function buildManageEmail({
           </tr>
         </table>
         <div style="text-align:center;margin-bottom:16px">
-          <span style="display:inline-block;background:#fde68a;color:#92400e;font-size:1.1rem;font-weight:500;padding:4px 14px;border-radius:9999px">⏰ Expires in 5 days</span>
+          <span style="display:inline-block;background:#fde68a;color:#92400e;font-size:1.1rem;font-weight:500;padding:4px 14px;border-radius:9999px">⏰ Expires in 7 days</span>
         </div>
         <div style="font-size:1.2rem;color:#6b7280;margin-bottom:8px;text-align:center">Or copy this link:</div>
         <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;max-width:448px;margin:0 auto">
@@ -210,7 +210,7 @@ Deno.serve(async (req) => {
       const leader = leaders?.[0];
       if (!leader?.leader_email) return respond({ error: "leader not found" }, 404, req);
 
-      const expires = Date.now() + 1000 * 60 * 60 * 24 * 5;
+      const expires = Date.now() + 1000 * 60 * 60 * 24 * 7;
       const payload = `${leaderId}:${mode}:${expires}`;
       const sig = await hmacSign(secret, payload);
       const token = btoa(JSON.stringify({ leaderId, mode, expires, sig }));
@@ -259,8 +259,8 @@ Deno.serve(async (req) => {
       const rows: { id: string }[] = await check.json();
       if (!rows?.length) return respond({ error: "leader not found" }, 404, req);
 
-      // 5-day expiry matches the "Expires in 5 days" copy in the email
-      const expires = Date.now() + 1000 * 60 * 60 * 24 * 5;
+      // 7-day expiry matches the "Expires in 7 days" copy in the email
+      const expires = Date.now() + 1000 * 60 * 60 * 24 * 7;
       const payload = `${leaderId}:${mode}:${expires}`;
       const sig = await hmacSign(secret, payload);
       const token = btoa(JSON.stringify({ leaderId, mode, expires, sig }));

@@ -290,7 +290,7 @@ We've organized documentation by audience and purpose. Choose what applies to yo
 |------|-----------|----------|
 | **Live profile** | A profile currently published in the public directory | [Admin Manual](admin-manual.md) |
 | **Pending profile** | A submission awaiting admin review | [Admin Manual](admin-manual.md) |
-| **Magic link** | Email link (valid 5 days) that lets leaders update their profile without a password | [Submit Profile Guide](02-submit-profile-guide.md) |
+| **Magic link** | Email link (valid 7 days) that lets leaders update their profile without a password | [Submit Profile Guide](02-submit-profile-guide.md) |
 | **Self-submitted** | Profile submitted by the leader herself | [Submit Profile Guide](02-submit-profile-guide.md) |
 | **Nominated** | Profile created when someone nominates a woman leader | [Nominator Guide](03-nominator-guide.md) |
 | **Expertise tags** | Categories like "AI," "Telemedicine," "Policy" that describe a leader's work | [Data Quality Standards](05-data-quality-standards.md) |

@@ -194,7 +194,7 @@ The magic link email is constructed inline in `client/src/api/leaders.js` (`requ
 4. **Leader name** — bold, centered
 5. **Expertise tags** — blue pills matching the card style
 6. **CTA button** — pink ("Manage my profile") or red ("Remove my profile")
-7. **Expiry badge** — amber pill reading "Expires in 5 days"
+7. **Expiry badge** — amber pill reading "Expires in 7 days"
 8. **Fallback link** — monospace code block with the raw `?manage=` URL
 9. **1px grey divider**
 10. **Footer** — "You received this because you have a profile in the **Transform Health Women Leaders Directory** (pink, bold). Didn't request this? You can safely ignore this email."
